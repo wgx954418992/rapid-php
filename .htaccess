@@ -1,0 +1,21 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php?__ROUTE__=$1 [QSA,PT,L]
+
+    RewriteRule ^.git - [F,L]
+    RewriteRule ^.sql - [F,L]
+    RewriteRule ^.lock - [F,L]
+</IfModule>
+
+<FilesMatch (.*)\.(sql)$>
+    Order allow,deny
+    deny from all
+</FilesMatch>
+
+<Files *>
+    Options -Indexes
+</Files>

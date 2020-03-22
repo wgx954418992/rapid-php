@@ -1,0 +1,15 @@
+{
+  "require": {
+    "ext-dom": "*",
+    "ext-xmlwriter": "*",
+    "ext-json": "*",
+    "ext-simplexml": "*",
+    "ext-libxml": "*",
+    "ext-pdo": "*",
+    "ext-sockets": "*",
+    "ext-fileinfo": "*",
+    "ext-openssl": "*",
+    "ext-curl": "*",
+    "ext-gd": "*"
+  }
+}
