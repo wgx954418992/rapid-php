@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/rapid.iml" filepath="$PROJECT_DIR$/.idea/rapid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/rapid-php.iml" filepath="$PROJECT_DIR$/.idea/rapid-php.iml" />
     </modules>
   </component>
 </project>
