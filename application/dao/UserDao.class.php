@@ -14,9 +14,8 @@ class UserDao extends DBDao
 
     public function __construct()
     {
-        parent::__construct(AppUserModel::$table);
+        parent::__construct(AppUserModel::class);
     }
-
 
     /**
      * 通过telephone获取用户信息
@@ -57,10 +56,9 @@ class UserDao extends DBDao
     public function addUserAR($userId, AppUserModel $userModel)
     {
         return parent::add([
-            'userId' => $userModel->getUserId(),
-            'telephone' => $userModel->getTelephone(),
-            'password' => md5($userModel->getPassword()),
-            'isDelete' => 0,
+            'userId' => $userModel->getId(),
+            'nickname' => $userModel->getNickname(),
+            'psword' => md5($userModel->getPsword())
         ]);
     }
 

@@ -225,11 +225,11 @@ class RESTFullApi
     /**
      * 成功
      * @param null $data
-     * @param null $msg
+     * @param string $msg
      * @param int $ret
      * @return RESTFullApi
      */
-    public static function success($data = null, $msg = null, $ret = self::CODE_SUCCESS)
+    public static function success($data = null, $msg = 'success!', $ret = self::CODE_SUCCESS)
     {
         return (new RESTFullApi())->go($msg, $data, $ret);
     }

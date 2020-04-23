@@ -6,32 +6,13 @@ use rapid\library\rapid;
 
 class AB
 {
-
-    public $eachIndex = 0;
-
-    protected $array = [];
-
-    const ARRAY_OBJECT_TYPE_NOT = 'getValue';
-
-    const ARRAY_OBJECT_TYPE_AB = 'getAB';
-
-    const ARRAY_OBJECT_TYPE_ARRAY = 'getArray';
-
-    const ARRAY_OBJECT_TYPE_STRING = 'getString';
-
-    const ARRAY_OBJECT_TYPE_INT = 'getInt';
-
-    const ARRAY_OBJECT_TYPE_BOOL = 'getBool';
-
-    const ARRAY_OBJECT_TYPE_FLOAT = 'getFloat';
-
-    public function __construct($array = null)
+    public function __construct(?array $array = null)
     {
         $this->setData($array);
     }
 
-
-    public static function getInstance($array = null){
+    public static function getInstance(?array $array = null): self
+    {
         return new self($array);
     }
 
@@ -40,71 +21,50 @@ class AB
      * @param array $array
      * @return $this
      */
-    public function setData($array = null)
+    public function setData(?array $array = null): self
     {
         if ($array === null) $array = [];
 
-        if (!empty($array)) $this->setConvertList($array);
+        if (!empty($array)) B()->autoTypeConvertByArray($array);
 
-        $this->array = $array;
+        foreach ($array as $name => $value) {
+            $this->$name = $value;
+        }
 
         return $this;
     }
 
 
     /**
-     * 设置强制转换
-     * @param $value
-     */
-    private function setConvert(&$value)
-    {
-        if (is_null($value)) return;
-
-        if (is_numeric($value)) {
-            $value = (int)$value;
-        } else if (is_float($value)) {
-            $value = (float)$value;
-        } else if (is_double($value)) {
-            $value = (double)$value;
-        } else if (is_bool($value)) {
-            $value = (bool)$value;
-        } else if (is_array($value)) {
-            foreach ($value as $name => $v) {
-                $this->setConvert($v);
-
-                $value[$name] = $v;
-            }
-        }
-    }
-
-    /**
-     * 设置强制转换
-     * @param $data
-     */
-    private function setConvertList(&$data)
-    {
-        foreach ($data as &$value) $this->setConvert($value);
-    }
-
-    /**
      * 获取数据
-     * @param null $names
+     * @param array $names
+     * @param int $mode 1获取names下的values 2,排除names下的values
      * @return array
      */
-    public function getData($names = null)
+    public function getData(?array $names = null, int $mode = 1): array
     {
-        if ($names) return AR()->getArray($this->array, is_string($names) ? explode(',', $names) : $names);
+        $array = (array)$this;
 
-        return $this->array;
+        if (!empty($names)) {
+            if ($mode == 1) {
+                return AR()->getArray($array, $names);
+            } else if ($mode == 2) {
+                return AR()->delete($array, $names);
+            }
+        }
+
+        return $array;
     }
 
     /**
      * 是否空
      * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
-        return !$this->array;
+        foreach ($this as $name => $value) if (!empty($value)) return false;
+
+        return true;
     }
 
     /**
@@ -112,9 +72,9 @@ class AB
      * @param $name
      * @return bool
      */
-    public function hasName($name)
+    public function hasName($name): bool
     {
-        return array_key_exists($name, $this->array);
+        return isset($this->$name);
     }
 
     /**
@@ -123,9 +83,9 @@ class AB
      * @param $value
      * @return bool
      */
-    public function hasValue($name, $value)
+    public function hasValue($name, $value): bool
     {
-        $data = B()->getData($this->array, $name);
+        $data = isset($this->$name) ? $this->$name : null;
 
         return $data == $value;
     }
@@ -138,7 +98,7 @@ class AB
      */
     public function getValue($name)
     {
-        return B()->getData($this->array, $name);
+        return isset($this->$name) ? $this->$name : null;
     }
 
     /**
@@ -147,11 +107,11 @@ class AB
      * @param $value
      * @return $this
      */
-    public function setValue($name, $value)
+    public function setValue($name, $value): self
     {
-        $this->setConvert($value);
+        B()->autoTypeConvert($value);
 
-        $this->array[$name] = $value;
+        $this->$name = $value;
 
         return $this;
     }
@@ -161,11 +121,11 @@ class AB
      * @param $name
      * @return AB
      */
-    public function getAB($name)
+    public function getAB($name): self
     {
-        $array = array();
+        $array = [];
 
-        if (isset($this->array[$name])) $array = $this->array[$name];
+        if (isset($this->$name)) $array = $this->$name;
 
         $clone = clone $this;
 
@@ -179,7 +139,7 @@ class AB
      * @param $name
      * @return array
      */
-    public function getArray($name)
+    public function getArray($name): array
     {
         return (array)$this->getValue($name);
     }
@@ -189,7 +149,7 @@ class AB
      * @param $name
      * @return string
      */
-    public function getString($name)
+    public function getString($name): string
     {
         return (string)$this->getValue($name);
     }
@@ -199,7 +159,7 @@ class AB
      * @param $name
      * @return int
      */
-    public function getInt($name)
+    public function getInt($name): int
     {
         return (int)$this->getValue($name);
     }
@@ -209,7 +169,7 @@ class AB
      * @param $name
      * @return bool
      */
-    public function getBool($name)
+    public function getBool($name): bool
     {
         return (bool)$this->getValue($name);
     }
@@ -219,7 +179,7 @@ class AB
      * @param $name
      * @return float
      */
-    public function getFloat($name)
+    public function getFloat($name): float
     {
         return (float)$this->getValue($name);
     }
@@ -229,7 +189,7 @@ class AB
      * @param $name
      * @return object
      */
-    public function getObject($name)
+    public function getObject($name): object
     {
         return (object)$this->getValue($name);
     }
@@ -238,60 +198,51 @@ class AB
      * getLength
      * @return int
      */
-    public function getLength()
+    public function getLength(): int
     {
         return count($this->getData());
     }
 
-
-    /**
-     * where->each
-     * @param string $method
-     * @return mixed|null
-     */
-    public function each($method = AB::ARRAY_OBJECT_TYPE_NOT)
-    {
-        if (method_exists($this, $method) && $this->getValue($this->eachIndex)) {
-
-            $result = call_user_func_array(array($this, $method), array($this->eachIndex));
-
-            $this->eachIndex++;
-
-            return $result;
-        }
-
-        return null;
-    }
-
     /**
      * 转xml
-     * @param null $names
+     * @param array $names
      * @return string
      */
-    public function toXml($names = null)
+    public function toXml(?array $names = null): string
     {
         return X()->encode($this->getData($names));
     }
 
     /**
      * 转json
-     * @param null $names
+     * @param array $names
      * @return string
      */
-    public function toJson($names = null)
+    public function toJson(?array $names = null): string
     {
         return json_encode($this->getData($names));
     }
 
     /**
      * 删除指定value
-     * @param $name
+     * @param $names
      * @return $this
      */
-    public function delValue($name)
+    public function delValue($names): self
     {
-        unset($this->array[$name]);
+        if (is_array($names)) {
+            foreach ($names as $key) {
+                unset($this->$key);
+            }
+        } else {
+            unset($this->$names);
+        }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->toJson();
     }
 }

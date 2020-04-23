@@ -10,6 +10,7 @@
     "ext-fileinfo": "*",
     "ext-openssl": "*",
     "ext-curl": "*",
-    "ext-gd": "*"
+    "ext-gd": "*",
+    "ext-bcmath": "*"
   }
 }

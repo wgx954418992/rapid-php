@@ -10,15 +10,14 @@ if (!APP_RUNNING_IS_SHELL) exit();
 $conversion = [
     'int' => [
         'int',
+        'tinyint',
         'integer',
         'numeric',
         'year',
-    ], 'double' => [
-        'double'
     ], 'float' => [
-        'float'
-    ], 'array' => [
-        'json'
+        'float',
+        'double',
+        'decimal',
     ],
 ];
 
@@ -35,11 +34,15 @@ function getConversionType($type)
 {
     global $conversionMapping;
 
-    if (!version_compare(PHP_VERSION, '7.0.0')) return "";
+    if (!version_compare(PHP_VERSION, '7.0.0')) return '';
 
     return B()->getData($conversionMapping, $type);
 }
 
+/**
+ * @param null $config
+ * @return string|null
+ */
 function getConfig($config = null)
 {
     if (!$config) $config = "default";
@@ -195,35 +198,23 @@ function getModelClassString($tableName, $comment, $columns)
 
     $namespace = G_C_MODEL_NAMESPACE;
 
-    $table = getModelTableString($tableName, $comment, $columns);
-
     $classString = <<<EOF
 <?php
+
 namespace {$namespace};
 
 use rapidPHP\library\AB;
 
 /**
  * {$comment}
+ * @table {$tableName}
  */
 class {$className} extends AB
 {
-    /**
-     * 数据库表结构
-     * @var array
-     */
-    public static {$table};
-
-    /**
-     * {$className} constructor.
-     * @param array|null \$data
-     */
-    public function __construct(array \$data = null)
-    {
-        parent::__construct(\$data);
-    }
-
+    {properties}
 EOF;
+
+    $properties = '';
 
     foreach ($columns as $column) {
 
@@ -235,7 +226,20 @@ EOF;
 
         $columnType = B()->getData($column, 'type');
 
+        $columnLength = (int)B()->getData($column, 'length');
+
         $conversionType = getConversionType($columnType);
+
+        $properties .= <<<EOF
+    
+    
+    /**
+     * {$columnComment}
+     * @length {$columnLength}
+     * @typed {$columnType}
+     */
+    public \${$columnName};
+EOF;
 
         $classString .= <<<EOF
     
@@ -245,7 +249,7 @@ EOF;
      */
     public function get{$uColumnName}(){returnType}
     {
-        return \$this->getValue('{$columnName}');
+        return \$this->{$columnName};
     }
     
     /**
@@ -255,7 +259,8 @@ EOF;
      */
     public function set{$uColumnName}({setType}\${$columnName})
     {
-        return \$this->setValue('{$columnName}', \${$columnName});
+        \$this->{$columnName} = \${$columnName};
+        return \$this;
     }
 
 EOF;
@@ -277,8 +282,7 @@ EOF;
 }
 EOF;
 
-
-    return $classString;
+    return str_replace(['{properties}'], $properties, $classString);
 }
 
 
@@ -292,9 +296,11 @@ function write($path, $fileName, $data)
 {
     if (!is_dir($path)) if (!mkdir($path, 0777, true)) exit('mkdir error!');
 
-    $path = rtrim($path,'/*');
+    $path = rtrim($path, '/*');
 
-    $file = fopen("{$path}/{$fileName}", 'w+');
+    $filepath = "{$path}/{$fileName}";
+
+    $file = fopen($filepath, 'w+');
 
     fwrite($file, $data);
 

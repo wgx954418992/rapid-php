@@ -2,6 +2,7 @@
 
 namespace rapidPHP\library\core;
 
+
 use Exception;
 use rapid\library\rapid;
 use rapidPHP\config\AppConfig;
@@ -30,8 +31,6 @@ class Router
     private $routingUri = [];
 
     private $__ROUTE__URI__;
-
-    const URL_PARAM_NAME = 'urlParam';
 
     const __ROUTE__NAME = '__ROUTE__';
 
@@ -167,7 +166,7 @@ class Router
         if (is_array($appMethodData = B()->getData($appData, $appName))) {
             return $appMethodData;
         } else {
-            $appData = AR()->transpose($appData);
+            $appData = AR()->valueToKey($appData);
 
             $appMethodData = B()->getData($appData, $appName);
 
@@ -214,7 +213,7 @@ class Router
     {
         $parameter = B()->getData($appMethodData, RouterConfig::METHOD_PARAMETER);
 
-        return (array)(is_string($parameter) ? AR()->transpose(explode(',', $parameter), false) : $parameter);
+        return (array)(is_string($parameter) ? AR()->valueToKey(explode(',', $parameter), false) : $parameter);
     }
 
     /**
@@ -234,7 +233,7 @@ class Router
      */
     private function getUriAppMethodParameterType($methodParameter)
     {
-        return (string)(is_array($methodParameter) ? B()->getData($methodParameter, RouterConfig::METHOD_PARAMETER_TYPE) : $methodParameter);
+        return (is_array($methodParameter) ? B()->getData($methodParameter, RouterConfig::METHOD_PARAMETER_TYPE) : $methodParameter);
     }
 
 
@@ -245,7 +244,7 @@ class Router
      */
     private function getUriAppMethodParameterDefault($methodParameter)
     {
-        return (string)B()->getData($methodParameter, RouterConfig::METHOD_PARAMETER_DEFAULT);
+        return B()->getData($methodParameter, RouterConfig::METHOD_PARAMETER_DEFAULT);
     }
 
     /**
@@ -256,7 +255,7 @@ class Router
      */
     private function getUriAppMethodParameterDoType($methodParameter, $methodTYPE)
     {
-        return (string)B()->contrast(B()->getData($methodParameter, RouterConfig::METHOD_PARAMETER_REQUEST_DOTYPE), $methodTYPE);
+        return B()->contrast(B()->getData($methodParameter, RouterConfig::METHOD_PARAMETER_REQUEST_DOTYPE), $methodTYPE);
     }
 
 
@@ -282,24 +281,33 @@ class Router
 
         if (empty($type)) return $value;
 
-        if (isset(AppConfig::$SET_VAR_DEFAULT_TYPE[strtolower($type)])) {
+        if (isset(AppConfig::$SET_VAR_DEFAULT_TYPE[strtolower($type)]) ||
+            strtoupper($type) === AppConfig::VAR_TYPE_JSON ||
+            strtoupper($type) === AppConfig::VAR_TYPE_XML) {
             B()->setVarType($value, $type);
 
             $value = B()->contrast($value, $default);
 
+            if (strtoupper($type) === AppConfig::VAR_TYPE_JSON || strtoupper($type) === AppConfig::VAR_TYPE_XML) {
+                $value = (array)$value;
+            }
+
             return $value;
         }
 
-        return $this->getInstanceBean($type, $urlParam);
+        if (!empty($value)) $value = B()->jsonDecode($value);
+
+        return $this->getInstanceBean($value, $type, $urlParam);
     }
 
     /**
      * 获取实例化bean
+     * @param $doValue
      * @param $class
      * @param $urlParam
      * @return object|null
      */
-    private function getInstanceBean($class, $urlParam)
+    private function getInstanceBean($doValue, $class, $urlParam)
     {
         $reflection = Reflection::getInstance($class);
 
@@ -307,7 +315,7 @@ class Router
 
         $packages = $reflection->getCurrentImportPackage();
 
-        $methods = $reflection->getMethodsWithDoc(MappingConfig::APP_MAPPING_CONFIG_PARAM_NAME);
+        $methods = $reflection->getMethodsWithDoc(MappingConfig::APP_MAPPING_CONFIG_PARAM_NAME, true, true);
 
         $instance = $reflection->newInstance();
 
@@ -323,7 +331,6 @@ class Router
             if (empty($params)) continue;
 
             foreach ($params as $name => $param) {
-
                 $doType = Reflection::getParamDocDoTypeString($param);
 
                 $type = Reflection::getParamDocTypeString($reflection->getNamespaceName(), $packages, $param);
@@ -332,7 +339,11 @@ class Router
 
                 try {
 
-                    $value = $this->getUriAppMethodParameterValue($name, $doType, $default, $type, $urlParam);
+                    if ($doValue && is_array($doValue)) {
+                        $value = B()->getData($doValue, $name);
+                    } else {
+                        $value = $this->getUriAppMethodParameterValue($name, $doType, $default, $type, $urlParam);
+                    }
 
                     $method->invoke($instance, $value);
                 } catch (Exception $e) {
@@ -430,7 +441,7 @@ class Router
             $parameter = [B()->reflectionInstance($dataBeanClassName, [$parameter])];
         }
 
-        return call_user_func_array(array($classObject, $methodName), $parameter);
+        return call_user_func_array([$classObject, $methodName], $parameter);
     }
 
     /**
@@ -465,6 +476,8 @@ class Router
                 $result = $this->callUserFuncArray($classObject, $methodName, $dataBeanClassName, $parameter);
 
                 if ($result instanceof RESTFullApi) {
+                    B()->setHeader(['Content-Type:text/json;']);
+
                     return $result->toJson();
                 } else if ($result instanceof ViewInterface) {
                     $result->display();

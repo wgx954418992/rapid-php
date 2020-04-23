@@ -5,15 +5,16 @@ namespace rapidPHP\library\db\driver;
 
 use PDO;
 use rapid\library\rapid;
+use rapidPHP\library\Db;
 use rapidPHP\library\db\Driver;
 
 class Mysql extends Driver
 {
 
 
-    public function __construct(PDO $connect, $table)
+    public function __construct(PDO $connect, $modelClass)
     {
-        parent::__construct($connect, $table);
+        parent::__construct($connect, $modelClass);
     }
 
 
@@ -35,11 +36,11 @@ class Mysql extends Driver
      * @param array $column
      * @return $this
      */
-    public function createTable(array $column = array())
+    public function createTable(array $column = [])
     {
         $values = '';
 
-        $column = $column ? $column : isset($this->table['column']) ? $this->table['column'] : array();
+        $column = $column ? $column : isset($this->tableColumn) ? $this->tableColumn : [];
 
         foreach ($column as $index => $value) {
             $values .= "`{$index}` {$value} ,";
@@ -59,7 +60,7 @@ class Mysql extends Driver
      * @param string $value
      * @return $this
      */
-    public function func($parameter = array(), $value = '')
+    public function func($parameter = [], $value = '')
     {
         $parameterStr = '';
 
@@ -106,18 +107,22 @@ class Mysql extends Driver
      */
     private function makeInsertData($data)
     {
-        $array = array('keys' => '', 'values' => '');
+        $array = ['keys' => '', 'values' => ''];
 
         foreach ($data as $item => $value) {
             if (is_null($value)) continue;
 
-            $optionsKey = $this->getOptionsKey($item);
-
             $array['keys'] .= "`{$item}`,";
 
-            $array['values'] .= ":{$optionsKey},";
+            if (substr($value, 0, 2) !== ':$') {
+                $optionsKey = $this->getOptionsKey($item);
 
-            $this->addOptions($value, $optionsKey);
+                $array['values'] .= ":{$optionsKey},";
+
+                $this->addOptions($value, $optionsKey);
+            } else {
+                $array['values'] .= substr($value, 2) . ",";
+            }
         }
 
         $array['keys'] = B()->deleteStringLast($array['keys']);
@@ -152,9 +157,13 @@ class Mysql extends Driver
         foreach ($data as $index => $value) {
             $optionsKey = $this->getOptionsKey($index);
 
-            $setting .= "`{$index}`=:{$optionsKey},";
+            if (substr($value, 0, 2) !== ':$') {
+                $setting .= "`{$index}`=:{$optionsKey},";
 
-            $this->addOptions($value, $optionsKey);
+                $this->addOptions($value, $optionsKey);
+            } else {
+                $setting .= "`{$index}`=" . substr($value, 2) . ',';
+            }
         }
 
         return B()->deleteStringLast($setting);
@@ -180,7 +189,9 @@ class Mysql extends Driver
      */
     public function select($column = null)
     {
-        $column = $this->getTableColumn($this->table, $column, '`', '`');
+        if (empty($column)) $column = $this->tableColumn;
+
+        $column = is_array($column) ? Db::formatColumn($column, '`', '`') : $column;
 
         $this->sql['select'] .= "SELECT {$column} FROM {$this->tableName} ";
 
@@ -221,7 +232,7 @@ class Mysql extends Driver
      * @param null $location
      * @return $this
      */
-    public function join($table, $carrier, $on = array(), $location = null)
+    public function join($table, $carrier, $on = [], $location = null)
     {
         $table = $this->getTableName($table);
 
@@ -240,7 +251,7 @@ class Mysql extends Driver
      * @param array $on
      * @return $this
      */
-    public function leftJoin($table, $carrier, $on = array())
+    public function leftJoin($table, $carrier, $on = [])
     {
         $this->join($table, $carrier, $on, 'LEFT');
 
@@ -254,7 +265,7 @@ class Mysql extends Driver
      * @param array $on
      * @return $this
      */
-    public function rightJoin($table, $carrier, $on = array())
+    public function rightJoin($table, $carrier, $on = [])
     {
         $this->join($table, $carrier, $on, 'RIGHT');
 
@@ -268,7 +279,7 @@ class Mysql extends Driver
      * @param array $on :条件
      * @return $this
      */
-    public function innerJoin($table, $carrier, $on = array())
+    public function innerJoin($table, $carrier, $on = [])
     {
         $this->join($table, $carrier, $on, 'INNER');
 
@@ -282,7 +293,7 @@ class Mysql extends Driver
      * @param array $on :条件
      * @return $this
      */
-    public function fullJoin($table, $carrier, $on = array())
+    public function fullJoin($table, $carrier, $on = [])
     {
         $this->join($table, $carrier, $on, 'FULL');
 
@@ -358,11 +369,11 @@ class Mysql extends Driver
      */
     public function union($table, $column = null)
     {
-        $table = $this->getTableName($table);
+        $tableName = $this->getTableName($table);
 
         $column = $this->getTableColumn($table, $column, '`', '`');
 
-        $this->sql['select'] .= " UNION SELECT {$column} FROM `{$table}` ";
+        $this->sql['select'] .= " UNION SELECT {$column} FROM `{$tableName}` ";
 
         return $this;
     }
@@ -512,7 +523,7 @@ class Mysql extends Driver
      */
     public function drop($name = '', $type = 'TABLE')
     {
-        $name = $name ? $name : $this->table;
+        $name = $name ? $name : $this->tableName;
         $this->sql['query'] = "DROP {$type} `{$name}`";
         return $this;
     }
@@ -524,7 +535,7 @@ class Mysql extends Driver
      */
     public function dropTable()
     {
-        $this->drop($this->table, 'TABLE');
+        $this->drop($this->tableName, 'TABLE');
         return $this;
     }
 

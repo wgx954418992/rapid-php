@@ -33,11 +33,9 @@ class Loader
     {
         $file = self::getFilePath($name);
 
-        if (is_file($file)) {
-            return include($file . '');
-        } else {
-            throw new Exception('autoload file error ' . $file);
-        }
+        if (is_file($file)) return include($file . '');
+
+        return null;
     }
 
     /**

@@ -35,7 +35,7 @@ class Build
      * @param null $key
      * @return mixed|null
      */
-    public function jsonDecode(?string $json, $key = null)
+    public function jsonDecode($json, $key = null)
     {
         if (empty($json)) return null;
 
@@ -229,14 +229,16 @@ class Build
      */
     public function onlyIdToInt(?int $count = 11): int
     {
-        $result = $this->randoms($count, '0123456789');
+        $result = (int)$this->randoms($count, '0123456789');
 
-        if (strlen($result) < $count)
+        if (strlen($result) < $count) {
             $result = $this->randoms($count - strlen($result), '123456789')
                 . $result;
+        }
 
         return (int)$result;
     }
+
 
     /**
      * 生成cookie
@@ -320,7 +322,7 @@ class Build
      * @param bool|null $secure
      * @return bool
      */
-    public function setCookie(string $name, string $values, int $time = 0,
+    public function setCookie(string $name, ?string $values, int $time = 0,
                               string $path = APP_ROOT_PATH,
                               ?string $domain = null,
                               ?bool $secure = null): bool
@@ -429,13 +431,13 @@ class Build
 
     /**
      * 两值对比，如果第一个存在返回第一个值，否则返回第二个
-     * @param $default
      * @param $value
+     * @param $default
      * @return mixed
      */
-    public function contrast($default, $value)
+    public function contrast($value, $default)
     {
-        return !is_null($default) && !empty($default) ? $default : $value === '' ? $default : $value;
+        return !empty($value) ? $value : $default === '' || is_null($default) ? $value : $default;
     }
 
 
@@ -946,5 +948,133 @@ class Build
         if (!is_null($script)) array_unshift($param, $script);
 
         return $this->threadExec($bin, $param, $sleep);
+    }
+
+    /**
+     * 判断版本 1.0==1.0.0 or 1=1.0.0
+     * @param $newV
+     * @param $currentV
+     * @return int
+     */
+    public function versionCompare($newV, $currentV)
+    {
+        $newV = explode(".", rtrim($newV, ".0"));
+
+        $currentV = explode(".", rtrim($currentV, ".0"));
+
+        foreach ($newV as $depth => $aVal) {
+            if (isset($currentV[$depth])) {
+                if ($aVal > $currentV[$depth]) return 1;
+                else if ($aVal < $currentV[$depth]) return -1;
+
+            } else {
+                return 1;
+            }
+        }
+
+        return (count($newV) < count($currentV)) ? -1 : 0;
+    }
+
+    /**
+     * 阶加
+     * 1+2+3+4+5+...+n
+     * @param $n
+     * @return float|int
+     */
+    public function termial($n)
+    {
+        return (1 + $n) * $n / 2;
+    }
+
+    /**
+     * 阶乘
+     * 1*2*3*4*5*..*n
+     * @param $n
+     * @return float|int
+     */
+    public function factorial($n)
+    {
+        return array_product(range(1, $n));
+    }
+
+    /**
+     * 判断字符串是否为 Json 格式
+     *
+     * @param string $data Json 字符串
+     * @param bool $assoc 是否返回关联数组。默认返回对象
+     *
+     * @return bool
+     */
+    public function isJson($data = '', $assoc = false)
+    {
+        $data = json_decode($data, $assoc);
+
+        if (($data && is_object($data)) || (is_array($data) && !empty($data))) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * 自动转换类型，比如如果是int就自动转成int
+     * @param $value
+     */
+    public function autoTypeConvert(&$value)
+    {
+        if (is_null($value)) return;
+
+        if (is_array($value)) {
+            foreach ($value as $name => $v) {
+                $this->autoTypeConvert($v);
+
+                $value[$name] = $v;
+            }
+        } else if (is_object($value)) {
+            $value = (object)$value;
+        } else if (V()->decimal($value)) {
+            $value = (double)$value;
+        } else if (is_numeric($value)) {
+            $value = (int)$value;
+        } else if (is_bool($value)) {
+            $value = (bool)$value;
+        }
+    }
+
+    /**
+     * 数组自动类型转换
+     * @param $data
+     */
+    public function autoTypeConvertByArray(&$data)
+    {
+        foreach ($data as &$value) $this->autoTypeConvert($value);
+    }
+
+    /**
+     * 数组转对象
+     * @param array|null $array 数组
+     * @param $object object|string 对象实例或者对象class
+     * @param array|null $params 对象默认初始化参数
+     * @return object
+     * @throws ReflectionException
+     */
+    public function arTObject(?array $array, $object, ?array $params = [])
+    {
+        if (empty($array)) return is_object($object) ? $object : null;
+
+        if (empty($object)) return $object;
+
+        if (is_string($object) && is_file(Loader::getFilePath($object))) {
+            $object = (new ReflectionClass($object))->newInstanceArgs($params);
+        }
+
+        if (!is_object($object)) return null;
+
+        foreach ($object as $name => $value) {
+            $object->$name = $this->getData($array, $name);
+        }
+
+        return $object;
     }
 }

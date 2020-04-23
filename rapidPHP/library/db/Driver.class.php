@@ -1,4 +1,5 @@
 <?php
+
 namespace rapidPHP\library\db;
 
 use PDO;
@@ -16,10 +17,10 @@ abstract class Driver
     private $connect = null;
 
     /**
-     * 表
-     * @var mixed|null
+     * 对应的model
+     * @var $modelClass string
      */
-    protected $table = null;
+    protected $modelClass = null;
 
     /**
      * 表名
@@ -27,12 +28,17 @@ abstract class Driver
      */
     protected $tableName = null;
 
+    /**
+     * 字段
+     * @var mixed|null
+     */
+    protected $tableColumn = null;
 
     /**
      * 预先执行参数
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
 
     private $defaultSql = array(
@@ -42,23 +48,23 @@ abstract class Driver
     );
 
     /**
-     * sql表达式
+     * sql语句
      * @var array
      */
     protected $sql;
 
-
     /**
      * driver constructor.
      * @param PDO $connect
-     * @param null $table
+     * @param string $modelClass
      */
-    public function __construct(PDO $connect, $table = null)
+    public function __construct(PDO $connect, $modelClass = null)
     {
-        $this->table = $table;
         $this->connect = $connect;
         $this->sql = $this->defaultSql;
-        $this->tableName = $this->getTableName($table);
+        $this->modelClass = $modelClass;
+        $this->tableName = $this->getTableName($modelClass);
+        $this->tableColumn = $this->getTableColumn($modelClass);
     }
 
     /**
@@ -100,7 +106,6 @@ abstract class Driver
         return Db::getTableColumn($table, $column, $columnLeft, $columnRight);
     }
 
-
     /**
      * 创建数据库
      * @param $dataBaseName
@@ -114,7 +119,7 @@ abstract class Driver
      * @param array $column
      * @return Driver
      */
-    abstract function createTable(array $column = array());
+    abstract function createTable(array $column = []);
 
 
     /**
@@ -123,7 +128,7 @@ abstract class Driver
      * @param string $value
      * @return Driver
      */
-    abstract public function func($parameter = array(), $value = '');
+    abstract public function func($parameter = [], $value = '');
 
 
     /**
@@ -187,7 +192,7 @@ abstract class Driver
      * @param null $location
      * @return Driver
      */
-    abstract public function join($table, $carrier, $on = array(), $location = null);
+    abstract public function join($table, $carrier, $on = [], $location = null);
 
 
     /**
@@ -197,7 +202,7 @@ abstract class Driver
      * @param array $on
      * @return Driver
      */
-    abstract public function leftJoin($table, $carrier, $on = array());
+    abstract public function leftJoin($table, $carrier, $on = []);
 
     /**
      * LEFT JOIN
@@ -206,7 +211,7 @@ abstract class Driver
      * @param array $on
      * @return Driver
      */
-    abstract public function rightJoin($table, $carrier, $on = array());
+    abstract public function rightJoin($table, $carrier, $on = []);
 
     /**
      * INNER JOIN
@@ -215,7 +220,7 @@ abstract class Driver
      * @param array $on :条件
      * @return Driver
      */
-    abstract public function innerJoin($table, $carrier, $on = array());
+    abstract public function innerJoin($table, $carrier, $on = []);
 
 
     /**
@@ -225,7 +230,7 @@ abstract class Driver
      * @param array $on :条件
      * @return Driver
      */
-    abstract public function fullJoin($table, $carrier, $on = array());
+    abstract public function fullJoin($table, $carrier, $on = []);
 
 
     /**
@@ -417,7 +422,7 @@ abstract class Driver
      * @param $options
      * @return array
      */
-    public function getOptions($options = array())
+    public function getOptions($options = [])
     {
         return $options ? $options : $this->options;
     }
@@ -452,7 +457,7 @@ abstract class Driver
      * @param array $options
      * @return bool
      */
-    public function execute(array $options = array())
+    public function execute(array $options = [])
     {
         $options = $this->getOptions($options);
 
@@ -468,13 +473,13 @@ abstract class Driver
      * @param int $mode
      * @return Result
      */
-    public function get(array $options = array(), $mode = 2)
+    public function get(array $options = [], $mode = 2)
     {
         $options = $this->getOptions($options);
 
         $exec = new Exec($this->connect, $this->getSql());
 
-        return $exec->get($options, $mode);
+        return $exec->get($this->modelClass, $options, $mode);
     }
 
 }

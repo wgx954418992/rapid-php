@@ -10,6 +10,7 @@ use rapidPHP\config\DatabaseConfig;
 use rapidPHP\library\core\Loader;
 use rapidPHP\library\db\Driver;
 use rapidPHP\library\db\Exec;
+use ReflectionException;
 
 class Db
 {
@@ -63,7 +64,8 @@ class Db
      * @param null $config
      * @return mixed|Db|null
      */
-    public static function getInstance($config = null){
+    public static function getInstance($config = null)
+    {
         if (!$config) if (isset(DatabaseConfig::$default)) $config = DatabaseConfig::$default;
 
         $md5 = md5(serialize($config));
@@ -90,9 +92,20 @@ class Db
      */
     public static function getTableName($table)
     {
-        return isset($table['name']) ? $table['name'] : $table;
-    }
+        if (is_file(Loader::getFilePath($table))) {
+            $doc = Reflection::getInstance($table)->getDocComment();
 
+            if (empty($doc)) return $table;
+
+            $name = Reflection::getDocValue($doc, 'table');
+
+            if (!empty($name)) return $name;
+
+            return $name;
+        }
+
+        return $table;
+    }
 
     /**
      * 获取表字段
@@ -104,8 +117,12 @@ class Db
      */
     public static function getTableColumn($table, $column = null, $columnLeft = '`', $columnRight = '`')
     {
-        if (isset($table['column']) && !$column) {
-            return self::formatColumn(join(',', array_keys($table['column'])), $columnLeft, $columnRight);
+        if (is_file(Loader::getFilePath($table))) {
+            $properties = array_column(Reflection::getInstance($table)->getProperties(), 'name');
+
+            if (empty($properties)) return '*';
+
+            return self::formatColumn(join(',', $properties), $columnLeft, $columnRight);
         } else if (is_array($column)) {
             return self::formatColumn(join(',', $column), $columnLeft, $columnRight);
         } else if (!empty($column)) {
@@ -122,7 +139,7 @@ class Db
      * @param string $columnRight
      * @return mixed
      */
-    private static function formatColumn($column, $columnLeft = '`', $columnRight = '`')
+    public static function formatColumn($column, $columnLeft = '`', $columnRight = '`')
     {
         return @preg_replace('/(\w+)/i', "{$columnLeft}$1{$columnRight}", $column);
     }
@@ -236,11 +253,12 @@ class Db
 
     /**
      * 选择表
-     * @param null $table
+     * @param null $modelClass
      * @return Driver
+     * @throws ReflectionException
      * @throws Exception
      */
-    public function table($table = null)
+    public function table($modelClass = null)
     {
         $pdo = $this->getConnect();
 
@@ -250,7 +268,7 @@ class Db
 
         if (!is_file(Loader::getFilePath($driver))) throw new Exception('driver error!');
 
-        $driver = B()->reflectionInstance($driver, array($pdo, $table));
+        $driver = B()->reflectionInstance($driver, [$pdo, $modelClass]);
 
         if ($driver instanceof Driver) return $driver;
 
@@ -296,7 +314,6 @@ class Db
         return $this->getConnect()->rollBack();
 
     }
-
 
     /**
      * 关闭连接

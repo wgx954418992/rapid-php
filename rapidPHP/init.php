@@ -1,6 +1,6 @@
 <?php
 
-use rapidPHP\library\AB as AB;
+use rapidPHP\library\AB;
 use rapidPHP\library\AR;
 use rapidPHP\library\Build;
 use rapidPHP\library\core\Loader;
@@ -14,6 +14,9 @@ use rapidPHP\library\Xml;
 
 // 检测PHP环境
 if (version_compare(PHP_VERSION, '7.0.0', '<')) die('require PHP > 7.0.0 !');
+
+//运行模式
+define('RAPIDPHP_VERSION', '2.1.1');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());

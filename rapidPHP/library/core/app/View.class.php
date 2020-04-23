@@ -7,7 +7,7 @@ use rapid\library\rapid;
 use rapidPHP\library\core\app\view\Element;
 use rapidPHP\library\ViewTemplate;
 
-abstract class View
+class View
 {
 
     /**

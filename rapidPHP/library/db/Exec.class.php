@@ -1,7 +1,9 @@
 <?php
+
 namespace rapidPHP\library\db;
 
 use PDO;
+use PDOStatement;
 
 class Exec
 {
@@ -18,7 +20,6 @@ class Exec
      */
     private $sql = null;
 
-
     /**
      * Exec constructor.
      * @param PDO $connect
@@ -27,7 +28,6 @@ class Exec
     public function __construct(PDO $connect, $sql)
     {
         $this->sql = $sql;
-
         $this->connect = $connect;
     }
 
@@ -44,15 +44,13 @@ class Exec
         return $result->execute($options);
     }
 
-
-
     /**
-     * select用这个执行
+     * 获取pdo流
      * @param array $options
      * @param int $mode
-     * @return Result
+     * @return bool|PDOStatement
      */
-    public function get(array $options = [], $mode = PDO::FETCH_ASSOC)
+    public function getPdoStatement(array $options = [], $mode = PDO::FETCH_ASSOC)
     {
         $result = $this->connect->prepare($this->sql);
 
@@ -60,7 +58,29 @@ class Exec
 
         $result->setFetchMode($mode);
 
-        return new Result($result);
+        return $result;
+    }
+
+    /**
+     * select用这个执行
+     * @param $modelClass
+     * @param array $options
+     * @param int $mode
+     * @return Result
+     */
+    public function get($modelClass, array $options = [], $mode = PDO::FETCH_ASSOC)
+    {
+        $statement = $this->getPdoStatement($options, $mode);
+
+        $result = $statement->fetchAll();
+
+        $statement->closeCursor();
+
+        unset($statement);
+
+        if (!empty($result)) B()->autoTypeConvertByArray($result);
+
+        return new Result($result, $modelClass);
     }
 
 }

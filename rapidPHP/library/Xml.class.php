@@ -88,7 +88,7 @@ class Xml
     public function decode($xml)
     {
         if (is_string($xml)) {
-            return json_decode(json_encode((array)simplexml_load_string($xml, null, LIBXML_NOCDATA)), true);
+            return json_decode(json_encode((array)@simplexml_load_string($xml, null, LIBXML_NOCDATA)), true);
         }
 
         return false;

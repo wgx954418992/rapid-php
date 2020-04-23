@@ -3,18 +3,19 @@
 namespace rapidPHP\library\core\app;
 
 use Exception;
+use rapidPHP\library\Db;
 use rapidPHP\library\db\Driver;
 
-abstract class DBDao
+class DBDao
 {
 
-    protected $table, $config;
+    protected $modelClass, $config;
 
-    public function __construct($table, $config = null)
+    public function __construct($modelClass, $config = null)
     {
-        $this->table = $table;
-
         $this->config = $config;
+
+        $this->modelClass = $modelClass;
     }
 
 
@@ -32,9 +33,18 @@ abstract class DBDao
      * @return Driver
      * @throws Exception
      */
-    protected function getDb()
+    public function getDriver()
     {
-        return D($this->config)->table($this->table);
+        return D($this->config)->table($this->modelClass);
+    }
+
+    /**
+     * 获取db
+     * @return mixed|Db|null
+     */
+    public function getDb()
+    {
+        return D($this->config);
     }
 
     /**
@@ -45,7 +55,7 @@ abstract class DBDao
      */
     public function get($column = null)
     {
-        return $this->getDb()->resetSql()->select($column);
+        return $this->getDriver()->resetSql()->select($column);
     }
 
 
@@ -57,7 +67,7 @@ abstract class DBDao
      */
     public function add($data)
     {
-        return $this->getDb()->resetSql()->insert($data)->execute();
+        return $this->getDriver()->resetSql()->insert($data)->execute();
     }
 
 
@@ -69,7 +79,7 @@ abstract class DBDao
      */
     public function set($data)
     {
-        return $this->getDb()->resetSql()->update($data);
+        return $this->getDriver()->resetSql()->update($data);
     }
 
     /**
@@ -79,7 +89,7 @@ abstract class DBDao
      */
     public function del()
     {
-        return $this->getDb()->resetSql()->delete();
+        return $this->getDriver()->resetSql()->delete();
     }
 
     /**
@@ -90,7 +100,7 @@ abstract class DBDao
      */
     public function count($name = '*')
     {
-        return $this->getDb()->resetSql()->select("count({$name}) as count");
+        return $this->getDriver()->resetSql()->select("count({$name}) as count");
     }
 
     /**
@@ -101,7 +111,7 @@ abstract class DBDao
      */
     public function sum($name = '*')
     {
-        return $this->getDb()->resetSql()->select("sum({$name}) as sum");
+        return $this->getDriver()->resetSql()->select("sum({$name}) as sum");
     }
 
     /**
@@ -112,7 +122,7 @@ abstract class DBDao
      */
     public function max($name = '*')
     {
-        return $this->getDb()->resetSql()->select("max({$name}) as max");
+        return $this->getDriver()->resetSql()->select("max({$name}) as max");
     }
 
     /**
@@ -123,6 +133,6 @@ abstract class DBDao
      */
     public function min($name = '*')
     {
-        return $this->getDb()->resetSql()->select("min({$name}) as min");
+        return $this->getDriver()->resetSql()->select("min({$name}) as min");
     }
 }

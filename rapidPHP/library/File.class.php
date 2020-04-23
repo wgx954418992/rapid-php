@@ -15,6 +15,7 @@ class File
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
 
+
     /**
      * 读取目录列表
      * @param $dir :目录
@@ -142,4 +143,56 @@ class File
         return file_get_contents($filePath, null, $context);
     }
 
+    /**
+     * 获取大于2g文件的文件大小
+     * @param $path
+     * @return bool|false|int|string
+     */
+    public function getMaxFileSize($path)
+    {
+        if (!file_exists($path)) return false;
+
+        $size = filesize($path);
+
+        if (!($file = fopen($path, 'rb'))) return false;
+
+        //Check if it really is a small file (< 2 GB)
+        if ($size >= 0) {
+            //It really is a small file
+
+            if (fseek($file, 0, SEEK_END) === 0) {
+                fclose($file);
+
+                return $size;
+            }
+        }
+
+        //Quickly jump the first 2 GB with fseek. After that fseek is not working on 32 bit php (it uses int internally)
+        $size = PHP_INT_MAX - 1;
+
+        if (fseek($file, PHP_INT_MAX - 1) !== 0) {
+            fclose($file);
+
+            return false;
+        }
+
+        $read = null;
+
+        $length = 1024 * 1024;
+
+        //Read the file until end
+        while (!feof($file)) {
+            $read = fread($file, $length);
+
+            $size = bcadd($size, $length);
+        }
+
+        $size = bcsub($size, $length);
+
+        $size = bcadd($size, strlen($read));
+
+        fclose($file);
+
+        return $size;
+    }
 }

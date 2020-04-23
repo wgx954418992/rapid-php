@@ -4,6 +4,9 @@ namespace rapidPHP\library;
 
 
 use rapid\library\rapid;
+use rapidPHP\library\core\Loader;
+use ReflectionClass;
+use ReflectionException;
 
 class AR
 {
@@ -16,7 +19,7 @@ class AR
 
     /**
      * 批量删除数组元素
-     * @param $array
+     * @param array $array
      * array(
      *  'a'=>1,'b'=>2,'c'=>3
      * )
@@ -25,20 +28,28 @@ class AR
      *      'a','c'
      * )
      * @param bool|false $sort
+     * @param bool $isTow
      * @return array
      * array(
      *      'b'=>2
      * )
      */
-    public function delete(array $array, $key, $sort = false)
+    public function delete(array $array, $key, $sort = false, $isTow = false)
     {
-        $newKey = !is_array($key) ? explode(',', $key) : $key;
+        $keys = !is_array($key) ? explode(',', $key) : $key;
 
-        foreach ($newKey as $val) unset($array[$val]);
+        if ($isTow) {
+            foreach ($keys as $keyName) {
+                foreach ($array as $index => $value) {
+                    unset($array[$index][$keyName]);
+                }
+            }
+        } else {
+            foreach ($keys as $keyName) unset($array[$keyName]);
+        }
 
         return $sort ? self::sort($array) : $array;
     }
-
 
     /**
      * 批量获取数组里面的value
@@ -62,7 +73,6 @@ class AR
 
             foreach ($key as $value) $newArray[$value] = B()->getData($array, $value);
 
-
         } else {
 
             foreach ($key as $value) $newArray[] = B()->getData($array, $value);
@@ -70,6 +80,47 @@ class AR
         return $newArray;
     }
 
+    /**
+     * 重命名
+     * @param array $array
+     * @param array $key
+     * @return array
+     */
+    public function rename(array $array, array $key)
+    {
+        foreach ($array as $name => $value) {
+            unset($array[$name]);
+            $array[B()->getData($key, $name)] = $value;
+        }
+
+        return $array;
+    }
+
+    /**
+     * 获取数组里面第一个指定key的value
+     * @param array $array
+     * @param $key
+     * @return mixed|null
+     */
+    public function getArrayFirstValue(array $array, $key)
+    {
+        if (is_array($key)) {
+            $result = [];
+
+            foreach ($array as $value) {
+
+                foreach ($key as $keyName) {
+                    $result[$keyName] = B()->getData($value, $keyName);
+                }
+            }
+
+            return $result;
+        } else {
+            foreach ($array as $value) return B()->getData($value, $key);
+        }
+
+        return null;
+    }
 
     /**
      * 判断数组是否存在指定值
@@ -126,18 +177,6 @@ class AR
 
 
     /**
-     * 获取数组全部的key跟val
-     * @param $array
-     * @param string $separator
-     * @return array|bool
-     */
-    public function getKeysValues(array $array, $separator = ',')
-    {
-        return ['keys' => join($separator, array_keys($array)), 'values' => join($separator, array_values($array))];
-    }
-
-
-    /**
      * 获取多维数组深度
      * @param $array
      * @return int
@@ -188,15 +227,7 @@ class AR
      */
     public function toArray($object)
     {
-        $array = [];
-
-        if (is_object($object)) {
-
-            foreach ($object as $row) $array[] = $row;
-
-            return $array;
-        }
-        return $array;
+        return (array)$object;
     }
 
 
@@ -236,6 +267,7 @@ class AR
      *      array('key'=>'value1'),
      * )
      * @param $key =>'key'
+     * @param null $of
      * @return array
      * array(
      *      'value'=>array(
@@ -248,38 +280,21 @@ class AR
      *      )
      * )
      */
-    public function getRepeatArray(array $array, $key)
+    public function arrayColumn(array $array, $key, $of = null)
     {
         $newArray = [];
 
-        foreach ($array as $value) {
+        if (is_null($of)) {
+            foreach ($array as $value) {
 
-            $newArray[B()->getData($value, $key)][] = $value;
+                $index = B()->getData($value, $key);
+
+                $newArray[$index][] = $value;
+            }
+        } else {
+            return array_column($array, $key, $of);
         }
 
-        return $newArray;
-    }
-
-
-    /**
-     * 获取二维数组 键值对
-     * @param array $array
-     * @param $key
-     * @param $of
-     * @return array
-     */
-    public function getTowArrayKeyOf(array $array, $key, $of = null)
-    {
-        $newArray = [];
-
-        foreach ($array as $value) {
-
-            $index = B()->getData($value, $key);
-
-            $value = !is_null($of) ? B()->getData($value, $of) : $value;
-
-            $newArray[$index] = $value;
-        }
         return $newArray;
     }
 
@@ -321,11 +336,10 @@ class AR
      * @param array $array
      * @return AB
      */
-    public function getArrayObject($array)
+    public function getAB($array)
     {
         return new AB($array);
     }
-
 
     /**
      * 数组k=>v颠倒
@@ -339,7 +353,7 @@ class AR
      *  1=>a|null
      * )
      */
-    public function transpose($array, $isValue = true)
+    public function valueToKey($array, $isValue = true)
     {
         $newArray = [];
 
@@ -367,4 +381,30 @@ class AR
     }
 
 
+    /**
+     * 数组转对象
+     * @param array|null $array 数组
+     * @param $object object|string 对象实例或者对象class
+     * @param array|null $params 对象默认初始化参数
+     * @return object
+     * @throws ReflectionException
+     */
+    public function toBean(?array $array, $object, ?array $params = [])
+    {
+        if (empty($array)) return null;
+
+        if (empty($object)) return null;
+
+        if (is_string($object) && is_file(Loader::getFilePath($object))) {
+            $object = (new ReflectionClass($object))->newInstanceArgs($params);
+        }
+
+        if (!is_object($object)) return null;
+
+        foreach ($object as $name => $value) {
+            $object->$name = B()->getData($array, $name);
+        }
+
+        return $object;
+    }
 }

@@ -2,7 +2,7 @@
 
 RapidPHP本着免费开源、快速、高效、简单的面向对象的 轻量级PHP开发框架。
 
->**版本:** `2.0.0`
+>**版本:** `2.1.1`
 
 >**作者:** `954418992@qq.com`
 
@@ -26,10 +26,15 @@ RapidPHP本着免费开源、快速、高效、简单的面向对象的 轻量�
 │   │   ├── BaseService.class.php
 │   │   └── UserService.class.php
 │   └── view                                         视图目录
-│       └── IndexView.class.php
+│   │   └── IndexView.class.php
+│   └── wrapper                                      集合 （一般数据库的model返回时候需要通过程序添加字段进去，
+│       │                                                     集合是为了不修改model的情况下建立的）
+│       └── UserWrapper.class.php                    UserModel的集合
 ├── composer.json                                    composer包配置文件
 ├── composer.lock
 ├── index.php                                        单一入口文件
+├── nginx.conf                                       nginx.conf配置文件
+├── swagger.yaml                                     附件swagger.yaml文件
 ├── public                                           静态模板目录，前端目录
 │   └── src
 │       └── view                                     rapidPHP默认解析模板目录
@@ -121,7 +126,9 @@ RapidPHP本着免费开源、快速、高效、简单的面向对象的 轻量�
 │       ├── app.php
 │       └── uri.php
 ├── scripts                                            全局脚本目录
-│   └── database.generate.php                          用于生成数据库表模型的脚本
+│   └── database.model.php                             用于生成数据库表模型的脚本
+│   └── swagger.doc.php                                用于生成swagger api文档的脚本 
+│                                                      命令 php scripts/swagger.doc.php $type(yaml：默认 json ) $path 写出目录 $appendFile 附加yaml文件
 └── vendor                                             composer 包安装存放目录
     ├── autoload.php
     └── composer
@@ -166,6 +173,6 @@ rapidPHP遵循Apache2开源协议发布，并提供免费使用。
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2006-2016 by rapidPHP
+版权所有Copyright © 2020-2024 by rapidPHP
 
 All rights reserved。

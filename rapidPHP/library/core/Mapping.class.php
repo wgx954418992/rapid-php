@@ -53,9 +53,9 @@ class Mapping
 
             $result = $this->compileMapping($packages, $reflectionClass);
 
-            $urlResult .= B()->getData($result, 'urls');
+            $urls = B()->getData($result, 'urls');
 
-            if (!empty($urlResult)) $urlResult .= ',';
+            if (!empty($urls)) $urlResult .= $urls . ',';
 
             $appResult .= B()->getData($result, 'apps');
         }
@@ -108,9 +108,18 @@ class Mapping
 
             if (empty($url) && $methodName !== RouterConfig::CLASS_NAME_INIT) continue;
 
+            if ($methodName === RouterConfig::CLASS_NAME_INIT
+                &&
+                empty($methodInfo[Reflection::CLASS_METHOD_PARAMS_NAME])) {
+
+                continue;
+            }
+
             $url = $classUrl . $url;
 
             if (strlen($url) > 1) $url = ltrim($url, '/*');
+
+            $docUrl = $url;
 
             $requestType = $this->getMethodRequestTypeString($methodName, $doc);
 
@@ -124,11 +133,11 @@ class Mapping
                 $apps .= '\'' . $methodName . '\'=>[' . $paramsString . '],';
             }
 
-            if (empty($url)) continue;
+            if (empty($url) || $methodName === RouterConfig::CLASS_NAME_INIT) continue;
 
             $mappingUrl = $this->parseUrl($class->getName(), $methodName, $url);
 
-            if (preg_match('/{\\$\w+}/i', $url) > 0) {
+            if (preg_match('/{\w+}/i', $docUrl) > 0) {
                 $urlsPush[] = $mappingUrl;
             } else {
                 $urlsUnshift[] = $mappingUrl;
@@ -191,12 +200,12 @@ class Mapping
     {
         $index = 1;
 
-        $urlParams = (array)B()->getRegularAll('/{\\$(\w+)}/i', $url, 1);
+        $urlParams = (array)B()->getRegularAll('/{(\w+)}/i', $url, 1);
 
         foreach ($urlParams as $name) {
             $params[$name][Reflection::METHOD_PARAM_REMARK_NAME] = '$' . $index;
 
-            $url = str_replace('{$' . $name . '}', '(\w+)', $url);
+            $url = str_replace('{' . $name . '}', '(\w+)', $url);
 
             $index++;
         }
@@ -271,9 +280,9 @@ class Mapping
      */
     private function getParamDefaultString($param)
     {
-        $default = B()->getData($param, Reflection::METHOD_PARAM_DEFAULT_NAME);
+        if (!array_key_exists(Reflection::METHOD_PARAM_DEFAULT_NAME, $param)) return '';
 
-        if (empty($default)) return '';
+        $default = $param[Reflection::METHOD_PARAM_DEFAULT_NAME];
 
         return 'RouterConfig::METHOD_PARAMETER_DEFAULT => \'' . serialize($default) . '\',';
     }

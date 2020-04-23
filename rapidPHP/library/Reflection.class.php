@@ -43,6 +43,7 @@ class Reflection extends ReflectionClass
      */
     const CLASS_METHOD_PARAMS_NAME = 'CLASS_METHOD_PARAMS_NAME';
 
+
     /***
      * 获取实例
      * @param $name
@@ -176,7 +177,7 @@ class Reflection extends ReflectionClass
             try {
                 $values[$parameter->getName()] = $parameter->getDefaultValue();
             } catch (ReflectionException $e) {
-                $values[$parameter->getName()] = null;
+
             }
         }
 
@@ -201,9 +202,9 @@ class Reflection extends ReflectionClass
 
             $paramName = $parameter->getName();
 
-            $paramDefault = B()->getData($values, $paramName);
-
-            if (!is_null($paramDefault)) $param[self::METHOD_PARAM_DEFAULT_NAME] = $paramDefault;
+            if (array_key_exists($paramName, $values)) {
+                $param[self::METHOD_PARAM_DEFAULT_NAME] = $values[$paramName];
+            }
 
             $params[$paramName] = $param;
 
@@ -232,7 +233,7 @@ class Reflection extends ReflectionClass
      * 获取所有方法跟注释文档（包括从注释里面读取默认 类型等信息）
      * @param $paramDocName
      * @param bool $public 是否只要公开的方法
-     * @param bool $parent 是否过滤父类方法
+     * @param bool $parent 是否需要父类方法
      * @return array
      */
     public function getMethodsWithDoc($paramDocName, $public = true, $parent = false)
@@ -243,7 +244,11 @@ class Reflection extends ReflectionClass
 
             if ($public && !$method->isPublic()) continue;
 
-            if (!$parent && parent::getName() != $method->getDeclaringClass()->getName()) continue;
+            $parentClassName = $method->getDeclaringClass()->getName();
+
+            if (!$parent && $parentClassName != self::getName()) continue;
+
+            if ($parentClassName == AB::class && $parentClassName != self::getName()) continue;
 
             $doc = $method->getDocComment();
 
@@ -299,7 +304,7 @@ class Reflection extends ReflectionClass
 
         if (empty($type)) return null;
 
-        $paramType = str_replace('::class', '', $type);
+        $paramType = str_replace(['::class', '-'], '', $type);
 
         if (isset($packages[$paramType])) {
             $paramType = '\\' . $packages[$paramType] . '::class';
@@ -308,7 +313,7 @@ class Reflection extends ReflectionClass
                 return $namespace . '\\' . $paramType;
             }
 
-            $paramType = B()->getData(explode(' | ', $paramType), 0);
+            $paramType = B()->getData(explode('|', $paramType), 0);
 
             if ($isQuote === true) $paramType = '\'' . $paramType . '\'';
         }
