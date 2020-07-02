@@ -4,61 +4,49 @@ namespace rapidPHP\plugin\wxsdk;
 
 use Exception;
 use rapidPHP\config\plugin\WXConfig;
-use rapidPHP\library\AB;
+use rapidPHP\library\cache\CacheInterface;
+use rapidPHP\library\cache\CacheService;
 
-class  WXSdk
+class WXSdk
 {
 
     /**
-     * 缓存json文件
-     * @param $name
-     * @param $data
-     * @param int $time
-     * @return bool|int
-     * @throws Exception
+     * @var CacheInterface
      */
-    protected function addCache($name, $data, $time = null)
+    private $cacheService;
+
+    public function __construct(CacheInterface $cacheService = null)
     {
-        $cachePath = ROOT_RUNTIME . 'plugin/wx/json/';
+        if ($cacheService == null) $cacheService = new CacheService();
 
-        if (!is_dir($cachePath) && !mkdir($cachePath, 0777, true))
-            throw new Exception('创建缓存目录失败!');
-
-        $cacheFile = $cachePath . $name . '.json';
-
-        $cache = ['data' => $data];
-
-        if (is_int($time)) $cache['time'] = time() + $time;
-
-        return F()->write($cacheFile, json_encode($cache));
+        $this->cacheService = $cacheService;
     }
 
     /**
-     * 获取缓存的json文件
-     * @param $name
-     * @return array
+     * 获取缓存服务
+     * @return CacheInterface
      */
-    protected function getCache($name)
+    public function getCacheService(): CacheInterface
     {
-        $cacheFile = ROOT_RUNTIME . 'plugin/wx/json/' . $name . '.json';
+        return $this->cacheService;
+    }
 
-        if (!is_file($cacheFile)) return [];
+    /**
+     * 修改缓存服务
+     * @param CacheInterface $cacheService
+     * @return self
+     */
+    public function setCacheService(CacheInterface $cacheService): self
+    {
+        $this->cacheService = $cacheService;
 
-        $cache = B()->jsonDecode(file_get_contents($cacheFile));
-
-        if (!is_array($cache)) return [];
-
-        $time = isset($cache['time']) ? $cache['time'] : null;
-
-        $data = B()->getData($cache, 'data');
-
-        return is_int($time) ? time() <= $time ? $data : [] : $data;
+        return $this;
     }
 
     /**
      * 获取http请求
      * @param $url
-     * @return AB|string|null
+     * @return array|string|null
      * @throws Exception
      */
     protected function getHRToAB($url)
@@ -73,7 +61,7 @@ class  WXSdk
 
         if (empty($data)) throw new Exception('解析数据失败!');
 
-        return new AB($data);
+        return $data;
     }
 
     /**
@@ -87,17 +75,17 @@ class  WXSdk
     {
         $accessFileName = md5($appId) . '_access_token';
 
-        $accessToken = $this->getCache($accessFileName);
+        $accessToken = $this->cacheService->get($accessFileName);
 
         if ($accessToken) return $accessToken;
 
         $data = $this->getHRToAB(WXConfig::getAccessTokenUrl($appId, $secret));
 
-        $accessToken = $data->getString('access_token');
+        $accessToken = B()->getData($data, 'access_token');
 
-        if (empty($accessToken)) throw new Exception($data->getString('errmsg'));
+        if (empty($accessToken)) throw new Exception(B()->getData($data, 'errmsg'));
 
-        $this->addCache($accessFileName, $accessToken, $data->getInt('expires_in'));
+        $this->cacheService->add($accessFileName, $accessToken, B()->getData($data, 'expires_in'));
 
         return $accessToken;
     }
@@ -110,7 +98,7 @@ class  WXSdk
      */
     public function getPubliclySdk($appId, $secret)
     {
-        return new Publicly($appId, $secret);
+        return new Publicly($appId, $secret, $this->getCacheService());
     }
 
     /**
@@ -121,6 +109,7 @@ class  WXSdk
      */
     public function getMiniSdk($appId, $secret)
     {
-        return new Mini($appId, $secret);
+        return new Mini($appId, $secret, $this->getCacheService());
     }
+
 }

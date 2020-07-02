@@ -11,6 +11,10 @@ use rapidPHP\config\RouterConfig;
 use rapidPHP\library\core\app\exception\ExceptionController;
 use rapidPHP\library\core\app\exception\ExceptionInterface;
 use rapidPHP\library\core\app\ViewInterface;
+use rapidPHP\library\core\server\Request;
+use rapidPHP\library\core\server\request\SWebSocketRequest;
+use rapidPHP\library\core\server\Response;
+use rapidPHP\library\core\server\response\SWebSocketResponse;
 use rapidPHP\library\Reflection;
 use rapidPHP\library\RESTFullApi;
 use rapidPHP\library\ViewTemplate;
@@ -21,14 +25,26 @@ class Router
 {
 
     /**
+     * Request
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * Response
+     * @var Response
+     */
+    private $response;
+
+    /**
      * 全局报错处理类
      * @var ExceptionInterface
      */
     private $ex;
 
-    private $routingApp = [];
+    private $routingApp;
 
-    private $routingUri = [];
+    private $routingUri;
 
     private $__ROUTE__URI__;
 
@@ -36,14 +52,20 @@ class Router
 
     /**
      * App constructor.
+     * @param Request $request
+     * @param Response $response
      * @param ExceptionInterface $ex
      * @throws Exception
      */
-    public function __construct(ExceptionInterface $ex)
+    public function __construct(ExceptionInterface $ex, Request $request, Response $response)
     {
-        $this->sweepControllerMapping();
-
         $this->ex = $ex;
+
+        $this->request = $request;
+
+        $this->response = $response;
+
+        $this->sweepControllerMapping();
 
         $this->routingApp = (array)include(MappingConfig::$APP_FILE_PATH . '');
 
@@ -57,11 +79,17 @@ class Router
      */
     private function initRouterUri()
     {
-        if (I()->get($this::__ROUTE__NAME)) {
-            $this->__ROUTE__URI__ = trim(I()->get($this::__ROUTE__NAME), '/');
+        $input = I($this->request);
 
-            unset($_GET[$this::__ROUTE__NAME]);
+        $uri = trim($input->get($this::__ROUTE__NAME), '/');
+
+        if (empty($uri)) {
+            $uri = $this->request->getDocumentRoot();
+        } else {
+            unset($this->request->get[$this::__ROUTE__NAME]);
         }
+
+        $this->__ROUTE__URI__ = $uri;
     }
 
 
@@ -81,7 +109,7 @@ class Router
      */
     public function sweepControllerMapping()
     {
-        $ip = B()->getIp();
+        $ip = $this->request->getIp();
 
         if (is_null($ip) || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
             (new Mapping())->start();
@@ -123,13 +151,16 @@ class Router
 
                 $appMethodData = $this->getUriAppMethod($appData, $appName);
 
-                if ($appMethodData && B()->getRequestMethod() != $this->getUriAppMethodType($appMethodData)) {
-                    $forbidden = [$this->getCurrentUri(), $className, $appName];
+                $appMethodHeader = B()->getData($appMethodData, RouterConfig::HEADER_TYPE);
+                if ($appMethodHeader) $appMethodData[RouterConfig::HEADER_TYPE] = unserialize($appMethodHeader);
+
+                if ($appMethodData && $this->request->getMethod() != $this->getUriAppMethodType($appMethodData)) {
+                    $forbidden = [$this->getCurrentUri(), $className, $appName, $appMethodData];
 
                     continue;
                 }
 
-                echo($this->exec($className, $appName, $urlParam, $appMethodData));
+                $this->response->write($this->exec($className, $appName, $urlParam, $appMethodData));
 
                 return true;
             }
@@ -200,7 +231,7 @@ class Router
     {
         $methodType = B()->getData($appMethodData, RouterConfig::METHOD_TYPE);
 
-        return empty($methodType) ? B()->getRequestMethod() : $methodType;
+        return empty($methodType) ? $this->request->getMethod() : $methodType;
     }
 
 
@@ -271,10 +302,16 @@ class Router
      */
     private function getUriAppMethodParameterValue($name, $doType, $default, $type, $urlParam)
     {
+        if ($type === Request::class) {
+            return $this->request;
+        } else if ($type === Response::class) {
+            return $this->response;
+        }
+
         if (substr($doType, 0, 1) == '$') {
             $doValue = B()->getData($urlParam, substr($doType, 1));
         } else {
-            $doValue = I()->getRequest($name, $doType);
+            $doValue = I($this->request)->getRequest($name, $doType);
         }
 
         $value = B()->contrast($doValue, $default);
@@ -284,6 +321,7 @@ class Router
         if (isset(AppConfig::$SET_VAR_DEFAULT_TYPE[strtolower($type)]) ||
             strtoupper($type) === AppConfig::VAR_TYPE_JSON ||
             strtoupper($type) === AppConfig::VAR_TYPE_XML) {
+
             B()->setVarType($value, $type);
 
             $value = B()->contrast($value, $default);
@@ -383,28 +421,6 @@ class Router
     }
 
     /**
-     * 执行开始，验证是否有权限验证
-     * @param $className
-     * @param $appName
-     * @return array|null|string
-     */
-    private function execStart($className, $appName)
-    {
-        $appMethodData = null;
-
-        $appData = $this->getUriApp($className);
-
-        if (!is_array($appData)) return $this->ex->notFound($this->getCurrentUri());
-
-        $appMethodData = $this->getUriAppMethod($appData, $appName);
-
-        if ($appMethodData && B()->getRequestMethod() == $this->getUriAppMethodType($appMethodData))
-            return $appMethodData;
-
-        return $this->ex->forbidden($this->getCurrentUri(), $className, $appName);
-    }
-
-    /**
      * 实例化对象
      * @param $className
      * @param $methodType
@@ -419,7 +435,6 @@ class Router
         if (empty($classData)) {
             return B()->reflectionInstance($className);
         } else {
-
             $parameter = $this->getMethodParameter($classData, $methodType, $urlParam);
 
             return B()->reflectionInstance($className, $parameter);
@@ -473,44 +488,56 @@ class Router
 
                 $parameter = $this->getMethodParameter($methodParameter, $methodType, $urlParam);
 
+                $header = B()->getData($appMethodData, RouterConfig::HEADER_TYPE);
+                if ($header) $this->response->setHeader($header);
+
                 $result = $this->callUserFuncArray($classObject, $methodName, $dataBeanClassName, $parameter);
 
                 if ($result instanceof RESTFullApi) {
-                    B()->setHeader(['Content-Type:text/json;']);
+                    if (!($this->response instanceof SWebSocketResponse)) {
+                        $this->response->setHeader(['Content-Type:text/json']);
+                    }
 
                     return $result->toJson();
-                } else if ($result instanceof ViewInterface) {
-                    $result->display();
                 } else if ($result instanceof ViewTemplate) {
                     $result->view();
+                } else if ($result instanceof ViewInterface) {
+                    $result->display();
                 } else {
                     return $result;
                 }
             }
         } catch (Exception $e) {
-            $this->ex->handler($e, $this->getCurrentUri(), $className, $methodName, $classObject);
+            $this->ex->handler($e, $this->getCurrentUri(), $className, $methodName, $classObject, $appMethodData);
         }
 
         return false;
     }
 
-
     /**
      * 运行
+     * @param Request $request
+     * @param Response $response
      * @param ExceptionInterface $ex
      */
-    public static function run(ExceptionInterface $ex = null)
+    public static function run(ExceptionInterface $ex, Request $request, Response $response)
     {
-        try {
-            if (is_null($ex)) $ex = new ExceptionController();
+        if (!($request instanceof SWebSocketRequest)) {
+            $response->header('Access-Control-Allow-Origin: *');
 
-            $self = new self($ex);
+            $response->header("Content-type: text/html; charset=utf-8");
+        }
+
+        try {
+            if (is_null($ex)) $ex = new ExceptionController($request, $response);
+
+            $self = new self($ex, $request, $response);
 
             $result = $self->matching($self->getCurrentUri());
 
             if ($result === false) $ex->notFound($self->getCurrentUri());
         } catch (Exception $e) {
-            exit($e->getMessage());
+            $response->write($e->getMessage());
         }
     }
 }

@@ -5,7 +5,7 @@ namespace rapidPHP\plugin\wxsdk;
 
 use Exception;
 use rapidPHP\config\plugin\wxsdk\MiniConfig;
-use rapidPHP\library\AB;
+use rapidPHP\library\cache\CacheInterface;
 
 class Mini extends WXSdk
 {
@@ -20,9 +20,12 @@ class Mini extends WXSdk
      * Publicly constructor.
      * @param string $appId
      * @param string $appSecret
+     * @param CacheInterface $cacheService
      */
-    public function __construct($appId = '', $appSecret = '')
+    public function __construct($appId = '', $appSecret = '', CacheInterface $cacheService = null)
     {
+        parent::__construct($cacheService);
+
         $this->setAppId($appId)->setSecret($appSecret);
     }
 
@@ -99,10 +102,10 @@ class Mini extends WXSdk
 
         if (empty($data)) throw new Exception('解析数据失败!');
 
-        $AB = new AB($data);
+        $errCode = (int)B()->getData($data, 'errcode');
 
-        if (!$AB->hasValue('errcode', 0))
-            throw new Exception($AB->getString('errmsg'));
+        if ($errCode != 0)
+            throw new Exception(B()->getData($data, 'errmsg'));
 
         return true;
     }

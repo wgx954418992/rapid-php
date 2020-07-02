@@ -4,8 +4,6 @@ namespace rapidPHP\library;
 
 
 use rapid\library\rapid;
-use rapidPHP\library\core\Loader;
-use ReflectionClass;
 use ReflectionException;
 
 class AR
@@ -335,6 +333,7 @@ class AR
      * 获取array object
      * @param array $array
      * @return AB
+     * @throws ReflectionException
      */
     public function getAB($array)
     {
@@ -378,33 +377,5 @@ class AR
         shuffle($result);
 
         return $result;
-    }
-
-
-    /**
-     * 数组转对象
-     * @param array|null $array 数组
-     * @param $object object|string 对象实例或者对象class
-     * @param array|null $params 对象默认初始化参数
-     * @return object
-     * @throws ReflectionException
-     */
-    public function toBean(?array $array, $object, ?array $params = [])
-    {
-        if (empty($array)) return null;
-
-        if (empty($object)) return null;
-
-        if (is_string($object) && is_file(Loader::getFilePath($object))) {
-            $object = (new ReflectionClass($object))->newInstanceArgs($params);
-        }
-
-        if (!is_object($object)) return null;
-
-        foreach ($object as $name => $value) {
-            $object->$name = B()->getData($array, $name);
-        }
-
-        return $object;
     }
 }

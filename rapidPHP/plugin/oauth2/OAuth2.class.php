@@ -4,7 +4,7 @@ namespace rapidPHP\plugin\oauth2;
 
 
 use Exception;
-use rapidPHP\library\AB;
+use rapidPHP\plugin\model\BaseOAuth2UserModel;
 
 abstract class OAuth2
 {
@@ -95,10 +95,10 @@ abstract class OAuth2
     /**
      * 发送http请求
      * @param $url
-     * @return AB
+     * @return array
      * @throws Exception
      */
-    protected function sendHttpRequest(string $url): AB
+    protected function sendHttpRequest(string $url): array
     {
         $httpResponse = B()->getHttpResponse($url);
 
@@ -108,9 +108,7 @@ abstract class OAuth2
 
         $data = B()->jsonDecode($httpResponse);
 
-        $data = is_array($data) ? $data : B()->getUrlQueryStringToArray($httpResponse);
-
-        return new AB($data);
+        return is_array($data) ? $data : B()->getUrlQueryStringToArray($httpResponse);
     }
 
 
@@ -125,7 +123,7 @@ abstract class OAuth2
     /**
      * 子类实现获取用户信息方法
      * @param string $code
-     * @return OAuth2UserModel
+     * @return BaseOAuth2UserModel
      */
-    abstract public function getUserInfo(string $code): OAuth2UserModel;
+    abstract public function getUserInfo(string $code): BaseOAuth2UserModel;
 }

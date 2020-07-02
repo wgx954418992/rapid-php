@@ -3,33 +3,46 @@
 namespace rapidPHP\library;
 
 use rapid\library\rapid;
+use ReflectionException;
 
 class AB
 {
-    public function __construct(?array $array = null)
+    /**
+     * getInstance
+     * @param null $data
+     * @return static
+     * @throws ReflectionException
+     */
+    public static function getInstance($data = null): self
     {
-        $this->setData($array);
+        return new self($data);
     }
 
-    public static function getInstance(?array $array = null): self
+    /**
+     * AB constructor.
+     * @param null $data
+     * @throws ReflectionException
+     */
+    public function __construct($data = null)
     {
-        return new self($array);
+        $this->sData($data);
     }
 
     /**
      * setData
-     * @param array $array
+     * @param array $data
      * @return $this
+     * @throws ReflectionException
      */
-    public function setData(?array $array = null): self
+    public function sData($data = null): self
     {
-        if ($array === null) $array = [];
+        if ($data === null) $data = [];
 
-        if (!empty($array)) B()->autoTypeConvertByArray($array);
+        $params = B()->invokeObjectSetterMethods($this, $data);
 
-        foreach ($array as $name => $value) {
-            $this->$name = $value;
-        }
+        foreach ($params as $key => $param) $data = AR()->delete($data, array_keys($param));
+
+        foreach ($data as $name => $value) $this->$name = $value;
 
         return $this;
     }
@@ -58,6 +71,7 @@ class AB
 
     /**
      * 是否空
+     * 不再建议使用该方法判断数据，请用 is_null或者==null判断数据
      * @return bool
      */
     public function isEmpty(): bool
@@ -71,6 +85,7 @@ class AB
      * 校验name参数是否存在
      * @param $name
      * @return bool
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties来判断
      */
     public function hasName($name): bool
     {
@@ -82,6 +97,7 @@ class AB
      * @param $name
      * @param $value
      * @return bool
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties来判断
      */
     public function hasValue($name, $value): bool
     {
@@ -95,6 +111,7 @@ class AB
      * 获取值
      * @param $name
      * @return mixed
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties获取值
      */
     public function getValue($name)
     {
@@ -106,11 +123,12 @@ class AB
      * @param $name
      * @param $value
      * @return $this
+     * @since 4.0
+     * @since 5.0
+     * 该api已过时，setValue不存在的properties等同于__set，效率特别低，不建议使用该方法
      */
-    public function setValue($name, $value): self
+    public function sValue($name, $value): self
     {
-        B()->autoTypeConvert($value);
-
         $this->$name = $value;
 
         return $this;
@@ -120,6 +138,8 @@ class AB
      * 获取子元素转arrayObject对象
      * @param $name
      * @return AB
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties获取值
+     * @throws ReflectionException
      */
     public function getAB($name): self
     {
@@ -129,7 +149,7 @@ class AB
 
         $clone = clone $this;
 
-        $clone->setData($array);
+        $clone->sData($array);
 
         return $clone;
     }
@@ -138,6 +158,7 @@ class AB
      * 获取数组
      * @param $name
      * @return array
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties获取值
      */
     public function getArray($name): array
     {
@@ -148,6 +169,7 @@ class AB
      * 获取String
      * @param $name
      * @return string
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties获取值
      */
     public function getString($name): string
     {
@@ -158,6 +180,7 @@ class AB
      * 获取int
      * @param $name
      * @return int
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties获取值
      */
     public function getInt($name): int
     {
@@ -168,6 +191,7 @@ class AB
      * 获取bool
      * @param $name
      * @return bool
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties获取值
      */
     public function getBool($name): bool
     {
@@ -178,6 +202,7 @@ class AB
      * 获取float
      * @param $name
      * @return float
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties获取值
      */
     public function getFloat($name): float
     {
@@ -188,8 +213,9 @@ class AB
      * 获取object
      * @param $name
      * @return object
+     * 不太建议使用该api，但不代表就会过时，请直接通过属性properties获取值
      */
-    public function getObject($name): object
+    public function getObject($name)
     {
         return (object)$this->getValue($name);
     }
@@ -231,9 +257,7 @@ class AB
     public function delValue($names): self
     {
         if (is_array($names)) {
-            foreach ($names as $key) {
-                unset($this->$key);
-            }
+            foreach ($names as $key) if (isset($this->$key)) unset($this->$key);
         } else {
             unset($this->$names);
         }
@@ -241,6 +265,9 @@ class AB
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->toJson();

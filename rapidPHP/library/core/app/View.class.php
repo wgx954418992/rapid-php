@@ -12,23 +12,13 @@ class View
 
     /**
      * 预先生成view模板
+     * @param Controller $controller
      * @param $name
-     * @param null $data
      * @return ViewTemplate
      */
-    public static function display($name, $data = null)
+    public static function display(Controller $controller, $name)
     {
-        return (new ViewTemplate($name))->display($data);
-    }
-
-    /**
-     * 显示
-     * @param $name
-     * @param null $data
-     */
-    public static function show($name, $data = null)
-    {
-        (new ViewTemplate($name))->display($data)->view();
+        return new ViewTemplate($controller, $name);
     }
 
     /**

@@ -4,9 +4,9 @@ namespace rapidPHP\plugin\oauth2\wx;
 
 use Exception;
 use rapidPHP\config\plugin\oauth2\WXOAuth2Config;
-use rapidPHP\library\AB;
+use rapidPHP\plugin\model\WXOAuth2UserModel;
 use rapidPHP\plugin\oauth2\OAuth2;
-use rapidPHP\plugin\oauth2\OAuth2UserModel;
+use rapidPHP\plugin\model\BaseOAuth2UserModel;
 
 class WXOAuth2 extends OAuth2
 {
@@ -38,7 +38,7 @@ class WXOAuth2 extends OAuth2
     /**
      * 通过code获取小程序的open信息（仅支持小程序）
      * @param $code
-     * @return AB
+     * @return array
      * @throws Exception
      */
     public function getMiniOpenInfoByCode($code)
@@ -49,7 +49,7 @@ class WXOAuth2 extends OAuth2
 
         $openInfo = $this->sendHttpRequest($url);
 
-        if ($openInfo->hasName('errcode')) throw new Exception($openInfo->getString('errmsg'));
+        if (isset($openInfo['errcode'])) throw new Exception($openInfo['errmsg']);
 
         return $openInfo;
     }
@@ -58,14 +58,14 @@ class WXOAuth2 extends OAuth2
     /**
      * 获取网页授权access 信息，openId跟access_token
      * @param $code
-     * @return AB
+     * @return array
      * @throws Exception
      */
-    public function getAccessInfo(string $code): AB
+    public function getAccessInfo(string $code): array
     {
         $accessInfo = $this->sendHttpRequest(WXOAuth2Config::getAccessTokenUrl($this->getAppId(), $this->getSecret(), $code));
 
-        if ($accessInfo->hasName('errmsg')) throw new Exception($accessInfo->getString('errmsg'));
+        if ($accessInfo['errmsg']) throw new Exception($accessInfo['errmsg']);
 
         return $accessInfo;
     }
@@ -88,46 +88,48 @@ class WXOAuth2 extends OAuth2
     /**
      * 获取用户信息
      * @param string $code
-     * @return OAuth2UserModel
+     * @return BaseOAuth2UserModel
      * @throws Exception
      */
-    public function getUserInfo(string $code): OAuth2UserModel
+    public function getUserInfo(string $code): BaseOAuth2UserModel
     {
         if (empty($code)) throw new Exception('code 错误!');
 
         $accessInfo = $this->getAccessInfo($code);
 
-        if ($accessInfo->isEmpty()) throw new Exception("accessInfo 获取失败!");
+        if (empty($accessInfo)) throw new Exception("accessInfo 获取失败!");
 
-        $openId = $accessInfo->getString('openid');
+        $openId = $accessInfo['openid'];
 
-        $accessToken = $accessInfo->getString('access_token');
+        $accessToken = $accessInfo['access_token'];
 
         $userInfo = $this->sendHttpRequest(WXOAuth2Config::getUserInfoUrl($accessToken, $openId));
 
-        if ($userInfo->isEmpty()) throw new Exception("用户信息获取失败!");
+        if (empty($userInfo)) throw new Exception("用户信息获取失败!");
 
-        if ($userInfo->hasName('errmsg')) throw new Exception($userInfo->getString('errmsg'));
+        if (isset($userInfo['errmsg'])) throw new Exception($userInfo['errmsg']);
 
-        $oauth2Info = new OAuth2UserModel($openId);
+        $oauth2Info = new WXOAuth2UserModel();
 
-        $oauth2Info->setUnionId($userInfo->getString('unionId'));
+        $oauth2Info->setOpenId($openId);
 
-        $oauth2Info->setNickname($userInfo->getString('nickname'));
+        $oauth2Info->setUnionId(B()->getData($userInfo,'unionId'));
 
-        $oauth2Info->setHeader($userInfo->getString('headimgurl'));
+        $oauth2Info->setNickname($userInfo['nickname']);
 
-        $oauth2Info->setSex($userInfo->getInt('sex'));
+        $oauth2Info->setHeader($userInfo['headimgurl']);
 
-        $oauth2Info->setLanguage($userInfo->getString('language'));
+        $oauth2Info->setSex($userInfo['sex']);
 
-        $oauth2Info->setCountry($userInfo->getString('country'));
+        $oauth2Info->setLanguage($userInfo['language']);
 
-        $oauth2Info->setProvince($userInfo->getString('province'));
+        $oauth2Info->setCountry($userInfo['country']);
 
-        $oauth2Info->setCity($userInfo->getString('city'));
+        $oauth2Info->setProvince($userInfo['province']);
 
-        $oauth2Info->setYear(intval(B()->getDate(time(), 'Y')));
+        $oauth2Info->setCity($userInfo['city']);
+
+        $oauth2Info->setPrivilege(B()->jsonDecode($userInfo['privilege']));
 
         return $oauth2Info;
     }

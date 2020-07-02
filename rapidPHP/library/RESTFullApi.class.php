@@ -213,24 +213,24 @@ class RESTFullApi
     /**
      * 错误
      * @param $msg
-     * @param int $ret
+     * @param int $code
      * @param null $data
      * @return RESTFullApi
      */
-    public static function error($msg, $ret = self::CODE_FAIL, $data = null)
+    public static function error($msg, $code = self::CODE_FAIL, $data = null)
     {
-        return (new RESTFullApi())->go($msg, $data, $ret);
+        return (new RESTFullApi())->go($msg, $data, $code);
     }
 
     /**
      * 成功
      * @param null $data
      * @param string $msg
-     * @param int $ret
+     * @param int $code
      * @return RESTFullApi
      */
-    public static function success($data = null, $msg = 'success!', $ret = self::CODE_SUCCESS)
+    public static function success($data = null, $msg = 'success!', $code = self::CODE_SUCCESS)
     {
-        return (new RESTFullApi())->go($msg, $data, $ret);
+        return (new RESTFullApi())->go($msg, $data, $code);
     }
 }

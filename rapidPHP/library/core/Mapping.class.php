@@ -19,6 +19,10 @@ class Mapping
 
     private $methodName = MappingConfig::APP_MAPPING_CONFIG_METHOD_NAME;
 
+    private $typedName = MappingConfig::APP_MAPPING_CONFIG_TYPE_NAME;
+
+    private $headerName = MappingConfig::APP_MAPPING_CONFIG_HEADER_NAME;
+
     public function __construct($path = null)
     {
         $this->path = empty($path) ? MappingConfig::$MAPPING_PATH : $path;
@@ -47,7 +51,7 @@ class Mapping
 
             if (is_null($reflectionClass)) continue;
 
-            $packages = Reflection::getImportPackage($content);
+            $packages = Reflection::getImportPackage($content, $reflectionClass);
 
             unset($content);
 
@@ -95,7 +99,7 @@ class Mapping
 
         $classUrl = $this->getClassUrl($class);
 
-        foreach ($class->getMethodsWithDoc($this->paramName) as $methodInfo) {
+        foreach ($class->getMethodsWithDoc($this->paramName, true, RouterConfig::CLASS_NAME_INIT) as $methodInfo) {
             $method = $methodInfo[Reflection::CLASS_METHOD_OBJECT_NAME];
 
             if (!($method instanceof ReflectionMethod)) continue;
@@ -108,10 +112,7 @@ class Mapping
 
             if (empty($url) && $methodName !== RouterConfig::CLASS_NAME_INIT) continue;
 
-            if ($methodName === RouterConfig::CLASS_NAME_INIT
-                &&
-                empty($methodInfo[Reflection::CLASS_METHOD_PARAMS_NAME])) {
-
+            if ($methodName === RouterConfig::CLASS_NAME_INIT && empty($methodInfo[Reflection::CLASS_METHOD_PARAMS_NAME])) {
                 continue;
             }
 
@@ -123,12 +124,16 @@ class Mapping
 
             $requestType = $this->getMethodRequestTypeString($methodName, $doc);
 
+            $optionHeaders = $this->getMethodHeadersString($methodName, $doc);
+
+            $optionTyped = $this->getMethodTypedString($methodName, $doc);
+
             $paramsString = $this->getCompileMethodParamsString($class->getNamespaceName(), $packages, $methodInfo, $url);
 
             if ($methodName !== RouterConfig::CLASS_NAME_INIT) {
                 if (!empty($paramsString)) $paramsString = 'RouterConfig::METHOD_PARAMETER => [' . $paramsString . '],';
 
-                $apps .= "'{$methodName}'=>[RouterConfig::METHOD_NAME => '{$methodName}',{$requestType}{$paramsString}],";
+                $apps .= "'{$methodName}'=>[RouterConfig::METHOD_NAME => '{$methodName}',{$requestType}{$optionHeaders}{$optionTyped}{$paramsString}],";
             } else {
                 $apps .= '\'' . $methodName . '\'=>[' . $paramsString . '],';
             }
@@ -192,6 +197,46 @@ class Mapping
     }
 
     /**
+     * 获取方法typed
+     * @param $methodName
+     * @param $doc
+     * @return string
+     */
+    private function getMethodTypedString($methodName, $doc)
+    {
+        if ($methodName === RouterConfig::CLASS_NAME_INIT) return '';
+
+        if (empty($doc)) return '';
+
+        $typed = Reflection::getDocValue($doc, $this->typedName);
+
+        if (empty($typed)) return '';
+
+        return 'RouterConfig::TYPED_TYPE => \'' . $typed . '\',';
+    }
+
+    /**
+     * 获取方法headers
+     * @param $methodName
+     * @param $doc
+     * @return string
+     */
+    private function getMethodHeadersString($methodName, $doc)
+    {
+        if ($methodName === RouterConfig::CLASS_NAME_INIT) return '';
+
+        if (empty($doc)) return '';
+
+        $headers = Reflection::getDocValue($doc, $this->headerName);
+
+        if (empty($headers)) return '';
+
+        $headers = explode(",", $headers);
+
+        return 'RouterConfig::HEADER_TYPE => \'' . serialize($headers) . '\',';
+    }
+
+    /**
      * 编译方法参数跟url
      * @param $params
      * @param $url
@@ -222,6 +267,11 @@ class Mapping
     private function getCompileMethodParamsString($namespace, $packages, $methodInfo, &$url)
     {
         $params = $methodInfo[Reflection::CLASS_METHOD_PARAMS_NAME];
+
+        /** @var ReflectionMethod $method */
+        $method = $methodInfo[Reflection::CLASS_METHOD_OBJECT_NAME];
+
+        $packages = B()->getData($packages, $method->getDeclaringClass()->getName()) ?? [];
 
         if (empty($params)) return '';
 

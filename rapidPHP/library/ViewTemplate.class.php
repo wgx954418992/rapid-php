@@ -2,20 +2,28 @@
 
 namespace rapidPHP\library;
 
+use Exception;
 use rapid\library\rapid;
+use rapidPHP\library\core\app\Controller;
 use rapidPHP\library\core\Loader;
+use ReflectionException;
 
 class ViewTemplate
 {
+    /**
+     * @var Controller
+     */
+    private $controller;
+
     /**
      * @var string 文件名
      */
     private $fileName = '';
 
     /**
-     * @var array 变量集合
+     * @var AB 变量集合
      */
-    private $varList = [];
+    public $data = null;
 
     /**
      * @var null|string 模板目录
@@ -33,28 +41,23 @@ class ViewTemplate
     private $defaultExt = ['php', 'html', 'htm'];
 
     /**
-     * @var string 编译结果
-     */
-    private $compileResult = '';
-
-    /**
-     * @var AB varAryObj
-     */
-    private $varAryObj = null;
-
-    /**
      * View constructor.
+     * @param Controller $controller
      * @param $fileName
      * @param null $templateDir
      * @param null $cacheDir
      */
-    public function __construct($fileName, $templateDir = null, $cacheDir = null)
+    public function __construct(Controller $controller, $fileName, $templateDir = null, $cacheDir = null)
     {
+        $this->data = new AB();
+
+        $this->controller = $controller;
+
         $this->fileName = $fileName;
 
-        $this->cacheDir = is_null($cacheDir) ? ROOT_RUNTIME . 'build/view/' : $cacheDir;
-
         $this->templateDir = is_null($templateDir) ? ROOT_PUBLIC . 'src/view/' : $templateDir;
+
+        $this->cacheDir = is_null($cacheDir) ? ROOT_RUNTIME . 'build/view/' : $cacheDir;
     }
 
     /**
@@ -101,21 +104,65 @@ class ViewTemplate
         return $this->cacheDir;
     }
 
+    /**
+     * 获取缓存文件路径
+     * @return string
+     */
+    public function getCacheFilePath()
+    {
+        $fileInfo = $this->getFileInfo($this->fileName);
+
+        return $this->getCacheDir() . $fileInfo['dir'] . $fileInfo['prefix'] . '.php';
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName(): string
+    {
+        return $this->fileName;
+    }
+
+    /**
+     * @param string $fileName
+     * @return self
+     */
+    public function setFileName(string $fileName): self
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultExt(): array
+    {
+        return $this->defaultExt;
+    }
+
+    /**
+     * @param array $defaultExt
+     */
+    public function setDefaultExt(array $defaultExt): void
+    {
+        $this->defaultExt = $defaultExt;
+    }
 
     /**
      * 设置变量
      * @param $key :key或者数据
      * @param string $value 值
      * @return $this
+     * @throws ReflectionException
      */
     public function assign($key, $value = '')
     {
-        if ($key instanceof AB) {
-            $this->varList = array_merge($key->getData(), $this->varList);
-        } else if (is_array($key)) {
-            $this->varList = array_merge($key, $this->varList);
+        if (($key instanceof AB) || is_array($key)) {
+            $this->data->sData($key);
         } else {
-            $this->varList[$key] = $value;
+            $this->data->sValue($key, $value);
         }
 
         return $this;
@@ -136,13 +183,11 @@ class ViewTemplate
     /**
      * 获取文件信息
      * @param $fileName
-     * @return AB
+     * @return array
      */
     private function getFileInfo($fileName)
     {
-        $fileInfo = B()->getPathInfo($fileName);
-
-        return new AB($fileInfo);
+        return B()->getPathInfo($fileName);
     }
 
     /**
@@ -150,9 +195,9 @@ class ViewTemplate
      * @param $fileInfo
      * @return mixed
      */
-    private function getTemplatePathDir(AB $fileInfo)
+    private function getTemplatePathDir($fileInfo)
     {
-        $fileInfoDir = ltrim($fileInfo->getString('dir'), "/*");
+        $fileInfoDir = ltrim($fileInfo['dir'], "/*");
 
         if (empty($fileInfoDir)) return $this->getTemplateDir();
 
@@ -173,9 +218,9 @@ class ViewTemplate
      * @param $fileName
      * @return mixed
      */
-    private function getTemplatePathFileName(AB $fileInfo, $fileName)
+    private function getTemplatePathFileName($fileInfo, $fileName)
     {
-        $prefix = $fileInfo->getString('prefix');
+        $prefix = $fileInfo['prefix'];
 
         return B()->contrast($prefix, $fileName);
     }
@@ -186,9 +231,9 @@ class ViewTemplate
      * @param $fileInfo
      * @return mixed
      */
-    private function getTemplatePathExt($file, AB $fileInfo)
+    private function getTemplatePathExt($file, $fileInfo)
     {
-        $suffix = $fileInfo->getString('suffix');
+        $suffix = $fileInfo['suffix'];
 
         if ($suffix) return $suffix;
 
@@ -275,27 +320,6 @@ class ViewTemplate
 
             return $this->preIncludes($strings);
         }
-    }
-
-    /**
-     * 解析
-     * @param array $varList
-     * @return $this
-     */
-    public function display($varList = [])
-    {
-        $this->assign($varList);
-
-        $fileSrc = Loader::formatPath($this->getTemplatePath($this->fileName));
-
-        if (is_file($fileSrc) && $fileContext = $this->readFile($fileSrc)) {
-
-            $string = $this->preIncludes($fileContext);
-
-            $this->compileResult = $this->compile($string, $fileSrc);
-        }
-
-        return $this;
     }
 
     /**
@@ -401,7 +425,7 @@ class ViewTemplate
 
         $dir = str_replace(ROOT_PATH, "/", dirname($fileSrc));
 
-        $appRootUrl = B()->deleteStringLast(APP_ROOT_URL);
+        $appRootUrl = B()->deleteStringLast($this->controller->getHostUrl());
 
         foreach ($list as $item => $value) {
 
@@ -434,22 +458,24 @@ class ViewTemplate
      */
     private function putCompileResultHeader($compileResult)
     {
-        return "<?php defined('ROOT_PATH') or die();?>\n{$compileResult}";
+        return "<?php /** cache Time " . B()->getDate() . " */ if(!defined('SWOOLE_HTTP_SERVER')) defined('ROOT_PATH') or die();?>\n{$compileResult}";
     }
 
     /**
      * 缓存
      * @param $context
-     * @param $fileName
      * @param $filePath
      * @return bool|string
+     * @throws Exception
      */
-    private function cache($context, $fileName, $filePath)
+    private function cache($context, $filePath)
     {
-        if (!is_dir($filePath) && !mkdir($filePath, 0777, true)) {
-            exit('create dir fail!');
+        $dirPath = dirname($filePath);
+
+        if (!is_dir($dirPath) && !mkdir($dirPath, 0777, true)) {
+            throw new Exception('create dir fail!');
         } else {
-            $cachePath = $filePath . $fileName;
+            $cachePath = $filePath;
 
             if (!file_exists($cachePath) || $this->readFile($cachePath) != $context) {
 
@@ -468,27 +494,85 @@ class ViewTemplate
      */
     public function get($name = null)
     {
-        return is_null($name) ? $this->varAryObj : $this->varAryObj->getValue($name);
+        return is_null($name) ? $this->data : $this->data->getValue($name);
+    }
+
+    /**
+     * 获取include文件内容
+     * @param $fileName
+     * @return false|string
+     */
+    private function getIncludeContents($fileName)
+    {
+        ob_start();
+        include $fileName . '';
+        $content = ob_get_contents();
+        ob_end_clean();
+        return $content;
     }
 
     /**
      * 显示
+     * @param bool $isReturnContent 是否返回编译后的文件内容
+     * @return false|string|null
+     * @throws Exception
      */
-    public function view()
+    public function view($isReturnContent = false)
     {
-        $this->compileResult = $this->putCompileResultHeader($this->compileResult);
+        $fileSrc = Loader::formatPath($this->getTemplatePath($this->fileName));
 
-        $fileInfo = $this->getFileInfo($this->fileName);
+        $cacheFile = $this->getCacheFilePath();
 
-        $filePath = $this->getCacheDir() . $fileInfo->getString('dir');
+        if (is_file($cacheFile) && (filemtime($cacheFile) >= filemtime($fileSrc))) {
+            $content = $this->getIncludeContents($cacheFile);
 
-        if ($fileName = $this->cache($this->compileResult, $fileInfo->getString('prefix') . '.php', $filePath)) {
+            $this->controller->getResponse()->write($content);
 
-            $this->varAryObj = new AB($this->varList);
-
-            include $fileName . '';
-        } else {
-            exit('view error!');
+            return $isReturnContent ? $content : null;
         }
+
+        if (is_file($fileSrc) && $fileContext = $this->readFile($fileSrc)) {
+
+            $string = $this->preIncludes($fileContext);
+
+            $compileResult = $this->compile($string, $fileSrc);
+
+            $compileResult = $this->putCompileResultHeader($compileResult);
+
+            if ($fileName = $this->cache($compileResult, $this->getCacheFilePath())) {
+
+                $content = $this->getIncludeContents($fileName);
+
+                $this->controller->getResponse()->write($content);
+
+                return $isReturnContent ? $content : null;
+            }
+        }
+
+        throw new Exception('view error!');
+    }
+
+    /**
+     * 如果调用的方法不存在，就去controller里面找
+     * @param $name
+     * @param $arguments
+     * @return mixed|null
+     */
+    public function __call($name, $arguments)
+    {
+        if (is_callable([$this->controller, $name])) {
+            return call_user_func_array([$this->controller, $name], $arguments);
+        }
+
+        return null;
+    }
+
+    /**
+     * 获取controller
+     * @return Controller
+     */
+    public function getController()
+    {
+        return $this->controller;
     }
 }

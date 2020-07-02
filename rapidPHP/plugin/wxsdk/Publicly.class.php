@@ -3,7 +3,10 @@
 namespace rapidPHP\plugin\wxsdk;
 
 use Exception;
+use rapidPHP\config\plugin\wxsdk\MiniConfig;
 use rapidPHP\config\plugin\wxsdk\PubliclyConfig;
+use rapidPHP\library\cache\CacheInterface;
+use rapidPHP\plugin\model\WXOAuth2UserInfoModel;
 
 class Publicly extends WXSdk
 {
@@ -16,16 +19,19 @@ class Publicly extends WXSdk
     /**
      * @var string
      */
-    private $jsApiTicketFileName = 'jsapi_ticket';
+    private $jsApiTicketCacheName = 'jsapi_ticket';
 
     /**
      * 实例化设置appid
      * Publicly constructor.
      * @param string $appId
      * @param string $appSecret
+     * @param CacheInterface $cacheService
      */
-    public function __construct($appId = '', $appSecret = '')
+    public function __construct($appId = '', $appSecret = '', CacheInterface $cacheService = null)
     {
+        parent::__construct($cacheService);
+
         $this->setAppId($appId)->setSecret($appSecret);
     }
 
@@ -79,7 +85,7 @@ class Publicly extends WXSdk
      */
     public function getJsApiTicket()
     {
-        $jsApiTicket = parent::getCache($this->jsApiTicketFileName);
+        $jsApiTicket = parent::getCacheService()->get($this->jsApiTicketCacheName);
 
         if ($jsApiTicket) return $jsApiTicket;
 
@@ -87,11 +93,11 @@ class Publicly extends WXSdk
 
         $data = parent::getHRToAB(PubliclyConfig::getJSApiTicketUrl($accessToken));
 
-        $jsApiTicket = $data->getString('ticket');
+        $jsApiTicket = B()->getData($data, 'ticket');
 
-        if (empty($jsApiTicket)) throw new Exception($data->getString('errmsg'));
+        if (empty($jsApiTicket)) throw new Exception(B()->getDate($data, 'errmsg'));
 
-        parent::addCache($this->jsApiTicketFileName, $jsApiTicket, $data->getInt('expires_in'));
+        parent::getCacheService()->add($this->jsApiTicketCacheName, $jsApiTicket, $data['expires_in']);
 
         return $jsApiTicket;
     }
@@ -134,5 +140,128 @@ class Publicly extends WXSdk
         $accessToken = $this->getAccessToken($this->getAppId(), $this->getSecret());
 
         return parent::getHRToAB(PubliclyConfig::getLoadServerUrl($accessToken, $serverId));
+    }
+
+    /**
+     * 获取用户信息(用于获取关注的用户信息)
+     * @param $openId
+     * @return WXOAuth2UserInfoModel
+     * @throws Exception
+     */
+    public function getUserInfo($openId): WXOAuth2UserInfoModel
+    {
+        if (empty($openId)) throw new Exception('openId错误!');
+
+        $accessToken = $this->getAccessToken($this->getAppId(), $this->getSecret());
+
+        $data = parent::getHRToAB(PubliclyConfig::getUserInfoUrl($accessToken, $openId));
+
+        if (isset($data['errmsg'])) throw new Exception($data['errmsg']);
+
+        if (!array_key_exists('nickname', $data)) throw new Exception('data Error!');
+
+        $userModel = new WXOAuth2UserInfoModel();
+
+        $userModel->setOpenId($data['openid']);
+
+        $userModel->setUnionId(B()->getData($data, 'unionid'));
+
+        $userModel->setNickname($data['nickname']);
+
+        $userModel->setHeader($data['headimgurl']);
+
+        $userModel->setSex($data['sex']);
+
+        $userModel->setLanguage($data['language']);
+
+        $userModel->setCountry($data['country']);
+
+        $userModel->setProvince($data['province']);
+
+        $userModel->setCity($data['city']);
+
+        $userModel->setRemark(B()->getData($data, 'remark'));
+
+        $userModel->setIsSubscribe((bool)B()->getData($data, 'subscribe'));
+
+        $userModel->setGroupId(B()->getData($data, 'groupid'));
+
+        $userModel->setTagIdList(B()->getData($data, 'tagid_list'));
+
+        $userModel->setSubscribeScene(B()->getData($data, 'subscribe_scene'));
+
+        $userModel->setQrScene(B()->getData($data, 'qr_scene'));
+
+        $userModel->setQrSceneStr(B()->getData($data, 'qr_scene_str'));
+
+        return $userModel;
+    }
+
+    /**
+     * 发送模板消息
+     * @param $templateId
+     * @param $openId
+     * @param $data
+     * @param $miniAppId
+     * @param null $miniPage
+     * @return bool
+     * @throws Exception
+     */
+    public function sendSubTemplate($templateId, $openId, $data, $miniAppId = null, $miniPage = null)
+    {
+        if (empty($templateId)) throw new Exception('模板id错误');
+
+        if (empty($openId)) throw new Exception('openId错误');
+
+        if (empty($miniAppId)) throw new Exception('page 错误');
+
+        $accessToken = $this->getAccessToken($this->getAppId(), $this->getSecret());
+
+        $url = PubliclyConfig::getSendTemplateMsgUrl($accessToken);
+
+        $data = ['touser' => $openId, 'template_id' => $templateId, 'data' => $data];
+
+        if ($miniAppId && $miniPage) $data['miniprogram'] = ['appid' => $miniAppId, 'pagepath' => $miniPage];
+
+        $res = B()->getHttpResponse($url, json_encode($data), 60, [],
+            [CURLOPT_HTTPHEADER => ['Content-type' => 'application/json']]);
+
+        $data = B()->jsonDecode($res);
+
+        if (empty($data)) throw new Exception('解析数据失败!');
+
+        $errCode = (int)B()->getData($data, 'errcode');
+
+        if ($errCode != 0)
+            throw new Exception(B()->getData($data, 'errmsg'));
+
+        return true;
+    }
+
+
+    /**
+     * 获取用户列表
+     * @param null $nextOpenId
+     * @return bool
+     * @throws Exception
+     */
+    public function getUserList($nextOpenId = null)
+    {
+        $accessToken = $this->getAccessToken($this->getAppId(), $this->getSecret());
+
+        $url = PubliclyConfig::getUserListUrl($accessToken, $nextOpenId);
+
+        $res = B()->getHttpResponse($url);
+
+        $data = B()->jsonDecode($res);
+
+        if (empty($data)) throw new Exception('解析数据失败!');
+
+        $errCode = (int)B()->getData($data, 'errcode');
+
+        if ($errCode != 0)
+            throw new Exception(B()->getData($data, 'errmsg'));
+
+        return $data;
     }
 }

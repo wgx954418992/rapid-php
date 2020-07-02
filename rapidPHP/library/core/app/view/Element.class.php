@@ -1,4 +1,5 @@
 <?php
+
 namespace rapidPHP\library\core\app\view;
 
 
@@ -229,7 +230,7 @@ class Element
      */
     public function setTitle($value)
     {
-        $this->setAttr("title", $value);
+        $this->setAttr('title', $value);
 
         return $this;
     }
@@ -240,7 +241,7 @@ class Element
      */
     public function getTitle()
     {
-        return $this->getAttr("title");
+        return $this->getAttr('title');
     }
 
     /**
@@ -249,7 +250,18 @@ class Element
      */
     public function setHref($value)
     {
-        $this->setAttr("href", $value);
+        $this->setAttr('href', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param $value
+     * @return $this
+     */
+    public function setTarget($value = '_blank')
+    {
+        $this->setAttr('target', $value);
 
         return $this;
     }
@@ -260,7 +272,7 @@ class Element
      */
     public function setSrc($value)
     {
-        $this->setAttr("src", $value);
+        $this->setAttr('src', $value);
 
         return $this;
     }
@@ -271,7 +283,7 @@ class Element
      */
     public function setId($value)
     {
-        $this->setAttr("id", $value);
+        $this->setAttr('id', $value);
 
         return $this;
     }
@@ -281,7 +293,7 @@ class Element
      */
     public function getId()
     {
-        return $this->getAttr("id");
+        return $this->getAttr('id');
     }
 
     /**

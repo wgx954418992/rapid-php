@@ -1,4 +1,4 @@
-<?php defined('ROOT_PATH') or die();?>
+<?php /** cache Time 2020-07-01 14:32:00 */ if(!defined('SWOOLE_HTTP_SERVER')) defined('ROOT_PATH') or die();?>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -7,6 +7,6 @@
 </head>
 <body>
 Hello，This is rapidPHP
-<?= VT($this)->get('msg') ?>
+<?=VT($this)->getController()->toUrl()?>
 </body>
 </html>

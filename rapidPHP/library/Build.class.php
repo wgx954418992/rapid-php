@@ -102,16 +102,6 @@ class Build
         return strtotime($date, $now);
     }
 
-
-    /**
-     * 获取当前访问的文件
-     * @return string|null
-     */
-    public function getUrlFile(): ?string
-    {
-        return $this->getData($_SERVER, 'SCRIPT_FILENAME');
-    }
-
     /**
      * 获取url字符串的query参数
      * @param $url
@@ -141,31 +131,6 @@ class Build
     }
 
     /**
-     * 获取当前访问的网站Url
-     * @param bool|false $meter
-     * @return string
-     */
-    public function getUrl(bool $meter = false): string
-    {
-        $mode = $this->getData($_SERVER, 'REQUEST_SCHEME');
-
-        $mode = $mode ? $mode : 'http';
-
-        $host = $this->getData($_SERVER, 'HTTP_HOST');
-
-        $redirect = $this->getData($_SERVER, 'REDIRECT_URL');
-
-        $request = $this->getData($_SERVER, 'REQUEST_URI');
-
-        $query = $meter == false ? $redirect : $request;
-
-        $url = $mode . '://' . $host . $query;
-
-        return urldecode($url);
-    }
-
-
-    /**
      * 随机生成字符串
      * @param int $count
      * @param string $strings
@@ -182,36 +147,6 @@ class Build
         return $code;
     }
 
-    /**
-     * 获取客户端Ip
-     * @return mixed
-     */
-    public function getIp(): ?string
-    {
-        if (getenv('HTTP_CLIENT_IP')) {
-            $ip = getenv('HTTP_CLIENT_IP');
-        } elseif (getenv('HTTP_X_FORWARDED_FOR')) {
-            $ip = getenv('HTTP_X_FORWARDED_FOR');
-        } elseif (getenv('HTTP_X_FORWARDED')) {
-            $ip = getenv('HTTP_X_FORWARDED');
-        } elseif (getenv('HTTP_FORWARDED_FOR')) {
-            $ip = getenv('HTTP_FORWARDED_FOR');
-        } elseif (getenv('HTTP_FORWARDED')) {
-            $ip = getenv('HTTP_FORWARDED');
-        } else {
-            $ip = $this->getData($_SERVER, 'REMOTE_ADDR');
-        }
-        return $ip;
-    }
-
-    /**
-     * 获取请求源
-     * @return array|null|string
-     */
-    public function getUserAgent(): ?string
-    {
-        return $this->getData($_SERVER, 'HTTP_USER_AGENT');
-    }
 
     /**
      * 生成唯一id
@@ -310,26 +245,6 @@ class Build
         curl_close($curl);
 
         return $executive;
-    }
-
-    /**
-     * 设置cookie 即时生效
-     * @param string $name
-     * @param string $values
-     * @param int $time
-     * @param string|string[] $path
-     * @param string|null $domain
-     * @param bool|null $secure
-     * @return bool
-     */
-    public function setCookie(string $name, ?string $values, int $time = 0,
-                              string $path = APP_ROOT_PATH,
-                              ?string $domain = null,
-                              ?bool $secure = null): bool
-    {
-        $_COOKIE[$name] = $values;
-
-        return setcookie($name, $values, $time, $path, $domain, $secure);
     }
 
     /**
@@ -442,26 +357,6 @@ class Build
 
 
     /**
-     * 获取网站跟url
-     * @param string $rootPath
-     * @return mixed
-     */
-    public function getHostUrl(string $rootPath = ROOT_PATH): string
-    {
-        $mode = $this->getData($_SERVER, 'REQUEST_SCHEME');
-
-        $host = $this->getData($_SERVER, 'HTTP_HOST');
-
-        $root = $this->getData($_SERVER, 'DOCUMENT_ROOT');
-
-        $rootDir = str_replace($root, '', $rootPath);
-
-        $rootDir = substr($rootDir, 0, 1) != '/' ? "/$rootDir" : $rootDir;
-
-        return ($mode ? $mode : 'http') . "://{$host}{$rootDir}";
-    }
-
-    /**
      * 格式化路径
      * @param $path
      * @return mixed
@@ -518,15 +413,6 @@ class Build
     public function getRegularAll(string $pattern, string $subject, int $index = 1, array &$data = [])
     {
         return preg_match_all($pattern, $subject, $data) ? $this->getData($data, $index) : null;
-    }
-
-    /**
-     * 获取请求方法
-     * @return array|null|string
-     */
-    public function getRequestMethod(): ?string
-    {
-        return $this->getData($_SERVER, 'REQUEST_METHOD');
     }
 
     /**
@@ -598,26 +484,6 @@ class Build
 
 
     /**
-     * 设置header
-     * @param array $header
-     */
-    public function setHeader($header = [])
-    {
-        if (APP_RUNNING_IS_SHELL === true) return;
-
-        if (is_array($header)) {
-            foreach ($header as $value) {
-                if (!empty($value)) {
-                    header($value);
-                }
-            }
-        } else if (is_string($header) && !empty($header)) {
-            header($header);
-        }
-    }
-
-
-    /**
      * 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
      * @param $data
      * @param bool $isEncode
@@ -632,6 +498,7 @@ class Build
 
         return $arg;
     }
+
 
     /**
      * 目录后退，可指定后退次数
@@ -657,38 +524,40 @@ class Build
      * 首字母转大写
      * @param $string
      * @param string $ext
+     * @param string $glue
      * @return string
      */
-    public function toFirstUppercase($string, $ext = null)
+    public function toFirstUppercase($string, $ext = null, $glue = "")
     {
-        $str = '';
-
         if ($ext === null || $ext === '') return ucfirst($string);
+
+        $str = [];
 
         $array = explode($ext, $string);
 
-        foreach ($array as $value) $str .= ucfirst($value);
+        foreach ($array as $value) $str[] = ucfirst($value);
 
-        return $str;
+        return join($glue, $str);
     }
 
     /**
      * 首字母转小写
      * @param $string
      * @param null $ext
+     * @param string $glue
      * @return string
      */
-    public function toFirstLowercase($string, $ext = null)
+    public function toFirstLowercase($string, $ext = null, $glue = "")
     {
-        $str = '';
-
         if ($ext === null || $ext === '') return lcfirst($string);
+
+        $str = [];
 
         $array = explode($ext, $string);
 
-        foreach ($array as $value) $str .= lcfirst($value);
+        foreach ($array as $value) $str[] = lcfirst($value);
 
-        return $str;
+        return join($glue, $str);
     }
 
     /**
@@ -713,6 +582,11 @@ class Build
      */
     public function setVarType(&$var, $type)
     {
+        if (empty($var)) {
+            $var = null;
+            return false;
+        }
+
         if (empty($type)) return false;
 
         if (isset(AppConfig::$SET_VAR_DEFAULT_TYPE[$type]) && AppConfig::$SET_VAR_DEFAULT_TYPE[$type] == 1) {
@@ -731,11 +605,11 @@ class Build
 
 
     /**
-     * 获取大小到字符串
+     * 获取大小到字节文本
      * @param $size
      * @return string
      */
-    public function getSizeToString($size)
+    public function getByteTextBySize($size)
     {
         $units = [' B', ' KB', ' MB', ' GB', ' TB'];
 
@@ -772,11 +646,11 @@ class Build
 
 
     /**
-     * 大小文本到byte大小
+     * 通过文本大小获取字节大小
      * @param $str
      * @return float|int
      */
-    public function sizeTextToBytes($str)
+    public function getByteByTextSize($str)
     {
         preg_match('/(\d+)(\w+)/', $str, $matches);
 
@@ -1032,10 +906,16 @@ class Build
                 $value[$name] = $v;
             }
         } else if (is_object($value)) {
-            $value = (object)$value;
+            foreach ($value as $name => $v) {
+                $this->autoTypeConvert($v);
+
+                $value->$name = $v;
+            }
         } else if (V()->decimal($value)) {
             $value = (double)$value;
         } else if (is_numeric($value)) {
+            if (substr($value, 0, 1) == '0' && strlen($value) > 1) return;
+
             $value = (int)$value;
         } else if (is_bool($value)) {
             $value = (bool)$value;
@@ -1043,25 +923,25 @@ class Build
     }
 
     /**
-     * 数组自动类型转换
+     * 数组或者对象自动类型转换
      * @param $data
      */
-    public function autoTypeConvertByArray(&$data)
+    public function autoTypeConvertByAB(&$data)
     {
         foreach ($data as &$value) $this->autoTypeConvert($value);
     }
 
     /**
      * 数组转对象
-     * @param array|null $array 数组
+     * @param array|object|null $data 数组或者对象
      * @param $object object|string 对象实例或者对象class
      * @param array|null $params 对象默认初始化参数
      * @return object
      * @throws ReflectionException
      */
-    public function arTObject(?array $array, $object, ?array $params = [])
+    public function toObject($data, $object, ?array $params = [])
     {
-        if (empty($array)) return is_object($object) ? $object : null;
+        if (empty($data)) return is_object($object) ? $object : null;
 
         if (empty($object)) return $object;
 
@@ -1071,10 +951,58 @@ class Build
 
         if (!is_object($object)) return null;
 
-        foreach ($object as $name => $value) {
-            $object->$name = $this->getData($array, $name);
-        }
+        $this->invokeObjectSetterMethods($object, $data);
 
         return $object;
+    }
+
+    /**
+     * 反射调用对象的所有set方法
+     * @param $object
+     * @param $data
+     * @return array 返回所有set方法的参数 2维数组
+     * @throws ReflectionException
+     */
+    public function invokeObjectSetterMethods($object, $data)
+    {
+        $methods = get_class_methods(get_class($object));
+
+        $params = [];
+
+        foreach ($methods as $methodName) {
+            $type = substr($methodName, 0, 3);
+
+            if (strtolower($type) !== 'set') continue;
+
+            $params[$methodName] = Reflection::invokeMethod($object, $methodName, $data);
+        }
+
+        return $params;
+    }
+
+    /**
+     * 通过长度分割文本
+     * @param $string
+     * @param int $length
+     * @param string $encoding
+     * @return array
+     */
+    public function strSplitByLength($string, $length = 1, $encoding = 'utf8')
+    {
+        $start = 0;
+
+        $array = [];
+
+        $strLen = mb_strlen($string);
+
+        while ($strLen) {
+            $array[] = mb_substr($string, $start, $length, $encoding);
+
+            $string = mb_substr($string, $length, $strLen, $encoding);
+
+            $strLen = mb_strlen($string);
+        }
+
+        return $array;
     }
 }

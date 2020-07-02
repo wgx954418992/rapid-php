@@ -6,9 +6,9 @@ namespace rapid\library\rapid\plugin\oauth2\qq;
 
 use Exception;
 use rapidPHP\config\plugin\oauth2\QQOAuth2Config;
-use rapidPHP\library\AB;
+use rapidPHP\plugin\model\BaseOAuth2UserModel;
+use rapidPHP\plugin\model\QQOAuth2UserModel;
 use rapidPHP\plugin\oauth2\OAuth2;
-use rapidPHP\plugin\oauth2\OAuth2UserModel;
 
 class QQOAuth2 extends OAuth2
 {
@@ -16,20 +16,21 @@ class QQOAuth2 extends OAuth2
     /**
      * 获取网页授权access 信息，openId跟access_token
      * @param $code
-     * @return AB
+     * @return array
      * @throws Exception
      */
-    public function getAccessInfo(string $code): AB
+    public function getAccessInfo(string $code): array
     {
         $accessInfo = $this->sendHttpRequest(QQOAuth2Config::getAccessTokenUrl($this->getAppId(), $this->getSecret(), $code, $this->getCallUrl()));
 
-        if ($accessInfo->hasName('error_description')) throw new Exception($accessInfo->getString('error_description'));
+        if (isset($accessInfo['error_description']))
+            throw new Exception(B()->getData($accessInfo, 'error_description'));
 
-        $openData = $this->sendHttpRequest(QQOAuth2Config::getOpenIdUrl($accessInfo->getString('access_token')));
+        $openData = $this->sendHttpRequest(QQOAuth2Config::getOpenIdUrl($accessInfo['access_token']));
 
-        $accessInfo->setValue('openId', $openData->getString('openid'));
+        $accessInfo['openId'] = $openData['openid'];
 
-        $accessInfo->setValue('unionId', $openData->getString('unionid'));
+        $accessInfo['unionId'] = $openData['unionid'];
 
         return $accessInfo;
     }
@@ -52,46 +53,48 @@ class QQOAuth2 extends OAuth2
     /**
      * 获取qq用户信息
      * @param string $code
-     * @return OAuth2UserModel
+     * @return BaseOAuth2UserModel
      * @throws Exception
      */
-    public function getUserInfo( string $code): OAuth2UserModel
+    public function getUserInfo(string $code): BaseOAuth2UserModel
     {
         if (empty($code)) throw new Exception('code 错误!');
 
         $accessInfo = $this->getAccessInfo($code);
 
-        if ($accessInfo->isEmpty()) throw new Exception("accessInfo获取失败!");
+        if (empty($accessInfo)) throw new Exception("accessInfo获取失败!");
 
-        $accessToken = $accessInfo->getString('access_token');
+        $accessToken = $accessInfo['access_token'];
 
-        $openId = $accessInfo->getString('openId');
+        $openId = $accessInfo['openId'];
 
         $url = QQOAuth2Config::getUserInfoUrl($this->getAppId(), $accessToken, $openId);
 
         $data = $this->sendHttpRequest($url);
 
-        if ($data->getInt('ret') != 0) throw new Exception($data->getString('msg'));
+        if ($data['ret'] != 0) throw new Exception($data['msg']);
 
-        $oauth2Info = new OAuth2UserModel($openId);
+        $oauth2Info = new QQOAuth2UserModel();
 
-        $oauth2Info->setUnionId($accessInfo->getString('unionId'));
+        $oauth2Info->setOpenId($openId);
 
-        $oauth2Info->setNickname($data->getString('nickname'));
+        $oauth2Info->setUnionId(B()->getData($accessInfo, 'unionId'));
 
-        $header = B()->contrast($data->getString('figureurl_qq_2'), $data->getString('figureurl_2'));
+        $oauth2Info->setNickname($data['nickname']);
+
+        $header = B()->contrast($data['figureurl_qq_2'], $data['figureurl_2']);
 
         $oauth2Info->setHeader($header);
 
-        $oauth2Info->setSex($data->getString('gender'));
+        $oauth2Info->setSex($data['gender']);
 
-        $oauth2Info->setProvince($data->getString('province'));
+        $oauth2Info->setProvince($data['province']);
 
-        $oauth2Info->setCity($data->getString('city'));
+        $oauth2Info->setCity($data['city']);
 
-        $oauth2Info->setYear($data->getInt('year'));
+        $oauth2Info->setYear($data['year']);
 
-        $oauth2Info->setQQVipInfo($data->getData(['is_yellow_vip', 'vip', 'yellow_vip_level', 'level', 'is_yellow_year_vip']));
+        $oauth2Info->setQQVipInfo(AR()->getArray($data, ['is_yellow_vip', 'vip', 'yellow_vip_level', 'level', 'is_yellow_year_vip']));
 
         return $oauth2Info;
     }

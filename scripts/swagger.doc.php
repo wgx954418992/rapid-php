@@ -72,7 +72,7 @@ class swagger
 
             if (is_null($reflectionClass)) continue;
 
-            $packages = Reflection::getImportPackage($content);
+            $packages = Reflection::getImportPackage($content, $reflectionClass);
 
             unset($content);
 

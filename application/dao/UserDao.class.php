@@ -19,19 +19,19 @@ class UserDao extends DBDao
 
     /**
      * 通过telephone获取用户信息
-     * @param $telephone
+     * @param $nickname
      * @return AppUserModel
      * @throws ReflectionException
      * @throws Exception
      */
-    public function getUserInfoByTel($telephone): AppUserModel
+    public function getUserInfoByNickname($nickname): ?AppUserModel
     {
-        /** @var AppUserModel $bean */
-        $bean = parent::get()->where('telephone', $telephone)
+        /** @var AppUserModel $userModel */
+        $userModel = parent::get()->where('nickname', $nickname)
             ->where('isDelete', 0)
             ->get()->getInstance(AppUserModel::class);
 
-        return $bean;
+        return $userModel;
     }
 
 
@@ -48,12 +48,11 @@ class UserDao extends DBDao
 
     /**
      * 添加用户
-     * @param $userId
      * @param AppUserModel $userModel
      * @return bool
      * @throws Exception
      */
-    public function addUserAR($userId, AppUserModel $userModel)
+    public function addUserAR(AppUserModel $userModel)
     {
         return parent::add([
             'userId' => $userModel->getId(),
@@ -65,47 +64,47 @@ class UserDao extends DBDao
     /**
      * 更新用户信息
      * @param $userId
-     * @param AppUserModel $userBean
+     * @param AppUserModel $userModel
      * @return bool
      * @throws Exception
      */
-    public function setUserInfo($userId, AppUserModel $userBean)
+    public function setUserInfo($userId, AppUserModel $userModel)
     {
-        return $this->set($userBean->getData())->where('userId', $userId)->execute();
+        return $this->set($userModel->getData())->where('userId', $userId)->execute();
     }
 
     /**
      * 更新用户信息
      * @param $userId
-     * @param AppUserModel $userBean
+     * @param AppUserModel $userModel
      * @return bool
      * @throws Exception
      */
-    public function setUserInfoAR($userId, AppUserModel $userBean)
+    public function setUserInfoAR($userId, AppUserModel $userModel)
     {
-        return $this->set(['nickname' => $userBean->getNickname()])
+        return $this->set(['nickname' => $userModel->getNickname()])
             ->where('userId', $userId)->execute();
     }
 
     /**
      * 获取用户信息
      * @param $userId
-     * @return AppUserModel
+     * @return AppUserModel|null
      * @throws ReflectionException
      * @throws Exception
      */
-    public function getUserInfo($userId): AppUserModel
+    public function getUserInfo($userId): ?AppUserModel
     {
         $RId = parent::getRId($userId);
 
-        /** @var AppUserModel $bean */
-        $bean = R()->isPut($RId) ? R()->get($RId) :
+        /** @var AppUserModel $model */
+        $model = R()->isPut($RId) ? R()->get($RId) :
             parent::get()->where('isDelete', 0)->where('userId', $userId)->get()
                 ->getInstance(AppUserModel::class);
 
-        R()->put($RId, $bean);
+        R()->put($RId, $model);
 
-        return $bean;
+        return $model;
     }
 
     /**

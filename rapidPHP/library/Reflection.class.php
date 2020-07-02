@@ -103,11 +103,14 @@ class Reflection extends ReflectionClass
     /**
      * 获取文件里面使用所有use 导入的包
      * @param $content
+     * @param ReflectionClass $reflectionClass
      * @return array
      */
-    public static function getImportPackage($content)
+    public static function getImportPackage($content, ReflectionClass $reflectionClass)
     {
-        $result = [];
+        $currentClassName = $reflectionClass->getName();
+
+        $result = [$currentClassName => []];
 
         $contents = explode("\n", $content);
 
@@ -131,9 +134,18 @@ class Reflection extends ReflectionClass
                     if (empty($asName)) continue;
                 }
 
-                $result[$asName] = $className;
+                $result[$currentClassName][$asName] = $className;
             }
+        }
 
+        if ($reflectionClass instanceof ReflectionClass) {
+            $refParentClass = $reflectionClass->getParentClass();
+
+            if ($refParentClass) {
+                $refParentContent = file_get_contents($refParentClass->getFileName());
+
+                $result = array_merge(self::getImportPackage($refParentContent, $refParentClass), $result);
+            }
         }
 
         return $result;
@@ -142,9 +154,10 @@ class Reflection extends ReflectionClass
     /**
      * 获取文件里面使用所有use 导入的包
      * @param $file
+     * @param ReflectionClass $reflectionClass
      * @return array
      */
-    public static function getImportPackageByFile($file)
+    public static function getImportPackageByFile($file, ReflectionClass $reflectionClass)
     {
         if (!file_exists($file) || !is_file($file) || !is_readable($file)) return null;
 
@@ -152,116 +165,32 @@ class Reflection extends ReflectionClass
 
         if (empty($content)) return null;
 
-        return self::getImportPackage($content);
-    }
-
-    /**
-     * 获取当前class里面使用所有use 导入的包
-     * @return array
-     */
-    public function getCurrentImportPackage()
-    {
-        return self::getImportPackageByFile($this->getFileName());
+        return self::getImportPackage($content, $reflectionClass);
     }
 
     /**
      * 获取方法默认值
      * @param ReflectionMethod $method
+     * @param bool $isDefaultNull
      * @return array
      */
-    public function getMethodDefaultValues(ReflectionMethod $method)
+    public static function getMethodDefaultValues(ReflectionMethod $method, $isDefaultNull = false)
     {
         $values = [];
 
         foreach ($method->getParameters() as $parameter) {
             try {
-                $values[$parameter->getName()] = $parameter->getDefaultValue();
+                if ($parameter->isDefaultValueAvailable()) {
+                    $values[$parameter->getName()] = $parameter->getDefaultValue();
+                } else if ($isDefaultNull) {
+                    $values[$parameter->getName()] = null;
+                }
             } catch (ReflectionException $e) {
-
+                if ($isDefaultNull) $values[$parameter->getName()] = null;
             }
         }
 
         return $values;
-    }
-
-    /**
-     * 获取方法的参数（包括从注释里面读取默认 类型等信息）
-     * @param ReflectionMethod $method
-     * @param $doc
-     * @param string $paramDocName
-     * @return array
-     */
-    public function getMethodParamsWithDoc(ReflectionMethod $method, $doc, $paramDocName)
-    {
-        $params = [];
-
-        $values = $this->getMethodDefaultValues($method);
-
-        foreach ($method->getParameters() as $parameter) {
-            $param = [];
-
-            $paramName = $parameter->getName();
-
-            if (array_key_exists($paramName, $values)) {
-                $param[self::METHOD_PARAM_DEFAULT_NAME] = $values[$paramName];
-            }
-
-            $params[$paramName] = $param;
-
-            if (is_null($doc)) continue;
-
-            preg_match("/{$paramDocName} (.*)?\\\${$paramName}(.*)?/i", $method->getDocComment(), $info);
-
-            if (empty($info)) continue;
-
-            $paramType = trim(B()->getData($info, 1));
-
-            if (!is_null($paramType)) $param[self::METHOD_PARAM_TYPE_NAME] = $paramType;
-
-            $paramDoType = trim(B()->getData($info, 2));
-
-            if (!is_null($paramDoType)) $param[self::METHOD_PARAM_REMARK_NAME] = $paramDoType;
-
-            $params[$paramName] = $param;
-        }
-
-        return $params;
-    }
-
-
-    /**
-     * 获取所有方法跟注释文档（包括从注释里面读取默认 类型等信息）
-     * @param $paramDocName
-     * @param bool $public 是否只要公开的方法
-     * @param bool $parent 是否需要父类方法
-     * @return array
-     */
-    public function getMethodsWithDoc($paramDocName, $public = true, $parent = false)
-    {
-        $methods = [];
-
-        foreach ($this->getMethods() as $method) {
-
-            if ($public && !$method->isPublic()) continue;
-
-            $parentClassName = $method->getDeclaringClass()->getName();
-
-            if (!$parent && $parentClassName != self::getName()) continue;
-
-            if ($parentClassName == AB::class && $parentClassName != self::getName()) continue;
-
-            $doc = $method->getDocComment();
-
-            $parameters = $this->getMethodParamsWithDoc($method, $doc, $paramDocName);
-
-            $methods[] = [
-                self::CLASS_METHOD_OBJECT_NAME => $method,
-                self::CLASS_METHOD_DOC_NAME => $doc,
-                self::CLASS_METHOD_PARAMS_NAME => $parameters,
-            ];
-        }
-
-        return $methods;
     }
 
     /**
@@ -339,5 +268,133 @@ class Reflection extends ReflectionClass
         if (isset(AppConfig::$REQUEST_PARAM_TYPE[strtoupper($type)])) return strtoupper($type);
 
         return $type;
+    }
+
+    /**
+     * 反射调用对象的方法
+     * @param $object
+     * @param $methodName
+     * @param $data
+     * @return array 返回方法修改过的参数
+     * @throws ReflectionException
+     */
+    public static function invokeMethod($object, $methodName, $data)
+    {
+        $method = new ReflectionMethod($object, $methodName);
+
+        $methodParams = self::getMethodDefaultValues($method, true);
+
+        foreach ($methodParams as $key => $default) {
+            if (is_array($data) && array_key_exists($key, $data)) {
+                $methodParams[$key] = $data[$key];
+            } else if (is_object($data) && isset($data->$key)) {
+                $methodParams[$key] = $data->$key;
+            } else if (is_null($default) && isset($object->$key)) {
+                $methodParams[$key] = $object->$key;
+            }
+        }
+
+        $method->invokeArgs($object, $methodParams);
+
+        return $methodParams;
+    }
+
+    /**
+     * 获取当前class里面使用所有use 导入的包
+     * @return array
+     */
+    public function getCurrentImportPackage()
+    {
+        return self::getImportPackageByFile($this->getFileName(), $this);
+    }
+
+    /**
+     * 获取方法的参数（包括从注释里面读取默认 类型等信息）
+     * @param ReflectionMethod $method
+     * @param $doc
+     * @param string $paramDocName
+     * @return array
+     */
+    public function getMethodParamsWithDoc(ReflectionMethod $method, $doc, $paramDocName)
+    {
+        $params = [];
+
+        $values = $this->getMethodDefaultValues($method);
+
+        foreach ($method->getParameters() as $parameter) {
+            $param = [];
+
+            $paramName = $parameter->getName();
+
+            if (array_key_exists($paramName, $values)) {
+                $param[self::METHOD_PARAM_DEFAULT_NAME] = $values[$paramName];
+            }
+
+            $params[$paramName] = $param;
+
+            if (is_null($doc)) continue;
+
+            preg_match("/{$paramDocName} (.*)?\\\${$paramName}(.*)?/i", $method->getDocComment(), $info);
+
+            if (empty($info)) continue;
+
+            $paramType = trim(B()->getData($info, 1));
+
+            if (!is_null($paramType)) $param[self::METHOD_PARAM_TYPE_NAME] = $paramType;
+
+            $paramDoType = trim(B()->getData($info, 2));
+
+            if (!is_null($paramDoType)) $param[self::METHOD_PARAM_REMARK_NAME] = $paramDoType;
+
+            $params[$paramName] = $param;
+        }
+
+        return $params;
+    }
+
+
+    /**
+     * 获取所有方法跟注释文档（包括从注释里面读取默认 类型等信息）
+     * @param $paramDocName
+     * @param bool $public 是否只要公开的方法
+     * @param bool|array $parent 是否需要父类方法
+     * @return array
+     */
+    public function getMethodsWithDoc($paramDocName, $public = true, $parent = false)
+    {
+        $methods = [];
+
+        foreach ($this->getMethods() as $method) {
+
+            if ($public && !$method->isPublic()) continue;
+
+            $parentClassName = $method->getDeclaringClass()->getName();
+
+            if ($parentClassName != self::getName()) {
+                if (is_array($parent)) {
+                    if (array_search($method->getName(), $parent) === false) continue;
+                } elseif (is_string($parent)) {
+                    if ($method->getName() != $parent) continue;
+                } else if (is_bool($parent)) {
+                    if (!$parent) continue;
+                }
+            }
+
+            if (!$parent && $parentClassName != self::getName()) continue;
+
+            if ($parentClassName == AB::class && $parentClassName != self::getName()) continue;
+
+            $doc = $method->getDocComment();
+
+            $parameters = $this->getMethodParamsWithDoc($method, $doc, $paramDocName);
+
+            $methods[] = [
+                self::CLASS_METHOD_OBJECT_NAME => $method,
+                self::CLASS_METHOD_DOC_NAME => $doc,
+                self::CLASS_METHOD_PARAMS_NAME => $parameters,
+            ];
+        }
+
+        return $methods;
     }
 }

@@ -27,6 +27,14 @@ class RouterConfig
     const METHOD_TYPE = 'methodType';
 
 
+    //路由typed类型名
+    const TYPED_TYPE = 'typedType';
+
+
+    //路由header类型名
+    const HEADER_TYPE = 'headerType';
+
+
     //路由方法参数名
     const METHOD_PARAMETER = 'methodParameter';
 

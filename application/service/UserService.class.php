@@ -38,12 +38,12 @@ class UserService extends BaseService
      */
     public function addUser(AppUserModel $userModel)
     {
-        if (empty($userModel->getTelephone())) throw new Exception("telephone 错误!");
+        if (empty($userModel->getNickname())) throw new Exception("nickname 错误!");
 
         /** @var UserDao $userDao */
         $userDao = M(UserDao::class);
 
-        $userModel->setUserId(B()->onlyIdToInt());
+        $userModel->setId(B()->onlyIdToInt());
 
         if (!$userDao->addUser($userModel)) throw new Exception("添加失败!");
 

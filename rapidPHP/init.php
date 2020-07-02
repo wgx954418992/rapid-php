@@ -3,20 +3,21 @@
 use rapidPHP\library\AB;
 use rapidPHP\library\AR;
 use rapidPHP\library\Build;
+use rapidPHP\library\core\app\request\Input;
 use rapidPHP\library\core\Loader;
+use rapidPHP\library\core\server\Request;
 use rapidPHP\library\Db;
 use rapidPHP\library\File;
-use rapidPHP\library\Input;
 use rapidPHP\library\Register;
 use rapidPHP\library\Verify;
 use rapidPHP\library\ViewTemplate;
 use rapidPHP\library\Xml;
 
 // 检测PHP环境
-if (version_compare(PHP_VERSION, '7.0.0', '<')) die('require PHP > 7.0.0 !');
+if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '2.1.1');
+define('RAPIDPHP_VERSION', '2.2.0');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -27,17 +28,8 @@ define('APP_IS_SESSION', false);
 //运行模式是否命令运行
 define('APP_RUNNING_IS_SHELL', isset($_SERVER['SHELL']));
 
-//设置文档编码,如果是cil模式,请注释掉
-if (APP_RUNNING_IS_SHELL === false) header("Content-type: text/html; charset=utf-8");
-
 //程序根目录
 define('ROOT_PATH', str_replace('\\', '/', dirname(__DIR__)) . '/');
-
-//程序运行目录
-define('ROOT_RUNNING_PATH', str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])) . '/');
-
-//项目运行目录
-define('ROOT_PROJECT_PATH', isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) ? str_replace($_SERVER['DOCUMENT_ROOT'], '/', ROOT_PATH) : '');
 
 //系统核心library包目录
 define('ROOT_LIBRARY', ROOT_PATH . 'rapidPHP/library/');
@@ -70,6 +62,7 @@ Loader::init();
  * 快捷获取ArrayObject类
  * @param $array
  * @return AB
+ * @throws ReflectionException
  */
 function AB($array = null)
 {
@@ -116,11 +109,12 @@ function F()
 
 /**
  * 快捷获取表单输入（input）类
+ * @param Request $request
  * @return Input
  */
-function I()
+function I(Request $request)
 {
-    return Input::getInstance();
+    return Input::getInstance($request);
 }
 
 
@@ -179,9 +173,3 @@ function VT($view)
 
     return null;
 }
-
-//网站跟URL
-define('APP_ROOT_URL', B()->getHostUrl());
-
-//访问URL的跟目录
-define('APP_ROOT_PATH', str_replace(B()->getData($_SERVER, 'DOCUMENT_ROOT'), '', ROOT_PATH));

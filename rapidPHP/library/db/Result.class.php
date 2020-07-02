@@ -10,7 +10,7 @@ class Result
 
     private $modelClass;
 
-    private $resultArray = [];
+    private $resultArray;
 
     public function __construct(array $result, $modelClass)
     {
@@ -50,7 +50,7 @@ class Result
     {
         $className = empty($className) ? $this->modelClass : $className;
 
-        return B()->arTObject($this->getArticle($article), $className);
+        return B()->toObject($this->getArticle($article), $className);
     }
 
     /**

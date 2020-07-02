@@ -3,39 +3,49 @@
 namespace application\controller;
 
 use application\model\AppUserModel;
+use application\server\RunSHttpServer;
 use application\service\UserService;
+use Exception;
+use rapidPHP\library\core\app\Controller;
 use rapidPHP\library\core\app\View;
 use rapidPHP\library\RESTFullApi;
 use ReflectionException;
+use Swoole\Server;
 
 /**
  * Class BaseController
  * @package application\controller
  */
-class BaseController
+class BaseController extends Controller
 {
 
     /**
      * @url /
+     * @throws Exception
      */
     public function root()
     {
-        echo 'root----';
+        if(defined('SWOOLE_HTTP_SERVER')){
+            RunSHttpServer::getInstance()->addTask(json_encode(['type' => 'sendEmail', 'data' => 1]));
+        }
 
-        View::show('index');
+        $this->getResponse()->write('root----');
+
+        View::display($this, 'index');
     }
 
     /**
      * @url /index
+     * @throws ReflectionException
      */
     public function index()
     {
-        echo 'index----';
+        $this->getResponse()->write('index----');
 
         //如果不想返回可以直接显示
         //View::display('index')->assign('var', 'value')->view();
 
-        return View::display('index')->assign('var', 'value');
+        return View::display($this, 'index')->assign('var', 'value');
     }
 
     /**
@@ -44,7 +54,7 @@ class BaseController
      */
     public function home()
     {
-        echo 'Hello Home Page';
+        $this->getResponse()->write('Hello Home Page----');
     }
 
     /**
@@ -56,9 +66,9 @@ class BaseController
      */
     public function addUser($model)
     {
-        echo 'addUser----';
+        $this->getResponse()->write('addUser----');
 
-        var_dump($model);
+        $this->getResponse()->write(json_encode($model));
 
         /** @var UserService $userService */
         $userService = M(UserService::class);
@@ -72,9 +82,9 @@ class BaseController
      */
     public function getUserInfo($userId)
     {
-        echo 'getUserInfoPost----';
+        $this->getResponse()->write('getUserInfoPost----');
 
-        var_dump($userId);
+        $this->getResponse()->write($userId);
     }
 
     /**
@@ -84,9 +94,9 @@ class BaseController
      */
     public function getUserInfoPostMethod(int $userId)
     {
-        echo 'getUserInfoPostMethod----';
+        $this->getResponse()->write('getUserInfoPostMethod----');
 
-        var_dump($userId);
+        $this->getResponse()->write($userId);
     }
 
     /**
@@ -95,9 +105,9 @@ class BaseController
      */
     public function getUserInfoPath($userId = 1)
     {
-        echo 'getUserInfoPath----';
+        $this->getResponse()->write('getUserInfoPath----');
 
-        var_dump($userId);
+        $this->getResponse()->write($userId);
     }
 
     /**
@@ -106,9 +116,9 @@ class BaseController
      */
     public function getUserInfoCookie($userId)
     {
-        echo 'getUserInfo----';
+        $this->getResponse()->write('getUserInfo----');
 
-        echo $userId;
+        $this->getResponse()->write($userId);
     }
 
     /**
@@ -117,6 +127,8 @@ class BaseController
      */
     public function uploadFile($file)
     {
-        var_dump($file);
+        $this->getResponse()->write('uploadFile----');
+
+        $this->getResponse()->write(json_encode($file));
     }
 }

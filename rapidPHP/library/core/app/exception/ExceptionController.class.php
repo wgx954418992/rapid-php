@@ -4,9 +4,11 @@ namespace rapidPHP\library\core\app\exception;
 
 
 use Exception;
+use rapidPHP\config\RouterConfig;
+use rapidPHP\library\core\app\Controller;
 use rapidPHP\library\RESTFullApi;
 
-class ExceptionController implements ExceptionInterface
+class ExceptionController extends Controller implements ExceptionInterface
 {
 
     /**
@@ -16,18 +18,21 @@ class ExceptionController implements ExceptionInterface
      * @param $className
      * @param $methodName
      * @param $classObject
+     * @param array $appMethodData
      */
-    public function handler(Exception $exception, $uri, $className, $methodName, $classObject = null)
+    public function handler(Exception $exception, $uri, $className, $methodName, $classObject = null, $appMethodData = [])
     {
-        if (is_int(strpos($uri, "api/"))) {
-            B()->setHeader(['Content-Type:text/json;']);
+        $typed = B()->getData($appMethodData, RouterConfig::TYPED_TYPE);
+
+        if (strtolower($typed) === 'api') {
+            $this->getResponse()->setHeader(['Content-Type:text/json']);
 
             $json = RESTFullApi::error($exception->getMessage(), $exception->getCode())
                 ->toJson();
 
-            echo($json);
+            $this->getResponse()->write($json);
         } else {
-            echo($exception->getMessage());
+            $this->getResponse()->write($exception->getMessage());
         }
     }
 
@@ -37,9 +42,7 @@ class ExceptionController implements ExceptionInterface
      */
     public function notFound($uri)
     {
-        B()->setHeader(['HTTP/1.1 404 Not Found', 'status: 404 Not Found']);
-
-        exit();
+        $this->getResponse()->setHeader(404);
     }
 
     /**
@@ -47,12 +50,11 @@ class ExceptionController implements ExceptionInterface
      * @param $uri
      * @param $className
      * @param $appName
+     * @param $appMethodData
      */
-    public function forbidden($uri, $className, $appName)
+    public function forbidden($uri, $className, $appName, $appMethodData)
     {
-        B()->setHeader(['HTTP/1.1 403 Forbidden', 'status: 403 Forbidden']);
-
-        exit();
+        $this->getResponse()->setHeader(403);
     }
 
 }

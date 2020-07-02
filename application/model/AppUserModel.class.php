@@ -44,10 +44,10 @@ class AppUserModel extends AB
 
     /**
      * 设置 id
-     * @param $id
+     * @param int $id
      * @return AppUserModel
      */
-    public function setId($id)
+    public function setId(?int $id)
     {
         $this->id = $id;
         return $this;

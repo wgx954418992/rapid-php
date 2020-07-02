@@ -6,6 +6,6 @@
 </head>
 <body>
 Hello，This is rapidPHP
-<?= VT($this)->get('msg') ?>
+<?=VT($this)->getController()->toUrl()?>
 </body>
 </html>

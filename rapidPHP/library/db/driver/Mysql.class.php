@@ -191,7 +191,7 @@ class Mysql extends Driver
     {
         if (empty($column)) $column = $this->tableColumn;
 
-        $column = is_array($column) ? Db::formatColumn($column, '`', '`') : $column;
+        $column = is_array($column) ? Db::getTableColumn($this->tableName, $column, '`', '`') : $column;
 
         $this->sql['select'] .= "SELECT {$column} FROM {$this->tableName} ";
 

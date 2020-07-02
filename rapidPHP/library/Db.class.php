@@ -39,11 +39,11 @@ class Db
      */
     public function __construct(array $config)
     {
-        $string = $this->getConfigString($config);
+        $string = self::getConfigString($config);
 
-        $username = $this->getConfigUsername($config);
+        $username = self::getConfigUsername($config);
 
-        $password = $this->getConfigPassword($config);
+        $password = self::getConfigPassword($config);
 
         try {
             $db = new PDO($string, $username, $password);
@@ -58,18 +58,92 @@ class Db
         }
     }
 
+    /**
+     * 获取配置链接字符串
+     * @param array $config
+     * @return string
+     */
+    public static function getConfigString(array $config)
+    {
+        if ($string = B()->getData($config, 'string')) {
+            return (string)$string;
+        } else {
+            $host = B()->getData($config, 'host');
+
+            $header = B()->getData($config, 'header');
+
+            $database = B()->getData($config, 'database');
+
+            $databaseType = B()->getData($config, 'databaseType');
+
+            $databaseConnectName = B()->getData($config, 'databaseConnectName');
+
+            return (string)"$databaseType:$header=$host;" . ($database ? "$databaseConnectName=$database" : null);
+        }
+    }
 
     /**
-     * 快速获取实例
-     * @param null $config
-     * @return mixed|Db|null
+     * 获取配置用户名
+     * @param array $config
+     * @return string
      */
-    public static function getInstance($config = null)
+    public static function getConfigUsername(array $config)
+    {
+        return (string)B()->getData($config, 'username');
+    }
+
+    /**
+     * 获取配置密码
+     * @param array $config
+     * @return array|null|string
+     */
+    public static function getConfigPassword(array $config)
+    {
+        return B()->getData($config, 'password');
+    }
+
+    /**
+     * 获取配置驱动
+     * @param array $config
+     * @return array|null|string
+     */
+    public static function getConfigDriver(array $config)
+    {
+        return B()->getData($config, 'driver');
+    }
+
+    /**
+     * 获取数据库编码
+     * @param array $config
+     * @return array|null|string
+     */
+    public static function getConfigCode(array $config)
+    {
+        return B()->getData($config, 'databaseCode');
+    }
+
+    /**
+     * 获取配置信息的md5
+     * @param null|array $config
+     * @return string
+     */
+    public static function getConfigMd5($config = null)
     {
         if (!$config) if (isset(DatabaseConfig::$default)) $config = DatabaseConfig::$default;
 
-        $md5 = md5(serialize($config));
+        return md5(self::getConfigString($config));
+    }
 
+    /**
+     * 快速获取实例
+     * @param null|array $config
+     * @return Db
+     */
+    public static function getInstance($config = null)
+    {
+        $md5 = self::getConfigMd5($config);
+
+        /** @var Db $db */
         $db = B()->getData(self::$dbs, $md5);
 
         if ($db instanceof Db) return $db;
@@ -187,71 +261,6 @@ class Db
 
 
     /**
-     * 获取配置链接字符串
-     * @param array $config
-     * @return string
-     */
-    public function getConfigString(array $config)
-    {
-        if ($string = B()->getData($config, 'string')) {
-            return (string)$string;
-        } else {
-            $host = B()->getData($config, 'host');
-
-            $header = B()->getData($config, 'header');
-
-            $database = B()->getData($config, 'database');
-
-            $databaseType = B()->getData($config, 'databaseType');
-
-            $databaseConnectName = B()->getData($config, 'databaseConnectName');
-
-            return (string)"$databaseType:$header=$host;" . ($database ? "$databaseConnectName=$database" : null);
-        }
-    }
-
-    /**
-     * 获取配置用户名
-     * @param array $config
-     * @return string
-     */
-    public function getConfigUsername(array $config)
-    {
-        return (string)B()->getData($config, 'username');
-    }
-
-    /**
-     * 获取配置密码
-     * @param array $config
-     * @return array|null|string
-     */
-    public function getConfigPassword(array $config)
-    {
-        return B()->getData($config, 'password');
-    }
-
-    /**
-     * 获取配置驱动
-     * @param array $config
-     * @return array|null|string
-     */
-    public function getConfigDriver(array $config)
-    {
-        return B()->getData($config, 'driver');
-    }
-
-    /**
-     * 获取数据库编码
-     * @param array $config
-     * @return array|null|string
-     */
-    public function getConfigCode(array $config)
-    {
-        return B()->getData($config, 'databaseCode');
-    }
-
-
-    /**
      * 选择表
      * @param null $modelClass
      * @return Driver
@@ -298,11 +307,22 @@ class Db
 
     /**
      * 提交
+     * @param int $index
      * @return bool
      */
-    public function commit()
+    public function commit($index = 0)
     {
-        return $this->getConnect()->commit();
+        try {
+            return $this->getConnect()->commit();
+        } catch (PDOException $e) {
+            if ($index > 2) throw $e;
+
+            if ($this->handlerException($e)) {
+                return $this->commit($index + 1);
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -316,25 +336,62 @@ class Db
     }
 
     /**
-     * 关闭连接
-     * @param PDO|null $db
-     * @return null
+     * 处理异常
+     * @param PDOException $e
+     * @return Db
      */
-    public function close(PDO $db = null)
+    public function handlerException(PDOException $e)
     {
-        return $db ? $db = null : $this->connect = null;
+        if ($e->getCode() == 2006 || $e->getCode() == 2013) {
+            return $this->reconnect($this->getConfig());
+        }
+
+        throw $e;
     }
 
+    /**
+     * 重新连接
+     * @param null|array $config
+     * @return Db
+     */
+    public function reconnect($config = null)
+    {
+        $configMd5 = self::getConfigMd5($config);
+
+        $this->close($configMd5);
+
+        return self::getInstance($config);
+    }
+
+    /**
+     * 关闭连接
+     * @param null|array $config
+     */
+    public function close($config = null)
+    {
+        $closeMd5 = is_string($config) ? $config : self::getConfigMd5($config);
+
+        /**
+         * @var string $md5
+         * @var Db $currentDb
+         */
+        foreach (self::$dbs as $md5 => &$currentDb) {
+            if ($closeMd5 == $md5) {
+                $currentDb->connect = null;
+                $currentDb = null;
+                unset(self::$dbs[$md5]);
+            }
+        }
+    }
 
     /**
      * 执行sql语句
      * @param $sql
      * @return Exec
-     * @throws Exception
      */
     public function query($sql)
     {
-        return new Exec($this->getConnect(), $sql);
+        return new Exec($this, $sql);
     }
 }
 

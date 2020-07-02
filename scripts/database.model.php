@@ -340,7 +340,7 @@ function make($db, $type)
 
     $randId = md5(G_C_DATABASE);
 
-    write(ROOT_CONF, "database/{$randId}_{$typeClassText}.sql", join("\n\n", $sql));
+    write(ROOT_CONF, "database/{$randId}_{$typeClassText}.sql", join(";\n\n", $sql));
 
     echo "{$typeClassText}编译完成\n";
 }

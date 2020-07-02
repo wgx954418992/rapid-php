@@ -1,4 +1,5 @@
 <?php
+
 namespace rapidPHP\library;
 
 
@@ -9,8 +10,14 @@ class Xml
 
     private static $instance;
 
-    public static function getInstance(){
+    public static function getInstance()
+    {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+    }
+
+    public function __construct()
+    {
+        libxml_disable_entity_loader(true);
     }
 
     /**
@@ -26,9 +33,13 @@ class Xml
 
         $xml->openMemory();
 
-        $xml->startDocument($version, $encoding);
+        if (!empty($version)) {
+            $xml->startDocument($version, $encoding);
+        }
 
-        $xml->startElement($root);
+        if (!empty($root)) {
+            $xml->startElement($root);
+        }
 
         return $xml;
     }

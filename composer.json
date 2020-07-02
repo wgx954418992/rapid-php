@@ -11,6 +11,11 @@
     "ext-openssl": "*",
     "ext-curl": "*",
     "ext-gd": "*",
-    "ext-bcmath": "*"
+    "ext-bcmath": "*",
+    "ext-mbstring": "*",
+    "alipaysdk/easysdk": "^1.2"
+  },
+  "require-dev": {
+    "eaglewu/swoole-ide-helper": "dev-master"
   }
 }

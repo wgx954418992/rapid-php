@@ -4,7 +4,6 @@ namespace rapidPHP\library\core\app\exception;
 
 
 use Exception;
-use rapidPHP\library\AB;
 
 interface ExceptionInterface
 {
@@ -15,8 +14,9 @@ interface ExceptionInterface
      * @param $className
      * @param $methodName
      * @param $classObject
+     * @param array $appMethodData
      */
-    public function handler(Exception $exception, $uri, $className, $methodName, $classObject = null);
+    public function handler(Exception $exception, $uri, $className, $methodName, $classObject = null, $appMethodData = []);
 
     /**
      * 404找不到页面
@@ -29,6 +29,7 @@ interface ExceptionInterface
      * @param $uri
      * @param $className
      * @param $appName
+     * @param array $appMethodData
      */
-    public function forbidden($uri, $className, $appName);
+    public function forbidden($uri, $className, $appName, $appMethodData);
 }

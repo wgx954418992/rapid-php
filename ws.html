@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    const ws = new WebSocket("ws://127.0.0.1:9502")
+
+    ws.onopen = function (e) {
+        console.log("onopen", ws.readyState)
+        if (ws.readyState === 1) {
+            ws.send("url=/websocket/hello&id=1&callback=s");
+        }
+    }
+
+    ws.onmessage = function (e) {
+        console.log("onmessage", e.data)
+    }
+
+    ws.onclose = function (e) {
+        console.log("onclose", e)
+    }
+</script>
+</body>
+</html>

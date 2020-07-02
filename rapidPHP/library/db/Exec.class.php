@@ -2,63 +2,88 @@
 
 namespace rapidPHP\library\db;
 
+use Exception;
 use PDO;
+use PDOException;
 use PDOStatement;
+use rapidPHP\library\Db;
 
 class Exec
 {
 
     /**
      * 连接对象
-     * @var null|PDO
+     * @var Db
      */
-    private $connect = null;
+    private $db;
 
     /**
      * sql执行语句
-     * @var null
+     * @var string
      */
-    private $sql = null;
+    private $sql;
 
     /**
      * Exec constructor.
-     * @param PDO $connect
+     * @param Db $db
      * @param $sql
      */
-    public function __construct(PDO $connect, $sql)
+    public function __construct(Db &$db, $sql)
     {
         $this->sql = $sql;
-        $this->connect = $connect;
+        $this->db = &$db;
     }
-
 
     /**
      * 除过select都用这个执行
      * @param array $options
+     * @param int $index
      * @return bool
      */
-    public function execute(array $options = [])
+    public function execute(array $options = [], $index = 0)
     {
-        $result = $this->connect->prepare($this->sql);
+        try {
+            $result = $this->db->getConnect()->prepare($this->sql);
 
-        return $result->execute($options);
+            return $result->execute($options);
+        } catch (PDOException $e) {
+
+            if ($index > 2) throw $e;
+
+            if ($this->db->handlerException($e)) {
+                return $this->execute($options, $index + 1);
+            }
+
+            throw $e;
+        }
     }
 
     /**
      * 获取pdo流
      * @param array $options
      * @param int $mode
+     * @param int $index
      * @return bool|PDOStatement
      */
-    public function getPdoStatement(array $options = [], $mode = PDO::FETCH_ASSOC)
+    public function getPdoStatement(array $options = [], $mode = PDO::FETCH_ASSOC, $index = 0)
     {
-        $result = $this->connect->prepare($this->sql);
+        try {
+            $result = $this->db->getConnect()->prepare($this->sql);
 
-        $result->execute($options);
+            $result->execute($options);
 
-        $result->setFetchMode($mode);
+            $result->setFetchMode($mode);
 
-        return $result;
+            return $result;
+        } catch (PDOException $e) {
+            if ($index > 2) throw $e;
+
+            if ($this->db->handlerException($e)) {
+                return $this->getPdoStatement($options, $mode, $index + 1);
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -68,7 +93,7 @@ class Exec
      * @param int $mode
      * @return Result
      */
-    public function get($modelClass, array $options = [], $mode = PDO::FETCH_ASSOC)
+    public function get($modelClass = null, array $options = [], $mode = PDO::FETCH_ASSOC)
     {
         $statement = $this->getPdoStatement($options, $mode);
 
@@ -78,7 +103,7 @@ class Exec
 
         unset($statement);
 
-        if (!empty($result)) B()->autoTypeConvertByArray($result);
+        if (!empty($result)) B()->autoTypeConvertByAB($result);
 
         return new Result($result, $modelClass);
     }

@@ -43,7 +43,7 @@ abstract class Driver
 
     private $defaultSql = array(
         'select' => '', 'update' => '', 'delete' => '', 'insert' => '', 'query' => '',
-        'join' => '', 'on' => '', 'where' => '', 'order' => '', 'limit' => '', 'group' => '', 'having' => '',
+        'join' => '', 'on' => '', 'where' => '', 'group' => '', 'order' => '', 'limit' => '', 'having' => '',
         'func' => ''
     );
 
@@ -414,6 +414,27 @@ abstract class Driver
     public function getSql()
     {
         return join(' ', $this->sql);
+    }
+
+    /**
+     * 获取语句
+     * @return string
+     */
+    public function print()
+    {
+        $sql = $this->getSql();
+
+        $options = [];
+
+        foreach ($this->getOptions() as $name => $value) {
+            if (is_numeric($value)) {
+                $options[":{$name}"] = $value;
+            } else if (is_string($value)) {
+                $options[":{$name}"] = "'{$value}'";
+            }
+        }
+
+        return str_replace(array_keys($options), $options, $sql);
     }
 
 

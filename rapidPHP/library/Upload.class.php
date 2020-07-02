@@ -122,17 +122,13 @@ class Upload
     {
         if (empty($path)) throw new Exception('路径错误!');
 
-        $file = is_array($file) ? $file : I()->file($file);
-
         if (empty($file)) throw new Exception('文件错误!');
 
-        $fileAryObj = new AB($file);
+        $size = (int)B()->getData($file,'size');
 
-        $size = $fileAryObj->getInt('size');
+        $type = B()->getData($file,'type');
 
-        $type = $fileAryObj->getValue('type');
-
-        $tmp = $fileAryObj->getValue('tmp_name');
+        $tmp = B()->getData($file,'tmp_name');
 
         if (empty($size) || empty($type) || empty($tmp)) throw new Exception('文件参数有问题');
 
