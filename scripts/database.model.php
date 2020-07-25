@@ -2,6 +2,7 @@
 
 use rapidPHP\config\DatabaseConfig;
 use rapidPHP\library\Db;
+use rapidPHP\library\StrCharacter;
 
 require(dirname(__DIR__) . '/rapidPHP/init.php');
 
@@ -192,7 +193,7 @@ EOF;
  */
 function getModelClassString($tableName, $comment, $columns)
 {
-    $uTableName = B()->toFirstUppercase($tableName, '_');
+    $uTableName = Str()->toFirstUppercase($tableName, '_');
 
     $className = "{$uTableName}Model";
 
@@ -222,7 +223,7 @@ EOF;
 
         $columnComment = B()->getData($column, 'comment');
 
-        $uColumnName = B()->toFirstUppercase($columnName, '_');
+        $uColumnName = Str()->toFirstUppercase($columnName, '_');
 
         $columnType = B()->getData($column, 'type');
 
@@ -331,7 +332,7 @@ function make($db, $type)
 
         $modelClassString = getModelClassString($tableName, $comment, $columns);
 
-        $uTableName = B()->toFirstUppercase($tableName, '_');
+        $uTableName = Str()->toFirstUppercase($tableName, '_');
 
         write(G_C_MODEL_PATH, "{$uTableName}Model.class.php", $modelClassString);
     }

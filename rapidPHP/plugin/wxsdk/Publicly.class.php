@@ -95,7 +95,7 @@ class Publicly extends WXSdk
 
         $jsApiTicket = B()->getData($data, 'ticket');
 
-        if (empty($jsApiTicket)) throw new Exception(B()->getDate($data, 'errmsg'));
+        if (empty($jsApiTicket)) throw new Exception(Cal()->getDate($data, 'errmsg'));
 
         parent::getCacheService()->add($this->jsApiTicketCacheName, $jsApiTicket, $data['expires_in']);
 

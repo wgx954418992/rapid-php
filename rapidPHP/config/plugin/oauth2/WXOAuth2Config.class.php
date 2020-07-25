@@ -59,7 +59,7 @@ class WXOAuth2Config
      */
     public static function getUserInfoUrl($accessToken, $openId)
     {
-        return "https://api.weixin.qq.com/sns/userinfo?access_token={$accessToken}&openid={$openId}&lang=zh_CN";
+        return "https://api.weixin.qq.com/sns/userinfo?access_token={$accessToken}&openid={$openId}&language=zh_CN";
     }
 
     /**

@@ -27,7 +27,7 @@ class RedisCacheService implements CacheInterface
     {
         $this->redis = new Redis();
 
-        $this->redis->pconnect(RedisConfig::$host, RedisConfig::$port);
+        $this->redis->connect(RedisConfig::$host, RedisConfig::$port);
 
         if (!empty(RedisConfig::$auth) && !$this->redis->auth(RedisConfig::$auth))
             throw new Exception('auth Fail!');
@@ -86,7 +86,7 @@ class RedisCacheService implements CacheInterface
             return $data;
         } else {
             $this->remove($name);
-            return $data;
+            return null;
         }
     }
 

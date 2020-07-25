@@ -23,6 +23,8 @@ class Mapping
 
     private $headerName = MappingConfig::APP_MAPPING_CONFIG_HEADER_NAME;
 
+    private $templateName = MappingConfig::APP_MAPPING_CONFIG_TEMPLATE;
+
     public function __construct($path = null)
     {
         $this->path = empty($path) ? MappingConfig::$MAPPING_PATH : $path;
@@ -126,6 +128,10 @@ class Mapping
 
             $optionHeaders = $this->getMethodHeadersString($methodName, $doc);
 
+            $currentPackages = B()->getData($packages, $method->getDeclaringClass()->getName()) ?? [];
+
+            $optionTemplate = $this->getMethodTemplateString($methodName, $doc, $currentPackages);
+
             $optionTyped = $this->getMethodTypedString($methodName, $doc);
 
             $paramsString = $this->getCompileMethodParamsString($class->getNamespaceName(), $packages, $methodInfo, $url);
@@ -133,7 +139,7 @@ class Mapping
             if ($methodName !== RouterConfig::CLASS_NAME_INIT) {
                 if (!empty($paramsString)) $paramsString = 'RouterConfig::METHOD_PARAMETER => [' . $paramsString . '],';
 
-                $apps .= "'{$methodName}'=>[RouterConfig::METHOD_NAME => '{$methodName}',{$requestType}{$optionHeaders}{$optionTyped}{$paramsString}],";
+                $apps .= "'{$methodName}'=>[RouterConfig::METHOD_NAME => '{$methodName}',{$requestType}{$optionHeaders}{$optionTemplate}{$optionTyped}{$paramsString}],";
             } else {
                 $apps .= '\'' . $methodName . '\'=>[' . $paramsString . '],';
             }
@@ -234,6 +240,42 @@ class Mapping
         $headers = explode(",", $headers);
 
         return 'RouterConfig::HEADER_TYPE => \'' . serialize($headers) . '\',';
+    }
+
+    /**
+     * 获取方法headers
+     * @param $methodName
+     * @param $doc
+     * @param $currentPackages
+     * @return string
+     */
+    private function getMethodTemplateString($methodName, $doc, $currentPackages)
+    {
+        if ($methodName === RouterConfig::CLASS_NAME_INIT) return '';
+
+        if (empty($doc)) return '';
+
+        $template = Reflection::getDocValue($doc, $this->templateName);
+
+        if (empty($template)) return '';
+
+        if (is_int(strpos($template, '::class'))) {
+            $template = str_replace("::class", '', $template);
+
+            if (isset($currentPackages[$template])) {
+                $template = $currentPackages[$template] . '::class';
+            } else {
+                $template .= '::class';
+            }
+        } else if (isset($currentPackages[$template])) {
+            $template = $currentPackages[$template] . '::class';
+        } else if (is_file(Loader::getFilePath($template))) {
+            $template .= '::class';
+        } else {
+            $template = '\'' . $template . '\'';
+        }
+
+        return 'RouterConfig::TEMPLATE_TYPE => ' . $template . ',';
     }
 
     /**
@@ -345,7 +387,7 @@ class Mapping
      */
     private function writeResultUrls(string $urls)
     {
-        $date = B()->getDate();
+        $date = Cal()->getDate();
 
         $code = <<<EOF
 <?php
@@ -371,7 +413,7 @@ EOF;
      */
     private function writeResultApps(string $apps)
     {
-        $date = B()->getDate();
+        $date = Cal()->getDate();
 
 
         $code = <<<EOF

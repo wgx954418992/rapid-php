@@ -9,7 +9,7 @@ class RedisConfig
      * redis 地址
      * @var string
      */
-    public static $host = '127.0.0.1';
+    public static $host = '47.97.75.148';
 
     /**
      * redis 端口
@@ -21,7 +21,7 @@ class RedisConfig
      * redis 密码
      * @var string|null
      */
-    public static $auth = '';
+    public static $auth = 'Wgx954418992';
 
     /**
      * 数据库 默认0

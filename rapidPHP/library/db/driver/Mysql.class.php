@@ -7,14 +7,15 @@ use PDO;
 use rapid\library\rapid;
 use rapidPHP\library\Db;
 use rapidPHP\library\db\Driver;
+use rapidPHP\library\StrCharacter;
 
 class Mysql extends Driver
 {
 
 
-    public function __construct(PDO $connect, $modelClass)
+    public function __construct(Db &$db, $modelClass)
     {
-        parent::__construct($connect, $modelClass);
+        parent::__construct($db, $modelClass);
     }
 
 
@@ -46,7 +47,7 @@ class Mysql extends Driver
             $values .= "`{$index}` {$value} ,";
         }
 
-        $values = B()->deleteStringLast($values);
+        $values = Str()->deleteStringLast($values);
 
         $this->sql['query'] = "CREATE TABLE `{$this->tableName}` ({$values}) ";
 
@@ -77,7 +78,7 @@ class Mysql extends Driver
         if ($this->sql['func']) {
             $this->sql['func'] = preg_replace('#\)$#i', "{$parameterStr})", $this->sql['func']);
         } else {
-            $parameterStr = B()->deleteStringLast($parameterStr);
+            $parameterStr = Str()->deleteStringLast($parameterStr);
 
             $this->sql['func'] = "CALL `{$this->tableName}`({$parameterStr})";
         }
@@ -125,9 +126,9 @@ class Mysql extends Driver
             }
         }
 
-        $array['keys'] = B()->deleteStringLast($array['keys']);
+        $array['keys'] = Str()->deleteStringLast($array['keys']);
 
-        $array['values'] = B()->deleteStringLast($array['values']);
+        $array['values'] = Str()->deleteStringLast($array['values']);
 
         return $array;
     }
@@ -166,7 +167,7 @@ class Mysql extends Driver
             }
         }
 
-        return B()->deleteStringLast($setting);
+        return Str()->deleteStringLast($setting);
     }
 
 
@@ -341,7 +342,7 @@ class Mysql extends Driver
             $this->addOptions($value, $optionsKey);
         }
 
-        $parameterStr = B()->deleteStringLast($parameterStr);
+        $parameterStr = Str()->deleteStringLast($parameterStr);
 
         return $parameterStr . ")";
     }

@@ -3,12 +3,11 @@
 namespace AlibabaCloud\Tea\Exception;
 
 use AlibabaCloud\Tea\Request;
-use RuntimeException;
 
 /**
  * Class TeaUnableRetryError.
  */
-class TeaUnableRetryError extends RuntimeException
+class TeaUnableRetryError extends TeaError
 {
     private $lastRequest;
     private $lastException;
@@ -21,7 +20,7 @@ class TeaUnableRetryError extends RuntimeException
      */
     public function __construct($lastRequest, $lastException = null)
     {
-        parent::__construct('TeaUnableRetryError', 0, null);
+        parent::__construct([], 'TeaUnableRetryError', 0, null);
         $this->lastRequest   = $lastRequest;
         $this->lastException = $lastException;
     }
@@ -33,6 +32,6 @@ class TeaUnableRetryError extends RuntimeException
 
     public function getLastException()
     {
-        return  $this->lastException;
+        return $this->lastException;
     }
 }

@@ -43,11 +43,23 @@ class MappingConfig
      * @url /{userId}/get
      * @param :类型(int,string,bool,UserBean::class等) 参数名{$userId} 参数来源(post,get,cookie,session,file,或者$1正则匹配等)
      * @method POST
-     * @ftype api
+     * @typed api
      * @header (localhost:127.0.0.1;status:404;)
      * 可以附带输出指定header
      */
     const APP_MAPPING_CONFIG_HEADER_NAME = '@header';
+
+    /**
+     * 默认扫描mapping 的template 名
+     * @url /{userId}/get
+     * @param :类型(int,string,bool,UserBean::class等) 参数名{$userId} 参数来源(post,get,cookie,session,file,或者$1正则匹配等)
+     * @method POST
+     * @typed api
+     * @header (localhost:127.0.0.1;status:404;)
+     * @template index 或者 application\view\Index
+     * 可以附带输出指定header
+     */
+    const APP_MAPPING_CONFIG_TEMPLATE = '@template';
 
     /**
      * 获取扫描映射包路径 ，默认扫描controller 路径

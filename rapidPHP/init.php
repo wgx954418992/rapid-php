@@ -3,12 +3,14 @@
 use rapidPHP\library\AB;
 use rapidPHP\library\AR;
 use rapidPHP\library\Build;
-use rapidPHP\library\core\app\request\Input;
+use rapidPHP\library\cache\CacheService;
+use rapidPHP\library\Calendar;
 use rapidPHP\library\core\Loader;
 use rapidPHP\library\core\server\Request;
 use rapidPHP\library\Db;
 use rapidPHP\library\File;
 use rapidPHP\library\Register;
+use rapidPHP\library\StrCharacter;
 use rapidPHP\library\Verify;
 use rapidPHP\library\ViewTemplate;
 use rapidPHP\library\Xml;
@@ -21,9 +23,6 @@ define('RAPIDPHP_VERSION', '2.2.0');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
-
-//是否开启session
-define('APP_IS_SESSION', false);
 
 //运行模式是否命令运行
 define('APP_RUNNING_IS_SHELL', isset($_SERVER['SHELL']));
@@ -46,9 +45,6 @@ define('ROOT_RUNTIME', ROOT_PATH . 'running/');
 //app目录
 define('APP_PATH', ROOT_PATH . 'application/');
 
-//开启session
-if (APP_IS_SESSION === true) session_start();
-
 //引入composer自动加载类
 require ROOT_PATH . 'vendor/autoload.php' . '';
 
@@ -57,6 +53,12 @@ require ROOT_LIBRARY . 'core/Loader.class.php' . '';
 
 //初始化自动加载器
 Loader::init();
+
+//session缓存服务，$_SESSION 无效
+define('SESSION_SERVICE', CacheService::class);
+
+//如果设置了session服务则开启session
+if (SESSION_SERVICE) session_start();
 
 /**
  * 快捷获取ArrayObject类
@@ -68,7 +70,6 @@ function AB($array = null)
 {
     return AB::getInstance($array);
 }
-
 
 /**
  * 快捷获取Array类
@@ -89,6 +90,25 @@ function B()
 }
 
 /**
+ * 快捷获取StrCharacter类
+ * @return StrCharacter
+ */
+function Str()
+{
+    return StrCharacter::getInstance();
+}
+
+/**
+ * 快捷获取Calendar类
+ * @return Calendar
+ */
+function Cal()
+{
+    return Calendar::getInstance();
+}
+
+
+/**
  * 快捷获取数据库操作(db)类
  * @param null $config
  * @return mixed|Db|null
@@ -106,17 +126,6 @@ function F()
 {
     return File::getInstance();
 }
-
-/**
- * 快捷获取表单输入（input）类
- * @param Request $request
- * @return Input
- */
-function I(Request $request)
-{
-    return Input::getInstance($request);
-}
-
 
 /**
  * 获取获得寄存器操作类

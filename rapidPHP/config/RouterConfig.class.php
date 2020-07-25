@@ -34,6 +34,9 @@ class RouterConfig
     //路由header类型名
     const HEADER_TYPE = 'headerType';
 
+    //路由template类型名
+    const TEMPLATE_TYPE = 'templateType';
+
 
     //路由方法参数名
     const METHOD_PARAMETER = 'methodParameter';

@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: rapidPHP - Api Swagger
+  title: Api
   version: 1.0.0
 servers:
-  - url: https://127.0.0.1/rpaid-php/
-    description: rapidPHP测试api
+  - url: https://weixin.52yuanban.com:9701/
+    description: 开发api地址

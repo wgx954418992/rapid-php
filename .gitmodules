@@ -1,0 +1,3 @@
+[submodule "rapidPHP"]
+	path = rapidPHP
+	url = git@github.com:wgx954418992/rapid-php-core.git

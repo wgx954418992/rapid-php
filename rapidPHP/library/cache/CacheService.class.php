@@ -7,12 +7,22 @@ use Exception;
 class CacheService implements CacheInterface
 {
 
-
     /**
      * 缓存路径
      * @var string
      */
     private $cachePath;
+
+
+    /**
+     * @var CacheInterface
+     */
+    private static $instance;
+
+    public static function getInstance(): CacheInterface
+    {
+        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+    }
 
     /**
      * CacheService constructor.
@@ -24,16 +34,6 @@ class CacheService implements CacheInterface
 
         if (!is_dir($this->cachePath) && !mkdir($this->cachePath, 0777, true))
             throw new Exception('创建缓存目录失败!');
-    }
-
-    /**
-     * @var CacheInterface
-     */
-    private static $instance;
-
-    public static function getInstance(): CacheInterface
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
 
     /**
@@ -88,7 +88,7 @@ class CacheService implements CacheInterface
             return $data;
         } else {
             $this->remove($name);
-            return $data;
+            return null;
         }
     }
 

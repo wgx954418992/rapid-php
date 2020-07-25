@@ -2,12 +2,10 @@
 
 namespace AlibabaCloud\Tea\Exception;
 
-use RuntimeException;
-
 /**
  * Class TeaRetryError.
  */
-class TeaRetryError extends RuntimeException
+class TeaRetryError extends TeaError
 {
     /**
      * TeaRetryError constructor.
@@ -18,6 +16,6 @@ class TeaRetryError extends RuntimeException
      */
     public function __construct($message = '', $code = 0, $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct([], $message, $code, $previous);
     }
 }

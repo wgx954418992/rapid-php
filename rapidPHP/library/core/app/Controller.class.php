@@ -3,11 +3,19 @@
 namespace rapidPHP\library\core\app;
 
 use rapid\library\rapid;
+use rapidPHP\library\core\Language;
 use rapidPHP\library\core\server\Request;
 use rapidPHP\library\core\server\Response;
+use rapidPHP\library\ViewTemplate;
 
 class Controller
 {
+
+    /**
+     * 默认语言
+     * @var string
+     */
+    private $defaultLang = 'zh';
 
     /**
      * @var Request
@@ -38,13 +46,6 @@ class Controller
         return $this->request;
     }
 
-    /**
-     * @param Request $request
-     */
-    public function setRequest(Request $request): void
-    {
-        $this->request = $request;
-    }
 
     /**
      * @return Response
@@ -55,11 +56,19 @@ class Controller
     }
 
     /**
-     * @param Response $response
+     * @return string
      */
-    public function setResponse(Response $response): void
+    public function getDefaultLang(): string
     {
-        $this->response = $response;
+        return $this->defaultLang;
+    }
+
+    /**
+     * @param string $defaultLang
+     */
+    public function setDefaultLang(string $defaultLang): void
+    {
+        $this->defaultLang = $defaultLang;
     }
 
     /**
@@ -89,5 +98,29 @@ class Controller
     public function toUrl(): string
     {
         return call_user_func_array([$this->getRequest(), 'toUrl'], func_get_args());
+    }
+
+    /**
+     * 预先生成view模板
+     * @param $name
+     * @return ViewTemplate
+     */
+    public function display($name)
+    {
+        return View::display($this, $name);
+    }
+
+    /**
+     * 翻译
+     * @param $word
+     * @param array $arg
+     * @param string $lang
+     * @return mixed|string|string[]
+     */
+    public function t($word, $arg = [], $lang = '')
+    {
+        if (empty($lang)) $lang = $this->defaultLang;
+
+        return Language::translate($word, $lang, $arg);
     }
 }

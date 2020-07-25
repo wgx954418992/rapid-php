@@ -2,7 +2,6 @@
 
 namespace rapidPHP\library\db;
 
-use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -31,7 +30,7 @@ class Exec
     public function __construct(Db &$db, $sql)
     {
         $this->sql = $sql;
-        $this->db = &$db;
+        $this->db = $db;
     }
 
     /**
@@ -47,7 +46,6 @@ class Exec
 
             return $result->execute($options);
         } catch (PDOException $e) {
-
             if ($index > 2) throw $e;
 
             if ($this->db->handlerException($e)) {

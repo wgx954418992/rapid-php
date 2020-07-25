@@ -6,6 +6,8 @@ namespace rapidPHP\library\core\app\exception;
 use Exception;
 use rapidPHP\config\RouterConfig;
 use rapidPHP\library\core\app\Controller;
+use rapidPHP\library\core\server\Request;
+use rapidPHP\library\core\server\Response;
 use rapidPHP\library\RESTFullApi;
 
 class ExceptionController extends Controller implements ExceptionInterface
@@ -24,7 +26,11 @@ class ExceptionController extends Controller implements ExceptionInterface
     {
         $typed = B()->getData($appMethodData, RouterConfig::TYPED_TYPE);
 
-        if (strtolower($typed) === 'api') {
+        $requestAccept = B()->getData($this->getRequest()->header(), 'Accept');
+
+        if (strtolower($typed) === 'api'
+            || strtolower($typed) === 'raw'
+            || (strtolower($typed) === 'auto' && $requestAccept === '*/*')) {
             $this->getResponse()->setHeader(['Content-Type:text/json']);
 
             $json = RESTFullApi::error($exception->getMessage(), $exception->getCode())

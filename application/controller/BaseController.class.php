@@ -2,8 +2,9 @@
 
 namespace application\controller;
 
+use application\config\QueueConfig;
 use application\model\AppUserModel;
-use application\server\RunSHttpServer;
+use application\service\QueueService;
 use application\service\UserService;
 use Exception;
 use rapidPHP\library\core\app\Controller;
@@ -25,8 +26,14 @@ class BaseController extends Controller
      */
     public function root()
     {
-        if(defined('SWOOLE_HTTP_SERVER')){
-            RunSHttpServer::getInstance()->addTask(json_encode(['type' => 'sendEmail', 'data' => 1]));
+        if (defined('SWOOLE_HTTP_SERVER')) {
+            QueueService::getInstance()->addQueue(
+                QueueConfig::TYPE_SEND_MSG,
+                ['telephone' => 'xxx'],
+                null,
+                time(),
+                null
+            );
         }
 
         $this->getResponse()->write('root----');

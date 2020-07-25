@@ -9,6 +9,7 @@ use rapid\library\rapid;
 use rapidPHP\config\DatabaseConfig;
 use rapidPHP\library\core\Loader;
 use rapidPHP\library\db\Driver;
+use rapidPHP\library\db\driver\Mysql;
 use rapidPHP\library\db\Exec;
 use ReflectionException;
 
@@ -25,7 +26,7 @@ class Db
      * 数据库连接配置
      * @var array
      */
-    protected $configs = null;
+    protected $config = null;
 
     /**
      * @var array
@@ -35,7 +36,7 @@ class Db
     /**
      * 连接数据库
      * @param array $config
-     * @throws Exception
+     * @throws PDOException
      */
     public function __construct(array $config)
     {
@@ -45,17 +46,13 @@ class Db
 
         $password = self::getConfigPassword($config);
 
-        try {
-            $db = new PDO($string, $username, $password);
+        $db = new PDO($string, $username, $password);
 
-            $this->setConnect($db)->setConfig($config);
+        $this->setConnect($db)->setConfig($config);
 
-            $code = $this->getConfigCode($config);
+        $code = $this->getConfigCode($config);
 
-            $code ? $this->query("SET NAMES {$code}")->execute() : null;
-        } catch (PDOException $e) {
-            throw new Exception($e->getMessage());
-        }
+        $code ? $this->query("SET NAMES {$code}")->execute() : null;
     }
 
     /**
@@ -127,7 +124,7 @@ class Db
      * @param null|array $config
      * @return string
      */
-    public static function getConfigMd5($config = null)
+    public static function getConfigMd5(&$config = null)
     {
         if (!$config) if (isset(DatabaseConfig::$default)) $config = DatabaseConfig::$default;
 
@@ -245,7 +242,7 @@ class Db
      */
     public function getConfig()
     {
-        return $this->configs;
+        return $this->config;
     }
 
     /**
@@ -255,7 +252,7 @@ class Db
      */
     public function setConfig($config)
     {
-        $this->configs = $config;
+        $this->config = $config;
         return $this;
     }
 
@@ -269,15 +266,13 @@ class Db
      */
     public function table($modelClass = null)
     {
-        $pdo = $this->getConnect();
-
         $config = $this->getConfig();
 
         $driver = $this->getConfigDriver($config);
 
         if (!is_file(Loader::getFilePath($driver))) throw new Exception('driver error!');
 
-        $driver = B()->reflectionInstance($driver, [$pdo, $modelClass]);
+        $driver = B()->reflectionInstance($driver, [&$this, $modelClass]);
 
         if ($driver instanceof Driver) return $driver;
 
@@ -360,7 +355,19 @@ class Db
 
         $this->close($configMd5);
 
-        return self::getInstance($config);
+        $string = self::getConfigString($config);
+
+        $username = self::getConfigUsername($config);
+
+        $password = self::getConfigPassword($config);
+
+        $db = new PDO($string, $username, $password);
+
+        $this->setConnect($db)->setConfig($config);
+
+        self::$dbs[$configMd5] = $db;
+
+        return $this;
     }
 
     /**

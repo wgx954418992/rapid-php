@@ -3,6 +3,7 @@
 namespace rapidPHP\library\core\server\request;
 
 use rapidPHP\library\core\server\Request;
+use ReflectionException;
 
 class CGIRequest extends Request
 {
@@ -17,18 +18,18 @@ class CGIRequest extends Request
      */
     public function __construct()
     {
-        $server = self::getRenameServer($_SERVER);
+        $serverInfo = self::getRenameServerInfo($_SERVER);
 
-        $header = self::getAllHeaders($server);
+        $header = self::getAllHeaders($serverInfo);
 
         unset($header['Cookie']);
 
-        parent::__construct($_GET, $_POST, $_FILES, $_COOKIE, $header, $server, file_get_contents('php://input'));
+        parent::__construct(null, $_GET, $_POST, $_FILES, $_COOKIE, session_id(), $header, $serverInfo, file_get_contents('php://input'));
     }
 
     /**
      * 快速获取实例对象
-     * @return Request
+     * @return Request|CGIRequest
      */
     public static function getInstance()
     {

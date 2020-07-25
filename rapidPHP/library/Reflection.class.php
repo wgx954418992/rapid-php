@@ -4,6 +4,7 @@
 namespace rapidPHP\library;
 
 
+use application\controller\ApiUserController;
 use Exception;
 use rapidPHP\config\AppConfig;
 use rapidPHP\library\core\Loader;
@@ -239,7 +240,7 @@ class Reflection extends ReflectionClass
             $paramType = '\\' . $packages[$paramType] . '::class';
         } else {
             if (self::getInstance($namespace . '\\' . $paramType) != null) {
-                return $namespace . '\\' . $paramType;
+               return $namespace . '\\' . $paramType;
             }
 
             $paramType = B()->getData(explode('|', $paramType), 0);

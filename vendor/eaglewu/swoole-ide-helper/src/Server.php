@@ -314,11 +314,11 @@ class Server
      * 此函数用于在task进程中通知worker进程，投递的任务已完成。此函数可以传递结果数据给worker进程。
      * finish方法可以连续多次调用，Worker进程会多次触发onFinish事件
      * 在onTask回调函数中调用过finish方法后，return数据依然会触发onFinish事件
-     * @param string $data
+     * @param $data
      * @return void
      * @note 使用swoole_server::finish函数必须为Server设置onFinish回调函数。此函数只可用于task进程的onTask回调中
      */
-    public function finish(string $data)
+    public function finish($data)
     {
     }
 

@@ -38,6 +38,8 @@ class AB
     {
         if ($data === null) $data = [];
 
+        if (is_object($data)) $data = (array)$data;
+
         $params = B()->invokeObjectSetterMethods($this, $data);
 
         foreach ($params as $key => $param) $data = AR()->delete($data, array_keys($param));

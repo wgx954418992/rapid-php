@@ -151,6 +151,17 @@ class ViewTemplate
     }
 
     /**
+     * @param AB $data
+     * @return $this
+     */
+    public function setData(AB $data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
      * 设置变量
      * @param $key :key或者数据
      * @param string $value 值
@@ -425,7 +436,7 @@ class ViewTemplate
 
         $dir = str_replace(ROOT_PATH, "/", dirname($fileSrc));
 
-        $appRootUrl = B()->deleteStringLast($this->controller->getHostUrl());
+        $appRootUrl = Str()->deleteStringLast($this->controller->getHostUrl());
 
         foreach ($list as $item => $value) {
 
@@ -458,7 +469,7 @@ class ViewTemplate
      */
     private function putCompileResultHeader($compileResult)
     {
-        return "<?php /** cache Time " . B()->getDate() . " */ if(!defined('SWOOLE_HTTP_SERVER')) defined('ROOT_PATH') or die();?>\n{$compileResult}";
+        return "<?php /** cache Time " . Cal()->getDate() . " */ if(!defined('SWOOLE_HTTP_SERVER')) defined('ROOT_PATH') or die();?>\n{$compileResult}";
     }
 
     /**
@@ -531,7 +542,9 @@ class ViewTemplate
             return $isReturnContent ? $content : null;
         }
 
-        if (is_file($fileSrc) && $fileContext = $this->readFile($fileSrc)) {
+        if (is_file($fileSrc)) {
+
+            $fileContext = $this->readFile($fileSrc);
 
             $string = $this->preIncludes($fileContext);
 
@@ -540,7 +553,6 @@ class ViewTemplate
             $compileResult = $this->putCompileResultHeader($compileResult);
 
             if ($fileName = $this->cache($compileResult, $this->getCacheFilePath())) {
-
                 $content = $this->getIncludeContents($fileName);
 
                 $this->controller->getResponse()->write($content);
@@ -574,5 +586,46 @@ class ViewTemplate
     public function getController()
     {
         return $this->controller;
+    }
+
+    /**
+     * 获取网站根url
+     * @return Controller
+     */
+    public function getHostUrl(): string
+    {
+        return $this->controller->getHostUrl();
+    }
+
+    /**
+     * 通过参数生成url
+     * @param bool $meter
+     * @param bool $isDecode
+     * @return Controller
+     */
+    public function getUrl($meter = false, $isDecode = true): string
+    {
+        return $this->controller->getUrl($meter, $isDecode);
+    }
+
+    /**
+     * 通过参数生成url
+     * @return Controller
+     */
+    public function toUrl(): string
+    {
+        return call_user_func_array([$this->controller->getRequest(), 'toUrl'], func_get_args());
+    }
+
+    /**
+     * 翻译
+     * @param $word
+     * @param array $arg
+     * @param string $lang
+     * @return mixed|string|string[]
+     */
+    public function t($word, $arg = [], $lang = '')
+    {
+        return $this->controller->t($word, $arg,$lang);
     }
 }

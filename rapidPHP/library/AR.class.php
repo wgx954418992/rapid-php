@@ -32,7 +32,7 @@ class AR
      *      'b'=>2
      * )
      */
-    public function delete(array $array, $key, $sort = false, $isTow = false)
+    public function delete(?array $array, $key, $sort = false, $isTow = false)
     {
         $keys = !is_array($key) ? explode(',', $key) : $key;
 
@@ -63,7 +63,7 @@ class AR
      * @return array
      * array('a'=>1,'c'=>3)
      */
-    public function getArray(array $array, array $key, $isSort = false)
+    public function getArray(?array $array, array $key, $isSort = false)
     {
         $newArray = [];
 
@@ -94,13 +94,14 @@ class AR
         return $array;
     }
 
+
     /**
      * 获取数组里面第一个指定key的value
      * @param array $array
      * @param $key
      * @return mixed|null
      */
-    public function getArrayFirstValue(array $array, $key)
+    public function getArrayFirstValue(array $array, $key = null)
     {
         if (is_array($key)) {
             $result = [];
@@ -113,6 +114,8 @@ class AR
             }
 
             return $result;
+        } else if (empty($key)) {
+            foreach ($array as $value) return $value;
         } else {
             foreach ($array as $value) return B()->getData($value, $key);
         }
@@ -266,6 +269,7 @@ class AR
      * )
      * @param $key =>'key'
      * @param null $of
+     * @param bool $isOne
      * @return array
      * array(
      *      'value'=>array(
@@ -278,7 +282,7 @@ class AR
      *      )
      * )
      */
-    public function arrayColumn(array $array, $key, $of = null)
+    public function arrayColumn(array $array, $key, $of = null, $isOne = false)
     {
         $newArray = [];
 
@@ -287,7 +291,12 @@ class AR
 
                 $index = B()->getData($value, $key);
 
-                $newArray[$index][] = $value;
+                if ($isOne) {
+                    $newArray[$index] = $value;
+                } else {
+                    $newArray[$index][] = $value;
+
+                }
             }
         } else {
             return array_column($array, $key, $of);

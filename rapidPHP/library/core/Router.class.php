@@ -8,8 +8,11 @@ use rapid\library\rapid;
 use rapidPHP\config\AppConfig;
 use rapidPHP\config\MappingConfig;
 use rapidPHP\config\RouterConfig;
-use rapidPHP\library\core\app\exception\ExceptionController;
+use rapidPHP\library\AB;
+use rapidPHP\library\core\app\Context;
+use rapidPHP\library\core\app\Controller;
 use rapidPHP\library\core\app\exception\ExceptionInterface;
+use rapidPHP\library\core\app\View;
 use rapidPHP\library\core\app\ViewInterface;
 use rapidPHP\library\core\server\Request;
 use rapidPHP\library\core\server\request\SWebSocketRequest;
@@ -23,6 +26,11 @@ use ReflectionMethod;
 
 class Router
 {
+
+    /**
+     * @var Context
+     */
+    private $context;
 
     /**
      * Request
@@ -51,19 +59,22 @@ class Router
     const __ROUTE__NAME = '__ROUTE__';
 
     /**
-     * App constructor.
-     * @param Request $request
-     * @param Response $response
-     * @param ExceptionInterface $ex
+     * Router constructor.
+     * @param Context $context
      * @throws Exception
      */
-    public function __construct(ExceptionInterface $ex, Request $request, Response $response)
+    public function __construct(Context $context)
     {
-        $this->ex = $ex;
+        $this->context = $context;
 
-        $this->request = $request;
+        /** @var Request request */
+        $this->request = $context->resolveArgument(Request::class);
 
-        $this->response = $response;
+        /** @var Response response */
+        $this->response = $context->resolveArgument(Response::class);
+
+        /** @var ExceptionInterface ex */
+        $this->ex = $context->resolveArgument(ExceptionInterface::class);
 
         $this->sweepControllerMapping();
 
@@ -79,14 +90,10 @@ class Router
      */
     private function initRouterUri()
     {
-        $input = I($this->request);
-
-        $uri = trim($input->get($this::__ROUTE__NAME), '/');
+        $uri = trim($this->request->get($this::__ROUTE__NAME), '/');
 
         if (empty($uri)) {
             $uri = $this->request->getDocumentRoot();
-        } else {
-            unset($this->request->get[$this::__ROUTE__NAME]);
         }
 
         $this->__ROUTE__URI__ = $uri;
@@ -302,16 +309,13 @@ class Router
      */
     private function getUriAppMethodParameterValue($name, $doType, $default, $type, $urlParam)
     {
-        if ($type === Request::class) {
-            return $this->request;
-        } else if ($type === Response::class) {
-            return $this->response;
-        }
+        $resolveArgument = $this->context->resolveArgument($type);
+        if ($resolveArgument !== false) return $resolveArgument;
 
         if (substr($doType, 0, 1) == '$') {
             $doValue = B()->getData($urlParam, substr($doType, 1));
         } else {
-            $doValue = I($this->request)->getRequest($name, $doType);
+            $doValue = $this->request->getParam($name, $doType);
         }
 
         $value = B()->contrast($doValue, $default);
@@ -364,6 +368,8 @@ class Router
 
             if (strtolower(substr($method->getName(), 0, 3)) !== 'set') continue;
 
+            $currentPackages = B()->getData($packages, $method->getDeclaringClass()->getName()) ?? [];
+
             $params = $methodInfo[Reflection::CLASS_METHOD_PARAMS_NAME];
 
             if (empty($params)) continue;
@@ -371,7 +377,10 @@ class Router
             foreach ($params as $name => $param) {
                 $doType = Reflection::getParamDocDoTypeString($param);
 
-                $type = Reflection::getParamDocTypeString($reflection->getNamespaceName(), $packages, $param);
+                $type = Reflection::getParamDocTypeString($reflection->getNamespaceName(),
+                    $currentPackages, $param, false);
+
+                $type = str_replace(['::class', '-'], '', $type);
 
                 $default = B()->getData($param, Reflection::METHOD_PARAM_DEFAULT_NAME);
 
@@ -482,6 +491,7 @@ class Router
         $classObject = null;
 
         try {
+            /** @var Controller $classObject */
             $classObject = $this->newClass($className, $methodType, $urlParam);
 
             if (method_exists($classObject, $methodName)) {
@@ -494,17 +504,21 @@ class Router
                 $result = $this->callUserFuncArray($classObject, $methodName, $dataBeanClassName, $parameter);
 
                 if ($result instanceof RESTFullApi) {
-                    if (!($this->response instanceof SWebSocketResponse)) {
+                    $data = $result->getResult();
+
+                    if ($this->response instanceof SWebSocketResponse) {
+                        $data[WEBSOCKET_RETURN_KEY] = $this->request->getParam(WEBSOCKET_RETURN_KEY);
+                    } else {
                         $this->response->setHeader(['Content-Type:text/json']);
                     }
 
-                    return $result->toJson();
+                    return json_encode($data);
                 } else if ($result instanceof ViewTemplate) {
                     $result->view();
                 } else if ($result instanceof ViewInterface) {
                     $result->display();
                 } else {
-                    return $result;
+                    return $this->handlerOtherResult($classObject, $result, $appMethodData);
                 }
             }
         } catch (Exception $e) {
@@ -515,28 +529,97 @@ class Router
     }
 
     /**
-     * 运行
-     * @param Request $request
-     * @param Response $response
-     * @param ExceptionInterface $ex
+     * 处理其他结果类型
+     * @param Controller $classObject
+     * @param $result
+     * @param $appMethodData
+     * @return array|string|null
+     * @throws ReflectionException
+     * @throws Exception
      */
-    public static function run(ExceptionInterface $ex, Request $request, Response $response)
+    private function handlerOtherResult(Controller $classObject, $result, $appMethodData)
     {
-        if (!($request instanceof SWebSocketRequest)) {
-            $response->header('Access-Control-Allow-Origin: *');
+        $typed = B()->getData($appMethodData, RouterConfig::TYPED_TYPE);
 
-            $response->header("Content-type: text/html; charset=utf-8");
+        $requestAccept = B()->getData($this->request->header(), 'Accept');
+
+        if (strtolower($typed) === 'raw') {
+            if (is_array($result) || is_object($result)) {
+                return json_encode($result);
+            }
+
+            return $result;
+        } elseif (strtolower($typed) === 'api') {
+            return RESTFullApi::success($result)->toJson();
+        } elseif (strtolower($typed) === 'view') {
+            $this->handlerViewResult($classObject, $result, $appMethodData);
+        } else if (strtolower($typed) === 'auto') {
+            if ($requestAccept === '*/*') {
+                return RESTFullApi::success($result)->toJson();
+            } else {
+                $this->handlerViewResult($classObject, $result, $appMethodData);
+            }
         }
+        return null;
+    }
 
+    /**
+     * 处理view结果
+     * @param Controller $classObject
+     * @param $result
+     * @param $appMethodData
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    private function handlerViewResult(Controller $classObject, $result, $appMethodData)
+    {
+        $template = B()->getData($appMethodData, RouterConfig::TEMPLATE_TYPE);
+
+        if (is_file(Loader::getFilePath($template))) {
+            $viewTemplate = B()->reflectionInstance($template, [$classObject]);
+
+            if (is_string($result)) $result = ['data' => $result];
+
+            if ($viewTemplate instanceof ViewInterface) {
+                $viewTemplate->setData($result);
+
+                $viewTemplate->display();
+            }
+        } else {
+            $view = View::display($classObject, $template);
+
+            if ($result instanceof AB) {
+                $view->setData($result);
+            } else {
+                $view->assign($result);
+            }
+
+            $view->view();
+        }
+    }
+
+    /**
+     * 运行
+     * @param Context $context
+     */
+    public static function run(Context $context)
+    {
         try {
-            if (is_null($ex)) $ex = new ExceptionController($request, $response);
+            $self = new self($context);
 
-            $self = new self($ex, $request, $response);
+            if (!($self->request instanceof SWebSocketRequest)) {
+                $self->response->header('Access-Control-Allow-Origin: *');
+
+                $self->response->header("Content-type: text/html; charset=utf-8");
+            }
 
             $result = $self->matching($self->getCurrentUri());
 
-            if ($result === false) $ex->notFound($self->getCurrentUri());
+            if ($result === false) $self->ex->notFound($self->getCurrentUri());
         } catch (Exception $e) {
+            /** @var Response $response */
+            $response = $context->resolveArgument(Response::class);
+
             $response->write($e->getMessage());
         }
     }

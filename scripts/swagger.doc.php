@@ -18,11 +18,15 @@ class swagger
 
     private $components = [];
 
+    private $acceptTyped = ['auto', 'api', ''];
+
     private $urlName = MappingConfig::APP_MAPPING_CONFIG_URL_NAME;
 
     private $paramName = MappingConfig::APP_MAPPING_CONFIG_PARAM_NAME;
 
     private $methodName = MappingConfig::APP_MAPPING_CONFIG_METHOD_NAME;
+
+    private $typedName = MappingConfig::APP_MAPPING_CONFIG_TYPE_NAME;
 
     private static $REQUEST_PARAM_TYPE = [
         AppConfig::REQUEST_PARAM_GET => 'query',
@@ -55,10 +59,19 @@ class swagger
      * @param string $type
      * @param null $path
      * @param null $appendFile
+     * @param null $acceptTyped
      * @throws Exception
      */
-    public function start($type = 'yaml', $path = null, $appendFile = null)
+    public function start($type = 'yaml', $path = null, $appendFile = null, $acceptTyped = null)
     {
+        if (!empty($acceptTyped)) {
+            if (is_string($acceptTyped)) $acceptTyped = explode("|", $acceptTyped);
+
+            foreach ($acceptTyped as $value) {
+                $this->acceptTyped[] = strtolower($value);
+            }
+        }
+
         $read = F()->readDirFiles($this->path);
 
         foreach ($read as $file) {
@@ -118,11 +131,17 @@ class swagger
 
             if (empty($url)) continue;
 
+            $typed = strtolower(Reflection::getDocValue($doc, $this->typedName));
+
+            if (array_search($typed, $this->acceptTyped) === false) continue;
+
             $url = $classUrl . $url;
 
             $requestType = $this->getMethodRequestType($doc);
 
-            $parameters = $this->getCompileMethodParams($class->getNamespaceName(), $packages, $methodInfo, $requestType, $url);
+            $currentPackages = B()->getData($packages, $method->getDeclaringClass()->getName()) ?? [];
+
+            $parameters = $this->getCompileMethodParams($class->getNamespaceName(), $currentPackages, $methodInfo, $requestType, $url);
 
             $data = [
                 'summary' => $this->getMethodDocRemark($doc),
@@ -173,7 +192,7 @@ class swagger
 
             foreach ($params as $name => $param) {
 
-                $type = $this->getParamType($reflection->getNamespaceName(), $packages, $param,);
+                $type = $this->getParamType($reflection->getNamespaceName(), $packages, $param);
 
                 $properties[$name] = $type;
             }
@@ -424,8 +443,10 @@ $path = B()->getData($argv, 2);
 
 $appendFile = B()->getData($argv, 3);
 
+$acceptTyped = B()->getData($argv, 4);
+
 try {
-    (new swagger())->start($type, $path, $appendFile);
+    (new swagger())->start($type, $path, $appendFile, $acceptTyped);
 } catch
 (Exception $e) {
     exit($e->getMessage());

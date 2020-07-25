@@ -2,7 +2,6 @@
 
 namespace rapidPHP\library\db;
 
-use PDO;
 use rapid\library\rapid;
 use rapidPHP\library\Db;
 
@@ -12,9 +11,9 @@ abstract class Driver
 
     /**
      * 连接对象
-     * @var null|PDO
+     * @var Db
      */
-    private $connect = null;
+    private $db;
 
     /**
      * 对应的model
@@ -55,12 +54,12 @@ abstract class Driver
 
     /**
      * driver constructor.
-     * @param PDO $connect
+     * @param Db $db
      * @param string $modelClass
      */
-    public function __construct(PDO $connect, $modelClass = null)
+    public function __construct(Db &$db, $modelClass = null)
     {
-        $this->connect = $connect;
+        $this->db = $db;
         $this->sql = $this->defaultSql;
         $this->modelClass = $modelClass;
         $this->tableName = $this->getTableName($modelClass);
@@ -482,7 +481,7 @@ abstract class Driver
     {
         $options = $this->getOptions($options);
 
-        $exec = new Exec($this->connect, $this->getSql());
+        $exec = new Exec($this->db, $this->getSql());
 
         return $exec->execute($options);
     }
@@ -498,7 +497,7 @@ abstract class Driver
     {
         $options = $this->getOptions($options);
 
-        $exec = new Exec($this->connect, $this->getSql());
+        $exec = new Exec($this->db, $this->getSql());
 
         return $exec->get($this->modelClass, $options, $mode);
     }
