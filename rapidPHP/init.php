@@ -181,3 +181,4 @@ function VT($view)
 
     return null;
 }
+
