@@ -6,7 +6,6 @@ use rapidPHP\library\Build;
 use rapidPHP\library\cache\CacheService;
 use rapidPHP\library\Calendar;
 use rapidPHP\library\core\Loader;
-use rapidPHP\library\core\server\Request;
 use rapidPHP\library\Db;
 use rapidPHP\library\File;
 use rapidPHP\library\Register;

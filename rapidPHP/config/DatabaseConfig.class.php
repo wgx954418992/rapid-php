@@ -19,7 +19,7 @@ class DatabaseConfig
         'header' => 'host',//连接头 (host|Server)
         'host' => '127.0.0.1',//地址
         'driver' => Mysql::class,//驱动
-        'database' => 'test',//数据库
+        'database' => 'rapid-php',//数据库
         'databaseType' => 'mysql',//数据库类型(sqlsrv|mysql|...)
         'databaseConnectName' => 'dbname',//数据库连接名称(sqlsrv:database,mysql:dbname,...)
         'databaseCode' => 'utf8mb4',//数据库编码

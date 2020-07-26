@@ -2,7 +2,7 @@
 use rapidPHP\config\RouterConfig;
 
 /**
- * 该文件由RapidPHP自动生成，生成时间：2020-07-26 02:30:41
+ * 该文件由RapidPHP自动生成，生成时间：2020-07-26 02:57:23
  * 可以访问的类，接口，不声明则没权限访问
  */
 return [
