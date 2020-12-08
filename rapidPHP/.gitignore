@@ -1,6 +1,0 @@
-/.idea
-
-*.DS_Store
-
-config/DatabaseConfig.class.php
-config/RedisConfig.class.php
