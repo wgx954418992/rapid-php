@@ -1,21 +1,37 @@
 {
+  "name": "wgx954418992/rapid-php",
+  "version": "3.1.1",
+  "description": "Fast, simple and practical php framework",
+  "keywords": [
+    "framework",
+    "rapidphp",
+    "restful",
+    "fastapi",
+    "api"
+  ],
+  "homepage": "https://www.rapid-framework.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Renew",
+      "email": "wgx954418992@qq.com"
+    }
+  ],
   "require": {
-    "ext-dom": "*",
-    "ext-xmlwriter": "*",
-    "ext-json": "*",
-    "ext-simplexml": "*",
-    "ext-libxml": "*",
-    "ext-pdo": "*",
-    "ext-sockets": "*",
-    "ext-fileinfo": "*",
-    "ext-openssl": "*",
-    "ext-curl": "*",
-    "ext-gd": "*",
-    "ext-bcmath": "*",
-    "ext-mbstring": "*",
-    "alipaysdk/easysdk": "^1.2"
+    "wgx954418992/rapid-framework": "^3.1.1"
   },
-  "require-dev": {
-    "eaglewu/swoole-ide-helper": "dev-master"
+  "autoload": {
+    "files": [],
+    "psr-4": {
+      "apps\\": "apps/"
+    }
+  },
+  "scripts": {
+
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true
   }
 }
