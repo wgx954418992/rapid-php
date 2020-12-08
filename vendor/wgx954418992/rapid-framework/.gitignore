@@ -1,0 +1,7 @@
+/.idea
+/apps
+/vendor
+
+.DS_Store
+
+*.sql

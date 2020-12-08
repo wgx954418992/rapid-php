@@ -7,8 +7,10 @@ define('PATH_APP', str_replace('\\', '/', __DIR__) . '/');
 
 require dirname(dirname(__DIR__)) . '/vendor/autoload.php' . '';
 
-Init::load();
+$init = new Init();
 
-$app = new CGIApplication();
+$init->parseConfig();
+
+$app = new CGIApplication($init);
 
 $app->run();

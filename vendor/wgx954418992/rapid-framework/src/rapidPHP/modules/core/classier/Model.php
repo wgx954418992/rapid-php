@@ -1,0 +1,99 @@
+<?php
+
+namespace rapidPHP\modules\core\classier;
+
+
+use Exception;
+use rapidPHP\modules\common\classier\AR;
+use rapidPHP\modules\common\classier\Xml;
+use rapidPHP\modules\reflection\classier\Utils;
+
+class Model
+{
+
+    /**
+     * 获取模式
+     */
+    const MODEL_GET = 1;
+
+    /**
+     * 删除模式
+     */
+    const MODEL_DEL = 2;
+
+    /**
+     * Model constructor.
+     * @param $data
+     * @throws Exception
+     */
+    public function __construct($data = null)
+    {
+        Utils::getInstance()->toObject($this, $data ? $data : []);
+    }
+
+    /**
+     * 获取数据
+     * @param array $names
+     * @param int $mode 1获取names下的values 2,排除names下的values
+     * @return array
+     */
+    public function toData(?array $names = null, int $mode = self::MODEL_GET): array
+    {
+        $array = (array)$this;
+
+        if (!empty($names)) {
+            switch ($mode) {
+                case self::MODEL_GET:
+                    return AR::getInstance()->getArray($array, $names);
+                case self::MODEL_DEL:
+                    return AR::getInstance()->delete($array, $names);
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * 转xml
+     * @param array $names
+     * @return string
+     */
+    public function toXml(?array $names = null): string
+    {
+        return Xml::getInstance()->encode($this->toData($names));
+    }
+
+    /**
+     * 转json
+     * @param array $names
+     * @return string
+     */
+    public function toJson(?array $names = null): string
+    {
+        return json_encode($this->toData($names));
+    }
+
+    /**
+     * 删除指定value
+     * @param $names
+     * @return $this
+     */
+    public function delValue($names)
+    {
+        if (is_array($names)) {
+            foreach ($names as $key) if (isset($this->$key)) unset($this->$key);
+        } else {
+            unset($this->$names);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+}
