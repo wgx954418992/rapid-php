@@ -1,6 +1,7 @@
-<?php /** cache Time 2020-12-07 19:40:02 */ defined('PATH_APP') or die();?>
+<?php /** cache Time 2020-12-09 23:10:18 */ defined('PATH_APP') or die();?>
 <?php
 
+use apps\app\classier\model\UserModel;
 use function rapidPHP\VT;
 
 ?>
@@ -14,5 +15,13 @@ use function rapidPHP\VT;
 <h1>欢迎使用RapidPHP框架 <?= RAPIDPHP_VERSION ?></h1>
 <hr>
 <p><?= VT($this)->get('msg') ?></p>
+<hr>
+<?php $users = VT($this)->get('users') ?? [] ?>
+
+<?php
+/** @var UserModel $user */
+foreach ($users as $user) :?>
+    <?= $user->getId() ?> - <?= $user->getName() ?><br/>
+<?php endforeach; ?>
 </body>
 </html>

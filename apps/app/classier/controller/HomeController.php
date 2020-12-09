@@ -2,6 +2,8 @@
 
 namespace apps\app\classier\controller;
 
+use apps\app\classier\database\sql\UserDao;
+use Exception;
 use rapidPHP\modules\server\classier\interfaces\Request;
 
 /**
@@ -22,10 +24,13 @@ class HomeController extends BaseController
      * @template index
      * @param mixed $get get aa
      * @return string[]
+     * @throws Exception
      */
     public function index($get)
     {
-        return ['msg' => $get ? '您传入了get参数' . $get : '您没有传入get 参数'];
+        $users = UserDao::getInstance()->getUsers();
+
+        return ['users' => $users, 'msg' => $get ? '您传入了get参数' . $get : '您没有传入get 参数'];
     }
 
     /**

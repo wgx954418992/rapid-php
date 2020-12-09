@@ -16,6 +16,12 @@ class ActionException extends Exception
     private $action;
 
     /**
+     * @var string|int
+     */
+    protected $code;
+
+
+    /**
      * ActionException constructor.
      * @param string $message
      * @param int $code
@@ -24,7 +30,9 @@ class ActionException extends Exception
      */
     public function __construct($message = "", $code = 0, ?Action $action = null, Throwable $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, (int)$code, $previous);
+
+        $this->code = $code;
 
         $this->action = $action;
     }
@@ -52,4 +60,5 @@ class ActionException extends Exception
     {
         return $this->action;
     }
+
 }

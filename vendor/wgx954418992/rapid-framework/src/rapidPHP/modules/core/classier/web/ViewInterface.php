@@ -4,6 +4,7 @@ namespace rapidPHP\modules\core\classier\web;
 
 use Exception;
 use rapidPHP\modules\common\classier\AB;
+use rapidPHP\modules\core\classier\Model;
 
 abstract class ViewInterface
 {
@@ -41,11 +42,14 @@ abstract class ViewInterface
 
     /**
      * @param array|AB $data
+     * @throws Exception
      */
     public function setData($data): void
     {
         if ($data instanceof AB) {
             $this->data = $data;
+        } else if ($data instanceof Model) {
+            $this->data = new AB($data->toData());
         } else if (is_array($data)) {
             $this->data = new AB($data);
         }

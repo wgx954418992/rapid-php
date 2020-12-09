@@ -1,62 +1,80 @@
 <?php
 
-namespace rapidPHP\modules\database\sql\classier;
+
+namespace apps\app\classier\database\sql;
+
 
 use Exception;
+use rapidPHP\modules\core\classier\Model;
+use rapidPHP\modules\database\sql\classier\Driver;
+use rapidPHP\modules\database\sql\classier\SqlDB;
+use rapidPHP\modules\reflection\classier\Classify;
 
-class SqlDao
+abstract class BaseDao extends DBSource
 {
-    /**
-     * @var SqlDB
-     */
-    private $sqlDb;
 
     /**
-     * @var
+     * 表名字
+     * @var string
      */
-    private $model;
+    private $tableName;
 
     /**
-     * SqlDao constructor.
-     * @param $model
-     * @param SqlDB|null $sqlDb
+     * @var array|string
      */
-    public function __construct($model, ?SqlDB $sqlDb = null)
+    private $tableField;
+
+    /**
+     * BaseDao constructor.
+     * @param $modelOrClass
+     */
+    public function __construct($modelOrClass)
     {
-        $this->model = $model;
-        $this->sqlDb = $sqlDb;
+        if (is_subclass_of($modelOrClass, Model::class)) {
+            $this->tableName = $modelOrClass::NAME;
+
+            $this->tableField = $this->getModelField($modelOrClass);
+        }else{
+            $this->tableField = '*';
+        }
     }
 
     /**
-     * @return SqlDB
+     * 获取model字段
+     * @param $modelOrClass
+     * @return array|string|null
      */
-    public function getSqlDb(): SqlDB
-    {
-        return $this->sqlDb;
+    private function getModelField($modelOrClass){
+        try {
+            $classify = Classify::getInstance($modelOrClass);
+
+            $tableField = $classify->getPropertiesNames();
+
+            if (empty( $this->tableField)) return'*';
+
+            return  $tableField;
+        } catch (Exception $e) {
+            return '*';
+        }
     }
 
     /**
-     * @param SqlDB $sqlDb
+     * 单例模式
+     * @return static
      */
-    public function setSqlDb(SqlDB $sqlDb): void
-    {
-        $this->sqlDb = $sqlDb;
-    }
+    abstract public static function getInstance();
 
     /**
-     * @return mixed
+     * 获取驱动
+     * @param SqlDB|null $db
+     * @return Driver
+     * @throws Exception
      */
-    public function getModel()
+    public function getDriver(?SqlDB $db = null)
     {
-        return $this->model;
-    }
+        if (!$db) $db = $this->getDb();
 
-    /**
-     * @param mixed $model
-     */
-    public function setModel($model): void
-    {
-        $this->model = $model;
+        return $db->table($this->tableName);
     }
 
     /**
@@ -65,17 +83,7 @@ class SqlDao
      */
     public function getRId($id)
     {
-        return (get_class($this) . $id);
-    }
-
-    /**
-     * 获取db驱动
-     * @return Driver
-     * @throws Exception
-     */
-    public function getDriver()
-    {
-        return $this->getSqlDb()->table($this->model);
+        return (static::class . $id);
     }
 
     /**
@@ -86,7 +94,7 @@ class SqlDao
      */
     public function get($column = null)
     {
-        return $this->getDriver()->resetSql()->select($column);
+        return $this->getDriver()->resetSql()->select(!$column ? $this->tableField : $column);
     }
 
     /**
@@ -98,9 +106,8 @@ class SqlDao
      */
     public function add($data, &$insertId = -1)
     {
-        return $this->getDriver()->resetSql()->insert($data)->execute([], $insertId);
+        return $this->getDriver()->resetSql()->insert($data)->execute($insertId);
     }
-
 
     /**
      * 修改

@@ -143,9 +143,11 @@ class RESTFulApi
      */
     public function setData($data)
     {
-        if ($data instanceof Model) $data = $data->toData();
-
-        if ($data instanceof AB) $data = $data->toData();
+        if ($data instanceof Model) {
+            $data = $data->toData();
+        }else if ($data instanceof AB) {
+            $data = $data->toData();
+        }
 
         $this->result[$this->dataKey] = $data;
 

@@ -5,12 +5,24 @@ namespace rapidPHP\modules\database\sql\classier;
 
 use Exception;
 use PDO;
-use PDOException;
 use rapidPHP\modules\database\sql\config\ConnectConfig;
 use rapidPHP\modules\reflection\classier\Classify;
 
-class SqlDB
+class SQLDB
 {
+    /**
+     * 重新连接codes
+     */
+    const ERROR_RECONNECT_CODES = [
+        'HY000',
+        2006,
+        2013,
+    ];
+
+    /**
+     * @var int
+     */
+    private $reconnectCount = 0;
 
     /**
      * 当前数据库连接实例
@@ -36,14 +48,13 @@ class SqlDB
     /**
      * 连接数据库
      * @param ConnectConfig $config
+     * @throws Exception
      */
     public function connect(ConnectConfig $config)
     {
-        $db = new PDO($config->getUrl(), $config->getUsername(), $config->getPassword());
-
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $this->connect = $db;
+        $this->connect = new PDO($config->getUrl(), $config->getUsername(), $config->getPassword(), [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
 
         $this->config = $config;
 
@@ -64,16 +75,16 @@ class SqlDB
 
     /**
      * 选择表
-     * @param null $model
+     * @param string $tableName
      * @return Driver
      * @throws Exception
      */
-    public function table($model = null)
+    public function table($tableName = null)
     {
         $config = $this->getConfig();
 
         $driver = Classify::getInstance($config->getDriver())
-            ->newInstance($this, $model);
+            ->newInstance($this, $tableName);
 
         if ($driver instanceof Driver) return $driver;
 
@@ -92,30 +103,35 @@ class SqlDB
     /**
      * 开启事物
      * @return bool
+     * @throws Exception
      */
-    public function startThing()
+    public function beginTransaction()
     {
         if ($this->isInThing()) return true;
 
-        return $this->getConnect()->beginTransaction();
+        try{
+            return @$this->getConnect()->beginTransaction();
+        }catch (Exception $e){
+            if($this->onErrorHandler($e)){
+                return $this->beginTransaction();
+            }
+            throw $e;
+        }
     }
 
     /**
      * 提交
-     * @param int $index
      * @return bool
+     * @throws Exception
      */
-    public function commit($index = 0)
+    public function commit()
     {
-        try {
-            return $this->getConnect()->commit();
-        } catch (PDOException $e) {
-            if ($index > 2) throw $e;
-
-            if ($this->handlerException($e)) {
-                return $this->commit($index + 1);
+        try{
+            return @$this->getConnect()->commit();
+        }catch (Exception $e){
+            if($this->onErrorHandler($e)){
+                return $this->commit();
             }
-
             throw $e;
         }
     }
@@ -123,21 +139,31 @@ class SqlDB
     /**
      * 回滚
      * @return bool
+     * @throws Exception
      */
     public function rollBack()
     {
-        return $this->getConnect()->rollBack();
-
+        try{
+            return @$this->getConnect()->rollBack();
+        }catch (Exception $e){
+            if($this->onErrorHandler($e)){
+                return $this->rollBack();
+            }
+            throw $e;
+        }
     }
 
     /**
      * 处理异常
-     * @param PDOException $e
-     * @return SqlDB
+     * @param Exception $e
+     * @return SQLDB
+     * @throws Exception
      */
-    public function handlerException(PDOException $e)
+    public function onErrorHandler(Exception $e)
     {
-        if ($e->getCode() == 2006 || $e->getCode() == 2013) {
+        $code = $e->getCode();
+
+        if (in_array($code, self::ERROR_RECONNECT_CODES)) {
             return $this->reconnect();
         }
 
@@ -147,12 +173,19 @@ class SqlDB
     /**
      * 重新连接
      * @return $this
+     * @throws Exception
      */
     public function reconnect()
     {
+        var_dump('reconnect '.$this->reconnectCount);
+
+        if ($this->reconnectCount >= 2) throw new Exception('database exception reconnect error!');
+
         $this->close();
 
         $this->connect($this->getConfig());
+
+        $this->reconnectCount++;
 
         return $this;
     }
@@ -168,11 +201,11 @@ class SqlDB
     /**
      * 执行sql语句
      * @param $sql
-     * @return Exec
+     * @return Statement
      */
     public function query($sql)
     {
-        return new Exec($this, $sql);
+        return new Statement($this, $sql);
     }
 }
 

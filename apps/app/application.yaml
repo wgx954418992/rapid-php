@@ -55,7 +55,7 @@ redis:
 database:
   sql:
     master:
-      url: 'mysql://127.0.0.1:3306/?database=test&characterCode=utf8mb4'
+      url: 'mysql://127.0.0.1:3306/?database=rapid&characterCode=utf8mb4'
       username: root
       password: root
       model:

@@ -6,7 +6,7 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\StrCharacter;
 use rapidPHP\modules\database\sql\classier\Driver;
-use rapidPHP\modules\database\sql\classier\SqlDB;
+use rapidPHP\modules\database\sql\classier\SQLDB;
 use rapidPHP\modules\database\sql\classier\Utils;
 
 class Mysql extends Driver
@@ -19,13 +19,13 @@ class Mysql extends Driver
 
     /**
      * Mysql constructor.
-     * @param SqlDB $db
-     * @param $model
+     * @param SQLDB $db
+     * @param $tableName
      * @throws Exception
      */
-    public function __construct(SqlDB $db, $model)
+    public function __construct(SQLDB $db, $tableName)
     {
-        parent::__construct($db, $model);
+        parent::__construct($db, $tableName);
     }
 
 
@@ -123,13 +123,13 @@ class Mysql extends Driver
      * getTableStructure
      * @param $type
      * @param string $database
-     * @param $table
+     * @param $tableName
      * @return $this
      * @throws Exception
      */
-    public function getTableStructure($type, $database, $table)
+    public function getTableStructure($type, $database, $tableName)
     {
-        $tableName = Utils::getInstance()->getTableName($table);
+        $tableName = Utils::getInstance()->formatColumn($tableName);
 
         $this->sql['query'] = $this->getTableStructureSql($type, $database, $tableName);
 
@@ -157,13 +157,13 @@ class Mysql extends Driver
      * getTableStructure
      * @param $type
      * @param string $database
-     * @param $table
+     * @param $tableName
      * @return $this
      * @throws Exception
      */
-    public function getTableCreateSql($type, $database, $table)
+    public function getTableCreateSql($type, $database, $tableName)
     {
-        $tableName = Utils::getInstance()->getTableName($table);
+        $tableName = Utils::getInstance()->formatColumn($tableName);
 
         $this->sql['query'] = $this->getTableCreateSqlString($type, $database, $tableName);
 

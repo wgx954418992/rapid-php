@@ -1,13 +1,16 @@
 <?php
 
+use rapidPHP\Init;
 use rapidPHP\modules\application\classier\apps\SwooleHttpApplication;
 
 define('PATH_APP', str_replace('\\', '/', __DIR__) . '/');
 
 require dirname(dirname(__DIR__)) . '/vendor/autoload.php' . '';
 
-Init::load();
+$init = new Init();
 
-$app = new SwooleHttpApplication();
+$init->parseConfig();
+
+$app = new SwooleHttpApplication($init);
 
 $app->run();

@@ -20,6 +20,7 @@ class Property
      */
     private $property;
 
+
     /**
      * Property constructor.
      * @param Classify $classify

@@ -12,7 +12,6 @@ use rapidPHP\modules\core\classier\web\ViewTemplate;
 use rapidPHP\modules\reflection\classier\Utils;
 use rapidPHP\modules\router\classier\handler\ApiHandler;
 use rapidPHP\modules\router\classier\handler\AutoHandler;
-use rapidPHP\modules\router\classier\handler\ExceptionHandler;
 use rapidPHP\modules\router\classier\handler\HandlerInterface;
 use rapidPHP\modules\router\classier\handler\RawHandler;
 use rapidPHP\modules\router\classier\handler\ViewHandler;

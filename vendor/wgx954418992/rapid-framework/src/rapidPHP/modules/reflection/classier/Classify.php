@@ -53,7 +53,7 @@ class Classify
      */
     public static function getInstance($name)
     {
-        if (!$name) return null;
+        if (!$name) throw new Exception('Classify name empty');
 
         try {
             return new Classify($name);
@@ -356,7 +356,13 @@ class Classify
         try {
             $properties = $this->getProperties($filter);
 
-            return array_column($properties, 'name');
+            $result = [];
+
+            foreach ($properties as $property){
+                $result[] = $property->getName();
+            }
+
+            return $result;
         } catch (Exception $e) {
             return null;
         }
