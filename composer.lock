@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a3d670e0573fb5a429b873782452c8c8",
+    "content-hash": "38f46f01875b0ce2d553b28d8fd31d43",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2085,16 +2085,16 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.3.1",
+            "version": "3.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "2d503b51a4e67c5dd3ced99c785de874b07c0b55"
+                "reference": "52c7715e2a4ffb7bef91ee222ac44d12d9d7a48b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/2d503b51a4e67c5dd3ced99c785de874b07c0b55",
-                "reference": "2d503b51a4e67c5dd3ced99c785de874b07c0b55",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/52c7715e2a4ffb7bef91ee222ac44d12d9d7a48b",
+                "reference": "52c7715e2a4ffb7bef91ee222ac44d12d9d7a48b",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2158,9 +2158,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.3.1"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.3.2"
             },
-            "time": "2020-12-09T14:27:02+00:00"
+            "time": "2020-12-09T15:12:16+00:00"
         }
     ],
     "packages-dev": [],

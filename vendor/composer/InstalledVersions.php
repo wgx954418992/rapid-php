@@ -276,12 +276,12 @@ private static $installed = array (
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.3.1',
-      'version' => '3.3.1.0',
+      'pretty_version' => '3.3.2',
+      'version' => '3.3.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2d503b51a4e67c5dd3ced99c785de874b07c0b55',
+      'reference' => '52c7715e2a4ffb7bef91ee222ac44d12d9d7a48b',
     ),
     'wgx954418992/rapid-php' => 
     array (
