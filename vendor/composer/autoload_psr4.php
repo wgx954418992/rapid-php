@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'script\\' => array($baseDir . '/scripts'),
     'rapidPHP\\' => array($vendorDir . '/wgx954418992/rapid-framework/src/rapidPHP'),
     'apps\\' => array($baseDir . '/apps'),
     'Zxing\\' => array($vendorDir . '/khanamiryan/qrcode-detector-decoder/lib'),

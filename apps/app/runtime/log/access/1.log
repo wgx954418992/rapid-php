@@ -972,3 +972,8 @@
 [2020-12-09T23:15:20.689406+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/ -0.024151086807251 [] []
 [2020-12-09T23:15:24.176937+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.022659063339233 [] []
 [2020-12-09T23:18:21.890594+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.15098690986633 [] []
+[2020-12-09T23:19:32.431812+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.032063007354736 [] []
+[2020-12-09T23:19:33.164714+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.033607959747314 [] []
+[2020-12-09T23:19:33.552201+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.029906034469604 [] []
+[2020-12-09T23:19:33.724638+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.030817985534668 [] []
+[2020-12-09T23:19:33.878463+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.028135061264038 [] []

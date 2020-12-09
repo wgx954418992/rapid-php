@@ -129,8 +129,6 @@ class Mysql extends Driver
      */
     public function getTableStructure($type, $database, $tableName)
     {
-        $tableName = Utils::getInstance()->formatColumn($tableName);
-
         $this->sql['query'] = $this->getTableStructureSql($type, $database, $tableName);
 
         return $this;
@@ -163,8 +161,6 @@ class Mysql extends Driver
      */
     public function getTableCreateSql($type, $database, $tableName)
     {
-        $tableName = Utils::getInstance()->formatColumn($tableName);
-
         $this->sql['query'] = $this->getTableCreateSqlString($type, $database, $tableName);
 
         return $this;

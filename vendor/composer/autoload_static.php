@@ -78,6 +78,10 @@ class ComposerStaticInit301f2392d906ee4eaa602348dabcbd0c
     );
 
     public static $prefixLengthsPsr4 = array (
+        's' => 
+        array (
+            'script\\' => 7,
+        ),
         'r' => 
         array (
             'rapidPHP\\' => 9,
@@ -137,6 +141,10 @@ class ComposerStaticInit301f2392d906ee4eaa602348dabcbd0c
     );
 
     public static $prefixDirsPsr4 = array (
+        'script\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/scripts',
+        ),
         'rapidPHP\\' => 
         array (
             0 => __DIR__ . '/..' . '/wgx954418992/rapid-framework/src/rapidPHP',

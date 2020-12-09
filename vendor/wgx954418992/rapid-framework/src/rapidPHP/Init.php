@@ -51,7 +51,11 @@ define('PATH_MODULES', PATH_FRAMEWORK . 'modules/');
 define('PATH_RUNTIME', PATH_ROOT . 'runtime/');
 
 //当前app运行文件目录
-define('PATH_APP_RUNTIME', PATH_APP . 'runtime/');
+if (defined('PATH_APP')) define('PATH_APP_RUNTIME', PATH_APP . 'runtime/');
+
+if (!defined('SWOOLE_HOOK_ALL')) define('SWOOLE_HOOK_ALL', 1879048191);
+
+if (!defined('SWOOLE_HOOK_CURL')) define('SWOOLE_HOOK_CURL', 268435456);
 
 /**
  * 快捷获取ArrayObject类
@@ -224,6 +228,7 @@ class Init
     public function __construct(?string $appFile = null)
     {
         try {
+            
             $this->setConfig(ApplicationConfig::getDefaultConfig());
 
             if (is_null($appFile)) $appFile = PATH_APP . 'application.yaml';

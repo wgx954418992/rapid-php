@@ -189,6 +189,8 @@ class TemplateService
     {
         $filepath = $this->findTemplateFile($filename);
 
+        if(!is_file($filepath)) return false;
+
         $cacheFile = $this->findCacheFile($filename);
 
         if (is_file($cacheFile) && (filemtime($cacheFile) >= filemtime($filepath))) {

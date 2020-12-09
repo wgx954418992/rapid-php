@@ -59,9 +59,8 @@ database:
       username: root
       password: root
       model:
-        path: '${PATH_APP}classier/model/'
+        path: '${PATH_ROOT}/apps/app/classier/model/'
         namespace: apps\app\classier\model
-        first: ""
       pool:
         min: 1
         max: 10

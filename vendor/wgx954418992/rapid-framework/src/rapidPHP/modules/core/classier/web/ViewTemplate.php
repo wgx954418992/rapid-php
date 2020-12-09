@@ -371,15 +371,15 @@ class ViewTemplate
      */
     public function view()
     {
+        $filepath = $this->getTemplateService()->findTemplateFile($this->filename);
+
+        if (!is_file($filepath)) throw new Exception('view error!');
+        
         $cacheFile = $this->getTemplateService()->getCache($this->filename, $outputType);
 
         if ($cacheFile !== false) {
             return $this->getOutputContent($cacheFile, $outputType);
         }
-
-        $filepath = $this->getTemplateService()->findTemplateFile($this->filename);
-
-        if (!is_file($filepath)) throw new Exception('view error!');
 
         $string = $this->preIncludes(File::getInstance()->getContent($filepath));
 

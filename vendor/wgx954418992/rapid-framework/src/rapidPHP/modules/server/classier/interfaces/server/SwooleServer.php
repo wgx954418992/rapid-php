@@ -15,9 +15,6 @@ use Swoole\Http\Server as SwooleHttpServer;
 use Swoole\Server as BaseSwooleServer;
 use Swoole\WebSocket\Server as SwooleWebSocketServer;
 
-if (!defined('SWOOLE_HOOK_ALL')) define('SWOOLE_HOOK_ALL', 1879048191);
-
-if (!defined('SWOOLE_HOOK_CURL')) define('SWOOLE_HOOK_CURL', 268435456);
 
 abstract class SwooleServer extends Server
 {

@@ -18,12 +18,6 @@ class ModelConfig
     private $namespace = '';
 
     /**
-     * 生成model名称的前缀
-     * @var string
-     */
-    private $first = '';
-
-    /**
      * @return string
      */
     public function getPath(): string
@@ -53,21 +47,5 @@ class ModelConfig
     public function setNamespace(string $namespace): void
     {
         $this->namespace = $namespace;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFirst(): string
-    {
-        return $this->first;
-    }
-
-    /**
-     * @param string $first
-     */
-    public function setFirst(string $first): void
-    {
-        $this->first = $first;
     }
 }
