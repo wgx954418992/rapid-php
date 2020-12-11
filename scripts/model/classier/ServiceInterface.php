@@ -7,13 +7,14 @@ use Generator;
 interface ServiceInterface
 {
 
+
     /**
-     * 获取构造参数
-     * @param $path
+     * 获取实例
+     * @param $appFiles
      * @param HandlerInterface $handler
-     * @return Generator
+     * @return mixed
      */
-    public static function getInstance($path, HandlerInterface $handler);
+    public static function getInstance($appFiles, HandlerInterface $handler);
 
     /**
      * 获取types
@@ -35,7 +36,7 @@ interface ServiceInterface
      * @param $tableName
      * @return array
      */
-    public function getTableColumn($type, $tableName);
+    public function getTableColumn($type, $tableName): array;
 
     /**
      * getTableCreateCommand
@@ -49,16 +50,11 @@ interface ServiceInterface
      * 获取model
      * @param Table $table
      * @param $columns
+     * @param string|null $namespace
+     * @param array|null $options
      * @return mixed
      */
-    public function getModelContent(Table $table, $columns);
-
-
-    /**
-     * 获取写入文件path
-     * @return mixed
-     */
-    public function getWritePath();
+    public function getModelContent(Table $table, $columns, string $namespace = null, ?array $options = []);
 
     /**
      * RandId

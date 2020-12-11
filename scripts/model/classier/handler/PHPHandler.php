@@ -3,6 +3,7 @@
 namespace script\model\classier\handler;
 
 use rapidPHP\modules\common\classier\Build;
+use rapidPHP\modules\common\classier\Calendar;
 use rapidPHP\modules\common\classier\StrCharacter;
 use script\model\classier\Column;
 use script\model\classier\HandlerInterface;
@@ -50,7 +51,7 @@ class PHPHandler extends HandlerInterface
     /**
      * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -70,11 +71,11 @@ class PHPHandler extends HandlerInterface
     /**
      * 把数据库字段类型转换成 php强类型
      * @param $type
-     * @return mixed|string
+     * @return mixed|string|null
      */
-    private function getConversionType($type)
+    private function getConversionType($type): ?string
     {
-        if (!version_compare(PHP_VERSION, '7.0.0')) return '';
+        if (!version_compare(PHP_VERSION, '7.0.0')) return null;
 
         return Build::getInstance()->getData($this->conversionMapping, $type);
     }
@@ -83,28 +84,33 @@ class PHPHandler extends HandlerInterface
      * 获取后缀
      * @return string
      */
-    public function getExt()
+    public function getExt(): string
     {
         return '.php';
     }
 
     /**
      * 收到字段
-     * @param $namespace
      * @param Table $table
      * @param $columns
+     * @param null $namespace
+     * @param array|null $options
      * @return string|string[]|void
      */
-    public function onReceive($namespace, Table $table, $columns)
+    public function onReceive(Table $table, $columns, $namespace = null, ?array $options = [])
     {
         $uTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
 
         $className = "{$uTableName}Model";
 
+        if ($namespace) $namespace = "namespace {$namespace};";
+
+        $date = Calendar::getInstance()->getDate();
+
         $classString = <<<EOF
 <?php
 
-namespace {$namespace};
+{$namespace}
 
 use Exception;
 use rapidPHP\modules\core\classier\Model;
@@ -112,6 +118,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * {$table->getComment()}
  * @table {$table->getName()}
+ * rapidPHP auto generate Model {$date}
  */
 class {$className} extends Model
 {
@@ -159,7 +166,7 @@ EOF;
      * @param {paramSetType}\${$column->getName()}
      * @return {$className}
      */
-    public function set{$uColumnName}({setType}\${$column->getName()})
+    public function set{$uColumnName}({setType}\${$column->getName()}): {$className}
     {
         \$this->{$column->getName()} = \${$column->getName()};
         return \$this;
@@ -171,7 +178,7 @@ EOF;
      * @return {$className}
      * @throws Exception
      */
-    public function valid{$uColumnName}(string \$msg = '{$column->getName()} Cannot be empty!')
+    public function valid{$uColumnName}(string \$msg = '{$column->getName()} Cannot be empty!'): {$className}
     {
         if(empty(\$this->{$column->getName()})) throw new Exception(\$msg);
         return \$this;

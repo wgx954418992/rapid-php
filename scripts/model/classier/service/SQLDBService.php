@@ -5,16 +5,18 @@ namespace script\model\classier\service;
 
 use Exception;
 use Generator;
+use rapidPHP\Init;
 use rapidPHP\modules\common\classier\AB;
 use rapidPHP\modules\common\classier\Build;
+use rapidPHP\modules\common\config\VarConfig;
 use rapidPHP\modules\database\sql\classier\SQLDB;
 use rapidPHP\modules\database\sql\config\ConnectConfig;
+use rapidPHP\modules\exception\classier\RuntimeException;
 use rapidPHP\modules\reflection\classier\Utils;
 use script\model\classier\Column;
 use script\model\classier\HandlerInterface;
 use script\model\classier\ServiceInterface;
 use script\model\classier\Table;
-use script\model\classier\ToModel;
 
 class SQLDBService implements ServiceInterface
 {
@@ -55,35 +57,35 @@ class SQLDBService implements ServiceInterface
     }
 
     /**
-     * 获取构造参数
-     * @param $path
+     * 获取实例
+     * @param $appFiles
      * @param HandlerInterface $handler
      * @return Generator
+     * @throws RuntimeException
      * @throws Exception
      */
-    public static function getInstance($path, HandlerInterface $handler)
+    public static function getInstance($appFiles, HandlerInterface $handler): Generator
     {
-        $configs = ToModel::getInstance()->getConfig($path);
+        $init = new Init($appFiles);
 
-        /** @var AB $config */
-        foreach ($configs as $file => $config) {
+        $config = $init->getRawConfig();
 
-            $database = $config->toAB('database')->toArray('sql');
+        VarConfig::parseVarByArray($config);
 
-            if (empty($database)) continue;
+        $database = AB::getInstance($config)->toAB('database')->toArray('sql');
 
-            foreach ($database as $data) {
-                if (empty($data)) continue;
+        foreach ($database as $data) {
+            if (empty($data)) continue;
 
-                $config = Utils::getInstance()->toObject(ConnectConfig::class, $data);
+            $config = Utils::getInstance()->toObject(ConnectConfig::class, $data);
 
-                if ($config instanceof ConnectConfig && !empty($config->getUrl())) {
-                    $db = new SQLDB();
+            if ($config instanceof ConnectConfig && !empty($config->getUrl())) {
 
-                    $db->connect($config);
+                $db = new SQLDB();
 
-                    yield new SQLDBService($db, $handler);
-                }
+                $db->connect($config);
+
+                yield new SQLDBService($db, $handler);
             }
         }
     }
@@ -121,7 +123,7 @@ class SQLDBService implements ServiceInterface
      * @return array
      * @throws Exception
      */
-    public function getTableColumn($type, $tableName)
+    public function getTableColumn($type, $tableName): array
     {
         return $this->db->table()
             ->getTableStructure($type, $this->database, $tableName)
@@ -156,28 +158,21 @@ class SQLDBService implements ServiceInterface
      * 获取model内容
      * @param Table $table
      * @param $columns
+     * @param string|null $namespace
+     * @param array|null $options
      * @return mixed
      */
-    public function getModelContent(Table $table, $columns)
+    public function getModelContent(Table $table, $columns, string $namespace = null, ?array $options = [])
     {
-        return $this->handler->onReceive($this->config->getModel()->getNamespace(), $table, $columns);
+        return $this->handler->onReceive($table, $columns, $namespace, $options);
     }
 
-
-    /**
-     * 获取写入path
-     * @return mixed|string
-     */
-    public function getWritePath()
-    {
-        return $this->config->getModel()->getPath();
-    }
 
     /**
      * randId
      * @return mixed|string
      */
-    public function getRandId()
+    public function getRandId(): string
     {
         return md5($this->config->getDatabase());
     }

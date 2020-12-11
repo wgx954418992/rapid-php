@@ -4,12 +4,7 @@ namespace script\model\classier;
 
 use Exception;
 use Generator;
-use rapidPHP\Init;
-use rapidPHP\modules\common\classier\AB;
-use rapidPHP\modules\common\classier\Build;
-use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\StrCharacter;
-use rapidPHP\modules\common\config\VarConfig;
 use script\model\classier\handler\JavaHandler;
 use script\model\classier\handler\PHPHandler;
 use script\model\classier\handler\SwiftHandler;
@@ -60,26 +55,12 @@ class ToModel
         self::SERVER_SQL => SQLDBService::class,
     ];
 
-
     /**
-     * @var self
-     */
-    private static $instance;
-
-    /**
-     * @return self
-     */
-    public static function getInstance()
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
-    }
-
-    /**
-     * @param $type
+     * @param string $type
      * @return HandlerInterface
      * @throws Exception
      */
-    public function getHandler(string $type)
+    public function getHandler(string $type): HandlerInterface
     {
         if (isset($this->handlers[$type])) {
 
@@ -94,106 +75,18 @@ class ToModel
     /**
      * 获取服务接口
      * @param string $type
-     * @param $path
+     * @param $appFiles
      * @param HandlerInterface $handler
-     * @return ServiceInterface
+     * @return mixed
      * @throws Exception
      */
-    public function getService(string $type, $path, HandlerInterface $handler)
+    public function getService(string $type, $appFiles, HandlerInterface $handler)
     {
-        if (isset($this->services[$type])) {
+        if (!isset($this->services[$type])) throw new Exception('service type error');
 
-            $service = $this->services[$type];
+        $service = $this->services[$type];
 
-            return call_user_func([$service, 'getInstance'], $path, $handler);
-        }
-
-        throw new Exception('service type error');
-    }
-
-    /**
-     * 通过appFile获取config对象
-     * @param $path
-     * @return Generator
-     */
-    public function getConfig($path)
-    {
-        $read = File::getInstance()->readDirFiles($path);
-
-        foreach ($read as $file) {
-            $ext = pathinfo($file, PATHINFO_EXTENSION);
-
-            if ($ext !== 'yaml') continue;
-
-            try {
-                $init = new Init($file);
-
-                $config = $init->getRawConfig();
-
-                VarConfig::parseVarByArray($config);
-
-                yield $file => AB::getInstance($config);
-            } catch (Exception $e) {
-
-            }
-        }
-    }
-
-    /**
-     * run
-     * @param $path
-     * @param $serviceType
-     * @param $handlerType
-     * @throws Exception
-     */
-    public function run($path, $serviceType = self::SERVER_SQL, $handlerType = self::HANDLER_PHP)
-    {
-        if (empty($path)) throw new Exception('path error!');
-
-        if (empty($serviceType)) throw new Exception('service error!');
-
-        if (empty($handlerType)) throw new Exception('handler error!');
-
-        $handler = $this->getHandler($handlerType);
-
-        $generator = $this->getService($serviceType, $path, $handler);
-
-        /** @var ServiceInterface $service */
-        foreach ($generator as $service) {
-
-            $types = $service->getTypes();
-
-            foreach ($types as $type => $typeName) {
-
-                $tables = $service->getTables($type);
-
-                if (!$tables) continue;
-
-                $sql = [];
-
-                /** @var Table $table */
-                foreach ($tables as $table) {
-
-                    $columns = $service->getTableColumn($type, $table->getName());
-
-                    array_push($sql, $service->getTableCreateCommand($type, $table->getName()));
-
-                    $content = $service->getModelContent($table, $columns);
-
-                    $uTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
-
-                    $this->write($service->getWritePath(), "{$uTableName}Model" . $handler->getExt(), $content);
-                }
-
-                $randId = md5($service->getRandId());
-
-                $this->write($service->getWritePath(), ".{$randId}_$typeName.sql", join(";\n\n", $sql));
-
-                echo "{$typeName}编译完成\n";
-            }
-        }
-
-        echo "任务完成\n";
+        return call_user_func([$service, 'getInstance'], $appFiles, $handler);
     }
 
     /**
@@ -219,25 +112,71 @@ class ToModel
     }
 
     /**
-     * @param $event
+     * run
+     * @param $appFiles
+     * @param string $serviceType
+     * @param string $handlerType
+     * @param string $savePath
+     * @param string $namespace
+     * @param array|null $options
      * @throws Exception
      */
-    public static function console($event)
+    public static function run($appFiles,
+                               $serviceType = self::SERVER_SQL,
+                               $handlerType = self::HANDLER_PHP,
+                               $savePath = PATH_APP . 'model/',
+                               $namespace = 'apps\\app\model',
+                               ?array $options = []
+    )
     {
-        $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+        if (empty($appFiles)) throw new Exception('app config files error!');
 
-        require $vendorDir . '/autoload.php' . '';
+        if (empty($serviceType)) throw new Exception('service error!');
 
-        $baseDir = dirname($vendorDir);
+        if (empty($handlerType)) throw new Exception('handler error!');
 
-        $argv = Build::getInstance()->getData($_SERVER, 'argv');
+        if (empty($savePath)) throw new Exception('savePath error!');
 
-        $path = Build::getInstance()->contrast(Build::getInstance()->getData($argv, 6), 'apps');
+        $that = new ToModel();
 
-        $service = Build::getInstance()->contrast(Build::getInstance()->getData($argv, 5), self::SERVER_SQL);
+        $handler = $that->getHandler($handlerType);
 
-        $handler = Build::getInstance()->contrast(Build::getInstance()->getData($argv, 4), self::HANDLER_PHP);
+        $services = $that->getService($serviceType, $appFiles, $handler);
 
-        (new self)->run($baseDir . '/' . $path, $service, $handler);
+        /** @var ServiceInterface $service */
+        foreach ($services as $service) {
+
+            $types = $service->getTypes();
+
+            foreach ($types as $type => $typeName) {
+
+                $tables = $service->getTables($type);
+
+                if (!$tables) continue;
+
+                $sql = [];
+
+                /** @var Table $table */
+                foreach ($tables as $table) {
+
+                    $columns = $service->getTableColumn($type, $table->getName());
+
+                    array_push($sql, $service->getTableCreateCommand($type, $table->getName()));
+
+                    $content = $service->getModelContent($table, $columns, $namespace, $options);
+
+                    $uTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
+
+                    $that->write($savePath, "{$uTableName}Model" . $handler->getExt(), $content);
+                }
+
+                $randId = md5($service->getRandId());
+
+                $that->write($savePath, ".{$randId}_$typeName.sql", join(";\n\n", $sql));
+
+                echo "{$typeName}编译完成\n";
+            }
+        }
     }
+
 }
