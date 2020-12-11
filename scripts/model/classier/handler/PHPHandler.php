@@ -164,24 +164,20 @@ EOF;
     /**
      * 设置 {$column->getComment()}
      * @param {paramSetType}\${$column->getName()}
-     * @return {$className}
      */
-    public function set{$uColumnName}({setType}\${$column->getName()}): {$className}
+    public function set{$uColumnName}({setType}\${$column->getName()})
     {
         \$this->{$column->getName()} = \${$column->getName()};
-        return \$this;
     }
     
     /**
      * 效验 {$column->getComment()}
      * @param string \$msg
-     * @return {$className}
      * @throws Exception
      */
-    public function valid{$uColumnName}(string \$msg = '{$column->getName()} Cannot be empty!'): {$className}
+    public function valid{$uColumnName}(string \$msg = '{$column->getName()} Cannot be empty!')
     {
         if(empty(\$this->{$column->getName()})) throw new Exception(\$msg);
-        return \$this;
     }
 
 EOF;
@@ -192,7 +188,7 @@ EOF;
 
             $setType = empty($conversionType) ? "" : "?{$conversionType} ";
 
-            $paramSetType = empty($conversionType) ? "" : "{$conversionType} ";
+            $paramSetType = empty($conversionType) ? "" : "{$conversionType}|null ";
 
             $classString = str_replace(['{returnType}', '{getReturnType}', '{setType}', '{paramSetType}'],
                 [$returnType, $getReturnType, $setType, $paramSetType],

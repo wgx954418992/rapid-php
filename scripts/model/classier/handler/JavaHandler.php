@@ -211,12 +211,10 @@ EOF;
     /**
      * 设置 {$column->getComment()}
      * @param {$conversionType} {$column->getName()}
-     * @return {$className}
      */
     public void set{$uColumnName}({$conversionType} {$column->getName()})
     {
         this.{$column->getName()} = {$column->getName()};
-        return this;
     }
 
 EOF;
