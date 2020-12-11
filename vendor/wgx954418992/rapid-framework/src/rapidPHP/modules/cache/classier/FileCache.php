@@ -23,7 +23,7 @@ class FileCache implements CacheInterface
     /**
      * @return CacheInterface
      */
-    public static function getInstance(): CacheInterface
+    public static function getInstance()
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }

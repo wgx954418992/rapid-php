@@ -181,7 +181,7 @@ class WebRouter extends Router
      * @param Exception|null $exception
      * @return array
      */
-    protected function getParameters(Action $action, $pathVariable, callable $params = null, ?Exception $exception = null)
+    protected function getParameters(Action $action, $pathVariable, callable $params = null, ?Exception $exception = null): array
     {
         return parent::getParameters($action, $pathVariable, function ($name, $source) {
             return $this->request->getParam($name, $source);

@@ -27,7 +27,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.4.0');
+define('RAPIDPHP_VERSION', '3.4.1');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());

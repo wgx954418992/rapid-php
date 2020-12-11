@@ -263,12 +263,12 @@
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.4.0',
-      'version' => '3.4.0.0',
+      'pretty_version' => '3.4.1',
+      'version' => '3.4.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '99b77b051cb319ce57867ea7a6a7d4d9d785361d',
+      'reference' => '032efb97f9e61bedf9dac74e53bc3964cda0ed56',
     ),
     'wgx954418992/rapid-php' => 
     array (

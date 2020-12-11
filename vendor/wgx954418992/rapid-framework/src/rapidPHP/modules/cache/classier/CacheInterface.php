@@ -9,7 +9,7 @@ interface CacheInterface
      * 获取当前实例
      * @return CacheInterface
      */
-    public static function getInstance(): CacheInterface;
+    public static function getInstance();
 
     /**
      * CacheInterface constructor.

@@ -35,7 +35,7 @@ class RedisCache implements CacheInterface
      * @inheritDoc
      * @throws Exception
      */
-    public static function getInstance(): CacheInterface
+    public static function getInstance()
     {
         if (empty(self::$instance)) throw new Exception('redis not init');
 
