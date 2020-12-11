@@ -135,7 +135,7 @@ class Console
     /**
      * @return Console
      */
-    public static function getInstance()
+    public static function getInstance(): Console
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -185,7 +185,7 @@ class Console
      * @param null $backgroundColor
      * @return string
      */
-    public function getColoredString($string, $foregroundColor = null, $backgroundColor = null)
+    public function getColoredString($string, $foregroundColor = null, $backgroundColor = null): string
     {
         $coloredString = "";
 
@@ -210,7 +210,7 @@ class Console
      * @return bool
      * @throws Exception
      */
-    public function threadExec($bin, $param, $sleep = 1)
+    public function threadExec($bin, $param, $sleep = 1): bool
     {
         if (!function_exists('exec')) throw new Exception('exec 方法不存在!');
 
@@ -252,7 +252,7 @@ class Console
      * @return bool
      * @throws Exception
      */
-    public function threadExecScript($bin, $script = null, $param = [], $sleep = 1)
+    public function threadExecScript($bin, $script = null, $param = [], $sleep = 1): bool
     {
         if (!is_file($script)) $script = PATH_ROOT . DIRECTORY_SEPARATOR . $script;
 

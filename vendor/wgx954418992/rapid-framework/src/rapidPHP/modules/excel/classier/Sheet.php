@@ -128,7 +128,7 @@ class Sheet
      * @param $v
      * @return bool
      */
-    private function filterArrayEmpty($v)
+    private function filterArrayEmpty($v): bool
     {
         return !empty($v);
     }
@@ -142,7 +142,7 @@ class Sheet
      * @return Generator
      * @throws SpreadException
      */
-    public function read($fields, $horizontalIndex = 'A', $verticalIndex = 2)
+    public function read($fields, $horizontalIndex = 'A', $verticalIndex = 2): Generator
     {
         $highestRow = $this->sheet->getHighestRow();
 

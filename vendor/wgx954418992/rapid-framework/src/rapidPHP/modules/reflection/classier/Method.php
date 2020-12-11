@@ -3,6 +3,7 @@
 namespace rapidPHP\modules\reflection\classier;
 
 use Exception;
+use ReflectionException;
 use ReflectionMethod;
 
 class Method
@@ -49,14 +50,14 @@ class Method
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getMethod()->getName();
     }
 
     /**
      * @param string $class
-     * @return DocComment|null
+     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|object|mixed|null
      */
     public function getDocComment($class = DocComment::class)
     {
@@ -73,7 +74,7 @@ class Method
      * @return Classify|null
      * @throws Exception
      */
-    public function getDeclaringClass()
+    public function getDeclaringClass(): ?Classify
     {
         return Classify::getInstance($this->getMethod()->getDeclaringClass());
     }
@@ -82,7 +83,7 @@ class Method
      * 是否构造方法
      * @return bool
      */
-    public function isConstructor()
+    public function isConstructor(): bool
     {
         return $this->getMethod()->isConstructor();
     }
@@ -91,7 +92,7 @@ class Method
      * 是否自身方法
      * @return bool
      */
-    public function isSelf()
+    public function isSelf(): bool
     {
         $declaringClass = $this->getMethod()->getDeclaringClass();
 
@@ -102,7 +103,7 @@ class Method
      * 获取参数列表
      * @return Parameter[]
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         $parameters = $this->getMethod()->getParameters();
 
@@ -115,12 +116,12 @@ class Method
         return $result;
     }
 
-
     /**
      * 反射调用对象的方法
      * @param $object
      * @param $data
-     * @return array 返回方法修改过的参数
+     * @return mixed
+     * @throws ReflectionException
      * @throws Exception
      */
     public function apply($object, $data)

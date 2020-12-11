@@ -20,7 +20,7 @@ class Excel
      * 单例模式
      * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): Excel
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -31,7 +31,7 @@ class Excel
      * @return Spreadsheet
      * @throws ReaderException
      */
-    public function loadSpreadSheet($filename)
+    public function loadSpreadSheet($filename): Spreadsheet
     {
         $inputFileType = IOFactory::identify($filename);
 
@@ -51,7 +51,7 @@ class Excel
      * @return Sheet
      * @throws SpreadException
      */
-    public function getSheet(Spreadsheet $spreadsheet, $index = 0)
+    public function getSheet(Spreadsheet $spreadsheet, $index = 0): Sheet
     {
         $spreadsheet->setActiveSheetIndex($index);
 

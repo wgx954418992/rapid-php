@@ -38,7 +38,7 @@ class Model
 
     /**
      * 获取数据
-     * @param array $names
+     * @param array|null $names
      * @param int $mode 1获取names下的values 2,排除names下的values
      * @return array
      * @throws Exception
@@ -61,7 +61,7 @@ class Model
 
     /**
      * 转xml
-     * @param array $names
+     * @param array|null $names
      * @return string
      * @throws Exception
      */
@@ -72,7 +72,7 @@ class Model
 
     /**
      * 转json
-     * @param array $names
+     * @param array|null $names
      * @return string
      * @throws Exception
      */
@@ -84,7 +84,7 @@ class Model
     /**
      * 删除指定value
      * @param $names
-     * @return $this
+     * @return static
      */
     public function delValue($names)
     {

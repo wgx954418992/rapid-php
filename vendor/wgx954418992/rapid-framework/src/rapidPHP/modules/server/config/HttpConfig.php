@@ -80,7 +80,7 @@ class HttpConfig
      * @param $header
      * @return array
      */
-    public static function getRenameHeader($header)
+    public static function getRenameHeader($header): array
     {
         $headers = [];
 
@@ -95,7 +95,7 @@ class HttpConfig
      * 生成sessionId
      * @return mixed|string|null
      */
-    public static function getSessionId()
+    public static function getSessionId(): ?string
     {
         return md5(uniqid(mt_rand(), true));
     }

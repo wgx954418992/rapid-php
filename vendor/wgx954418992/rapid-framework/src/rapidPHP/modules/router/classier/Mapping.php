@@ -46,7 +46,7 @@ class Mapping
     /**
      * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): Mapping
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -178,7 +178,7 @@ class Mapping
      * @return string|null
      * @throws Exception
      */
-    private function getRouteAnnotationValue(DocComment $comment)
+    private function getRouteAnnotationValue(DocComment $comment): ?string
     {
         $annotation = $comment->getRouteAnnotation();
 
@@ -193,7 +193,7 @@ class Mapping
      * @return array
      * @throws Exception
      */
-    private function getActionParameters(Method $method)
+    private function getActionParameters(Method $method): array
     {
         $result = [];
 
@@ -224,12 +224,12 @@ class Mapping
 
     /**
      * 获取action returned
-     * @param ReturnedAnnotation $returnAnnotation
+     * @param ReturnedAnnotation|null $returnAnnotation
      * @param Classify|null $classify
      * @return ActionReturned|null
      * @throws Exception
      */
-    private function getActionReturned(?ReturnedAnnotation $returnAnnotation, ?Classify $classify)
+    private function getActionReturned(?ReturnedAnnotation $returnAnnotation, ?Classify $classify): ?ActionReturned
     {
         if (!$returnAnnotation) return null;
 
@@ -253,10 +253,10 @@ class Mapping
      * @param $className
      * @param $methodName
      * @param $route
-     * @param ActionParameter[] $parameters
+     * @param ActionParameter[]|null $parameters
      * @return Route
      */
-    private function getRoute($className, $methodName, $route, &$parameters)
+    private function getRoute($className, $methodName, $route, ?array &$parameters): Route
     {
         $index = 1;
 
@@ -288,7 +288,7 @@ class Mapping
      * @param $route
      * @return string
      */
-    private function getPatternByRoute($route)
+    private function getPatternByRoute($route): string
     {
         if (!is_int(strpos($route, '.'))) {
             if (strlen($route) > 1 && substr($route, -1, 1) === '/') {

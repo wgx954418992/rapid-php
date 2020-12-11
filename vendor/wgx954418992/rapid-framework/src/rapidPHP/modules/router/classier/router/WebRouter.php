@@ -56,7 +56,7 @@ class WebRouter extends Router
     /**
      * @return WebApplication
      */
-    public function getApplication()
+    public function getApplication(): WebApplication
     {
         /** @var WebApplication $app */
         $app = parent::getApplication();

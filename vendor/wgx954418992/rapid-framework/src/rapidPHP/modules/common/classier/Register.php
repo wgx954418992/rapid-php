@@ -18,7 +18,7 @@ class Register
     /**
      * @return Register
      */
-    public static function getInstance()
+    public static function getInstance(): Register
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -27,7 +27,7 @@ class Register
      * put
      * @param $name
      * @param $value
-     * @return $this
+     * @return static|self|mixed|null
      */
     public function put($name, $value)
     {
@@ -41,7 +41,7 @@ class Register
      * @param $name
      * @return bool
      */
-    public function isPut($name)
+    public function isPut($name): bool
     {
         return array_key_exists($name, $this->container);
     }
@@ -60,7 +60,7 @@ class Register
      * list
      * @return array
      */
-    public function getContainerList()
+    public function getContainerList(): array
     {
         return $this->container;
     }

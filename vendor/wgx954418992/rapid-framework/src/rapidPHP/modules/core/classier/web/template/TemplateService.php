@@ -124,7 +124,7 @@ class TemplateService
      * @param $filename
      * @return string
      */
-    public function findTemplateFile($filename)
+    public function findTemplateFile($filename): string
     {
         $path = $this->findFilepath($filename, $this->getTemplatePath());
 
@@ -142,7 +142,7 @@ class TemplateService
      * @param $filename
      * @return string
      */
-    public function findCacheFile($filename)
+    public function findCacheFile($filename): string
     {
         $path = $this->getCachePath();
 

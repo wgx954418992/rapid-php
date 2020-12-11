@@ -15,7 +15,7 @@ class Xml
     /**
      * @return Xml
      */
-    public static function getInstance()
+    public static function getInstance(): Xml
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -35,7 +35,7 @@ class Xml
      * @param $encoding
      * @return XMLWriter
      */
-    private function xmlStart($root, $version, $encoding)
+    private function xmlStart($root, $version, $encoding): XMLWriter
     {
         $xml = new XMLWriter();
 
@@ -58,7 +58,7 @@ class Xml
      * @param array $array
      * @return XMLWriter
      */
-    private function xmlData(XMLWriter $xml, array $array)
+    private function xmlData(XMLWriter $xml, array $array): XMLWriter
     {
         foreach ($array as $key => $value) {
 
@@ -87,7 +87,7 @@ class Xml
      * @param string $encoding
      * @return string
      */
-    public function encode(array $array, $root = 'xml', $version = '1.0', $encoding = 'utf-8')
+    public function encode(array $array, $root = 'xml', $version = '1.0', $encoding = 'utf-8'): string
     {
         $xml = $this->xmlStart($root, $version, $encoding);
 
@@ -102,7 +102,7 @@ class Xml
     /**
      * 解析xml
      * @param $xml
-     * @return mixed
+     * @return mixed|array|string|null
      */
     public function decode($xml)
     {

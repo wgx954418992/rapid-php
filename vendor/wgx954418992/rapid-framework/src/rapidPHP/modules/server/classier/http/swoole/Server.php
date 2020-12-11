@@ -78,7 +78,7 @@ class Server extends SwooleServer
      * @param $sessionKey
      * @return mixed|string|null
      */
-    private function getClientSessionId(SwooleRequest $req, SwooleResponse $res, $sessionKey)
+    private function getClientSessionId(SwooleRequest $req, SwooleResponse $res, $sessionKey): ?string
     {
         $sessionId = Build::getInstance()->getData($req->cookie, $sessionKey);
 

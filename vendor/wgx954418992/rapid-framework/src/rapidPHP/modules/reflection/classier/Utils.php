@@ -21,7 +21,7 @@ class Utils
     /**
      * @return Utils
      */
-    public static function getInstance()
+    public static function getInstance(): Utils
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -31,7 +31,7 @@ class Utils
      * @param $className
      * @return string
      */
-    public function formatClassName($className)
+    public function formatClassName($className): string
     {
         return str_replace('/', '\\', ltrim($className, '/*'));
     }
@@ -61,7 +61,7 @@ class Utils
      * @param $content
      * @return string|null
      */
-    public function getClassFullName(string $content)
+    public function getClassFullName(string $content): ?string
     {
         $namespaceName = $this->getNamespaceName($content);
 
@@ -77,7 +77,7 @@ class Utils
      * @param $file
      * @return string|null
      */
-    public function getClassFullNameByFile(string $file)
+    public function getClassFullNameByFile(string $file): ?string
     {
         if (!is_file($file)) return null;
 
@@ -112,7 +112,7 @@ class Utils
      * @return array
      * @throws Exception
      */
-    public function makeMethodParameters(Method $method, $data)
+    public function makeMethodParameters(Method $method, $data): array
     {
         $parameters = $method->getParameters();
 
@@ -189,7 +189,7 @@ class Utils
      * @return array|null
      * @throws Exception
      */
-    public function toArray($object, $filter = null)
+    public function toArray($object, $filter = null): ?array
     {
         if (!is_object($object)) return null;
 
@@ -227,7 +227,7 @@ class Utils
      * @param Classify|null $classify
      * @return mixed|string|null
      */
-    public function findTypeClass($type, ?Classify $classify)
+    public function findTypeClass($type, ?Classify $classify): ?string
     {
         if (empty($type)) {
             return null;

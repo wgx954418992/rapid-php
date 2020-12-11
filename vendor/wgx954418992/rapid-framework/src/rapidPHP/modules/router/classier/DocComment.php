@@ -20,7 +20,7 @@ class DocComment extends ReflectionDocComment
     /**
      * @throws Exception
      */
-    public function getConfigClass()
+    public function getConfigClass(): string
     {
         return AnnotationConfig::class;
     }
@@ -30,7 +30,7 @@ class DocComment extends ReflectionDocComment
      * @return Route
      * @throws Exception
      */
-    public function getRouteAnnotation()
+    public function getRouteAnnotation(): ?Route
     {
         /** @var Route $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_ROUTE);
@@ -46,7 +46,7 @@ class DocComment extends ReflectionDocComment
      * @return Header[]
      * @throws Exception
      */
-    public function getHeadersAnnotation()
+    public function getHeadersAnnotation(): array
     {
         return $this->getAnnotations(AnnotationConfig::AT_HEADER);
     }
@@ -55,7 +55,7 @@ class DocComment extends ReflectionDocComment
      * @return array
      * @throws Exception
      */
-    public function getHeadersArray()
+    public function getHeadersArray(): array
     {
         $result = [];
 
@@ -73,7 +73,7 @@ class DocComment extends ReflectionDocComment
      * @return Method
      * @throws Exception
      */
-    public function getMethodAnnotation()
+    public function getMethodAnnotation(): ?Method
     {
         /** @var Method $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_METHOD);
@@ -88,7 +88,7 @@ class DocComment extends ReflectionDocComment
      * @return Typed
      * @throws Exception
      */
-    public function getTypedAnnotation()
+    public function getTypedAnnotation(): ?Typed
     {
         /** @var Typed $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_TYPED);
@@ -103,7 +103,7 @@ class DocComment extends ReflectionDocComment
      * @return Template
      * @throws Exception
      */
-    public function getTemplateAnnotation()
+    public function getTemplateAnnotation(): ?Template
     {
         /** @var Template $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_TEMPLATE);
@@ -119,7 +119,7 @@ class DocComment extends ReflectionDocComment
      * @return Encode
      * @throws Exception
      */
-    public function getEncodeAnnotation()
+    public function getEncodeAnnotation(): ?Encode
     {
         /** @var Encode $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_ENCODE);

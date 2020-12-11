@@ -23,7 +23,7 @@ class FileCache implements CacheInterface
     /**
      * @return CacheInterface
      */
-    public static function getInstance()
+    public static function getInstance(): CacheInterface
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -48,7 +48,7 @@ class FileCache implements CacheInterface
      * @param $name
      * @return string
      */
-    private function getCacheName($name)
+    private function getCacheName($name): string
     {
         return $this->cachePath . md5($name);
     }
@@ -73,7 +73,7 @@ class FileCache implements CacheInterface
     /**
      * 获取缓存
      * @param string $name
-     * @return array|mixed|null
+     * @return array|string|int|mixed|null
      */
     public function get(string $name)
     {

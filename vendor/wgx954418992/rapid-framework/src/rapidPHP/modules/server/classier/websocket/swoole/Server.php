@@ -49,7 +49,7 @@ class Server extends SwooleServer
      * @param $sessionKey
      * @return mixed|string|null
      */
-    private function getClientSessionId(SwooleRequest $req, SwooleWebSocketServer $server, $sessionKey)
+    private function getClientSessionId(SwooleRequest $req, SwooleWebSocketServer $server, $sessionKey): ?string
     {
         $sessionId = Build::getInstance()->getData($req->cookie, $sessionKey);
 
@@ -75,7 +75,7 @@ class Server extends SwooleServer
      * @param SwooleRequest $req
      * @return string
      */
-    private function requestToString(SwooleRequest $req)
+    private function requestToString(SwooleRequest $req): string
     {
         $data = preg_replace(["#(cookie:(.*)\n)#i", '#(\r\n\r\n)#'], '', $req->getData());
 
@@ -113,7 +113,7 @@ class Server extends SwooleServer
      * @param $body
      * @return array
      */
-    public function parseHeader($body)
+    public function parseHeader($body): array
     {
         $rawHeaders = explode("\r\n", $body);
 
@@ -125,7 +125,7 @@ class Server extends SwooleServer
      * @param $header
      * @return array
      */
-    public function parseCookie($header)
+    public function parseCookie($header): array
     {
         $cookie = Build::getInstance()->getData($header, 'Cookie');
 

@@ -44,7 +44,7 @@ return [
             'session' => [
                 'key' => 'PHPSESSID',
 
-                'service' => \apps\app\classier\service\SessionService::class,
+                'service' => null,
             ],
 
             'context' => \rapidPHP\modules\application\classier\context\WebContext::class,
@@ -53,7 +53,7 @@ return [
             'session' => [
                 'key' => 'PHPSESSID',
 
-                'service' => \apps\app\classier\service\SessionService::class,
+                'service' => null,
             ],
 
             'context' => \rapidPHP\modules\application\classier\context\WebContext::class,

@@ -66,7 +66,7 @@ class Logger extends Monolog
      * @return Logger
      * @throws Exception
      */
-    public static function getLogger(LoggerConfig $config)
+    public static function getLogger(LoggerConfig $config): Logger
     {
         $name = $config->getName();
 

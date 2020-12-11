@@ -2160,17 +2160,17 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.3.2",
-            "version_normalized": "3.3.2.0",
+            "version": "3.4.0",
+            "version_normalized": "3.4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "52c7715e2a4ffb7bef91ee222ac44d12d9d7a48b"
+                "reference": "99b77b051cb319ce57867ea7a6a7d4d9d785361d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/52c7715e2a4ffb7bef91ee222ac44d12d9d7a48b",
-                "reference": "52c7715e2a4ffb7bef91ee222ac44d12d9d7a48b",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/99b77b051cb319ce57867ea7a6a7d4d9d785361d",
+                "reference": "99b77b051cb319ce57867ea7a6a7d4d9d785361d",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2206,7 +2206,7 @@
                 "eaglewu/swoole-ide-helper": "dev-master",
                 "phpunit/phpunit": "^7.0"
             },
-            "time": "2020-12-09T15:12:16+00:00",
+            "time": "2020-12-11T13:39:15+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2236,7 +2236,7 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.3.2"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.4.0"
             },
             "install-path": "../wgx954418992/rapid-framework"
         }

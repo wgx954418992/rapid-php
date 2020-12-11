@@ -5,10 +5,13 @@ namespace rapidPHP\modules\router\classier;
 
 use Exception;
 use rapidPHP\modules\application\classier\Application;
+use rapidPHP\modules\application\classier\apps\WebApplication;
 use rapidPHP\modules\application\classier\Context;
+use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Verify;
 use rapidPHP\modules\core\classier\Controller;
+use rapidPHP\modules\core\classier\web\WebController;
 use rapidPHP\modules\exception\classier\ActionException;
 use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\reflection\classier\Utils as ReflectionUtils;
@@ -44,7 +47,7 @@ abstract class Router
     abstract public static function getInstance();
 
     /**
-     * @return Application
+     * @return Application|WebApplication
      */
     public function getApplication()
     {
@@ -52,7 +55,7 @@ abstract class Router
     }
 
     /**
-     * @return Context
+     * @return Context|WebContext
      */
     public function getContext()
     {
@@ -138,7 +141,7 @@ abstract class Router
      * @return Action|null
      * @throws Exception
      */
-    protected function getAction($className, $methodName)
+    protected function getAction($className, $methodName): ?Action
     {
         if (empty($className)) return null;
 
@@ -169,7 +172,7 @@ abstract class Router
      * @return Action|null
      * @throws Exception
      */
-    public function getMatchingAction($realPath, ?Route &$route = null, &$pathVariable = [], &$index = 0)
+    public function getMatchingAction($realPath, ?Route &$route = null, &$pathVariable = [], &$index = 0): ?Action
     {
         if (is_null($index)) $index = 0;
 
@@ -201,7 +204,7 @@ abstract class Router
      * @param Classify $classify
      * @param Route $route
      * @param $pathVariable
-     * @return object|Controller
+     * @return object|Controller|WebController
      * @throws Exception
      */
     private function newController(Classify $classify, Route $route, $pathVariable)
@@ -231,7 +234,7 @@ abstract class Router
      * @param Exception|null $exception
      * @return array
      */
-    protected function getParameters(Action $action, $pathVariable, callable $params = null, ?Exception $exception = null)
+    protected function getParameters(Action $action, $pathVariable, callable $params = null, ?Exception $exception = null): array
     {
         $data = [];
 
@@ -261,7 +264,7 @@ abstract class Router
      * 获取参数值
      * @param ActionParameter $parameter
      * @param $pathVariable
-     * @param callable $params
+     * @param callable|null $params
      * @return bool|false|mixed|object|string|null
      */
     protected function getParameterValue(ActionParameter $parameter, $pathVariable, callable $params = null)

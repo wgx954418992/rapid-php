@@ -41,7 +41,7 @@ class Language
      * @param $lang
      * @return mixed
      */
-    private static function loadLanguage($lang)
+    private static function loadLanguage($lang): array
     {
         if (isset(self::$languages[$lang])) return self::$languages[$lang];
 

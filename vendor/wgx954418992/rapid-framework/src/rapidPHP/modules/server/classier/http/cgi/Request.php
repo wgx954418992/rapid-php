@@ -13,7 +13,7 @@ class Request extends RequestInterface
      * @param $serverInfo
      * @return array
      */
-    public static function getAllHeaderByServerInfo(&$serverInfo)
+    public static function getAllHeaderByServerInfo(&$serverInfo): array
     {
         $headers = [];
 

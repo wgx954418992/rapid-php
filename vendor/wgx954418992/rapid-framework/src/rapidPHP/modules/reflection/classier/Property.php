@@ -46,7 +46,7 @@ class Property
      * @return Classify|null
      * @throws Exception
      */
-    public function getDeclaringClass()
+    public function getDeclaringClass(): ?Classify
     {
         return Classify::getInstance($this->getProperty()->getDeclaringClass());
     }
@@ -62,7 +62,7 @@ class Property
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getProperty()->getName();
     }
@@ -97,7 +97,7 @@ class Property
 
     /**
      * @param string $class
-     * @return DocComment|null
+     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|object|mixed|null
      */
     public function getDocComment($class = DocComment::class)
     {

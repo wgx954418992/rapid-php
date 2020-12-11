@@ -18,7 +18,7 @@ class Modules
     /**
      * @return Modules
      */
-    public static function getInstance()
+    public static function getInstance(): Modules
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }

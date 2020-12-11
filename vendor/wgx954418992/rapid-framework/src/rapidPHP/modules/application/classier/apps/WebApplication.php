@@ -5,6 +5,7 @@ namespace rapidPHP\modules\application\classier\apps;
 
 use Exception;
 use rapidPHP\modules\application\classier\Application;
+use rapidPHP\modules\application\classier\Context;
 use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\server\classier\interfaces\Request;
@@ -18,7 +19,7 @@ abstract class WebApplication extends Application
      * @param Request $request
      * @param Response $response
      * @param string|null $context
-     * @return WebContext
+     * @return WebContext|Context|null|mixed
      * @throws Exception
      */
     public function newWebContext(Request $request, Response $response, ?string $context)

@@ -54,7 +54,7 @@ class AB
 
     /**
      * 获取数据
-     * @param array $names
+     * @param array|null $names
      * @param int $mode 1获取names下的values 2,排除names下的values
      * @return array
      */
@@ -256,7 +256,7 @@ class AB
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toJson();
     }

@@ -60,7 +60,7 @@ class Parameter
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getParameter()->getName();
     }
@@ -111,7 +111,7 @@ class Parameter
      * @return annotation\Parameter|null
      * @throws Exception
      */
-    public function getAnnotation()
+    public function getAnnotation(): ?annotation\Parameter
     {
         return $this->method->getDocComment()->getParamAnnotation($this->getName());
     }

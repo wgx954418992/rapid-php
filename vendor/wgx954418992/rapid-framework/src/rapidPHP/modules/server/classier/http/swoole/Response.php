@@ -92,7 +92,7 @@ class Response extends ResponseInterface
      * @param string $samesite 从 v4.4.6 版本开始支持
      * @return bool
      */
-    public function cookie($key, $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false, $samesite = ''): bool
+    public function cookie(string $key, string $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false, $samesite = ''): bool
     {
         if ($this->isEnd) return false;
 
@@ -107,7 +107,7 @@ class Response extends ResponseInterface
      * @param array $options
      * @return bool
      */
-    public function write($data, $options = []): bool
+    public function write(string $data, $options = []): bool
     {
         if ($this->isEnd) return false;
 
@@ -122,7 +122,7 @@ class Response extends ResponseInterface
      * @param array $options
      * @return bool
      */
-    public function sendFile($filename, $options = []): bool
+    public function sendFile(string $filename, $options = []): bool
     {
         if ($this->isEnd) return false;
 

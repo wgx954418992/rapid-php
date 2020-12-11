@@ -67,7 +67,7 @@ class Returned
      * @return array|null
      * @throws Exception
      */
-    public function toArray()
+    public function toArray(): ?array
     {
         return Utils::getInstance()->toArray($this);
     }

@@ -22,7 +22,7 @@ class Route extends Value
      * 获取value
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return rtrim(parent::getValue(), '/*');
     }

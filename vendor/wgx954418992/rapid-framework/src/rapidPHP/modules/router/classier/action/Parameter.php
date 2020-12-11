@@ -100,7 +100,7 @@ class Parameter
      * 获取编码类型
      * @return string|null
      */
-    public function getEncodeType()
+    public function getEncodeType(): ?string
     {
         return ActionConfig::getEncodeType($this->getRemark());
     }
@@ -111,7 +111,7 @@ class Parameter
      * @return array|null
      * @throws Exception
      */
-    public function toArray()
+    public function toArray(): ?array
     {
         return Utils::getInstance()->toArray($this);
     }

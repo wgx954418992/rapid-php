@@ -18,7 +18,7 @@ interface HandlerInterface
      * @param Controller $controller
      * @param $result
      * @param array $options
-     * @return array|mixed|null
+     * @return array|mixed|null|string
      */
     public function onResult(Controller $controller, $result, $options = []);
 }

@@ -85,7 +85,7 @@ class Statement
      * @return bool
      * @throws Exception
      */
-    public function execute()
+    public function execute(): bool
     {
         $statement = $this->getStatement($result);
 

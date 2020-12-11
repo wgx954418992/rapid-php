@@ -14,7 +14,7 @@ class Path
     /**
      * @return Path
      */
-    public static function getInstance()
+    public static function getInstance(): Path
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -35,7 +35,7 @@ class Path
      * @param int $count
      * @return string
      */
-    public function dirName($path, $count = 1)
+    public function dirName($path, $count = 1): string
     {
         $count = (int)$count;
 

@@ -24,7 +24,7 @@ class ApplicationConfig
      * @return array
      * @throws Exception
      */
-    public static function getDefaultConfig()
+    public static function getDefaultConfig(): array
     {
         $file = Modules::getInstance()->getModulesResourcePath(self::MODULE_NAME) . self::DEFAULT_CONFIG_FILENAME;
 

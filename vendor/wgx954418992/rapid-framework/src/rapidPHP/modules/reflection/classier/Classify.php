@@ -40,7 +40,7 @@ class Classify
     /**
      * @return ReflectionClass
      */
-    public function getReflectionClass()
+    public function getReflectionClass(): ReflectionClass
     {
         return $this->reflection;
     }
@@ -51,7 +51,7 @@ class Classify
      * @return Classify|null
      * @throws Exception
      */
-    public static function getInstance($name)
+    public static function getInstance($name): ?Classify
     {
         if (!$name) throw new Exception('Classify name empty');
 
@@ -65,7 +65,7 @@ class Classify
     /**
      * @return string
      */
-    public function getNamespaceName()
+    public function getNamespaceName(): string
     {
         return $this->reflection->getNamespaceName();
     }
@@ -73,7 +73,7 @@ class Classify
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->reflection->getName();
     }
@@ -88,7 +88,7 @@ class Classify
 
     /**
      * @param string $class
-     * @return DocComment|null
+     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|mixed|object|null
      */
     public function getDocComment($class = DocComment::class)
     {
@@ -102,7 +102,7 @@ class Classify
     /**
      * @return array
      */
-    public function getInterfaceNames()
+    public function getInterfaceNames(): array
     {
         return $this->reflection->getInterfaceNames();
     }
@@ -111,6 +111,7 @@ class Classify
      * @param null $args
      * @param null $_
      * @return object
+     * @throws ReflectionException
      */
     public function newInstance($args = null, $_ = null)
     {
@@ -120,6 +121,7 @@ class Classify
     /**
      * @param array|null $args
      * @return object
+     * @throws ReflectionException
      */
     public function newInstanceArgs(array $args = null)
     {
@@ -158,7 +160,7 @@ class Classify
      * @return Classify|null
      * @throws Exception
      */
-    public function getParentClassify()
+    public function getParentClassify(): ?Classify
     {
         $parent = $this->reflection->getParentClass();
 
@@ -171,7 +173,7 @@ class Classify
      * 获取文件里面使用所有use 导入的包
      * @return array
      */
-    public function getImportPackage()
+    public function getImportPackage(): array
     {
         $result = [];
 
@@ -210,7 +212,7 @@ class Classify
      * @return Property
      * @throws ReflectionException
      */
-    public function getProperty($name)
+    public function getProperty($name): Property
     {
         return new Property($this, $this->reflection->getProperty($name));
     }
@@ -220,7 +222,7 @@ class Classify
      * @param null $filter
      * @return Property[]
      */
-    public function getProperties($filter = null)
+    public function getProperties($filter = null): array
     {
         $filterCall = null;
 
@@ -257,7 +259,7 @@ class Classify
      * @return Method
      * @throws ReflectionException
      */
-    public function getMethod($name)
+    public function getMethod($name): Method
     {
         return new Method($this, $this->reflection->getMethod($name));
     }
@@ -267,7 +269,7 @@ class Classify
      * @param $name
      * @return bool
      */
-    public function hasMethodInCurrent($name)
+    public function hasMethodInCurrent($name): bool
     {
         $methods = $this->reflection->getMethods();
 
@@ -286,7 +288,7 @@ class Classify
      * @param null $filter
      * @return Method[]
      */
-    public function getMethods($filter = null)
+    public function getMethods($filter = null): array
     {
         $filterCall = null;
 
@@ -322,7 +324,7 @@ class Classify
      * @param int $filter
      * @return Method[]
      */
-    public function getSetterMethods($filter = ReflectionMethod::IS_PUBLIC)
+    public function getSetterMethods($filter = ReflectionMethod::IS_PUBLIC): array
     {
         return $this->getMethods([$filter, function (Method $method) {
 
@@ -337,7 +339,7 @@ class Classify
      * @param int $filter
      * @return Method[]
      */
-    public function getGetterMethods($filter = ReflectionMethod::IS_PUBLIC)
+    public function getGetterMethods($filter = ReflectionMethod::IS_PUBLIC): array
     {
         return $this->getMethods([$filter, function (Method $method) {
             $name = strtolower($method->getName());
@@ -351,7 +353,7 @@ class Classify
      * @param null $filter
      * @return array|null
      */
-    public function getPropertiesNames($filter = null)
+    public function getPropertiesNames($filter = null): ?array
     {
         try {
             $properties = $this->getProperties($filter);

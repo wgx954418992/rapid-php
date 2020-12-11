@@ -85,7 +85,7 @@ class Calendar
      * @param string $zone
      * @return Calendar
      */
-    public static function getInstance($zone = 'PRC')
+    public static function getInstance($zone = 'PRC'): Calendar
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self($zone);
     }
@@ -177,7 +177,7 @@ class Calendar
      * @param string[] $unitString 可以自己定义
      * @return string
      */
-    public function formatSecond($second = 0, $unitString = self::TIME_NAMES)
+    public function formatSecond($second = 0, $unitString = self::TIME_NAMES): ?string
     {
         ksort($unitString);
 
@@ -230,7 +230,7 @@ class Calendar
      * @param $date
      * @return bool
      */
-    public function isIntercalaryYear($date = null)
+    public function isIntercalaryYear($date = null): bool
     {
         if (empty($date)) {
             $date = $this->getDate(time(), 'Y');
@@ -253,10 +253,8 @@ class Calendar
         switch ($mode) {
             case self::HS_MODE_CURRENT:
                 return $c;
-                break;
             case self::HS_MODE_FULL:
                 return $f;
-                break;
         }
         return $f;
     }
@@ -268,7 +266,7 @@ class Calendar
      * @param null $to
      * @return bool
      */
-    public function hsTime($from, $format, $to = null)
+    public function hsTime($from, $format, $to = null): bool
     {
         if (empty($to)) {
             $to = $this->getDate(time(), $format);
@@ -288,7 +286,7 @@ class Calendar
      * @param $to
      * @return bool
      */
-    public function hsYear($from, $to = null)
+    public function hsYear($from, $to = null): bool
     {
         return $this->hsTime($from, 'Y', $to);
     }
@@ -300,7 +298,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsMonth($from, $to = null, $mode = self::HS_MODE_FULL)
+    public function hsMonth($from, $to = null, $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'm', 'Ym'), $to);
     }
@@ -312,7 +310,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsWeek($from, $to = null, $mode = self::HS_MODE_FULL)
+    public function hsWeek($from, $to = null, $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'w', 'Ymdw'), $to);
     }
@@ -324,7 +322,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsDay($from, $to = null, $mode = self::HS_MODE_FULL)
+    public function hsDay($from, $to = null, $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'd', 'Ymd'), $to);
     }
@@ -337,7 +335,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsHours($from, $to = null, $mode = self::HS_MODE_FULL)
+    public function hsHours($from, $to = null, $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'H', 'YmdH'), $to);
     }
@@ -349,7 +347,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsMinute($from, $to = null, $mode = self::HS_MODE_FULL)
+    public function hsMinute($from, $to = null, $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'i', 'YmdHi'), $to);
     }
@@ -361,7 +359,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsSecond($from, $to = null, $mode = self::HS_MODE_FULL)
+    public function hsSecond($from, $to = null, $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 's', 'YmdHis'), $to);
     }
@@ -372,7 +370,7 @@ class Calendar
      * @param $limit
      * @return bool
      */
-    public function isPassTime($date, $limit)
+    public function isPassTime($date, $limit): bool
     {
         $date = $this->dateToTime($date);
 
@@ -384,7 +382,7 @@ class Calendar
      * @param $date
      * @return bool
      */
-    public function isPassYear($date)
+    public function isPassYear($date): bool
     {
         $limit = $this->isIntercalaryYear($date) ? Calendar::TIME_YEAR_INTERCALARY : Calendar::TIME_YEAR;
 
@@ -396,7 +394,7 @@ class Calendar
      * @param $date
      * @return bool
      */
-    public function isPassMonth($date)
+    public function isPassMonth($date): bool
     {
         return $this->isPassTime($date, Calendar::TIME_MONTH);
     }
@@ -407,7 +405,7 @@ class Calendar
      * @param $date
      * @return bool
      */
-    public function isPassWeek($date)
+    public function isPassWeek($date): bool
     {
         return $this->isPassTime($date, Calendar::TIME_WEEK);
     }
@@ -417,7 +415,7 @@ class Calendar
      * @param $date
      * @return bool
      */
-    public function isPassDay($date)
+    public function isPassDay($date): bool
     {
         return $this->isPassTime($date, Calendar::TIME_DAY);
     }
@@ -427,7 +425,7 @@ class Calendar
      * @param $date
      * @return bool
      */
-    public function isPassHours($date)
+    public function isPassHours($date): bool
     {
         return $this->isPassTime($date, Calendar::TIME_HOURS);
     }
@@ -437,7 +435,7 @@ class Calendar
      * @param $date
      * @return bool
      */
-    public function isPassMinute($date)
+    public function isPassMinute($date): bool
     {
         return $this->isPassTime($date, Calendar::TIME_MINUTE);
     }
@@ -448,7 +446,7 @@ class Calendar
      * @param $second
      * @return bool
      */
-    public function isPassSecond($date, $second)
+    public function isPassSecond($date, $second): bool
     {
         return $this->isPassTime($date, $second);
     }

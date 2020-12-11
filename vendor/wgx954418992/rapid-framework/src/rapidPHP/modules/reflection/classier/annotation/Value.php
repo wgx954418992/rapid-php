@@ -10,12 +10,12 @@ class Value
 {
     /**
      * name
-     * @var string
+     * @var string|null
      */
     private $atName;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $value;
 
@@ -34,7 +34,7 @@ class Value
     /**
      * @return string
      */
-    public function getAtName()
+    public function getAtName(): ?string
     {
         return $this->atName;
     }
@@ -42,7 +42,7 @@ class Value
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue(): ?string
     {
         return $this->value;
     }
@@ -62,7 +62,7 @@ class Value
     }
 
     /**
-     * @return object|Value
+     * @return object|Value|Variable|mixed
      * @throws Exception
      */
     public function toObject()
@@ -75,7 +75,7 @@ class Value
      * toString
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getValue();
     }

@@ -178,11 +178,11 @@ class SQLTest extends TestCase
     public function testUnion()
     {
         $driver = $this->db->table(StatisticalModel::NAME)
-            ->select()
+            ->select('*')
             ->alias('a')
             ->union(function () {
                 return $this->db->table(StatisticalModel::NAME)
-                    ->select()
+                    ->select('*')
                     ->alias('c')
                     ->like('c.url', 'rapid');
             });
@@ -246,11 +246,11 @@ class SQLTest extends TestCase
         $driver = $this->db->table(null)
             ->select('url', function () {
                 return $this->db->table(StatisticalModel::NAME)
-                    ->select()
+                    ->select('*')
                     ->alias('a')
                     ->union(function () {
                         return $this->db->table(StatisticalModel::NAME)
-                            ->select()
+                            ->select('*')
                             ->alias('c')
                             ->like('c.url', 'rapid');
                     });

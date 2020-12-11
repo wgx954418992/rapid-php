@@ -107,7 +107,7 @@ class ViewTemplate
      * @return $this
      * @throws Exception
      */
-    public function assign($key, $value = '')
+    public function assign($key, $value = ''): ViewTemplate
     {
         if (is_array($key)) {
             $this->data->data($key);
@@ -136,7 +136,7 @@ class ViewTemplate
      * @param $includes
      * @return array
      */
-    private function getPreIncludesPregReplaceRule($patterns, $includes)
+    private function getPreIncludesPregReplaceRule($patterns, $includes): array
     {
         $rule = [];
 
@@ -197,7 +197,7 @@ class ViewTemplate
      * @param $strings
      * @return array
      */
-    private function getCompileLikeListA($strings)
+    private function getCompileLikeListA($strings): array
     {
         $list = [];
 
@@ -219,7 +219,7 @@ class ViewTemplate
      * @param $strings
      * @return array
      */
-    private function getCompileLikeListB($strings)
+    private function getCompileLikeListB($strings): array
     {
         $list = [];
 
@@ -241,7 +241,7 @@ class ViewTemplate
      * @param $strings
      * @return array
      */
-    private function getCompileLikeList($strings)
+    private function getCompileLikeList($strings): array
     {
         $listA = $this->getCompileLikeListA($strings);
 
@@ -256,7 +256,7 @@ class ViewTemplate
      * @param $value
      * @return mixed
      */
-    private function getCompileLikePathDir($dir, $value)
+    private function getCompileLikePathDir($dir, $value): string
     {
         $result = (array)Build::getInstance()->getRegularAll("#(\.\./|\./)#i", $value);
 
@@ -276,7 +276,7 @@ class ViewTemplate
      * @param $filepath
      * @return mixed
      */
-    private function getCompileLikeRuleList($list, $filepath)
+    private function getCompileLikeRuleList($list, $filepath): array
     {
         $rule = [];
 
@@ -301,7 +301,7 @@ class ViewTemplate
      * @param $filepath
      * @return mixed
      */
-    private function getCompileLikeRule($strings, $filepath)
+    private function getCompileLikeRule($strings, $filepath): array
     {
         $likeList = $this->getCompileLikeList($strings);
 
@@ -313,7 +313,7 @@ class ViewTemplate
      * @param $compileResult
      * @return string
      */
-    private function putHeader($compileResult)
+    private function putHeader($compileResult): string
     {
         return "<?php /** cache Time " . Calendar::getInstance()->getDate() . " */ defined('PATH_APP') or die();?>\n{$compileResult}";
     }
@@ -355,10 +355,8 @@ class ViewTemplate
         switch ($outputType) {
             case TemplateService::OUTPUT_TYPE_FILE:
                 return $this->getIncludeContents($cacheFile);
-                break;
             case TemplateService::OUTPUT_TYPE_CONTENT:
                 return $cacheFile;
-                break;
         }
         return;
     }
@@ -413,7 +411,7 @@ class ViewTemplate
      * 获取controller
      * @return WebController
      */
-    public function getController()
+    public function getController(): WebController
     {
         return $this->controller;
     }

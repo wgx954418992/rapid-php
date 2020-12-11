@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-php",
-  "version": "3.3.3",
+  "version": "3.4.0",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "wgx954418992/rapid-framework": "^3.3.3"
+    "wgx954418992/rapid-framework": "^3.4.0"
   },
   "autoload": {
     "files": [],
@@ -28,7 +28,15 @@
     }
   },
   "scripts": {
-    "generator-model": "script\\model\\classier\\ToModel::console"
+    "generator-model-php": [
+      "php -r \"require __DIR__.'/vendor/autoload.php';script\\model\\classier\\ToModel::run([__DIR__.'/apps/app/application.yaml'],'sql','php',__DIR__.'/apps/app/classier/model/','apps\\app\\classier\\model');\""
+    ],
+    "generator-model-swift": [
+      "php -r \"require __DIR__.'/vendor/autoload.php';script\\model\\classier\\ToModel::run([__DIR__.'/apps/app/application.yaml'],'sql','swift',__DIR__.'/models/swift/',null,['extends'=>'BaseModel','imports'=>['Foundation']]);\""
+    ],
+    "generator-model-java": [
+      "php -r \"require __DIR__.'/vendor/autoload.php';script\\model\\classier\\ToModel::run([__DIR__.'/apps/app/application.yaml'],'sql','java',__DIR__.'/models/java/','models',['extends'=>'BaseModel']);\""
+    ]
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

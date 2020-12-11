@@ -28,7 +28,7 @@ class AnnotationConfig
     /**
      * @return string[]
      */
-    public static function getAtList()
+    public static function getAtList(): array
     {
         return [
             self::AT_PARAM => Parameter::class,

@@ -137,11 +137,11 @@ class Mysql extends Driver
     /**
      * getTableStructureSql
      * @param $type
-     * @param $tableName
      * @param string $database
+     * @param $tableName
      * @return array|null|string
      */
-    public function getTableCreateSqlString($type, $database, $tableName)
+    public function getTableCreateSqlString($type, string $database, $tableName)
     {
         $data = [
             1 => "show create table {$database}.{$tableName}",

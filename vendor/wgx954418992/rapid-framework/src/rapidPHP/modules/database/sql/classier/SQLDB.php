@@ -40,7 +40,7 @@ class SQLDB
      * 获取配置
      * @return ConnectConfig|null
      */
-    public function getConfig()
+    public function getConfig(): ?ConnectConfig
     {
         return $this->config;
     }
@@ -68,7 +68,7 @@ class SQLDB
      * getConnect
      * @return PDO
      */
-    public function getConnect()
+    public function getConnect(): ?PDO
     {
         return $this->connect;
     }
@@ -79,7 +79,7 @@ class SQLDB
      * @return Driver
      * @throws Exception
      */
-    public function table($tableName = null)
+    public function table($tableName = null): Driver
     {
         $config = $this->getConfig();
 
@@ -95,7 +95,7 @@ class SQLDB
      * 判断是否在一个事务内
      * @return bool
      */
-    public function isInThing()
+    public function isInThing(): bool
     {
         return $this->getConnect()->inTransaction();
     }
@@ -105,7 +105,7 @@ class SQLDB
      * @return bool
      * @throws Exception
      */
-    public function beginTransaction()
+    public function beginTransaction(): bool
     {
         if ($this->isInThing()) return true;
 
@@ -124,7 +124,7 @@ class SQLDB
      * @return bool
      * @throws Exception
      */
-    public function commit()
+    public function commit(): bool
     {
         try{
             return @$this->getConnect()->commit();
@@ -141,7 +141,7 @@ class SQLDB
      * @return bool
      * @throws Exception
      */
-    public function rollBack()
+    public function rollBack(): bool
     {
         try{
             return @$this->getConnect()->rollBack();
@@ -159,7 +159,7 @@ class SQLDB
      * @return SQLDB
      * @throws Exception
      */
-    public function onErrorHandler(Exception $e)
+    public function onErrorHandler(Exception $e): SQLDB
     {
         $code = $e->getCode();
 
@@ -175,10 +175,8 @@ class SQLDB
      * @return $this
      * @throws Exception
      */
-    public function reconnect()
+    public function reconnect(): SQLDB
     {
-        var_dump('reconnect '.$this->reconnectCount);
-
         if ($this->reconnectCount >= 2) throw new Exception('database exception reconnect error!');
 
         $this->close();
@@ -203,7 +201,7 @@ class SQLDB
      * @param $sql
      * @return Statement
      */
-    public function query($sql)
+    public function query($sql): Statement
     {
         return new Statement($this, $sql);
     }

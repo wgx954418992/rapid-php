@@ -55,7 +55,7 @@ class Uri
     /**
      * @return Uri
      */
-    public static function getInstance()
+    public static function getInstance(): Uri
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -126,7 +126,7 @@ class Uri
      * @param string $connector
      * @return string
      */
-    public function toQuery($data, $isEncode = false, $isEmpty = true, $connector = '&')
+    public function toQuery($data, $isEncode = false, $isEmpty = true, $connector = '&'): string
     {
         $arg = '';
 

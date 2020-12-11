@@ -54,7 +54,7 @@ class ConfigWrapper
     /**
      * @return array|null
      */
-    public function getLog()
+    public function getLog(): ?array
     {
         return $this->log;
     }
@@ -64,7 +64,7 @@ class ConfigWrapper
      * @return LoggerConfig|null
      * @throws Exception
      */
-    public function getLogConfig($name)
+    public function getLogConfig($name): ?LoggerConfig
     {
         if (!isset($this->log[$name])) return null;
 

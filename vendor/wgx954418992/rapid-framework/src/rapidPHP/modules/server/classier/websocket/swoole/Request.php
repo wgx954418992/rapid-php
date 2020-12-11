@@ -74,7 +74,7 @@ class Request extends RequestInterface
      * @param $data
      * @return array
      */
-    public function parseServer($clientInfo, $data)
+    public function parseServer($clientInfo, $data): array
     {
         $urlInfo = parse_url($data);
 

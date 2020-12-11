@@ -2,6 +2,7 @@
 
 namespace rapidPHP\modules\core\classier\console;
 
+use rapidPHP\modules\application\classier\Context;
 use rapidPHP\modules\application\classier\context\ConsoleContext;
 use rapidPHP\modules\core\classier\Controller;
 
@@ -18,7 +19,7 @@ class ConsoleController extends Controller
     }
 
     /**
-     * @return ConsoleContext
+     * @return ConsoleContext|Context
      */
     public function getContext()
     {

@@ -44,7 +44,7 @@ abstract class Server
     /**
      * @return Task|null
      */
-    public function getTask()
+    public function getTask(): ?Task
     {
         return $this->task;
     }

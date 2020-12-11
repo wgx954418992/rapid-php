@@ -40,7 +40,7 @@ class Element
     /**
      * @return DOMElement
      */
-    public function getElement()
+    public function getElement(): DOMElement
     {
         return $this->element;
     }
@@ -48,14 +48,14 @@ class Element
     /**
      * @return DOMDocument
      */
-    public function getDocument()
+    public function getDocument(): DOMDocument
     {
         return $this->document;
     }
 
     /**
      * @param $value
-     * @return $this
+     * @return static|self
      */
     public function setValue($value)
     {
@@ -66,7 +66,7 @@ class Element
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->element->nodeValue;
     }
@@ -76,7 +76,7 @@ class Element
      * @param $name
      * @return string
      */
-    public function getAttr($name)
+    public function getAttr($name): string
     {
         return $this->element->getAttribute($name);
     }
@@ -86,7 +86,7 @@ class Element
      * @param $name
      * @param null $value
      * @param bool $isStack
-     * @return $this
+     * @return static|self
      */
     public function setAttr($name, $value = null, $isStack = false)
     {
@@ -100,9 +100,9 @@ class Element
     /**
      * 移出属性
      * @param $name
-     * @return $this
+     * @return static|self
      */
-    public function removeAttr($name)
+    public function removeAttr($name): Element
     {
         $this->element->removeAttribute($name);
 
@@ -112,7 +112,7 @@ class Element
     /**
      * @param array $attr
      * @param bool $isStack
-     * @return $this
+     * @return static|self
      */
     public function setAttrList($attr = array(), $isStack = false)
     {
@@ -134,7 +134,7 @@ class Element
 
     /**
      * @param $name
-     * @return $this
+     * @return static|self
      */
     public function addClass($name)
     {
@@ -145,7 +145,7 @@ class Element
 
     /**
      * @param $name
-     * @return $this
+     * @return static|self
      */
     public function removeClass($name)
     {
@@ -158,7 +158,7 @@ class Element
 
     /**
      * @param $element
-     * @return $this
+     * @return static|self
      */
     public function addView($element)
     {
@@ -183,7 +183,7 @@ class Element
 
     /**
      * @param $element
-     * @return $this
+     * @return static|self
      */
     public function setParent($element)
     {
@@ -199,7 +199,7 @@ class Element
     /**
      * @param $name
      * @param null $value
-     * @return $this
+     * @return static|self
      */
     public function setData($name, $value = null)
     {
@@ -210,7 +210,7 @@ class Element
 
     /**
      * @param $data
-     * @return $this
+     * @return static|self
      */
     public function setDataList($data)
     {
@@ -232,7 +232,7 @@ class Element
 
     /**
      * @param $value
-     * @return $this
+     * @return static|self
      */
     public function setTitle($value)
     {
@@ -252,7 +252,7 @@ class Element
 
     /**
      * @param $value
-     * @return $this
+     * @return static|self
      */
     public function setHref($value)
     {
@@ -263,7 +263,7 @@ class Element
 
     /**
      * @param $value
-     * @return $this
+     * @return static|self
      */
     public function setTarget($value = '_blank')
     {
@@ -274,7 +274,7 @@ class Element
 
     /**
      * @param $value
-     * @return $this
+     * @return static|self
      */
     public function setSrc($value)
     {
@@ -285,7 +285,7 @@ class Element
 
     /**
      * @param $value
-     * @return $this
+     * @return static|self
      */
     public function setId($value)
     {
@@ -297,7 +297,7 @@ class Element
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->getAttr('id');
     }
@@ -305,7 +305,7 @@ class Element
     /**
      * @return string
      */
-    public function toHtml()
+    public function toHtml(): string
     {
         return html_entity_decode($this->document->saveHTML(), ENT_QUOTES, 'utf-8');
     }
@@ -313,7 +313,7 @@ class Element
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toHtml();
     }

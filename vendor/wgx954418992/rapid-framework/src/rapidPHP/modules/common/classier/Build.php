@@ -12,7 +12,7 @@ class Build
     /**
      * @return Build
      */
-    public static function getInstance()
+    public static function getInstance(): Build
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -21,7 +21,7 @@ class Build
      * 解析数组
      * @param array|null $array
      * @param $key
-     * @return mixed|null
+     * @return mixed|array|string|int|null|object
      */
     public function getData(?array $array, $key)
     {
@@ -34,7 +34,7 @@ class Build
      * @param null $key
      * @return mixed|null
      */
-    public function jsonDecode($json, $key = null)
+    public function jsonDecode(?string $json, $key = null)
     {
         if (empty($json)) return null;
 
@@ -137,7 +137,7 @@ class Build
      *
      * @return bool
      */
-    public function isJson($data = '', $assoc = false)
+    public function isJson($data = '', $assoc = false): bool
     {
         $data = json_decode($data, $assoc);
 
@@ -194,7 +194,7 @@ class Build
      * @param $ip
      * @return bool
      */
-    public function isIntranet($ip)
+    public function isIntranet($ip): bool
     {
         return !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
     }

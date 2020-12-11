@@ -27,7 +27,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.3.2');
+define('RAPIDPHP_VERSION', '3.4.0');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -62,7 +62,7 @@ if (!defined('SWOOLE_HOOK_CURL')) define('SWOOLE_HOOK_CURL', 268435456);
  * @param $array
  * @return AB
  */
-function AB($array = null)
+function AB($array = null): AB
 {
     return AB::getInstance($array);
 }
@@ -71,7 +71,7 @@ function AB($array = null)
  * 快捷获取Array类
  * @return AR
  */
-function AR()
+function AR(): AR
 {
     return AR::getInstance();
 }
@@ -80,7 +80,7 @@ function AR()
  * 快捷获取build类
  * @return Build
  */
-function B()
+function B(): Build
 {
     return Build::getInstance();
 }
@@ -90,7 +90,7 @@ function B()
  * 快捷获取Console类
  * @return Console
  */
-function Con()
+function Con(): Console
 {
     return Console::getInstance();
 }
@@ -99,7 +99,7 @@ function Con()
  * 快捷获取StrCharacter类
  * @return StrCharacter
  */
-function Str()
+function Str(): StrCharacter
 {
     return StrCharacter::getInstance();
 }
@@ -108,7 +108,7 @@ function Str()
  * 快捷获取Calendar类
  * @return Calendar
  */
-function Cal()
+function Cal(): Calendar
 {
     return Calendar::getInstance();
 }
@@ -117,7 +117,7 @@ function Cal()
  * 获取获得文件操作类
  * @return File
  */
-function F()
+function F(): File
 {
     return File::getInstance();
 }
@@ -126,7 +126,7 @@ function F()
  * 获取获得验证操作类
  * @return Verify
  */
-function V()
+function V(): Verify
 {
     return Verify::getInstance();
 }
@@ -135,7 +135,7 @@ function V()
  * 获取获得xml操作类
  * @return Xml
  */
-function X()
+function X(): Xml
 {
     return Xml::getInstance();
 }
@@ -148,7 +148,7 @@ function X()
  * @return array|null|object|string
  * @throws Exception
  */
-function M($name, $parameter = [], $forced = false)
+function M(string $name, $parameter = [], $forced = false)
 {
     if ($forced == false) {
         if (Register::getInstance()->isPut($name)) {
@@ -174,7 +174,7 @@ function M($name, $parameter = [], $forced = false)
  * @param $view
  * @return ViewTemplate
  */
-function VT($view)
+function VT($view): ?ViewTemplate
 {
     if ($view instanceof ViewTemplate) return $view;
 
@@ -188,7 +188,7 @@ function VT($view)
  * @param string $format
  * @return string
  */
-function formatException(Exception $e, $format = "{msg} {code}\n{trace}\n thrown in {file} on line {line}")
+function formatException(Exception $e, $format = "{msg} {code}\n{trace}\n thrown in {file} on line {line}"): string
 {
     $result = [
         'code' => $e->getCode(),
@@ -222,18 +222,24 @@ class Init
 
     /**
      * Init constructor.
-     * @param string|null $appFile
+     * @param string|null $appFiles
      * @throws RuntimeException
      */
-    public function __construct(?string $appFile = null)
+    public function __construct($appFiles = null)
     {
         try {
-            
+
             $this->setConfig(ApplicationConfig::getDefaultConfig());
 
-            if (is_null($appFile)) $appFile = PATH_APP . 'application.yaml';
+            if (is_null($appFiles)) {
+                $appFiles = [(defined('PATH_APP') ? PATH_APP : PATH_ROOT) . 'application.yaml'];
+            } else if (!is_array($appFiles)) {
+                $appFiles = [$appFiles];
+            }
 
-            if (is_file($appFile)) $this->setConfig(Spyc::YAMLLoad($appFile));
+            foreach ($appFiles as $file) {
+                $this->setConfig(Spyc::YAMLLoad($file));
+            }
         } catch (Exception $e) {
             throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }

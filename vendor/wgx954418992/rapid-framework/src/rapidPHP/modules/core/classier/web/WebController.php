@@ -21,7 +21,7 @@ class WebController extends Controller
     }
 
     /**
-     * @return WebContext
+     * @return WebContext|object|mixed|null|static
      */
     public function getContext()
     {
@@ -31,7 +31,7 @@ class WebController extends Controller
     /**
      * @return Request
      */
-    public function getRequest()
+    public function getRequest(): Request
     {
         return $this->getContext()->getRequest();
     }
@@ -78,7 +78,7 @@ class WebController extends Controller
      * @param $name
      * @return ViewTemplate
      */
-    public function display($name)
+    public function display($name): ViewTemplate
     {
         return View::display($this, $name);
     }

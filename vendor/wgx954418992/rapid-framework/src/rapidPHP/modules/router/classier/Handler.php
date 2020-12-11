@@ -60,7 +60,7 @@ class Handler
     /**
      * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): Handler
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -83,7 +83,7 @@ class Handler
      * @param $type
      * @return HandlerInterface
      */
-    public function getService($result, ?string $type = null)
+    public function getService($result, ?string $type = null): HandlerInterface
     {
         if (isset($this->service[$type])) {
 
@@ -101,6 +101,7 @@ class Handler
                 }
             }
         }
+
         $service = $this->service[self::SERVER_AUTO];
 
         return call_user_func([$service, 'getInstance']);
@@ -141,10 +142,8 @@ class Handler
         switch ($encode) {
             case ActionConfig::ENCODE_TYPE_XML:
                 return Xml::getInstance()->encode($result);
-                break;
             case ActionConfig::ENCODE_TYPE_JSON:
                 return json_encode($result);
-                break;
             default:
                 if (empty($encode)) {
                     if (!is_string($result) && !is_numeric($result)) {
@@ -155,10 +154,7 @@ class Handler
                 } else if (is_callable($encode)) {
                     return call_user_func($encode, $result);
                 }
-                var_dump($encode);
-
                 return $result;
-                break;
         }
     }
 }

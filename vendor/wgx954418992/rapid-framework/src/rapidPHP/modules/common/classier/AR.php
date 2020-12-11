@@ -12,14 +12,14 @@ class AR
     /**
      * @return AR
      */
-    public static function getInstance()
+    public static function getInstance(): AR
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
 
     /**
      * 批量删除数组元素
-     * @param array $array
+     * @param array|null $array $array
      * array(
      *  'a'=>1,'b'=>2,'c'=>3
      * )
@@ -34,7 +34,7 @@ class AR
      *      'b'=>2
      * )
      */
-    public function delete(?array $array, $key, $sort = false, $isTow = false)
+    public function delete(?array $array, $key, $sort = false, $isTow = false): ?array
     {
         $keys = !is_array($key) ? explode(',', $key) : $key;
 
@@ -53,7 +53,7 @@ class AR
 
     /**
      * 批量获取数组里面的value
-     * @param array $array
+     * @param array|null $array $array
      * array(
      *      'a'=>1,'b'=>2,'c'=>3
      * )
@@ -65,7 +65,7 @@ class AR
      * @return array
      * array('a'=>1,'c'=>3)
      */
-    public function getArray(?array $array, array $key, $isSort = false)
+    public function getArray(?array $array, array $key, $isSort = false): array
     {
         $newArray = [];
 
@@ -86,7 +86,7 @@ class AR
      * @param array $key
      * @return array
      */
-    public function rename(array $array, array $key)
+    public function rename(array $array, array $key): array
     {
         foreach ($array as $name => $value) {
             unset($array[$name]);
@@ -103,7 +103,7 @@ class AR
      * @param $key
      * @return mixed|null
      */
-    public function getArrayFirstValue(array $array, $key = null)
+    public function getArrayFirstValue(array $array, $key = null): ?array
     {
         if (is_array($key)) {
             $result = [];
@@ -135,7 +135,7 @@ class AR
      * @param null $key
      * @return bool => true
      */
-    public function isAppointValue(array $array, $value, $key = null)
+    public function isAppointValue(array $array, $value, $key = null): bool
     {
         if (is_null($key)) {
             foreach ($array as $v) {
@@ -162,7 +162,7 @@ class AR
      * @param null $key
      * @return bool => true
      */
-    public function isAllAppointValue(array $array, $value, $key = null)
+    public function isAllAppointValue(array $array, $value, $key = null): bool
     {
         if (is_null($key)) {
             foreach ($array as $v) {
@@ -184,7 +184,7 @@ class AR
      * @param $array
      * @return int
      */
-    public function getDepth(array $array)
+    public function getDepth(array $array): int
     {
         $maxDepth = 1;
 
@@ -206,7 +206,7 @@ class AR
      * @param array $array
      * @return array
      */
-    public function sort(array $array)
+    public function sort(array $array): array
     {
         $newArray = [];
 
@@ -231,7 +231,7 @@ class AR
      * @return array
      * array(1,2)
      */
-    public function mergeArrayValues(array $array)
+    public function mergeArrayValues(array $array): array
     {
         $newArray = [];
 
@@ -292,7 +292,7 @@ class AR
      *      )
      * )
      */
-    public function arrayColumn(array $array, $key, $of = null, $isOne = false)
+    public function arrayColumn(array $array, $key, $of = null, $isOne = false): array
     {
         $newArray = [];
 
@@ -322,7 +322,7 @@ class AR
      * @param bool $isRepeat
      * @return array
      */
-    public function rands(array $array, $number = 1, $isRepeat = false)
+    public function rands(array $array, $number = 1, $isRepeat = false): array
     {
         $rand = [];
 
@@ -360,7 +360,7 @@ class AR
      *  1=>a|null
      * )
      */
-    public function valueToKey($array, $isValue = true)
+    public function valueToKey($array, $isValue = true): array
     {
         $newArray = [];
 
@@ -376,7 +376,7 @@ class AR
      * @param $array
      * @return array
      */
-    public function removalOfDuplicationValue($array)
+    public function removalOfDuplicationValue($array): array
     {
         $result = [];
 

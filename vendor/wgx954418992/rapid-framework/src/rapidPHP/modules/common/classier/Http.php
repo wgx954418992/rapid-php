@@ -12,7 +12,7 @@ class Http
     /**
      * @return Http
      */
-    public static function getInstance()
+    public static function getInstance(): Http
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -39,10 +39,10 @@ class Http
     /**
      * 发送httpResponse
      * @param string $url
-     * @param $post
+     * @param array $post
      * @param int $timeout
-     * @param array $cookie
-     * @param array $setOpt
+     * @param array|null $cookie
+     * @param array|null $setOpt
      * @param bool $isBuild
      * @return string|null
      */

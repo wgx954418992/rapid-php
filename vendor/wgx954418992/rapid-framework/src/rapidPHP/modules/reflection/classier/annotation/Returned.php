@@ -45,7 +45,7 @@ class Returned extends Value
      * @param Classify|null $classify
      * @return mixed|string|null
      */
-    public function getReturnedType(?Classify $classify)
+    public function getReturnedType(?Classify $classify): ?string
     {
         $type = $this->getType();
 
@@ -57,7 +57,7 @@ class Returned extends Value
      * @param $returnType
      * @return ReflectionProperty[]|null
      */
-    public function getReturnedProperties($returnType)
+    public function getReturnedProperties($returnType): ?array
     {
         if (empty($returnType)) {
             return null;

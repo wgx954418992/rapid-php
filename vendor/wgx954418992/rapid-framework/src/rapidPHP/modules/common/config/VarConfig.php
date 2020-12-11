@@ -84,7 +84,7 @@ class VarConfig
      * @param $type
      * @return bool
      */
-    public static function isSetType($type)
+    public static function isSetType($type): bool
     {
         return in_array($type, self::$CAPABLE_SET_TYPES);
     }

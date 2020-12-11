@@ -2,6 +2,8 @@
 
 namespace rapidPHP\modules\server\classier\interfaces;
 
+use rapidPHP\modules\server\classier\interfaces\server\SwooleServer;
+
 abstract class Task
 {
     /**
@@ -19,7 +21,7 @@ abstract class Task
     }
 
     /**
-     * @return Server
+     * @return Server|SwooleServer
      */
     public function getServer()
     {

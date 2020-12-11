@@ -47,7 +47,7 @@ class AnnotationConfig extends ReflectionAnnotationConfig
     /**
      * @return string[]
      */
-    public static function getAtList()
+    public static function getAtList(): array
     {
         return [
             self::AT_ROUTE => Route::class,

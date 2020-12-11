@@ -14,7 +14,7 @@ class View
      * @param $name
      * @return ViewTemplate
      */
-    public static function display(WebController $controller, $name)
+    public static function display(WebController $controller, $name): ViewTemplate
     {
         return new ViewTemplate($controller, $name);
     }
@@ -26,7 +26,7 @@ class View
      * @param Element|null $parent
      * @return Element
      */
-    public static function createElement($name, $value = null, $attr = array(), Element $parent = null)
+    public static function createElement($name, $value = null, $attr = array(), Element $parent = null): Element
     {
         $dom = new DOMDocument('1.0');
 

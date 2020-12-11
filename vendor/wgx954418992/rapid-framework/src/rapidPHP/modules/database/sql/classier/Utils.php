@@ -14,7 +14,7 @@ class Utils
      * 单例模式
      * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): Utils
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }

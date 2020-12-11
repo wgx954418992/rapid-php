@@ -12,7 +12,7 @@ class Verify
     /**
      * @return Verify
      */
-    public static function getInstance()
+    public static function getInstance(): Verify
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -32,7 +32,7 @@ class Verify
      * @param $email
      * @return int
      */
-    public function email($email)
+    public function email($email): int
     {
         return preg_match("/^[0-9a-zA-Z]+(?:[_-][a-z0-9-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*.[a-zA-Z]+$/i", $email);
     }
@@ -42,7 +42,7 @@ class Verify
      * @param $tel
      * @return int
      */
-    public function tel($tel)
+    public function tel($tel): int
     {
         return preg_match("/^[1][34587][0-9]{9}$/i", $tel);
     }
@@ -52,7 +52,7 @@ class Verify
      * @param $ip
      * @return int
      */
-    public function ip($ip)
+    public function ip($ip): int
     {
         return preg_match('/^[\d.]*$/is', $ip);
     }

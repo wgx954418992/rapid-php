@@ -12,7 +12,7 @@ class StrCharacter
     /**
      * @return StrCharacter
      */
-    public static function getInstance()
+    public static function getInstance(): StrCharacter
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -72,7 +72,7 @@ class StrCharacter
      * @param string $glue
      * @return string
      */
-    public function toFirstUppercase($string, $ext = null, $glue = "")
+    public function toFirstUppercase($string, $ext = null, $glue = ""): string
     {
         if ($ext === null || $ext === '') return ucfirst($string);
 
@@ -92,7 +92,7 @@ class StrCharacter
      * @param string $glue
      * @return string
      */
-    public function toFirstLowercase($string, $ext = null, $glue = "")
+    public function toFirstLowercase($string, $ext = null, $glue = ""): string
     {
         if ($ext === null || $ext === '') return lcfirst($string);
 
@@ -111,7 +111,7 @@ class StrCharacter
      * @param $currentV
      * @return int
      */
-    public function versionCompare($newV, $currentV)
+    public function versionCompare($newV, $currentV): int
     {
         $newV = explode(".", rtrim($newV, ".0"));
 
@@ -137,7 +137,7 @@ class StrCharacter
      * @param string $encoding
      * @return array
      */
-    public function strSplitByLength($string, $length = 1, $encoding = 'utf8')
+    public function strSplitByLength($string, $length = 1, $encoding = 'utf8'): array
     {
         $start = 0;
 
@@ -199,7 +199,7 @@ class StrCharacter
      * @param string $kvGlue
      * @return string
      */
-    public function join($glue, $pieces, $isEncoded = false, $isKey = false, $keyEncode = '`{key}`', $kvGlue = '=')
+    public function join($glue, $pieces, $isEncoded = false, $isKey = false, $keyEncode = '`{key}`', $kvGlue = '='): string
     {
         $result = '';
 

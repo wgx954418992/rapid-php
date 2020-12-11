@@ -2,6 +2,7 @@
 
 namespace rapidPHP\modules\server\classier\interfaces;
 
+use Exception;
 use rapidPHP\modules\common\classier\AR;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\server\config\SessionConfig;
@@ -108,13 +109,14 @@ abstract class Response
      * @param string $samesite 从 v4.4.6 版本开始支持
      * @return bool
      */
-    abstract public function cookie($key, $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false, $samesite = ''): bool;
+    abstract public function cookie(string $key, string $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false, $samesite = ''): bool;
 
     /**
      * 设置session
      * @param $key
      * @param $value
      * @return bool
+     * @throws Exception
      */
     public function session(string $key, $value): bool
     {
@@ -152,7 +154,7 @@ abstract class Response
      * @param array $options
      * @return bool
      */
-    abstract public function write($data, $options = []): bool;
+    abstract public function write(string $data, $options = []): bool;
 
     /**
      * 输出文件到浏览器。
@@ -167,7 +169,7 @@ abstract class Response
      * ]
      * @return bool
      */
-    public function printFile($filename, $options = [])
+    public function printFile(string $filename, $options = []): bool
     {
         $fileSize = filesize($filename);
 
@@ -249,7 +251,7 @@ abstract class Response
      * ]
      * @return bool
      */
-    abstract public function sendFile($filename, $options = []): bool;
+    abstract public function sendFile(string $filename, $options = []): bool;
 
     /**
      * 结束Http响应，发送HTML内容

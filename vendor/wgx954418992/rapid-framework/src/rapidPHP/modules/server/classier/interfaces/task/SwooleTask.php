@@ -19,7 +19,7 @@ abstract class SwooleTask extends Task
     /**
      * @return SwooleServer
      */
-    public function getServer()
+    public function getServer(): SwooleServer
     {
         /** @var SwooleServer $server */
         $server = parent::getServer();

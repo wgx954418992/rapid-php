@@ -2,6 +2,7 @@
 
 namespace rapidPHP\modules\server\classier\interfaces;
 
+use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Uri;
 use rapidPHP\modules\server\config\SessionConfig;
@@ -75,7 +76,7 @@ abstract class Request
      * @param $server
      * @return array
      */
-    public static function getRenameServerInfo($server)
+    public static function getRenameServerInfo($server): array
     {
         return array_change_key_case(is_null($server) ? [] : $server, CASE_UPPER);
     }
@@ -142,7 +143,7 @@ abstract class Request
     /**
      * 获取get参数
      * @param $name
-     * @return mixed|null
+     * @return mixed|array|string|int|null
      */
     public function get($name = null)
     {
@@ -154,7 +155,7 @@ abstract class Request
     /**
      * 获取post参数
      * @param $name
-     * @return mixed|null
+     * @return mixed|array|string|int|null
      */
     public function post($name = null)
     {
@@ -166,7 +167,7 @@ abstract class Request
     /**
      * 获取cookie参数
      * @param $name
-     * @return mixed|null
+     * @return mixed|array|string|int|null
      */
     public function cookie($name = null)
     {
@@ -178,7 +179,8 @@ abstract class Request
     /**
      * 获取session参数
      * @param $name
-     * @return mixed|null
+     * @return mixed|array|string|int|null
+     * @throws Exception
      */
     public function session($name = null)
     {
@@ -212,7 +214,7 @@ abstract class Request
     /**
      * 获取put参数
      * @param $name
-     * @return mixed|string|null
+     * @return mixed|array|string|int|null
      */
     public function put($name = null)
     {
@@ -226,7 +228,7 @@ abstract class Request
     /**
      * 获取文件
      * @param $name
-     * @return array|null|string
+     * @return mixed|array|string|int|null
      */
     public function file($name = null)
     {
@@ -239,6 +241,7 @@ abstract class Request
      * request(get|post|cookie|session|put,file)
      * @param $name
      * @return array|null|string
+     * @throws Exception
      */
     public function request($name = null)
     {
@@ -253,7 +256,8 @@ abstract class Request
      * 获取请求变量
      * @param $name
      * @param null $method ：方法(get|post|cookie|session|put)
-     * @return bool|string
+     * @return mixed|array|string|int|null
+     * @throws Exception
      */
     public function getParam($name, $method = null)
     {
@@ -279,7 +283,7 @@ abstract class Request
     /**
      * 获取header
      * @param null $name
-     * @return array|mixed|null
+     * @return mixed|array|string|int|null
      */
     public function header($name = null)
     {
@@ -308,7 +312,7 @@ abstract class Request
      * 获取请求scheme
      * @return mixed|string
      */
-    public function getScheme()
+    public function getScheme(): string
     {
         $mode = Build::getInstance()->getData($this->serverInfo, 'REQUEST_SCHEME');
 
@@ -427,7 +431,7 @@ abstract class Request
      * @param null $path
      * @return string
      */
-    public function toUrl($path = null)
+    public function toUrl($path = null): string
     {
         $path = !is_string($path) ? $this->getUrl() : $this->getHostUrl() . $path;
 
@@ -465,7 +469,7 @@ abstract class Request
      * 判断是否微信客户端
      * @return bool
      */
-    public function isWXClient()
+    public function isWXClient(): bool
     {
         return is_int(strpos($this->getUserAgent(), 'MicroMessenger'));
     }
@@ -474,7 +478,7 @@ abstract class Request
      * 判断是否移动端
      * @return bool
      */
-    public function isMobile()
+    public function isMobile(): bool
     {
         $userAgent = $this->getUserAgent();
 

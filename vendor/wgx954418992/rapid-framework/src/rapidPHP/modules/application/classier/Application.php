@@ -5,6 +5,10 @@ namespace rapidPHP\modules\application\classier;
 
 use Exception;
 use rapidPHP\Init;
+use rapidPHP\modules\application\classier\apps\CGIApplication;
+use rapidPHP\modules\application\classier\apps\SwooleHttpApplication;
+use rapidPHP\modules\application\classier\apps\SwooleWebsocketApplication;
+use rapidPHP\modules\application\classier\apps\WebApplication;
 use rapidPHP\modules\application\wrapper\ConfigWrapper;
 use rapidPHP\modules\logger\classier\Logger;
 
@@ -43,7 +47,7 @@ abstract class Application
     private static $instance;
 
     /**
-     * @return static|null
+     * @return static|self|WebApplication|CGIApplication|SwooleHttpApplication|SwooleWebsocketApplication|null
      */
     public static function getInstance()
     {
@@ -64,7 +68,7 @@ abstract class Application
     /**
      * @return Init
      */
-    public function getInit()
+    public function getInit(): Init
     {
         return $this->init;
     }
@@ -88,7 +92,7 @@ abstract class Application
      * @return Logger|null
      * @throws Exception
      */
-    public function logger($name = self::LOGGER_WARNING)
+    public function logger($name = self::LOGGER_WARNING): ?Logger
     {
         $config = $this->getConfig()->getLogConfig($name);
 

@@ -23,7 +23,7 @@ class ActionConfig
      * @param $remark
      * @return string|null
      */
-    public static function getEncodeType($remark)
+    public static function getEncodeType($remark): ?string
     {
         if(empty($remark)) return null;
 
@@ -41,15 +41,13 @@ class ActionConfig
      * @param $value
      * @return bool|mixed|null
      */
-    public static function getEncodeValue($type, $value)
+    public static function getEncodeValue($type, $value): ?bool
     {
         switch (strtolower($type)) {
             case self::ENCODE_TYPE_XML:
                 return Xml::getInstance()->decode($value);
-                break;
             case self::ENCODE_TYPE_JSON:
                 return Build::getInstance()->jsonDecode($value);
-                break;
         }
         return $value;
     }

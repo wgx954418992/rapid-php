@@ -89,7 +89,7 @@ class Action
     /**
      * @return string|null
      */
-    public function getMethod()
+    public function getMethod(): ?string
     {
         return $this->method;
     }
@@ -163,7 +163,7 @@ class Action
     }
 
     /**
-     * @param ActionParameter[]|null $parameters
+     * @param ActionParameter[]|null|string $parameters
      * @throws Exception
      */
     public function setParameters($parameters): void
@@ -218,7 +218,7 @@ class Action
      * @return array|null
      * @throws Exception
      */
-    public function toArray()
+    public function toArray(): ?array
     {
         return Utils::getInstance()->toArray($this);
     }

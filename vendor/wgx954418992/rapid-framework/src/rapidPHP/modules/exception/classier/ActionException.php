@@ -42,7 +42,7 @@ class ActionException extends Exception
      * @param Action|null $action
      * @return ActionException
      */
-    public static function getInstance(Exception $e, ?Action $action = null)
+    public static function getInstance(Exception $e, ?Action $action = null): ActionException
     {
         if ($e instanceof ActionException) {
             if ($action) $e->action = $action;

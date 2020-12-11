@@ -7,6 +7,7 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\StrCharacter;
+use rapidPHP\modules\reflection\classier\annotation\Returned;
 use rapidPHP\modules\reflection\classier\annotation\Value;
 use rapidPHP\modules\reflection\config\AnnotationConfig;
 
@@ -26,7 +27,7 @@ class Annotation
     /**
      * @return Annotation
      */
-    public static function getInstance()
+    public static function getInstance(): Annotation
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -49,7 +50,7 @@ class Annotation
      * 获取映射
      * @return array
      */
-    public function getMappings()
+    public function getMappings(): array
     {
         return $this->mapping;
     }
@@ -70,7 +71,7 @@ class Annotation
      * 获取注解对象
      * @param $atName
      * @param $value
-     * @return object|Value
+     * @return object|Value|Returned|mixed|null
      * @throws Exception
      */
     public function getAnnotation($atName, $value)
@@ -94,7 +95,7 @@ class Annotation
      * @return array
      * @throws Exception
      */
-    public function getAnnotations($doc, $name = '.*?', $pattern = null)
+    public function getAnnotations($doc, $name = '.*?', $pattern = null): array
     {
         if (empty($pattern)) {
             preg_match_all("/@($name)? (.*?)([\s\t\n])/i", $doc, $list);
@@ -146,7 +147,7 @@ class Annotation
      * @return Parameter|null
      * @throws Exception
      */
-    public function getAnnotationByParam($doc, $name)
+    public function getAnnotationByParam($doc, $name): ?Parameter
     {
         /** @var Parameter[] $params */
         $params = $this->getAnnotations(

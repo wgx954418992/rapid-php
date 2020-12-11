@@ -9,7 +9,7 @@ interface CacheInterface
      * 获取当前实例
      * @return CacheInterface
      */
-    public static function getInstance();
+    public static function getInstance(): CacheInterface;
 
     /**
      * CacheInterface constructor.
@@ -29,14 +29,14 @@ interface CacheInterface
     /**
      * 获取缓存
      * @param string $name 缓存名
-     * @return mixed
+     * @return array|string|int|mixed|null
      */
     public function get(string $name);
 
     /**
      * 删除缓存
      * @param string $name
-     * @return mixed
+     * @return bool
      */
     public function remove(string $name): bool;
 }

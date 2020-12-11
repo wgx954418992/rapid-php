@@ -15,7 +15,7 @@ class File
     /**
      * @return File
      */
-    public static function getInstance()
+    public static function getInstance(): File
     {
         return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
@@ -66,7 +66,7 @@ class File
      * @param bool $isDir 是否包含目录
      * @return Generator|void 返回生成器，请用foreach读取
      */
-    public function readDirFiles($path, $isDir = false)
+    public function readDirFiles($path, $isDir = false): Generator
     {
         $path = rtrim($path, '/*');
 

@@ -45,7 +45,7 @@ class SwooleWrapper
     }
 
     /**
-     * @param SwooleServerConfig $config
+     * @param SwooleServerConfig|null $config
      * @param string|null $ip
      * @param int|null $port
      * @param SessionConfig|null $session
@@ -55,7 +55,7 @@ class SwooleWrapper
      */
     public function merge(?SwooleServerConfig $config, ?string $ip, ?int $port, ?SessionConfig $session, $context, ?string $task, ?array $options)
     {
-        if ($config != null) return;
+        if ($config == null) return;
 
         if (empty($config->getIp())) $config->setIp($ip);
 

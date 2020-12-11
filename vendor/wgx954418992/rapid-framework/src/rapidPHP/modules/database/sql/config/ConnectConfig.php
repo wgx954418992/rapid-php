@@ -7,7 +7,6 @@ use rapidPHP\modules\pool\config\PoolConfig;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Uri;
 use rapidPHP\modules\database\sql\classier\driver\Mysql;
-use rapidPHP\modules\database\sql\config\connect\ModelConfig;
 
 class ConnectConfig
 {
@@ -50,12 +49,6 @@ class ConnectConfig
      * @var string|null
      */
     private $characterCode;
-
-    /**
-     * model
-     * @var ModelConfig|null
-     */
-    private $model;
 
     /**
      * pool
@@ -172,22 +165,6 @@ class ConnectConfig
     public function getCharacterCode(): ?string
     {
         return $this->characterCode;
-    }
-
-    /**
-     * @return ModelConfig|null
-     */
-    public function getModel(): ?ModelConfig
-    {
-        return $this->model;
-    }
-
-    /**
-     * @param ModelConfig|null $model
-     */
-    public function setModel(?ModelConfig $model): void
-    {
-        $this->model = $model;
     }
 
     /**

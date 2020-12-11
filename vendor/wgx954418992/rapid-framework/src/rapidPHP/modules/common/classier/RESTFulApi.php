@@ -2,6 +2,7 @@
 
 namespace rapidPHP\modules\common\classier;
 
+use Exception;
 use rapidPHP\modules\core\classier\Model;
 
 class RESTFulApi
@@ -39,7 +40,8 @@ class RESTFulApi
     }
 
     /**
-     * @param array $result
+     * @param array|string|null|object $result
+     * @throws Exception
      */
     public function setResult($result)
     {
@@ -59,7 +61,7 @@ class RESTFulApi
     /**
      * 设置返回key
      * @param mixed $dataKey
-     * @return $this
+     * @return static|self|mixed|null
      */
     public function setDataKey($dataKey)
     {
@@ -71,7 +73,7 @@ class RESTFulApi
     /**
      * 设置返回状态key
      * @param mixed $codeKey
-     * @return $this
+     * @return static|self|mixed|null
      */
     public function setRetKey($codeKey)
     {
@@ -83,7 +85,7 @@ class RESTFulApi
     /**
      * 设置返回状态key
      * @param mixed $msgKey
-     * @return $this
+     * @return static|self|mixed|null
      */
     public function setMsgKey($msgKey)
     {
@@ -97,7 +99,7 @@ class RESTFulApi
      * @param string $msg
      * @param string $data
      * @param int $code
-     * @return $this
+     * @return static|self|mixed|null
      */
     public function go($msg = '', $data = null, $code = 0)
     {
@@ -114,7 +116,7 @@ class RESTFulApi
     /**
      * 设置返回消息
      * @param $msg
-     * @return $this
+     * @return static|self|mixed|null
      */
     public function setMsg($msg)
     {
@@ -127,7 +129,7 @@ class RESTFulApi
     /**
      * 设置返回状态
      * @param $code
-     * @return $this
+     * @return static|self|mixed|null
      */
     public function setCode($code)
     {
@@ -139,7 +141,8 @@ class RESTFulApi
     /**
      * 设置返回状态
      * @param $data
-     * @return $this
+     * @return static|self|mixed|null|object
+     * @throws Exception
      */
     public function setData($data)
     {
@@ -220,11 +223,11 @@ class RESTFulApi
      * @param $msg
      * @param int $code
      * @param null $data
-     * @return RESTFulApi
+     * @return static|self|mixed|null
      */
     public static function error($msg, $code = self::CODE_FAIL, $data = null)
     {
-        return (new RESTFulApi())->go($msg, $data, $code);
+        return (new static())->go($msg, $data, $code);
     }
 
     /**
@@ -232,10 +235,10 @@ class RESTFulApi
      * @param null $data
      * @param string $msg
      * @param int $code
-     * @return RESTFulApi
+     * @return static|self|mixed|null
      */
     public static function success($data = null, $msg = 'success!', $code = self::CODE_SUCCESS)
     {
-        return (new RESTFulApi())->go($msg, $data, $code);
+        return (new static())->go($msg, $data, $code);
     }
 }

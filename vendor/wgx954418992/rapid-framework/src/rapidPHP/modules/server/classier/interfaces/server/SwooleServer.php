@@ -68,7 +68,7 @@ abstract class SwooleServer extends Server
      * 是否https
      * @return bool
      */
-    public function isHttps()
+    public function isHttps(): bool
     {
         $sslFile = Build::getInstance()
             ->getData($this->getConfig()->getOptions(), 'ssl_key_file');
@@ -104,7 +104,7 @@ abstract class SwooleServer extends Server
 
     /**
      * server开启
-     * @param BaseSwooleServer $server
+     * @param mixed|BaseSwooleServer|Server $server
      */
     public function onStart($server)
     {
@@ -114,7 +114,7 @@ abstract class SwooleServer extends Server
 
     /**
      * 收到任务请求
-     * @param BaseSwooleServer $server
+     * @param mixed|BaseSwooleServer|Server $server
      * @param $taskId
      * @param $reactorId
      * @param $data
@@ -128,7 +128,7 @@ abstract class SwooleServer extends Server
 
     /**
      * 任务结束
-     * @param Server $server
+     * @param mixed|BaseSwooleServer|Server $server
      * @param $taskId
      * @param $data
      */
