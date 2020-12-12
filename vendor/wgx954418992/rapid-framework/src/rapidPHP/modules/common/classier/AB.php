@@ -41,15 +41,12 @@ class AB
     /**
      * 设置 data
      * @param null $data
-     * @return $this
      */
     public function data($data = null)
     {
         if ($data === null) $data = [];
 
         $this->data = $data;
-
-        return $this;
     }
 
     /**
@@ -110,8 +107,6 @@ class AB
      */
     public function hasValue($name, $value): bool
     {
-        $data = isset($this->data[$name]) ? $this->data[$name] : null;
-
         return $this->toValue($name) == $value;
     }
 
@@ -119,21 +114,18 @@ class AB
      * 设置value
      * @param $name
      * @param $value
-     * @return $this
      */
-    public function value($name, $value): self
+    public function value($name, $value)
     {
         $this->data[$name] = $value;
-
-        return $this;
     }
 
     /**
      * 获取子元素转arrayObject对象
      * @param $name
-     * @return AB
+     * @return static
      */
-    public function toAB($name): self
+    public function toAB($name)
     {
         $array = array();
 
@@ -217,7 +209,7 @@ class AB
 
     /**
      * 转xml
-     * @param array $names
+     * @param array|null $names
      * @return string
      */
     public function toXml(?array $names = null): string
@@ -227,7 +219,7 @@ class AB
 
     /**
      * 转json
-     * @param array $names
+     * @param array|null $names
      * @return string
      */
     public function toJson(?array $names = null): string
@@ -238,7 +230,6 @@ class AB
     /**
      * 删除指定value
      * @param $names
-     * @return $this
      */
     public function delValue($names)
     {
@@ -249,8 +240,6 @@ class AB
         } else {
             unset($this->data[$names]);
         }
-
-        return $this;
     }
 
     /**

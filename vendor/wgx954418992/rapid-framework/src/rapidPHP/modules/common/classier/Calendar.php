@@ -4,8 +4,6 @@ namespace rapidPHP\modules\common\classier;
 
 class Calendar
 {
-
-
     /**
      * 一分钟的秒数
      */
@@ -77,17 +75,20 @@ class Calendar
     const HS_MODE_FULL = 'f';
 
     /**
-     * @var Calendar
+     * @var static[]
      */
-    private static $instance;
+    private static $instances;
 
     /**
-     * @param string $zone
-     * @return Calendar
+     * @return static
      */
-    public static function getInstance($zone = 'PRC'): Calendar
+    public static function getInstance($zone = 'PRC')
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self($zone);
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static($zone);
+        }
     }
 
     /**

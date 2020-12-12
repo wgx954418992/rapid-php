@@ -8,20 +8,8 @@ use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\RESTFulApi;
 use rapidPHP\modules\core\classier\Controller;
 
-class ApiHandler implements HandlerInterface
+class ApiHandler extends HandlerInterface
 {
-    /**
-     * @var static
-     */
-    private static $instance;
-
-    /**
-     * @return static
-     */
-    public static function getInstance()
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
-    }
 
     /**
      * 处理typed api

@@ -30,7 +30,7 @@ class DocComment extends ReflectionDocComment
      * @return Route
      * @throws Exception
      */
-    public function getRouteAnnotation(): ?Route
+    public function getRouteAnnotation()
     {
         /** @var Route $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_ROUTE);
@@ -73,7 +73,7 @@ class DocComment extends ReflectionDocComment
      * @return Method
      * @throws Exception
      */
-    public function getMethodAnnotation(): ?Method
+    public function getMethodAnnotation()
     {
         /** @var Method $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_METHOD);
@@ -103,7 +103,7 @@ class DocComment extends ReflectionDocComment
      * @return Template
      * @throws Exception
      */
-    public function getTemplateAnnotation(): ?Template
+    public function getTemplateAnnotation()
     {
         /** @var Template $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_TEMPLATE);
@@ -119,7 +119,7 @@ class DocComment extends ReflectionDocComment
      * @return Encode
      * @throws Exception
      */
-    public function getEncodeAnnotation(): ?Encode
+    public function getEncodeAnnotation()
     {
         /** @var Encode $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_ENCODE);

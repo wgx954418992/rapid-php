@@ -42,16 +42,16 @@ abstract class Application
     private $init;
 
     /**
-     * @var Application
+     * @var Application[]
      */
-    private static $instance;
+    private static $instances;
 
     /**
-     * @return static|self|WebApplication|CGIApplication|SwooleHttpApplication|SwooleWebsocketApplication|null
+     * @return static|WebApplication|CGIApplication|SwooleHttpApplication|SwooleWebsocketApplication|null
      */
     public static function getInstance()
     {
-        return self::$instance;
+        return static::$instances[static::class];
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class Application
      */
     public function __construct(Init $init)
     {
-        self::$instance = $this;
+        self::$instances[static::class] = $this;
 
         $this->init = $init;
     }
@@ -82,11 +82,6 @@ abstract class Application
     }
 
     /**
-     * 运行
-     */
-    abstract public function run();
-
-    /**
      * 获取logger
      * @param string $name
      * @return Logger|null
@@ -100,4 +95,9 @@ abstract class Application
 
         return Logger::getLogger($config);
     }
+
+    /**
+     * 运行
+     */
+    abstract public function run();
 }

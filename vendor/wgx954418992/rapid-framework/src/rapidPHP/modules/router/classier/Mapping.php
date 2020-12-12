@@ -39,16 +39,20 @@ class Mapping
     const ACTIONS_FILE_PATH = self::WRITE_PATH . 'actions.json';
 
     /**
-     * @var self
+     * @var static[]
      */
-    private static $instance;
+    private static $instances;
 
     /**
-     * @return self
+     * @return static
      */
-    public static function getInstance(): Mapping
+    public static function getInstance()
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
     }
 
     /**
@@ -229,7 +233,7 @@ class Mapping
      * @return ActionReturned|null
      * @throws Exception
      */
-    private function getActionReturned(?ReturnedAnnotation $returnAnnotation, ?Classify $classify): ?ActionReturned
+    private function getActionReturned(?ReturnedAnnotation $returnAnnotation, ?Classify $classify)
     {
         if (!$returnAnnotation) return null;
 
@@ -256,7 +260,7 @@ class Mapping
      * @param ActionParameter[]|null $parameters
      * @return Route
      */
-    private function getRoute($className, $methodName, $route, ?array &$parameters): Route
+    private function getRoute($className, $methodName, $route, ?array &$parameters)
     {
         $index = 1;
 

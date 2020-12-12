@@ -20,7 +20,6 @@ class ActionException extends Exception
      */
     protected $code;
 
-
     /**
      * ActionException constructor.
      * @param string $message

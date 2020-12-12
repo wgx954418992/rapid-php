@@ -5,6 +5,7 @@ namespace rapidPHP\modules\database\sql\classier;
 
 use Exception;
 use PDO;
+use rapidPHP\modules\database\sql\classier\driver\Mysql;
 use rapidPHP\modules\database\sql\config\ConnectConfig;
 use rapidPHP\modules\reflection\classier\Classify;
 
@@ -76,10 +77,10 @@ class SQLDB
     /**
      * 选择表
      * @param string $tableName
-     * @return Driver
+     * @return Driver|Mysql
      * @throws Exception
      */
-    public function table($tableName = null): Driver
+    public function table($tableName = null)
     {
         $config = $this->getConfig();
 
@@ -109,10 +110,10 @@ class SQLDB
     {
         if ($this->isInThing()) return true;
 
-        try{
+        try {
             return @$this->getConnect()->beginTransaction();
-        }catch (Exception $e){
-            if($this->onErrorHandler($e)){
+        } catch (Exception $e) {
+            if ($this->onErrorHandler($e)) {
                 return $this->beginTransaction();
             }
             throw $e;
@@ -126,10 +127,10 @@ class SQLDB
      */
     public function commit(): bool
     {
-        try{
+        try {
             return @$this->getConnect()->commit();
-        }catch (Exception $e){
-            if($this->onErrorHandler($e)){
+        } catch (Exception $e) {
+            if ($this->onErrorHandler($e)) {
                 return $this->commit();
             }
             throw $e;
@@ -143,10 +144,10 @@ class SQLDB
      */
     public function rollBack(): bool
     {
-        try{
+        try {
             return @$this->getConnect()->rollBack();
-        }catch (Exception $e){
-            if($this->onErrorHandler($e)){
+        } catch (Exception $e) {
+            if ($this->onErrorHandler($e)) {
                 return $this->rollBack();
             }
             throw $e;
@@ -156,15 +157,17 @@ class SQLDB
     /**
      * 处理异常
      * @param Exception $e
-     * @return SQLDB
+     * @return bool
      * @throws Exception
      */
-    public function onErrorHandler(Exception $e): SQLDB
+    public function onErrorHandler(Exception $e): bool
     {
         $code = $e->getCode();
 
         if (in_array($code, self::ERROR_RECONNECT_CODES)) {
-            return $this->reconnect();
+            $this->reconnect();
+
+            return true;
         }
 
         throw $e;
@@ -172,10 +175,9 @@ class SQLDB
 
     /**
      * 重新连接
-     * @return $this
      * @throws Exception
      */
-    public function reconnect(): SQLDB
+    public function reconnect()
     {
         if ($this->reconnectCount >= 2) throw new Exception('database exception reconnect error!');
 
@@ -184,8 +186,6 @@ class SQLDB
         $this->connect($this->getConfig());
 
         $this->reconnectCount++;
-
-        return $this;
     }
 
     /**
@@ -201,7 +201,7 @@ class SQLDB
      * @param $sql
      * @return Statement
      */
-    public function query($sql): Statement
+    public function query($sql)
     {
         return new Statement($this, $sql);
     }

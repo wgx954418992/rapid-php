@@ -36,24 +36,11 @@ class PHPHandler extends HandlerInterface
     private $conversionMapping = [];
 
     /**
-     * @var self
-     */
-    private static $instance;
-
-    /**
      * PHPHandler constructor.
      */
     public function __construct()
     {
         $this->initConversionMapping();
-    }
-
-    /**
-     * @return self
-     */
-    public static function getInstance(): self
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
 
     /**

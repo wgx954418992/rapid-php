@@ -5,11 +5,9 @@ namespace rapidPHP\modules\reflection\classier;
 
 use Exception;
 use rapidPHP\modules\common\classier\Build;
-use rapidPHP\modules\common\classier\File;
-use rapidPHP\modules\common\classier\StrCharacter;
 use rapidPHP\modules\reflection\classier\annotation\Returned;
 use rapidPHP\modules\reflection\classier\annotation\Value;
-use rapidPHP\modules\reflection\config\AnnotationConfig;
+use rapidPHP\modules\reflection\classier\annotation\Variable;
 
 class Annotation
 {
@@ -20,16 +18,20 @@ class Annotation
     private $mapping = [];
 
     /**
-     * @var Annotation
+     * @var static[]
      */
-    private static $instance;
+    private static $instances;
 
     /**
-     * @return Annotation
+     * @return static
      */
-    public static function getInstance(): Annotation
+    public static function getInstance()
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
     }
 
     /**
@@ -71,7 +73,7 @@ class Annotation
      * 获取注解对象
      * @param $atName
      * @param $value
-     * @return object|Value|Returned|mixed|null
+     * @return object|Value|Parameter|Variable|Returned|null
      * @throws Exception
      */
     public function getAnnotation($atName, $value)
@@ -138,30 +140,5 @@ class Annotation
         if (empty($annotation)) return null;
 
         return $annotation;
-    }
-
-    /**
-     * 通过param获取注解
-     * @param $doc
-     * @param $name
-     * @return Parameter|null
-     * @throws Exception
-     */
-    public function getAnnotationByParam($doc, $name): ?Parameter
-    {
-        /** @var Parameter[] $params */
-        $params = $this->getAnnotations(
-            $doc,
-            null,
-            "/@(" . AnnotationConfig::AT_PARAM . ")?\\$({$name})(.*)?(.*)?/i"
-        );
-
-        $parameter = Build::getInstance()->getData($params, 0);
-
-        if (empty($parameter)) return null;
-
-        if (!($parameter instanceof Parameter)) return null;
-
-        return $parameter;
     }
 }

@@ -44,7 +44,7 @@ abstract class Response
     /**
      * @return SessionConfig|null
      */
-    public function getSessionConfig(): ?SessionConfig
+    public function getSessionConfig()
     {
         return $this->sessionConfig;
     }

@@ -182,16 +182,6 @@ return [
                 'url' => '',
                 'username' => '',
                 'password' => '',
-                'model' => [
-                    'path' => '',
-                    'namespace' => '',
-                    'first' => '',
-                ],
-                'pool' => [
-                    'min' => 1,
-                    'max' => 10,
-                    'timeout' => 8000,
-                ],
             ],
             'salve' => null,
         ],

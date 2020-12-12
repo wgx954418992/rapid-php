@@ -33,7 +33,7 @@ class Mysql extends Driver
      * 执行存储过程
      * @param array $parameter
      * @param string $value
-     * @return $this
+     * @return self|static|Driver
      */
     public function func($parameter = [], $value = '')
     {
@@ -64,7 +64,7 @@ class Mysql extends Driver
      * 分页
      * @param $page
      * @param null $total
-     * @return $this
+     * @return self|static|Driver
      */
     public function limit($page, $total = null)
     {
@@ -94,7 +94,7 @@ class Mysql extends Driver
      * 获取全部表
      * @param int $type
      * @param string $database
-     * @return $this
+     * @return self|static|Driver
      */
     public function getTables($type, $database)
     {
@@ -109,7 +109,7 @@ class Mysql extends Driver
      * @param string $database
      * @return array|null|string
      */
-    public function getTableStructureSql($type, $database, $tableName)
+    public function getTableStructureSql($type, string $database, string $tableName)
     {
         $data = [
             1 => "SELECT COLUMN_NAME AS name,DATA_TYPE AS type,CHARACTER_MAXIMUM_LENGTH AS length,COLUMN_COMMENT AS `comment` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='{$database}' AND TABLE_NAME='{$tableName}'",
@@ -124,10 +124,10 @@ class Mysql extends Driver
      * @param $type
      * @param string $database
      * @param $tableName
-     * @return $this
+     * @return self|static|Driver
      * @throws Exception
      */
-    public function getTableStructure($type, $database, $tableName)
+    public function getTableStructure($type, string $database, string $tableName)
     {
         $this->sql['query'] = $this->getTableStructureSql($type, $database, $tableName);
 
@@ -141,7 +141,7 @@ class Mysql extends Driver
      * @param $tableName
      * @return array|null|string
      */
-    public function getTableCreateSqlString($type, string $database, $tableName)
+    public function getTableCreateSqlString($type, string $database, string $tableName)
     {
         $data = [
             1 => "show create table {$database}.{$tableName}",
@@ -154,12 +154,12 @@ class Mysql extends Driver
     /**
      * getTableStructure
      * @param $type
-     * @param string $database
+     * @param  $database
      * @param $tableName
-     * @return $this
+     * @return self|static|Driver
      * @throws Exception
      */
-    public function getTableCreateSql($type, $database, $tableName)
+    public function getTableCreateSql($type, string $database, string $tableName)
     {
         $this->sql['query'] = $this->getTableCreateSqlString($type, $database, $tableName);
 

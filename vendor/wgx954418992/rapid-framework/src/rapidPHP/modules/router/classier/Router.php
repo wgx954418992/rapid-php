@@ -42,9 +42,21 @@ abstract class Router
     protected $actions;
 
     /**
-     * @return self
+     * @var static[]
      */
-    abstract public static function getInstance();
+    private static $instances;
+
+    /**
+     * @return static
+     */
+    public static function getInstance()
+    {
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
+    }
 
     /**
      * @return Application|WebApplication
@@ -141,7 +153,7 @@ abstract class Router
      * @return Action|null
      * @throws Exception
      */
-    protected function getAction($className, $methodName): ?Action
+    protected function getAction($className, $methodName)
     {
         if (empty($className)) return null;
 
@@ -172,7 +184,7 @@ abstract class Router
      * @return Action|null
      * @throws Exception
      */
-    public function getMatchingAction($realPath, ?Route &$route = null, &$pathVariable = [], &$index = 0): ?Action
+    public function getMatchingAction($realPath, ?Route &$route = null, &$pathVariable = [], &$index = 0)
     {
         if (is_null($index)) $index = 0;
 

@@ -4,6 +4,7 @@ namespace rapidPHP\modules\database\sql\classier;
 
 use Exception;
 use rapidPHP\modules\common\classier\StrCharacter;
+use rapidPHP\modules\database\sql\classier\driver\Mysql;
 use rapidPHP\modules\database\sql\config\SqlConfig;
 
 abstract class Driver
@@ -74,7 +75,7 @@ abstract class Driver
     /**
      * 重置sql语句
      * @param null $name
-     * @return $this
+     * @return self|static|Mysql
      */
     public function resetSql($name = null)
     {
@@ -90,7 +91,7 @@ abstract class Driver
      * 获取别的driver sql
      * @param $callOrDriver
      * @param bool $isMergeOptions
-     * @return $this|string|string[]
+     * @return self|static|Mysql|string|string[]
      */
     private function getDriverSql($callOrDriver, $isMergeOptions = true)
     {
@@ -126,7 +127,7 @@ abstract class Driver
     /**
      * 创建数据库
      * @param $dataBaseName
-     * @return $this
+     * @return self|static|Mysql
      */
     public function createDataBase($dataBaseName)
     {
@@ -138,7 +139,7 @@ abstract class Driver
     /**
      * 创建表单
      * @param array $column
-     * @return $this
+     * @return self|static|Mysql
      */
     public function createTable(array $column = [])
     {
@@ -162,7 +163,7 @@ abstract class Driver
      * 执行存储过程
      * @param array $parameter
      * @param string $value
-     * @return $this
+     * @return self|static|Mysql
      */
     public function func($parameter = [], $value = '')
     {
@@ -173,7 +174,7 @@ abstract class Driver
     /**
      * 写到数据
      * @param $data
-     * @return $this
+     * @return self|static|Mysql
      */
     public function insert($data)
     {
@@ -221,7 +222,7 @@ abstract class Driver
     /**
      * 修改
      * @param array $data
-     * @return $this
+     * @return self|static|Mysql
      */
     public function update(array $data)
     {
@@ -267,7 +268,7 @@ abstract class Driver
     /**
      * 删除
      * @param null $callOrDriver
-     * @return $this
+     * @return self|static|Mysql
      */
     public function delete($callOrDriver = null)
     {
@@ -287,7 +288,7 @@ abstract class Driver
      * 查询
      * @param null $column
      * @param null $callOrDriver
-     * @return $this
+     * @return self|static|Mysql
      */
     public function select($column, $callOrDriver = null)
     {
@@ -310,7 +311,7 @@ abstract class Driver
     /**
      * 设置查询载体
      * @param $carrier
-     * @return $this
+     * @return self|static|Mysql
      */
     public function setCarrier($carrier)
     {
@@ -323,7 +324,7 @@ abstract class Driver
     /**
      * alias
      * @param $carrier
-     * @return $this
+     * @return self|static|Mysql
      */
     public function alias($carrier)
     {
@@ -338,7 +339,7 @@ abstract class Driver
      * @param $tableName
      * @param $callOrDriver
      * @param null $location
-     * @return $this
+     * @return self|static|Mysql
      */
     public function join($tableName, $callOrDriver = null, $location = null)
     {
@@ -362,7 +363,7 @@ abstract class Driver
      * LEFT JOIN
      * @param $table
      * @param $callOrDriver
-     * @return $this
+     * @return self|static|Mysql
      */
     public function leftJoin($table, $callOrDriver = null)
     {
@@ -375,7 +376,7 @@ abstract class Driver
      * LEFT JOIN
      * @param $table
      * @param $callOrDriver
-     * @return $this
+     * @return self|static|Mysql
      */
     public function rightJoin($table, $callOrDriver = null)
     {
@@ -388,7 +389,7 @@ abstract class Driver
      * INNER JOIN
      * @param $table
      * @param $callOrDriver
-     * @return $this
+     * @return self|static|Mysql
      */
     public function innerJoin($table, $callOrDriver = null)
     {
@@ -401,7 +402,7 @@ abstract class Driver
      * FULL  JOIN
      * @param $table :表
      * @param $callOrDriver
-     * @return $this
+     * @return self|static|Mysql
      */
     public function fullJoin($table, $callOrDriver = null)
     {
@@ -416,7 +417,7 @@ abstract class Driver
      * @param $name :字段名
      * @param $parameter :参数
      * @param null $match :not
-     * @return $this
+     * @return self|static|Mysql
      */
     public function in($name, $parameter, $match = null)
     {
@@ -463,7 +464,7 @@ abstract class Driver
      * not in
      * @param $name :字段名
      * @param $parameter :参数
-     * @return $this
+     * @return self|static|Mysql
      */
     public function notIn($name, $parameter)
     {
@@ -476,7 +477,7 @@ abstract class Driver
      * union
      * @param $callOrDriver
      * @param string $param
-     * @return $this
+     * @return self|static|Mysql
      */
     public function union($callOrDriver, $param = '')
     {
@@ -498,7 +499,7 @@ abstract class Driver
      * 给表添加字段
      * @param $fieldName
      * @param $fieldType
-     * @return $this
+     * @return self|static|Mysql
      */
     public function alterAdd($fieldName, $fieldType)
     {
@@ -513,7 +514,7 @@ abstract class Driver
     /**
      * 删除表字段
      * @param $fieldName
-     * @return $this
+     * @return self|static|Mysql
      */
     public function alterDropColumn($fieldName)
     {
@@ -529,7 +530,7 @@ abstract class Driver
      * 修改表字段
      * @param $fieldName
      * @param $fieldType
-     * @return $this
+     * @return self|static|Mysql
      */
     public function alterModify($fieldName, $fieldType)
     {
@@ -545,7 +546,7 @@ abstract class Driver
      * @param $name
      * @param null $values
      * @param string $expression
-     * @return $this
+     * @return self|static|Mysql
      */
     public function on($name, $values = null, $expression = '=:')
     {
@@ -578,7 +579,7 @@ abstract class Driver
      * @param $name
      * @param $values
      * @param string $expression
-     * @return $this
+     * @return self|static|Mysql
      */
     public function where($name, $values = null, $expression = '=:')
     {
@@ -611,7 +612,7 @@ abstract class Driver
      * 排序
      * @param $column
      * @param string $mode
-     * @return $this
+     * @return self|static|Mysql
      */
     public function order($column, $mode = 'ASC')
     {
@@ -623,7 +624,7 @@ abstract class Driver
     /**
      * 分组
      * @param $column
-     * @return $this
+     * @return self|static|Mysql
      */
     public function group($column)
     {
@@ -635,7 +636,7 @@ abstract class Driver
      * 分页
      * @param $page
      * @param null $total
-     * @return $this
+     * @return self|static|Mysql
      */
     public function limit($page, $total = null)
     {
@@ -647,7 +648,7 @@ abstract class Driver
      * drop
      * @param string $name
      * @param string $type
-     * @return $this
+     * @return self|static|Mysql
      */
     public function drop($name = '', $type = 'TABLE')
     {
@@ -661,7 +662,7 @@ abstract class Driver
 
     /**
      * dropTable
-     * @return $this
+     * @return self|static|Mysql
      */
     public function dropTable()
     {
@@ -673,7 +674,7 @@ abstract class Driver
     /**
      * dropDatabase
      * @param $database
-     * @return $this
+     * @return self|static|Mysql
      */
     public function dropDatabase($database)
     {
@@ -687,7 +688,7 @@ abstract class Driver
     /**
      * isNotNull
      * @param $name
-     * @return $this
+     * @return self|static|Mysql
      */
     public function isNotNull($name)
     {
@@ -701,7 +702,7 @@ abstract class Driver
     /**
      * isNull
      * @param $name
-     * @return $this
+     * @return self|static|Mysql
      */
     public function isNull($name)
     {
@@ -718,7 +719,7 @@ abstract class Driver
      * @param $name
      * @param $value
      * @param int $expression
-     * @return $this
+     * @return self|static|Mysql
      */
     public function like($name, $value, $expression = 3)
     {
@@ -745,7 +746,7 @@ abstract class Driver
     /**
      * having
      * @param $having
-     * @return $this
+     * @return self|static|Mysql
      */
     public function having($having)
     {
@@ -758,35 +759,35 @@ abstract class Driver
      * getTables
      * @param $type
      * @param $database
-     * @return Driver
+     * @return static|Mysql
      */
-    abstract public function getTables($type, $database);
+    abstract public function getTables($type, string $database);
 
 
     /**
      * getTableStructure
      * @param $type
-     * @param $database
-     * @param $table
-     * @return Driver
+     * @param string $database
+     * @param string $table
+     * @return static|Mysql
      */
-    abstract public function getTableStructure($type, $database, $table);
+    abstract public function getTableStructure($type, string $database, string $table);
 
     /**
      * 获取创建sql
      * @param $type
-     * @param $database
-     * @param $table
-     * @return Driver
+     * @param string $database
+     * @param string $tableName
+     * @return static|Mysql
      */
-    abstract public function getTableCreateSql($type, $database, $table);
+    abstract public function getTableCreateSql($type, string $database, string $tableName);
 
 
     /**
      * 获取语句
      * @return string
      */
-    public function getSql()
+    public function getSql(): string
     {
         return str_replace('  ', ' ', join(' ', $this->sql));
     }
@@ -795,7 +796,7 @@ abstract class Driver
      * 获取语句
      * @return string
      */
-    public function print()
+    public function print(): string
     {
         $sql = $this->getSql();
 
@@ -821,7 +822,7 @@ abstract class Driver
      * 获取预先执行参数
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -832,7 +833,7 @@ abstract class Driver
      * @param $name
      * @return string
      */
-    public function getOptionsKey($name)
+    public function getOptionsKey($name): string
     {
         $name = str_replace(['.', '='], '_', $name);
 
@@ -843,7 +844,7 @@ abstract class Driver
      * 添加options
      * @param $value
      * @param null $key
-     * @return Driver
+     * @return static|Mysql
      */
     public function addOptions($value, $key = null)
     {
@@ -870,7 +871,7 @@ abstract class Driver
      * @return bool
      * @throws Exception
      */
-    public function execute(&$insetId = -1)
+    public function execute(&$insetId = -1): bool
     {
         $statement = $this->getStatement();
 

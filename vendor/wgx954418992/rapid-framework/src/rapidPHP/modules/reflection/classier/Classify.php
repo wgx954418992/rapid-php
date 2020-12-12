@@ -40,7 +40,7 @@ class Classify
     /**
      * @return ReflectionClass
      */
-    public function getReflectionClass(): ReflectionClass
+    public function getReflectionClass()
     {
         return $this->reflection;
     }
@@ -48,10 +48,10 @@ class Classify
     /***
      * 获取实例
      * @param $name
-     * @return Classify|null
+     * @return Classify|static
      * @throws Exception
      */
-    public static function getInstance($name): ?Classify
+    public static function getInstance($name)
     {
         if (!$name) throw new Exception('Classify name empty');
 
@@ -88,7 +88,7 @@ class Classify
 
     /**
      * @param string $class
-     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|mixed|object|null
+     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|null
      */
     public function getDocComment($class = DocComment::class)
     {
@@ -160,7 +160,7 @@ class Classify
      * @return Classify|null
      * @throws Exception
      */
-    public function getParentClassify(): ?Classify
+    public function getParentClassify()
     {
         $parent = $this->reflection->getParentClass();
 
@@ -212,7 +212,7 @@ class Classify
      * @return Property
      * @throws ReflectionException
      */
-    public function getProperty($name): Property
+    public function getProperty(string $name)
     {
         return new Property($this, $this->reflection->getProperty($name));
     }
@@ -259,7 +259,7 @@ class Classify
      * @return Method
      * @throws ReflectionException
      */
-    public function getMethod($name): Method
+    public function getMethod(string $name)
     {
         return new Method($this, $this->reflection->getMethod($name));
     }
@@ -360,7 +360,7 @@ class Classify
 
             $result = [];
 
-            foreach ($properties as $property){
+            foreach ($properties as $property) {
                 $result[] = $property->getName();
             }
 

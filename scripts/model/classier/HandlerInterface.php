@@ -5,11 +5,22 @@ namespace script\model\classier;
 
 abstract class HandlerInterface
 {
+    /**
+     * @var static[]
+     */
+    private static $instances;
 
     /**
-     * @return mixed
+     * @return static
      */
-    abstract public static function getInstance();
+    public static function getInstance()
+    {
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
+    }
 
     /**
      * 获取文件后缀

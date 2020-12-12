@@ -6,18 +6,13 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\redis\classier\Redis;
 
-class RedisCache implements CacheInterface
+class RedisCache extends CacheInterface
 {
 
     /**
      * @var Redis
      */
     private $redis;
-
-    /**
-     * @var
-     */
-    protected static $instance;
 
     /**
      * RedisCache constructor.
@@ -30,18 +25,6 @@ class RedisCache implements CacheInterface
 
         if (!($this->redis instanceof Redis)) throw new Exception('redis instance error!');
     }
-
-    /**
-     * @inheritDoc
-     * @throws Exception
-     */
-    public static function getInstance()
-    {
-        if (empty(self::$instance)) throw new Exception('redis not init');
-
-        return self::$instance;
-    }
-
 
     /**
      * 添加缓存

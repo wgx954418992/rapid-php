@@ -5,18 +5,22 @@ namespace rapidPHP\modules\common\classier;
 class AR
 {
     /**
-     * @var AR
+     * @var static[]
      */
-    private static $instance;
+    private static $instances;
 
     /**
-     * @return AR
+     * @return static
      */
-    public static function getInstance(): AR
+    public static function getInstance()
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
     }
-
+    
     /**
      * 批量删除数组元素
      * @param array|null $array $array

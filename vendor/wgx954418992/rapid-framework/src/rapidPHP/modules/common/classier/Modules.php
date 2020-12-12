@@ -9,18 +9,21 @@ use rapidPHP\modules\common\config\ModulesConfig;
 class Modules
 {
 
+    /**
+     * @var static[]
+     */
+    private static $instances;
 
     /**
-     * @var Modules
+     * @return static
      */
-    private static $instance;
-
-    /**
-     * @return Modules
-     */
-    public static function getInstance(): Modules
+    public static function getInstance()
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
     }
 
     /**

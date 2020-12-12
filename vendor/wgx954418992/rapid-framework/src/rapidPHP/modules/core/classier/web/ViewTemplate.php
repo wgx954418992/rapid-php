@@ -9,6 +9,7 @@ use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Calendar;
 use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\Path;
+use rapidPHP\modules\core\classier\Controller;
 use rapidPHP\modules\core\classier\Model;
 use rapidPHP\modules\core\classier\web\template\TemplateService;
 
@@ -60,6 +61,14 @@ class ViewTemplate
         }
     }
 
+    /**
+     * 获取controller
+     * @return WebController|Controller
+     */
+    public function getController()
+    {
+        return $this->controller;
+    }
 
     /**
      * @return string
@@ -91,23 +100,19 @@ class ViewTemplate
 
     /**
      * @param AB $data
-     * @return $this
      */
     public function setData(AB $data)
     {
         $this->data = $data;
-
-        return $this;
     }
 
     /**
      * 设置变量
      * @param $key :key或者数据
      * @param string $value 值
-     * @return $this
      * @throws Exception
      */
-    public function assign($key, $value = ''): ViewTemplate
+    public function assign($key, $value = '')
     {
         if (is_array($key)) {
             $this->data->data($key);
@@ -118,8 +123,6 @@ class ViewTemplate
         } else {
             $this->data->value($key, $value);
         }
-
-        return $this;
     }
 
     /**
@@ -282,7 +285,7 @@ class ViewTemplate
 
         $dir = str_replace([PATH_APP, PATH_ROOT], '/', dirname($filepath));
 
-        $appRootUrl = rtrim($this->controller->getHostUrl(), '/*');
+        $appRootUrl = rtrim($this->getController()->getHostUrl(), '/*');
 
         foreach ($list as $item => $value) {
 
@@ -372,7 +375,7 @@ class ViewTemplate
         $filepath = $this->getTemplateService()->findTemplateFile($this->filename);
 
         if (!is_file($filepath)) throw new Exception('view error!');
-        
+
         $cacheFile = $this->getTemplateService()->getCache($this->filename, $outputType);
 
         if ($cacheFile !== false) {
@@ -393,36 +396,12 @@ class ViewTemplate
     }
 
     /**
-     * 如果调用的方法不存在，就去controller里面找
-     * @param $name
-     * @param $arguments
-     * @return mixed|null
-     */
-    public function __call($name, $arguments)
-    {
-        if (is_callable([$this->controller, $name])) {
-            return call_user_func_array([$this->controller, $name], $arguments);
-        }
-
-        return null;
-    }
-
-    /**
-     * 获取controller
-     * @return WebController
-     */
-    public function getController(): WebController
-    {
-        return $this->controller;
-    }
-
-    /**
      * 获取网站根url
      * @return string
      */
     public function getHostUrl(): string
     {
-        return $this->controller->getHostUrl();
+        return $this->getController()->getHostUrl();
     }
 
     /**
@@ -433,7 +412,7 @@ class ViewTemplate
      */
     public function getUrl($meter = false, $isDecode = true): string
     {
-        return $this->controller->getUrl($meter, $isDecode);
+        return $this->getController()->getUrl($meter, $isDecode);
     }
 
     /**
@@ -442,7 +421,7 @@ class ViewTemplate
      */
     public function toUrl(): string
     {
-        return call_user_func_array([$this->controller->getRequest(), 'toUrl'], func_get_args());
+        return call_user_func_array([$this->getController()->getRequest(), 'toUrl'], func_get_args());
     }
 
     /**
@@ -454,6 +433,6 @@ class ViewTemplate
      */
     public function t($word, $arg = [], $lang = '')
     {
-        return $this->controller->t($word, $arg, $lang);
+        return $this->getController()->t($word, $arg, $lang);
     }
 }

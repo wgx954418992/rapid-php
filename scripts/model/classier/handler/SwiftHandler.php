@@ -10,7 +10,6 @@ use script\model\classier\HandlerInterface;
 use script\model\classier\Table;
 
 class SwiftHandler extends HandlerInterface
-
 {
 
     /**
@@ -46,9 +45,6 @@ class SwiftHandler extends HandlerInterface
         'Money' => [
             'decimal',
         ],
-        '[Any:Any]' => [
-            'json'
-        ],
         'String' => [
             'binary',
             'varchar',
@@ -67,6 +63,7 @@ class SwiftHandler extends HandlerInterface
             'date',
             'datetime',
             'enum',
+            'json'
         ],
         'Any' => [
             'blob',
@@ -81,10 +78,6 @@ class SwiftHandler extends HandlerInterface
      */
     private $conversionMapping = [];
 
-    /**
-     * @var self
-     */
-    private static $instance;
 
     /**
      * PHPHandler constructor.
@@ -92,14 +85,6 @@ class SwiftHandler extends HandlerInterface
     public function __construct()
     {
         $this->initConversionMapping();
-    }
-
-    /**
-     * @return self
-     */
-    public static function getInstance(): self
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
     }
 
     /**

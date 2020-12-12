@@ -40,7 +40,7 @@ class Element
     /**
      * @return DOMElement
      */
-    public function getElement(): DOMElement
+    public function getElement()
     {
         return $this->element;
     }
@@ -48,19 +48,17 @@ class Element
     /**
      * @return DOMDocument
      */
-    public function getDocument(): DOMDocument
+    public function getDocument()
     {
         return $this->document;
     }
 
     /**
      * @param $value
-     * @return static|self
      */
     public function setValue($value)
     {
         $this->element->nodeValue = $value;
-        return $this;
     }
 
     /**
@@ -86,41 +84,32 @@ class Element
      * @param $name
      * @param null $value
      * @param bool $isStack
-     * @return static|self
      */
     public function setAttr($name, $value = null, $isStack = false)
     {
         $attrValue = $this->getAttr($name);
 
         $this->element->setAttribute($name, $isStack && $attrValue ? "{$attrValue} {$value}" : $value);
-
-        return $this;
     }
 
     /**
      * 移出属性
      * @param $name
-     * @return static|self
      */
-    public function removeAttr($name): Element
+    public function removeAttr($name)
     {
         $this->element->removeAttribute($name);
-
-        return $this;
     }
 
     /**
      * @param array $attr
      * @param bool $isStack
-     * @return static|self
      */
     public function setAttrList($attr = array(), $isStack = false)
     {
         foreach ($attr as $name => $value) {
             $this->setAttr($name, $value, $isStack);
         }
-
-        return $this;
     }
 
     /**
@@ -134,31 +123,24 @@ class Element
 
     /**
      * @param $name
-     * @return static|self
      */
     public function addClass($name)
     {
         if (!$this->hasClass($name)) $this->setAttr('class', $name, 1);
-
-        return $this;
     }
 
     /**
      * @param $name
-     * @return static|self
      */
     public function removeClass($name)
     {
         $class = preg_replace("/(\s|^){$name}(\s|$)/i", '', $this->getAttr('class'));
 
         $this->setAttr('class', $class);
-
-        return $this;
     }
 
     /**
      * @param $element
-     * @return static|self
      */
     public function addView($element)
     {
@@ -167,7 +149,6 @@ class Element
         } else if ($element instanceof DOMElement) {
             $this->element->appendChild($element);
         }
-        return $this;
     }
 
     /**
@@ -183,7 +164,6 @@ class Element
 
     /**
      * @param $element
-     * @return static|self
      */
     public function setParent($element)
     {
@@ -192,106 +172,84 @@ class Element
         } else if ($element instanceof DOMElement) {
             $element->appendChild($this->element);
         }
-        return $this;
     }
 
 
     /**
      * @param $name
      * @param null $value
-     * @return static|self
      */
     public function setData($name, $value = null)
     {
         $this->setAttr("data-{$name}", $value);
-
-        return $this;
     }
 
     /**
      * @param $data
-     * @return static|self
      */
     public function setDataList($data)
     {
         foreach ($data as $name => $value) {
             $this->setData($name, $value);
         }
-
-        return $this;
     }
 
     /**
      * @param $name
      * @return string
      */
-    public function getData($name)
+    public function getData($name): string
     {
         return $this->getAttr("data-{$name}");
     }
 
     /**
      * @param $value
-     * @return static|self
      */
     public function setTitle($value)
     {
         $this->setAttr('title', $value);
-
-        return $this;
     }
 
 
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->getAttr('title');
     }
 
     /**
      * @param $value
-     * @return static|self
      */
     public function setHref($value)
     {
         $this->setAttr('href', $value);
-
-        return $this;
     }
 
     /**
      * @param $value
-     * @return static|self
      */
     public function setTarget($value = '_blank')
     {
         $this->setAttr('target', $value);
-
-        return $this;
     }
 
     /**
      * @param $value
-     * @return static|self
      */
     public function setSrc($value)
     {
         $this->setAttr('src', $value);
-
-        return $this;
     }
 
     /**
      * @param $value
-     * @return static|self
      */
     public function setId($value)
     {
         $this->setAttr('id', $value);
-
-        return $this;
     }
 
     /**

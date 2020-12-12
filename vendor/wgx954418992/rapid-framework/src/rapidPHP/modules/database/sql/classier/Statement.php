@@ -97,7 +97,7 @@ class Statement
     /**
      * 获取一条
      * @param string|null $objectClass
-     * @return mixed|object|void|null
+     * @return object|array|null
      * @throws Exception
      */
     public function fetch($objectClass = null)
@@ -120,7 +120,7 @@ class Statement
     /**
      * 获取value
      * @param $name
-     * @return mixed|null
+     * @return string|int|double|null
      * @throws Exception
      */
     public function fetchValue($name)
@@ -139,10 +139,10 @@ class Statement
     /**
      * 获取全部
      * @param string|null $objectClass
-     * @return mixed|object|void|null
+     * @return array|null
      * @throws Exception
      */
-    public function fetchAll($objectClass = null)
+    public function fetchAll($objectClass = null): ?array
     {
         $statement = $this->getStatement();
 

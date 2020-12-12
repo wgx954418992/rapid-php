@@ -53,16 +53,20 @@ class Handler
     ];
 
     /**
-     * @var self
+     * @var static[]
      */
-    private static $instance;
+    private static $instances;
 
     /**
-     * @return self
+     * @return static
      */
-    public static function getInstance(): Handler
+    public static function getInstance()
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
     }
 
     /**
@@ -81,9 +85,9 @@ class Handler
     /**
      * @param $result
      * @param $type
-     * @return HandlerInterface
+     * @return HandlerInterface|ApiHandler|AutoHandler|RawHandler|ViewHandler
      */
-    public function getService($result, ?string $type = null): HandlerInterface
+    public function getService($result, ?string $type = null)
     {
         if (isset($this->service[$type])) {
 

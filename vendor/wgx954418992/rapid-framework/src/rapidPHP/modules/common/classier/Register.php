@@ -11,16 +11,20 @@ class Register
     private $container = [];
 
     /**
-     * @var Register
+     * @var static[]
      */
-    private static $instance;
+    private static $instances;
 
     /**
-     * @return Register
+     * @return static
      */
-    public static function getInstance(): Register
+    public static function getInstance()
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
     }
 
     /**

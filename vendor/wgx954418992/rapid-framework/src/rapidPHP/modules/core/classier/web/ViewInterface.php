@@ -9,14 +9,15 @@ use rapidPHP\modules\core\classier\Model;
 abstract class ViewInterface
 {
     /**
-     * @var WebController
-     */
-    protected $controller;
-
-    /**
      * @var AB
      */
-    protected $data;
+    private $data;
+
+    /**
+     * @var WebController
+     */
+    private $controller;
+
 
     /**
      * ViewInterface constructor.
@@ -31,6 +32,7 @@ abstract class ViewInterface
 
         $this->data = $data;
     }
+
 
     /**
      * @return AB
@@ -53,6 +55,14 @@ abstract class ViewInterface
         } else if (is_array($data)) {
             $this->data = new AB($data);
         }
+    }
+
+    /**
+     * @return WebController
+     */
+    public function getController(): WebController
+    {
+        return $this->controller;
     }
 
     /**

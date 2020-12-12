@@ -43,7 +43,7 @@ class Response extends ResponseInterface
     /**
      * @return Server
      */
-    public function getServer(): Server
+    public function getServer()
     {
         return $this->server;
     }

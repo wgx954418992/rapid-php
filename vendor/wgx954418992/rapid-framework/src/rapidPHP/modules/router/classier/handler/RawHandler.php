@@ -5,20 +5,8 @@ namespace rapidPHP\modules\router\classier\handler;
 
 use rapidPHP\modules\core\classier\Controller;
 
-class RawHandler implements HandlerInterface
+class RawHandler extends HandlerInterface
 {
-    /**
-     * @var self
-     */
-    private static $instance;
-
-    /**
-     * @return self
-     */
-    public static function getInstance()
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
-    }
 
     /**
      * 对于原生数据直接返回即可

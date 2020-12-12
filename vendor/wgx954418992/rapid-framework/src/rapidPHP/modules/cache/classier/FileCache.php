@@ -6,7 +6,7 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\File;
 
-class FileCache implements CacheInterface
+class FileCache extends CacheInterface
 {
 
     /**
@@ -14,19 +14,6 @@ class FileCache implements CacheInterface
      * @var string
      */
     private $cachePath;
-
-    /**
-     * @var CacheInterface
-     */
-    private static $instance;
-
-    /**
-     * @return CacheInterface
-     */
-    public static function getInstance()
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
-    }
 
     /**
      * FileCache constructor.

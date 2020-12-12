@@ -5,8 +5,14 @@ namespace rapidPHP\modules\core\classier\web;
 use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\common\classier\Verify;
 use rapidPHP\modules\core\classier\Controller;
+use rapidPHP\modules\server\classier\http\cgi\Request as CGIRequest;
+use rapidPHP\modules\server\classier\http\cgi\Response as CGIResponse;
+use rapidPHP\modules\server\classier\http\swoole\Request as SwooleHttpRequest;
+use rapidPHP\modules\server\classier\http\swoole\Response as SwooleHttpResponse;
 use rapidPHP\modules\server\classier\interfaces\Request;
 use rapidPHP\modules\server\classier\interfaces\Response;
+use rapidPHP\modules\server\classier\websocket\swoole\Request as SwooleWebsocketRequest;
+use rapidPHP\modules\server\classier\websocket\swoole\Response as SwooleWebSocketResponse;
 
 class WebController extends Controller
 {
@@ -29,19 +35,28 @@ class WebController extends Controller
     }
 
     /**
-     * @return Request
+     * @return Request|CGIRequest|SwooleHttpRequest|SwooleWebsocketRequest
      */
-    public function getRequest(): Request
+    public function getRequest()
     {
         return $this->getContext()->getRequest();
     }
 
     /**
-     * @return Response
+     * @return  Response|CGIResponse|SwooleHttpResponse|SwooleWebSocketResponse
      */
     public function getResponse()
     {
         return $this->getContext()->getResponse();
+    }
+
+    /**
+     * 获取客户端Ip
+     * @return mixed
+     */
+    public function getIp(): string
+    {
+        return $this->getRequest()->getIp();
     }
 
     /**

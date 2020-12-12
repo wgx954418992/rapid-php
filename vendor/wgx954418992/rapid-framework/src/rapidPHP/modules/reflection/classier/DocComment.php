@@ -29,7 +29,7 @@ class DocComment
      * @return DocComment
      * @throws Exception
      */
-    public static function getInstance($doc): DocComment
+    public static function getInstance($doc)
     {
         return new static($doc);
     }
@@ -113,7 +113,7 @@ class DocComment
      * @return Returned|null
      * @throws Exception
      */
-    public function getReturnedAnnotation(): ?Returned
+    public function getReturnedAnnotation()
     {
         /** @var Returned $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_RETURNED);
@@ -129,7 +129,7 @@ class DocComment
      * @return Parameter|null
      * @throws Exception
      */
-    public function getParamAnnotation($name): ?Parameter
+    public function getParamAnnotation($name)
     {
         /** @var Parameter[] $params */
         $params = $this->getAnnotations(
@@ -151,7 +151,7 @@ class DocComment
      * @return Variable
      * @throws Exception
      */
-    public function getVariableAnnotation(): ?Variable
+    public function getVariableAnnotation()
     {
         /** @var Variable $variable */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_VARIABLE);

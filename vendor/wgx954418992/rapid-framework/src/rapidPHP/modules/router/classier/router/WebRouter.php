@@ -41,22 +41,9 @@ class WebRouter extends Router
     private $response;
 
     /**
-     * @var self
-     */
-    private static $instance;
-
-    /**
-     * @return self
-     */
-    public static function getInstance()
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
-    }
-
-    /**
      * @return WebApplication
      */
-    public function getApplication(): WebApplication
+    public function getApplication()
     {
         /** @var WebApplication $app */
         $app = parent::getApplication();
@@ -140,7 +127,7 @@ class WebRouter extends Router
     /**
      * 获取真实访问路径
      */
-    private function getRealPath()
+    private function getRealPath(): string
     {
         $path = trim($this->request->get(self::SINGLE_ENTRANCE_NAME), '/');
 
@@ -193,8 +180,9 @@ class WebRouter extends Router
      * @param Route $route
      * @param Action $action
      * @return array
+     * @throws Exception
      */
-    private function getHandlerOptions(Route $route, Action $action)
+    private function getHandlerOptions(Route $route, Action $action): array
     {
         $options = [
             'route' => $route,

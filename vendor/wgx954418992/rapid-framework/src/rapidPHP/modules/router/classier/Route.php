@@ -45,18 +45,19 @@ class Route
         $this->methodName = $methodName;
     }
 
+
     /**
-     * @return mixed
+     * @return string
      */
-    public function getRoute()
+    public function getRoute(): string
     {
         return $this->route;
     }
 
     /**
-     * @param mixed $route
+     * @param string $route
      */
-    public function setRoute($route): void
+    public function setRoute(string $route): void
     {
         $this->route = $route;
     }
@@ -78,33 +79,33 @@ class Route
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getClassName()
+    public function getClassName(): string
     {
         return $this->className;
     }
 
     /**
-     * @param mixed $className
+     * @param string $className
      */
-    public function setClassName($className): void
+    public function setClassName(string $className): void
     {
         $this->className = $className;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getMethodName()
+    public function getMethodName(): string
     {
         return $this->methodName;
     }
 
     /**
-     * @param mixed $methodName
+     * @param string $methodName
      */
-    public function setMethodName($methodName): void
+    public function setMethodName(string $methodName): void
     {
         $this->methodName = $methodName;
     }
@@ -115,7 +116,7 @@ class Route
      * @return array|null
      * @throws Exception
      */
-    public function toArray()
+    public function toArray(): ?array
     {
         return Utils::getInstance()->toArray($this);
     }

@@ -111,7 +111,7 @@ class Parameter
      * @return annotation\Parameter|null
      * @throws Exception
      */
-    public function getAnnotation(): ?annotation\Parameter
+    public function getAnnotation()
     {
         return $this->method->getDocComment()->getParamAnnotation($this->getName());
     }

@@ -10,20 +10,8 @@ use rapidPHP\modules\core\classier\Controller;
 
 use rapidPHP\modules\router\classier\Handler;
 
-class AutoHandler implements HandlerInterface
+class AutoHandler extends HandlerInterface
 {
-    /**
-     * @var self
-     */
-    private static $instance;
-
-    /**
-     * @return self
-     */
-    public static function getInstance()
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
-    }
 
     /**
      * @param Controller $controller

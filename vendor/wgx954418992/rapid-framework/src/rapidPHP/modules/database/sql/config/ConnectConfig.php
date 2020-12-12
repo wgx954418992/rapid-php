@@ -3,7 +3,6 @@
 namespace rapidPHP\modules\database\sql\config;
 
 use Exception;
-use rapidPHP\modules\pool\config\PoolConfig;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Uri;
 use rapidPHP\modules\database\sql\classier\driver\Mysql;
@@ -49,12 +48,6 @@ class ConnectConfig
      * @var string|null
      */
     private $characterCode;
-
-    /**
-     * pool
-     * @var PoolConfig|null
-     */
-    private $pool;
 
     /**
      * @return string|null
@@ -168,18 +161,11 @@ class ConnectConfig
     }
 
     /**
-     * @return PoolConfig|null
+     * 获取当前配置的hash 值
+     * @return string
      */
-    public function getPool(): ?PoolConfig
+    public function getHash(): string
     {
-        return $this->pool;
-    }
-
-    /**
-     * @param PoolConfig|null $pool
-     */
-    public function setPool(?PoolConfig $pool): void
-    {
-        $this->pool = $pool;
+        return sha1($this->getUrl() . $this->getUsername() . $this->getPassword());
     }
 }

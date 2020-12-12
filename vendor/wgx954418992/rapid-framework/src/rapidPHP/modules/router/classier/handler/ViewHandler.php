@@ -14,21 +14,9 @@ use rapidPHP\modules\core\classier\web\WebController;
 use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\router\classier\Action;
 
-class ViewHandler implements HandlerInterface
+class ViewHandler extends HandlerInterface
 {
 
-    /**
-     * @var self
-     */
-    private static $instance;
-
-    /**
-     * @return self
-     */
-    public static function getInstance()
-    {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
-    }
 
     /**
      * @param Controller $controller

@@ -4,17 +4,22 @@ namespace rapidPHP\modules\common\classier;
 
 class XSS
 {
-    /**
-     * @var XSS
-     */
-    private static $instance;
 
     /**
-     * @return XSS
+     * @var static[]
+     */
+    private static $instances;
+
+    /**
+     * @return static
      */
     public static function getInstance()
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
     }
 
     /**

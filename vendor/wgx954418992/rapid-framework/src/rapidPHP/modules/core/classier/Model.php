@@ -86,7 +86,7 @@ class Model
      * @param $names
      * @return static
      */
-    public function delValue($names)
+    public function delValue($names): Model
     {
         if (is_array($names)) {
             foreach ($names as $key) if (isset($this->$key)) unset($this->$key);
@@ -101,7 +101,7 @@ class Model
      * @return string
      * @throws Exception
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toJson();
     }

@@ -12,17 +12,20 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class Excel
 {
     /**
-     * @var Excel
+     * @var static[]
      */
-    private static $instance;
+    private static $instances;
 
     /**
-     * 单例模式
-     * @return self
+     * @return static
      */
-    public static function getInstance(): Excel
+    public static function getInstance()
     {
-        return self::$instance instanceof self ? self::$instance : self::$instance = new self();
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
     }
 
     /**

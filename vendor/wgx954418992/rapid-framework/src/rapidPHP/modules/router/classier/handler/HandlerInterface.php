@@ -5,13 +5,25 @@ namespace rapidPHP\modules\router\classier\handler;
 
 use rapidPHP\modules\core\classier\Controller;
 
-interface HandlerInterface
+abstract class HandlerInterface
 {
 
     /**
-     * @return self
+     * @var static[]
      */
-    public static function getInstance();
+    private static $instances;
+
+    /**
+     * @return static
+     */
+    public static function getInstance()
+    {
+        if (isset(self::$instances[static::class])) {
+            return self::$instances[static::class];
+        } else {
+            return self::$instances[static::class] = new static();
+        }
+    }
 
     /**
      * 接收到数据
@@ -20,5 +32,5 @@ interface HandlerInterface
      * @param array $options
      * @return array|mixed|null|string
      */
-    public function onResult(Controller $controller, $result, $options = []);
+    abstract public function onResult(Controller $controller, $result, $options = []);
 }

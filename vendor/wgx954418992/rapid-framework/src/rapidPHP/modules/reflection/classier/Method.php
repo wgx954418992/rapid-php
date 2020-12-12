@@ -34,7 +34,7 @@ class Method
     /**
      * @return Classify
      */
-    public function getClassify(): Classify
+    public function getClassify()
     {
         return $this->classify;
     }
@@ -42,7 +42,7 @@ class Method
     /**
      * @return ReflectionMethod
      */
-    public function getMethod(): ReflectionMethod
+    public function getMethod()
     {
         return $this->method;
     }
@@ -57,7 +57,7 @@ class Method
 
     /**
      * @param string $class
-     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|object|mixed|null
+     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|null
      */
     public function getDocComment($class = DocComment::class)
     {
@@ -74,7 +74,7 @@ class Method
      * @return Classify|null
      * @throws Exception
      */
-    public function getDeclaringClass(): ?Classify
+    public function getDeclaringClass()
     {
         return Classify::getInstance($this->getMethod()->getDeclaringClass());
     }
