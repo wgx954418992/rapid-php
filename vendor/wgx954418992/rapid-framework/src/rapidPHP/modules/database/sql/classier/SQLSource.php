@@ -5,6 +5,7 @@ namespace rapidPHP\modules\database\sql\classier;
 
 use Exception;
 use rapidPHP\modules\application\classier\Application;
+use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\database\sql\config\ConnectConfig;
 
 class SQLSource
@@ -24,7 +25,21 @@ class SQLSource
      * 数据监连接对象，默认为全局缓存，后期可以直接调用 连接池
      * @var SQLDB[]
      */
-    private static $dbs;
+    private $dbs;
+
+    /**
+     * 采用单例模式
+     */
+    use Instances;
+
+    /**
+     * 实例不存在
+     * @return static
+     */
+    public static function onNotInstance()
+    {
+        return new static(...func_get_args());
+    }
 
     /**
      * 获取数据库连接配置
@@ -32,7 +47,7 @@ class SQLSource
      * @return ConnectConfig
      * @throws Exception
      */
-    public static function getConfig($config = null)
+    public function getConfig($config = null)
     {
         if ($config instanceof ConnectConfig) return $config;
 
@@ -58,20 +73,20 @@ class SQLSource
      * @return SQLDB
      * @throws Exception
      */
-    public static function getDB($config = null)
+    public function getDB($config = null)
     {
-        $config = self::getConfig($config);
+        $config = $this->getConfig($config);
 
         $hash = $config->getHash();
 
-        if (isset(self::$dbs[$hash]) && self::$dbs[$hash] instanceof SQLDB) {
-            return self::$dbs[$hash];
+        if (isset($this->dbs[$hash]) && $this->dbs[$hash] instanceof SQLDB) {
+            return $this->dbs[$hash];
         } else {
             $db = new SQLDB();
 
             $db->connect($config);
 
-            self::$dbs[$hash] = $db;
+            $this->dbs[$hash] = $db;
 
             return $db;
         }
@@ -82,9 +97,9 @@ class SQLSource
      * @return SQLDB
      * @throws Exception
      */
-    public static function getMasterDB()
+    public function getMasterDB()
     {
-        return self::getDB(self::DB_MASTER);
+        return $this->getDB(self::DB_MASTER);
     }
 
     /**
@@ -92,8 +107,8 @@ class SQLSource
      * @return SQLDB
      * @throws Exception
      */
-    public static function getSalveDB()
+    public function getSalveDB()
     {
-        return self::getDB(self::DB_SALVE);
+        return $this->getDB(self::DB_SALVE);
     }
 }

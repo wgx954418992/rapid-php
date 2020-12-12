@@ -108,7 +108,7 @@ class WebRouter extends Router
         $actions = [];
 
         Mapping::getInstance()->scanning($paths, $routes, $actions);
-
+        
         Mapping::getInstance()->save($routes, $actions);
     }
 

@@ -3,23 +3,22 @@
 namespace script\model\classier;
 
 
+use rapidPHP\modules\common\classier\Instances;
+
 abstract class HandlerInterface
 {
     /**
-     * @var static[]
+     * 单例模式
      */
-    private static $instances;
+    use Instances;
 
     /**
+     * 初始化当前
      * @return static
      */
-    public static function getInstance()
+    public static function onNotInstance()
     {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        } else {
-            return self::$instances[static::class] = new static();
-        }
+        return new static();
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace rapidPHP\modules\database\sql\classier;
 
 use Exception;
+use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\core\classier\Model;
 use rapidPHP\modules\database\sql\classier\driver\Mysql;
 use rapidPHP\modules\reflection\classier\Classify;
@@ -33,19 +34,12 @@ abstract class SQLDao
     private $modelOrClass;
 
     /**
-     * @var static[]
-     */
-    private static $instances;
-
-    /**
-     * BaseDao constructor.
-     * @param $db
+     * SQLDao constructor.
+     * @param SQLDB $db
      * @param $modelOrClass
      */
     public function __construct(SQLDB $db, $modelOrClass)
     {
-        self::$instances[static::class] = $this;
-
         $this->db = $db;
 
         $this->modelOrClass = $modelOrClass;
@@ -57,18 +51,6 @@ abstract class SQLDao
         } else {
             $this->tableField = '*';
         }
-    }
-
-    /**
-     * @return static
-     */
-    public static function getInstance()
-    {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        }
-
-        return null;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace rapidPHP\modules\router\classier;
 use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\File;
+use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\reflection\classier\Method;
 use rapidPHP\modules\reflection\classier\Utils as ReflectionUtils;
@@ -38,21 +39,19 @@ class Mapping
      */
     const ACTIONS_FILE_PATH = self::WRITE_PATH . 'actions.json';
 
-    /**
-     * @var static[]
-     */
-    private static $instances;
 
     /**
+     * 采用单例模式
+     */
+    use Instances;
+
+    /**
+     * 实例不存在
      * @return static
      */
-    public static function getInstance()
+    public static function onNotInstance()
     {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        } else {
-            return self::$instances[static::class] = new static();
-        }
+        return new static(...func_get_args());
     }
 
     /**
@@ -139,7 +138,7 @@ class Mapping
             $methodComment = $method->getDocComment(DocComment::class);
 
             $methodRoute = $this->getRouteAnnotationValue($methodComment);
-
+            
             if (empty($methodRoute) && !$method->isConstructor()) continue;
 
             $realRoute = $classRoute . $methodRoute;

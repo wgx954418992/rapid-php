@@ -128,20 +128,17 @@ class Console
     const BACKGROUND_COLOR_LIGHT_GRAY = 'light_gray';
 
     /**
-     * @var static[]
+     * 采用单例模式
      */
-    private static $instances;
+    use Instances;
 
     /**
+     * 实例不存在
      * @return static
      */
-    public static function getInstance()
+    public static function onNotInstance()
     {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        } else {
-            return self::$instances[static::class] = new static();
-        }
+        return new static(...func_get_args());
     }
 
     /**

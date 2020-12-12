@@ -9,6 +9,7 @@ use rapidPHP\modules\application\classier\apps\WebApplication;
 use rapidPHP\modules\application\classier\Context;
 use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\common\classier\Build;
+use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Verify;
 use rapidPHP\modules\core\classier\Controller;
 use rapidPHP\modules\core\classier\web\WebController;
@@ -41,21 +42,19 @@ abstract class Router
      */
     protected $actions;
 
-    /**
-     * @var static[]
-     */
-    private static $instances;
 
     /**
+     * 采用单例模式
+     */
+    use Instances;
+
+    /**
+     * 实例不存在
      * @return static
      */
-    public static function getInstance()
+    public static function onNotInstance()
     {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        } else {
-            return self::$instances[static::class] = new static();
-        }
+        return new static(...func_get_args());
     }
 
     /**

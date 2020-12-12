@@ -6,26 +6,24 @@ class Register
 {
 
     /**
+     * 采用单例模式
+     */
+    use Instances;
+
+    /**
+     * 实例不存在
+     * @return static
+     */
+    public static function onNotInstance()
+    {
+        return new static(...func_get_args());
+    }
+
+    /**
      * @var array
      */
     private $container = [];
 
-    /**
-     * @var static[]
-     */
-    private static $instances;
-
-    /**
-     * @return static
-     */
-    public static function getInstance()
-    {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        } else {
-            return self::$instances[static::class] = new static();
-        }
-    }
 
     /**
      * put

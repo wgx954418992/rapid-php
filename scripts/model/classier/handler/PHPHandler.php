@@ -11,6 +11,7 @@ use script\model\classier\Table;
 
 class PHPHandler extends HandlerInterface
 {
+
     /**
      * CONVERSION
      */
@@ -21,14 +22,42 @@ class PHPHandler extends HandlerInterface
             'integer',
             'numeric',
             'year',
+            'time',
+            'year',
+            'tinyint',
+            'mediumint',
+            'smallint',
         ],
         'float' => [
             'float',
             'double',
             'decimal',
         ],
+        'bool' => [
+            'bit',
+            'real',
+        ],
+        'string' => [
+            'binary',
+            'varchar',
+            'varbinary',
+            'char',
+            'text',
+            'textarea',
+            'mediumtext',
+            'linestring',
+            'multilinestring',
+            'tinytext',
+            'longtext',
+            'multipolygon',
+            'multipoint',
+            'polygon',
+            'date',
+            'datetime',
+            'enum',
+            'json'
+        ],
     ];
-
 
     /**
      * @var array

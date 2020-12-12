@@ -70,9 +70,9 @@ class DocComment
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDoc(): string
+    public function getDoc(): ?string
     {
         return $this->doc;
     }

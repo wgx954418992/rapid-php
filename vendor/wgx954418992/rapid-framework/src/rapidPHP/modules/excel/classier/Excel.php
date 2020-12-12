@@ -8,24 +8,23 @@ use PhpOffice\PhpSpreadsheet\Reader\Exception as ReaderException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception as WriterException;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use rapidPHP\modules\common\classier\Instances;
 
 class Excel
 {
-    /**
-     * @var static[]
-     */
-    private static $instances;
 
     /**
+     * 采用单例模式
+     */
+    use Instances;
+
+    /**
+     * 实例不存在
      * @return static
      */
-    public static function getInstance()
+    public static function onNotInstance()
     {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        } else {
-            return self::$instances[static::class] = new static();
-        }
+        return new static(...func_get_args());
     }
 
     /**

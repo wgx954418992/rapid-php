@@ -167,7 +167,6 @@ class SQLDBService implements ServiceInterface
         return $this->handler->onReceive($table, $columns, $namespace, $options);
     }
 
-
     /**
      * randId
      * @return mixed|string

@@ -7,27 +7,26 @@ use Composer\Autoload\ClassLoader;
 use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\File;
+use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Path;
 use rapidPHP\modules\common\config\VarConfig;
 
 class Utils
 {
 
-    /**
-     * @var static[]
-     */
-    private static $instances;
 
     /**
+     * 采用单例模式
+     */
+    use Instances;
+
+    /**
+     * 实例不存在
      * @return static
      */
-    public static function getInstance()
+    public static function onNotInstance()
     {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        } else {
-            return self::$instances[static::class] = new static();
-        }
+        return new static(...func_get_args());
     }
 
     /**
@@ -45,7 +44,7 @@ class Utils
      * @param $content
      * @return mixed|null
      */
-    public function getNamespaceName(string $content)
+    public function getNamespaceName(?string $content)
     {
         return Build::getInstance()->getRegular('/namespace (.*?);/i', $content);
     }
@@ -55,7 +54,7 @@ class Utils
      * @param $content
      * @return mixed|null
      */
-    public function getClassName(string $content)
+    public function getClassName(?string $content)
     {
         return Build::getInstance()->getRegular('/class (\w+)/i', $content);
     }
@@ -65,7 +64,7 @@ class Utils
      * @param $content
      * @return string|null
      */
-    public function getClassFullName(string $content): ?string
+    public function getClassFullName(?string $content): ?string
     {
         $namespaceName = $this->getNamespaceName($content);
 

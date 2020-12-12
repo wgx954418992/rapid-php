@@ -75,27 +75,24 @@ class Calendar
     const HS_MODE_FULL = 'f';
 
     /**
-     * @var static[]
+     * 采用单例模式
      */
-    private static $instances;
+    use Instances;
 
     /**
+     * 实例不存在
      * @return static
      */
-    public static function getInstance($zone = 'PRC')
+    public static function onNotInstance()
     {
-        if (isset(self::$instances[static::class])) {
-            return self::$instances[static::class];
-        } else {
-            return self::$instances[static::class] = new static($zone);
-        }
+        return new static(...func_get_args());
     }
 
     /**
      * Calendar constructor.
      * @param $zone
      */
-    public function __construct($zone)
+    public function __construct($zone = 'PRC')
     {
         self::setZone($zone);
     }

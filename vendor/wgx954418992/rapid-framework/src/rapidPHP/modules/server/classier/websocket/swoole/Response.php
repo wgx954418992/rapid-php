@@ -92,16 +92,16 @@ class Response extends ResponseInterface
      * 此方法模拟http发送cookie
      *
      * @param string $key
-     * @param string $value
+     * @param string|null $value
      * @param int $expire
-     * @param string $path
-     * @param string $domain
+     * @param string|null $path
+     * @param string|null $domain
      * @param bool $secure
      * @param bool $httponly
-     * @param string $samesite 从 v4.4.6 版本开始支持
+     * @param string|null $samesite 从 v4.4.6 版本开始支持
      * @return bool
      */
-    public function cookie(string $key, string $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false, $samesite = ''): bool
+    public function cookie(string $key, ?string $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false, $samesite = ''): bool
     {
         return $this->write(self::getCookieString($key, $value, $expire, $path, $domain, $secure, $httponly, $samesite));
     }
@@ -140,11 +140,11 @@ class Response extends ResponseInterface
     /**
      * 给客户端发送数据
      *
-     * @param string $data
+     * @param string|null $data
      * @param array $options
      * @return bool
      */
-    public function write(string $data, $options = []): bool
+    public function write(?string $data, $options = []): bool
     {
         if (empty($data)) return false;
 

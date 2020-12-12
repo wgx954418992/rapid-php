@@ -20,22 +20,22 @@ class AB
     private $data;
 
     /**
-     * toInstance
-     * @param null $data
-     * @return AB
-     */
-    public static function getInstance($data = null): self
-    {
-        return new self($data);
-    }
-
-    /**
      * AB constructor.
      * @param null $data
      */
     public function __construct($data = null)
     {
         $this->data($data);
+    }
+
+    /**
+     * toInstance
+     * @param array|AB|null $data
+     * @return AB
+     */
+    public static function getInstance($data = null)
+    {
+        return new static($data);
     }
 
     /**

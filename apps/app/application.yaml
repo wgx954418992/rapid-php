@@ -58,12 +58,5 @@ database:
       url: 'mysql://127.0.0.1:3306/?database=rapid&characterCode=utf8mb4'
       username: root
       password: root
-      model:
-        path: '${PATH_ROOT}/apps/app/classier/model/'
-        namespace: apps\app\classier\model
-      pool:
-        min: 1
-        max: 10
-        timeout: 8000
     salve: null
   nosql: null

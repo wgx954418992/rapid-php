@@ -97,9 +97,9 @@ class Parameter extends Value
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRemark(): string
+    public function getRemark(): ?string
     {
         return $this->remark;
     }

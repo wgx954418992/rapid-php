@@ -18,7 +18,7 @@ class ErrorController extends BaseController
      * @route /error
      * @typed auto
      * @template error/error
-     * @param Exception $exception
+     * @param Exception|null $exception
      * @return array|RESTFulApi|null
      */
     public function error(?Exception $exception)
@@ -41,9 +41,9 @@ class ErrorController extends BaseController
     /**
      * 404错误
      * @route /error/404
-     * @param Exception $exception
-     * @template error/500
+     * @param Exception|null $exception
      * @return string[]
+     * @template error/500
      */
     public function notFound(?Exception $exception = null)
     {
@@ -56,7 +56,7 @@ class ErrorController extends BaseController
     /**
      * 403错误
      * @route /error/403
-     * @param ActionException $exception
+     * @param ActionException|null $exception
      */
     public function forbidden(?ActionException $exception = null)
     {

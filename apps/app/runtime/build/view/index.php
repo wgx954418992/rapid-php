@@ -1,10 +1,9 @@
-<?php /** cache Time 2020-12-09 23:10:18 */ defined('PATH_APP') or die();?>
+<?php /** cache Time 2020-12-13 00:16:43 */ defined('PATH_APP') or die();?>
 <?php
 
-use apps\app\classier\model\UserModel;
-use function rapidPHP\VT;
 
-?>
+use apps\app\classier\model\AppUserModel;
+use function rapidPHP\VT; ?>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -16,12 +15,13 @@ use function rapidPHP\VT;
 <hr>
 <p><?= VT($this)->get('msg') ?></p>
 <hr>
-<?php $users = VT($this)->get('users') ?? [] ?>
-
 <?php
-/** @var UserModel $user */
-foreach ($users as $user) :?>
-    <?= $user->getId() ?> - <?= $user->getName() ?><br/>
-<?php endforeach; ?>
+/** @var AppUserModel $user */
+$user = VT($this)->get('user') ?>
+
+<?php if ($user != null): ?>
+    <?= $user->getId() ?> - <?= $user->getTelephone() ?><br/>
+<?php endif ?>
+
 </body>
 </html>

@@ -10,11 +10,17 @@ use rapidPHP\modules\application\classier\apps\SwooleHttpApplication;
 use rapidPHP\modules\application\classier\apps\SwooleWebsocketApplication;
 use rapidPHP\modules\application\classier\apps\WebApplication;
 use rapidPHP\modules\application\wrapper\ConfigWrapper;
+use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\logger\classier\Logger;
 
 
 abstract class Application
 {
+
+    /**
+     * 采用单例模式
+     */
+    use Instances;
 
     /**
      * logger error
@@ -40,19 +46,6 @@ abstract class Application
      * @var Init
      */
     private $init;
-
-    /**
-     * @var Application[]
-     */
-    private static $instances;
-
-    /**
-     * @return static|WebApplication|CGIApplication|SwooleHttpApplication|SwooleWebsocketApplication|null
-     */
-    public static function getInstance()
-    {
-        return static::$instances[static::class];
-    }
 
     /**
      * Application constructor.
