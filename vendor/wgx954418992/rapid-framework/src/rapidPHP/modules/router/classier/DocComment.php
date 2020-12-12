@@ -62,6 +62,8 @@ class DocComment extends ReflectionDocComment
         $headersAnnotation = $this->getHeadersAnnotation();
 
         foreach ($headersAnnotation as $headerAnnotation) {
+            if (!($headerAnnotation instanceof Header)) continue;
+
             $result[] = $headerAnnotation->getValue();
         }
 
@@ -70,17 +72,22 @@ class DocComment extends ReflectionDocComment
 
     /**
      * 获取Method注解
-     * @return Method
+     * @return string
      * @throws Exception
      */
     public function getMethodAnnotation()
     {
-        /** @var Method $annotation */
-        $annotation = $this->getOneAnnotation(AnnotationConfig::AT_METHOD);
+        $result = [];
 
-        if ($annotation instanceof Method) return $annotation;
+        $methodsAnnotation = $this->getAnnotations(AnnotationConfig::AT_METHOD);
 
-        return null;
+        foreach ($methodsAnnotation as $methodAnnotation) {
+            if (!($methodAnnotation instanceof Method)) continue;
+
+            $result[] = $methodAnnotation->getValue();
+        }
+
+        return join(",", $result);
     }
 
     /**

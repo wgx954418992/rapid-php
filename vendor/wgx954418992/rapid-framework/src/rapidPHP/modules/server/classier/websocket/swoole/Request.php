@@ -12,7 +12,7 @@ use Swoole\WebSocket\Server as SwooleWebSocketServer;
 class Request extends RequestInterface
 {
     /**
-     * @var
+     * @var mixed
      */
     private $fd;
 
@@ -49,8 +49,8 @@ class Request extends RequestInterface
         parent::__construct(
             $data,
             $data,
+            null,
             $cookie,
-            [],
             $header,
             $serverParam,
             $frame->data,

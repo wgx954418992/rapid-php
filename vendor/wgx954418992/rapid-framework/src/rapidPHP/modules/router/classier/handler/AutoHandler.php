@@ -4,6 +4,7 @@ namespace rapidPHP\modules\router\classier\handler;
 
 
 use rapidPHP\modules\common\classier\Build;
+use rapidPHP\modules\common\classier\RESTFulApi;
 use rapidPHP\modules\core\classier\Controller;
 
 ;
@@ -23,7 +24,9 @@ class AutoHandler extends HandlerInterface
     {
         $accept = Build::getInstance()->getData($options, 'accept');
 
-        if ($accept === '*/*') {
+        if ($result instanceof RESTFulApi) {
+            $service = Handler::getInstance()->getService(null, Handler::SERVER_API);
+        } else if ($accept === '*/*') {
             $service = Handler::getInstance()->getService(null, Handler::SERVER_API);
         } else {
             $service = Handler::getInstance()->getService(null, Handler::SERVER_VIEW);

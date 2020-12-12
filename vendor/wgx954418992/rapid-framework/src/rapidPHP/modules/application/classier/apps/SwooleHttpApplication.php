@@ -65,6 +65,8 @@ class SwooleHttpApplication extends WebApplication
 
             WebRouter::getInstance()->run($this, $context);
 
+            $resp->end();
+
             $endTime = microtime(true);
 
             $requestTime = $endTime - $startTime;

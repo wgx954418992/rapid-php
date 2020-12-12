@@ -101,10 +101,6 @@ class Uri
      */
     public function toArray(string &$url, $isRemove = false): array
     {
-        if (!is_int(strpos('?', $url))) {
-            $url = '?' . $url;
-        }
-
         $urlQuery = $this->parseUrl($url, PHP_URL_QUERY);
 
         if (empty($urlQuery)) return [];

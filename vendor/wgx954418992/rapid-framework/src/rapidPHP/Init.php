@@ -30,7 +30,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.4.6');
+define('RAPIDPHP_VERSION', '3.4.7');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -183,32 +183,6 @@ function VT($view): ?ViewTemplate
 
     return null;
 }
-
-/**
- * 获取当前ViewTemplate 的controller
- * @param $view
- * @return Controller|WebController|null
- */
-function VTC($view)
-{
-    if ($view instanceof ViewTemplate) return $view->c();
-
-    return null;
-}
-
-
-/**
- * 获取当前ViewTemplate 的controller里面的request
- * @param $view
- * @return Request
- */
-function VTCR($view)
-{
-    if ($view instanceof ViewTemplate) return $view->c()->getRequest();
-
-    return null;
-}
-
 
 /**
  * 格式化异常

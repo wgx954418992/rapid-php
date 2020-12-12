@@ -60,7 +60,7 @@ class SwooleWebsocketApplication extends WebApplication
 
             $request = new Request($this->server->getServer(), $frame, $header, $cookie, $sessionConfig, $sessionId);
 
-            $response = new Response($this->server->getServer(), $sessionConfig, $sessionId);
+            $response = new Response($this->server->getServer(), $frame->fd, $sessionConfig, $sessionId);
 
             $context = parent::newWebContext($request, $response, $this->server->getConfig()->getContext());
 
@@ -73,6 +73,7 @@ class SwooleWebsocketApplication extends WebApplication
             $this->logger(self::LOGGER_ACCESS)
                 ->info("-{$request->getIp()} -{$request->getMethod()} -{$request->getUrl(true)} -{$requestTime}");
         } catch (Exception $e) {
+
             $this->logger(self::LOGGER_ACCESS)->error(formatException($e));
         }
     }

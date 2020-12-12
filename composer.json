@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-php",
-  "version": "3.4.6",
+  "version": "3.4.7",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "wgx954418992/rapid-framework": "^3.4.6"
+    "wgx954418992/rapid-framework": "^3.4.7"
   },
   "autoload": {
     "files": [],

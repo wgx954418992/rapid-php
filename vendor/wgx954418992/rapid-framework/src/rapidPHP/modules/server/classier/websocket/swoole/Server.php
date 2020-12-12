@@ -37,8 +37,6 @@ class Server extends SwooleServer
 
         parent::on("open", [$this, 'onOpen']);
 
-        parent::on('message', [$this, 'onMessage']);
-
         parent::on('close', [$this, 'onClose']);
     }
 
@@ -166,7 +164,7 @@ class Server extends SwooleServer
     {
         try {
             $sessionConfig = $this->getConfig()->getSession();
-
+            
             if (empty($sessionConfig)) throw new Exception('session error!');
 
             $req->cookie[$sessionConfig->getKey()] = $sessionId = $this->getClientSessionId($req, $server, $sessionConfig->getKey());
@@ -180,6 +178,7 @@ class Server extends SwooleServer
 
         $this->requestBody[$req->fd] = $this->requestToString($req);
     }
+
 
     /**
      * 关闭

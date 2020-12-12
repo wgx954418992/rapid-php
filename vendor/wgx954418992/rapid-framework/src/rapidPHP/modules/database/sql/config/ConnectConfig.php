@@ -73,7 +73,9 @@ class ConnectConfig
 
         if (!isset($urlParse[Uri::URL_QUERY])) throw new Exception('url input error!');
 
-        $query = Uri::getInstance()->toArray($urlParse[Uri::URL_QUERY]);
+        $queryString = '?' . $urlParse[Uri::URL_QUERY];
+
+        $query = Uri::getInstance()->toArray($queryString);
 
         $this->database = Build::getInstance()->getData($query, SqlConfig::CONFIG_KEY_DATABASE);
 

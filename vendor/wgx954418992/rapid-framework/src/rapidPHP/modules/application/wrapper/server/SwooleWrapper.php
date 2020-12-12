@@ -30,14 +30,15 @@ class SwooleWrapper
      * @param int|null $port
      * @param SessionConfig|null $session
      * @param $context
+     * @param array|null $co
      * @param string|null $task
      * @param array|null $options
      */
-    public function __construct(?HttpConfig $http, ?WebSocketConfig $websocket, ?string $ip, ?int $port, ?SessionConfig $session, $context, ?string $task, ?array $options)
+    public function __construct(?HttpConfig $http, ?WebSocketConfig $websocket, ?string $ip, ?int $port, ?SessionConfig $session, $context, ?array $co, ?string $task, ?array $options)
     {
-        $this->merge($http, $ip, $port, $session, $context, $task, $options);
+        $this->merge($http, $ip, $port, $session, $context, $co, $task, $options);
 
-        $this->merge($websocket, $ip, $port, $session, $context, $task, $options);
+        $this->merge($websocket, $ip, $port, $session, $context, $co, $task, $options);
 
         $this->http = $http;
 
@@ -53,7 +54,7 @@ class SwooleWrapper
      * @param string|null $task
      * @param array|null $options
      */
-    public function merge(?SwooleServerConfig $config, ?string $ip, ?int $port, ?SessionConfig $session, $context, ?string $task, ?array $options)
+    public function merge(?SwooleServerConfig $config, ?string $ip, ?int $port, ?SessionConfig $session, $context, ?array $co, ?string $task, ?array $options)
     {
         if ($config == null) return;
 
@@ -62,6 +63,8 @@ class SwooleWrapper
         if (empty($config->getPort())) $config->setPort($port);
 
         if ($config->getSession() == null) $config->setSession($session);
+
+        $config->setCo(array_merge($co, $config->getCo()));
 
         if (empty($config->getContext())) $config->setContext($context);
 
@@ -79,26 +82,10 @@ class SwooleWrapper
     }
 
     /**
-     * @param HttpConfig|null $http
-     */
-    public function setHttp(?HttpConfig $http): void
-    {
-        $this->http = $http;
-    }
-
-    /**
      * @return WebSocketConfig|null
      */
     public function getWebsocket(): ?WebSocketConfig
     {
         return $this->websocket;
-    }
-
-    /**
-     * @param WebSocketConfig|null $websocket
-     */
-    public function setWebsocket(?WebSocketConfig $websocket): void
-    {
-        $this->websocket = $websocket;
     }
 }

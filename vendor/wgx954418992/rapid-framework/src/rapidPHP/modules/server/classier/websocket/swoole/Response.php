@@ -10,7 +10,7 @@ use Swoole\WebSocket\Server;
 class Response extends ResponseInterface
 {
     /**
-     * @var int
+     * @var mixed
      */
     private $fd;
 
@@ -22,12 +22,15 @@ class Response extends ResponseInterface
     /**
      * Response constructor.
      * @param Server $server
+     * @param mixed $fd
      * @param SessionConfig|null $sessionConfig
      * @param string|null $sessionId
      */
-    public function __construct(Server $server, ?SessionConfig $sessionConfig, ?string $sessionId)
+    public function __construct(Server $server, $fd, ?SessionConfig $sessionConfig, ?string $sessionId)
     {
         $this->server = $server;
+
+        $this->fd = $fd;
 
         parent::__construct($sessionConfig, $sessionId);
     }
@@ -35,7 +38,7 @@ class Response extends ResponseInterface
     /**
      * @return mixed
      */
-    public function getFd(): int
+    public function getFd()
     {
         return $this->fd;
     }

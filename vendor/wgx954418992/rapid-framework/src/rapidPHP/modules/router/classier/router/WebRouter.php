@@ -104,11 +104,11 @@ class WebRouter extends Router
         $paths = $this->getApplication()->getConfig()->getApplication()->getScans()->getController();
 
         $routes = [];
-        
+
         $actions = [];
 
         Mapping::getInstance()->scanning($paths, $routes, $actions);
-        
+
         Mapping::getInstance()->save($routes, $actions);
     }
 
@@ -150,8 +150,10 @@ class WebRouter extends Router
 
             if (!$action) throw new Exception('not match action', 404);
 
-            if ($action->getMethod() && $this->request->getMethod() != $action->getMethod()) {
-                throw new ActionException('request method not match current method', 403, $action);
+            $method = explode(',', $action->getMethod());
+
+            if ($method && !in_array(strtoupper($this->request->getMethod()), $method)) {
+                throw new ActionException('request method not current method', 403, $action);
             }
 
             $this->invoke($route, $action, $pathVariable);

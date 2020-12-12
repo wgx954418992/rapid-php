@@ -54,5 +54,5 @@ abstract class Server
      * @param string $event
      * @param callable $callback
      */
-    abstract public function on(string $event, callable $callback);
+    abstract public function on(string $event, $callback);
 }

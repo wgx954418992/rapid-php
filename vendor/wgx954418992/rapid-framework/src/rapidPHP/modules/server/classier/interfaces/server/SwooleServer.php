@@ -33,7 +33,7 @@ abstract class SwooleServer extends Server
      */
     public function __construct(ServerConfig $config, string $serverClass)
     {
-        $taskClass = $this->getConfig()->getTask();
+        $taskClass = $config->getTask();
 
         if (!empty($taskClass)) {
             /** @var SwooleTask $task */
@@ -81,7 +81,7 @@ abstract class SwooleServer extends Server
      * @param string $event
      * @param callable $callback
      */
-    public function on(string $event, callable $callback)
+    public function on(string $event, $callback)
     {
         $this->server->on($event, $callback);
     }
