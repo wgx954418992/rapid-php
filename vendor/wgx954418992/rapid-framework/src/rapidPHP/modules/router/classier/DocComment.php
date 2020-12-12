@@ -84,7 +84,7 @@ class DocComment extends ReflectionDocComment
         foreach ($methodsAnnotation as $methodAnnotation) {
             if (!($methodAnnotation instanceof Method)) continue;
 
-            $result[] = $methodAnnotation->getValue();
+            $result[] = $methodAnnotation->getMethod();
         }
 
         return join(",", $result);
