@@ -26,7 +26,7 @@ class Utils
      */
     public static function onNotInstance()
     {
-        return new static(...func_get_args());
+        return new static();
     }
 
     /**
@@ -100,12 +100,12 @@ class Utils
         $defaultValue = $parameter->getDefaultValue();
 
         if (is_array($data) && array_key_exists($name, $data)) {
-            return $data[$name];
+            $value = $data[$name];
         } else if (is_object($data) && isset($data->$name)) {
-            return $data->$name;
+            $value = $data->$name;
         }
 
-        return $defaultValue;
+        return $value ?? $defaultValue;
     }
 
     /**

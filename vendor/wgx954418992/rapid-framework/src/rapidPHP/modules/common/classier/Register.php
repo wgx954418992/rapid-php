@@ -16,7 +16,7 @@ class Register
      */
     public static function onNotInstance()
     {
-        return new static(...func_get_args());
+        return new static();
     }
 
     /**

@@ -6,6 +6,8 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\Instances;
+use rapidPHP\modules\common\config\VarConfig;
+use rapidPHP\modules\reflection\classier\annotation\Parameter as AnnotationParameter;
 use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\reflection\classier\Method;
 use rapidPHP\modules\reflection\classier\Utils as ReflectionUtils;
@@ -51,7 +53,7 @@ class Mapping
      */
     public static function onNotInstance()
     {
-        return new static(...func_get_args());
+        return new static();
     }
 
     /**
@@ -138,7 +140,7 @@ class Mapping
             $methodComment = $method->getDocComment(DocComment::class);
 
             $methodRoute = $this->getRouteAnnotationValue($methodComment);
-            
+
             if (empty($methodRoute) && !$method->isConstructor()) continue;
 
             $realRoute = $classRoute . $methodRoute;
@@ -205,15 +207,17 @@ class Mapping
         foreach ($parameters as $parameter) {
             $name = $parameter->getName();
 
+            $type = $parameter->getType();
+
             $actionParameter = new ActionParameter();
 
             $actionParameter->setName($name);
 
-            $actionParameter->setType($parameter->getType());
+            $actionParameter->setType($type);
 
             $parameterAnnotation = $parameter->getAnnotation();
 
-            if ($parameterAnnotation instanceof ActionParameter) {
+            if ($parameterAnnotation != null) {
                 $actionParameter->setSource($parameterAnnotation->getSource());
 
                 $actionParameter->setRemark($parameterAnnotation->getRemark());

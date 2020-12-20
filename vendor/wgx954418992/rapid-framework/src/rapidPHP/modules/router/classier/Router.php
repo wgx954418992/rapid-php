@@ -11,13 +11,16 @@ use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Verify;
+use rapidPHP\modules\common\config\VarConfig;
 use rapidPHP\modules\core\classier\Controller;
 use rapidPHP\modules\core\classier\web\WebController;
 use rapidPHP\modules\exception\classier\ActionException;
 use rapidPHP\modules\reflection\classier\Classify;
+use rapidPHP\modules\reflection\classier\Method;
 use rapidPHP\modules\reflection\classier\Utils as ReflectionUtils;
 use rapidPHP\modules\router\classier\action\Parameter as ActionParameter;
 use rapidPHP\modules\router\config\ActionConfig;
+use ReflectionException;
 
 abstract class Router
 {
@@ -210,6 +213,33 @@ abstract class Router
         return null;
     }
 
+
+
+    /**
+     * 实例化对象
+     * @param Classify $classify
+     * @param $dataPackage
+     * @param $pathVariable
+     * @param mixed ...$supports
+     * @return object
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    protected function newInstance(Classify $classify, $dataPackage, $pathVariable, ...$supports)
+    {
+        $constructor = $classify->getConstructor();
+
+        if (!$constructor) {
+            $instance = $classify->newInstance();
+        } else {
+            $values = $this->getParameterValues($constructor, $dataPackage, $pathVariable, ...$supports);
+
+            $instance = $classify->newInstanceKV($values);
+        }
+
+        return $instance;
+    }
+
     /**
      * 创建controller
      * @param Classify $classify
@@ -225,7 +255,7 @@ abstract class Router
         if (!$action) {
             $instance = $classify->newInstance();
         } else {
-            $parameters = $this->getParameters($action, $pathVariable);
+            $parameters = $this->getParameters($action, $action->getParameters(), $pathVariable);
 
             $instance = $classify->newInstanceKV($parameters);
         }
@@ -237,35 +267,28 @@ abstract class Router
         return $instance;
     }
 
+
     /**
      * 获取参数
      * @param Action $action
+     * @param ActionParameter[] $parameters
      * @param $pathVariable
-     * @param callable|null $params
      * @param Exception|null $exception
      * @return array
+     * @throws Exception
      */
-    protected function getParameters(Action $action, $pathVariable, callable $params = null, ?Exception $exception = null): array
+    protected function getParameters(Action $action, array $parameters, $pathVariable, ?Exception $exception = null): array
     {
         $data = [];
-
-        $parameters = $action->getParameters();
 
         foreach ($parameters as $parameter) {
 
             $name = $parameter->getName();
 
-            if ($parameter->getType() === Action::class) {
-                $data[$name] = $action;
-            } else if (is_subclass_of($parameter->getType(), Action::class)) {
-                $data[$name] = $action;
-            } else if ($parameter->getType() === Exception::class) {
-                $data[$name] = $exception;
-            } else if (is_subclass_of($parameter->getType(), Exception::class)) {
-                $data[$name] = $exception;
-            } else {
-                $data[$name] = $this->getParameterValue($parameter, $pathVariable, $params);
-            }
+            $data[$name] = $this->getParameterValue($parameter->getName(), $parameter->getSource(), $parameter->getType(), $parameter->getRemark(), null, $pathVariable, [
+                Action::class => $action,
+                Exception::class => $exception,
+            ]);
         }
 
         return $data;
@@ -273,29 +296,96 @@ abstract class Router
 
     /**
      * 获取参数值
-     * @param ActionParameter $parameter
+     * @param $name
+     * @param $source
+     * @param $type
+     * @param $remark
+     * @param $dataPackage
      * @param $pathVariable
-     * @param callable|null $params
+     * @param mixed ...$supports
      * @return bool|false|mixed|object|string|null
+     * @throws ReflectionException
+     * @throws Exception
      */
-    protected function getParameterValue(ActionParameter $parameter, $pathVariable, callable $params = null)
+    protected function getParameterValue($name, $source, $type, $remark, $dataPackage, $pathVariable, ...$supports)
     {
-        $resolveArgument = $this->context->resolveArgument($parameter->getType());
+        $resolveArgument = $this->context->resolveArgument($type, ...$supports);
 
         if ($resolveArgument !== false) return $resolveArgument;
 
-        $source = $parameter->getSource();
+        $encodeType = ActionConfig::getEncodeType($remark);
 
         if (substr($source, 0, 1) == '$') {
             $value = Build::getInstance()->getData($pathVariable, substr($source, 1));
-        } else if (is_callable($params)) {
-            $value = call_user_func($params, $parameter->getName(), $source);
-        } else {
-            $value = null;
+
+            return ActionConfig::getDecodeValue($encodeType, $value);
+        } else if (isset($dataPackage[$name])) {
+            $value = $dataPackage[$name];
+
+            return ActionConfig::getDecodeValue($encodeType, $value);
         }
 
-        return ActionConfig::getEncodeValue($parameter->getEncodeType(), $value);
+        $value = $this->onGetParameterValue($name, $source);
+
+        if (empty($type) || VarConfig::isSetType($type)) return ActionConfig::getDecodeValue($encodeType, $value);
+
+        $encodeType = Build::getInstance()->contrast($encodeType, ActionConfig::ENCODE_TYPE_JSON);
+
+        $value = ActionConfig::getDecodeValue($encodeType, $this->onGetParameterValue($name, $source));
+
+        $classify = Classify::getInstance($type);
+
+        $object = $this->newInstance($classify, $value, $pathVariable, ...$supports);
+
+        $methods = $classify->getSetterMethods();
+
+        foreach ($methods as $method) {
+            $method->apply($object, $this->getParameterValues($method, $value, $pathVariable, ...$supports));
+        }
+
+        return $object;
     }
+
+    /**
+     * 获取参数value list
+     * @param Method $method
+     * @param $dataPackage
+     * @param $pathVariable
+     * @param mixed ...$supports
+     * @return array
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    protected function getParameterValues(Method $method, $dataPackage, $pathVariable, ...$supports): array
+
+    {
+        $values = [];
+
+        $parameters = $method->getParameters();
+
+        foreach ($parameters as $parameter) {
+            $name = $parameter->getName();
+
+            $annotation = $parameter->getAnnotation();
+
+            $source = $annotation ? $annotation->getSource() : null;
+
+            $remark = $annotation ? $annotation->getRemark() : null;
+
+            $values[$name] = $this->getParameterValue($name, $source, $parameter->getType(), $remark, $dataPackage, $pathVariable, ...$supports);
+        }
+
+        return $values;
+    }
+
+
+    /**
+     * 获取参数value
+     * @param $name
+     * @param $source
+     * @return mixed
+     */
+    abstract protected function onGetParameterValue($name, $source);
 
     /**
      * 调用
@@ -314,7 +404,7 @@ abstract class Router
 
             $method = $classify->getMethod($action->getMethodName());
 
-            $parameters = $this->getParameters($action, $pathVariable, null, $exception);
+            $parameters = $this->getParameters($action, $action->getParameters(), $pathVariable, $exception);
 
             $result = $method->apply($controller, $parameters);
 

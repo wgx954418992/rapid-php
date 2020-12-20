@@ -28,8 +28,7 @@ class ViewConfig
     public function __construct(?array $ext, ?string $template_path, ?string $cache_path, string $template_service)
     {
         /** @var TemplateService $service */
-        $service = Classify::getInstance($template_service)
-            ->newInstanceKV(['ext' => $ext, 'template_path' => $template_path, 'cache_path' => $cache_path]);
+        $service = Classify::getInstance($template_service)->newInstance($ext, $template_path, $cache_path);
 
         $this->template_service = $service;
     }

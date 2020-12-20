@@ -164,17 +164,14 @@ class WebRouter extends Router
 
     /**
      * 获取参数
-     * @param Action $action
-     * @param $pathVariable
-     * @param callable|null $params
-     * @param Exception|null $exception
-     * @return array
+     * @param $name
+     * @param $source
+     * @return array|int|mixed|string|null
+     * @throws Exception
      */
-    protected function getParameters(Action $action, $pathVariable, callable $params = null, ?Exception $exception = null): array
+    protected function onGetParameterValue($name, $source)
     {
-        return parent::getParameters($action, $pathVariable, function ($name, $source) {
-            return $this->request->getParam($name, $source);
-        }, $exception);
+        return $this->request->getParam($name, $source);
     }
 
     /**

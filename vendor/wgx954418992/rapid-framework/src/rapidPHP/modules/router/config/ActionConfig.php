@@ -25,7 +25,7 @@ class ActionConfig
      */
     public static function getEncodeType($remark): ?string
     {
-        if(empty($remark)) return null;
+        if (empty($remark)) return null;
 
         if (strtolower(substr($remark, 0, self::ENCODE_TYPE_XML)) === self::ENCODE_TYPE_XML) {
             return self::ENCODE_TYPE_XML;
@@ -36,12 +36,12 @@ class ActionConfig
     }
 
     /**
-     * 获取编码值
+     * 获取编码解码后的值
      * @param $type
      * @param $value
-     * @return bool|mixed|null
+     * @return mixed|null
      */
-    public static function getEncodeValue($type, $value): ?bool
+    public static function getDecodeValue($type, $value)
     {
         switch (strtolower($type)) {
             case self::ENCODE_TYPE_XML:

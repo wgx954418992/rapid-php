@@ -14,8 +14,8 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => '3.4.8',
-    'version' => '3.4.8.0',
+    'pretty_version' => '3.4.9',
+    'version' => '3.4.9.0',
     'aliases' => 
     array (
     ),
@@ -89,12 +89,12 @@ private static $installed = array (
     ),
     'monolog/monolog' => 
     array (
-      'pretty_version' => '2.1.1',
-      'version' => '2.1.1.0',
+      'pretty_version' => '2.2.0',
+      'version' => '2.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f9eee5cec93dfb313a38b6b288741e84e53f02d5',
+      'reference' => '1cb1cde8e8dd0f70cc0fe51354a59acad9302084',
     ),
     'mustangostang/spyc' => 
     array (
@@ -186,8 +186,8 @@ private static $installed = array (
     ),
     'symfony/options-resolver' => 
     array (
-      'pretty_version' => 'v5.2.0',
-      'version' => '5.2.0.0',
+      'pretty_version' => 'v5.2.1',
+      'version' => '5.2.1.0',
       'aliases' => 
       array (
       ),
@@ -249,44 +249,44 @@ private static $installed = array (
     ),
     'symfony/property-access' => 
     array (
-      'pretty_version' => 'v5.2.0',
-      'version' => '5.2.0.0',
+      'pretty_version' => 'v5.2.1',
+      'version' => '5.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5cf86761edaf58376845a96ea6c0d28d475d5ad3',
+      'reference' => '243dcdda2f276cb31efa31a015d0fdb5076931ce',
     ),
     'symfony/property-info' => 
     array (
-      'pretty_version' => 'v5.2.0',
-      'version' => '5.2.0.0',
+      'pretty_version' => 'v5.2.1',
+      'version' => '5.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '69ca096d096a0a58457818a5a2d1ce51f5f14909',
+      'reference' => 'f65694a05eb7742c5f2951f20676de367ffaaaea',
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v5.2.0',
-      'version' => '5.2.0.0',
+      'pretty_version' => 'v5.2.1',
+      'version' => '5.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '40e975edadd4e32cd16f3753b3bad65d9ac48242',
+      'reference' => '5bd67751d2e3f7d6f770c9154b8fbcb2aa05f7ed',
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.4.8',
-      'version' => '3.4.8.0',
+      'pretty_version' => '3.4.9',
+      'version' => '3.4.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1a8ba46b17353fe6e194f9803d4394b4165c121f',
+      'reference' => '9a810cca457a79c51a8e62c093977836b802699a',
     ),
     'wgx954418992/rapid-php' => 
     array (
-      'pretty_version' => '3.4.8',
-      'version' => '3.4.8.0',
+      'pretty_version' => '3.4.9',
+      'version' => '3.4.9.0',
       'aliases' => 
       array (
       ),

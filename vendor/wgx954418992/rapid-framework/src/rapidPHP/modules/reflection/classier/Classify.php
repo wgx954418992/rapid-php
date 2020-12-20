@@ -108,14 +108,12 @@ class Classify
     }
 
     /**
-     * @param null $args
-     * @param null $_
      * @return object
      * @throws ReflectionException
      */
-    public function newInstance($args = null, $_ = null)
+    public function newInstance()
     {
-        return $this->reflection->newInstance($args, $_);
+        return $this->reflection->newInstance(...func_get_args());
     }
 
     /**
@@ -149,11 +147,15 @@ class Classify
 
     /**
      * 获取构造函数
-     * @return Method|ReflectionMethod
+     * @return Method|ReflectionMethod|null
      */
     public function getConstructor()
     {
-        return new Method($this, $this->reflection->getConstructor());
+        $constructor = $this->reflection->getConstructor();
+
+        if ($constructor == null) return null;
+
+        return new Method($this, $constructor);
     }
 
     /**
