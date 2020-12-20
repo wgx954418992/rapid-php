@@ -144,11 +144,11 @@ class TemplateService
      */
     public function findCacheFile($filename): string
     {
-        $path = $this->getCachePath();
+        $path = pathinfo($this->getCachePath() . $filename, PATHINFO_DIRNAME) . '/';
 
-        $name = pathinfo($filename, PATHINFO_FILENAME);
+        $filename = pathinfo($filename, PATHINFO_FILENAME);
 
-        $file = "{$path}{$name}.php";
+        $file = "{$path}{$filename}.php";
 
         return Path::getInstance()->formatPath($file);
     }
@@ -189,7 +189,7 @@ class TemplateService
     {
         $filepath = $this->findTemplateFile($filename);
 
-        if(!is_file($filepath)) return false;
+        if (!is_file($filepath)) return false;
 
         $cacheFile = $this->findCacheFile($filename);
 
