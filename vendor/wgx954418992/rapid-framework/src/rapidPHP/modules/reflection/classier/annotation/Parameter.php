@@ -3,7 +3,7 @@
 namespace rapidPHP\modules\reflection\classier\annotation;
 
 use rapidPHP\modules\common\classier\Build;
-use rapidPHP\modules\common\config\VarConfig;
+use rapidPHP\modules\common\classier\Variable;
 use rapidPHP\modules\reflection\config\AnnotationConfig;
 
 class Parameter extends Value
@@ -52,7 +52,7 @@ class Parameter extends Value
 
         $this->type = trim($this->format($type));
 
-        if (empty($this->type)) $this->type = VarConfig::MIXED;
+        if (empty($this->type)) $this->type = Variable::MIXED;
 
         $this->name = trim($name);
 

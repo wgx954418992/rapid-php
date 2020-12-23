@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-framework",
-  "version": "3.5.0",
+  "version": "3.5.3",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -30,15 +30,17 @@
     "ext-openssl": "*",
     "ext-pdo": "*",
     "ext-posix": "*",
+    "ext-redis": "*",
     "ext-simplexml": "*",
     "ext-sockets": "*",
     "ext-xmlwriter": "*",
     "ext-zip": "*",
-    "monolog/monolog": "^2.1",
     "endroid/qr-code": "*",
+    "ezyang/htmlpurifier": "^4.13",
+    "monolog/monolog": "^2.1",
     "mustangostang/spyc": "^0.6.3",
     "phpoffice/phpspreadsheet": "^1.15",
-    "ext-redis": "*"
+    "voku/anti-xss": "^4.1"
   },
   "require-dev": {
     "eaglewu/swoole-ide-helper": "dev-master",

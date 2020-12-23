@@ -11,7 +11,7 @@ use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Verify;
-use rapidPHP\modules\common\config\VarConfig;
+use rapidPHP\modules\common\classier\Variable;
 use rapidPHP\modules\core\classier\Controller;
 use rapidPHP\modules\core\classier\web\WebController;
 use rapidPHP\modules\exception\classier\ActionException;
@@ -327,7 +327,7 @@ abstract class Router
 
         $value = $this->onGetParameterValue($name, $source);
 
-        if (empty($type) || VarConfig::isSetType($type)) return ActionConfig::getDecodeValue($encodeType, $value);
+        if (empty($type) || Variable::isSetType($type)) return ActionConfig::getDecodeValue($encodeType, $value);
 
         $encodeType = Build::getInstance()->contrast($encodeType, ActionConfig::ENCODE_TYPE_JSON);
 

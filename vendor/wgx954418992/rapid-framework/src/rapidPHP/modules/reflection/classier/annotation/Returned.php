@@ -6,7 +6,7 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\reflection\classier\Property as ReflectionProperty;
 use rapidPHP\modules\reflection\config\AnnotationConfig;
-use rapidPHP\modules\common\config\VarConfig;
+use rapidPHP\modules\common\classier\Variable;
 use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\reflection\classier\Utils;
 
@@ -61,7 +61,7 @@ class Returned extends Value
     {
         if (empty($returnType)) {
             return null;
-        } else if (VarConfig::isSetType($returnType)) {
+        } else if (Variable::isSetType($returnType)) {
             return null;
         } else {
             try {

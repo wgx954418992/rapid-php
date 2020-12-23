@@ -27,9 +27,9 @@ class ActionConfig
     {
         if (empty($remark)) return null;
 
-        if (strtolower(substr($remark, 0, self::ENCODE_TYPE_XML)) === self::ENCODE_TYPE_XML) {
+        if (strtolower(substr($remark, 0, strlen(self::ENCODE_TYPE_XML))) === self::ENCODE_TYPE_XML) {
             return self::ENCODE_TYPE_XML;
-        } else if (strtolower(substr($remark, 0, self::ENCODE_TYPE_JSON)) === self::ENCODE_TYPE_JSON) {
+        } else if (strtolower(substr($remark, 0, strlen(self::ENCODE_TYPE_JSON))) === self::ENCODE_TYPE_JSON) {
             return self::ENCODE_TYPE_JSON;
         }
         return null;

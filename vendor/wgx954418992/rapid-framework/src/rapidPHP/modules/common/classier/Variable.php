@@ -1,11 +1,11 @@
 <?php
 
-namespace rapidPHP\modules\common\config;
+namespace rapidPHP\modules\common\classier;
 
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Console;
 
-class VarConfig
+class Variable
 {
     /**
      * 变量类型 integer
@@ -87,6 +87,27 @@ class VarConfig
     public static function isSetType($type): bool
     {
         return in_array($type, self::$CAPABLE_SET_TYPES);
+    }
+
+    /**
+     * safe settype
+     * @param $value
+     * @param $type
+     * @return void
+     */
+    public static function setType(&$value, $type)
+    {
+        if (empty($type)) return;
+
+        if ($type === self::MIXED) return;
+
+        $type = strtolower($type);
+
+        if (is_array($value) && $type === 'string') {
+            $value = join('', $value);
+        }
+
+        settype($value, $type);
     }
 
     /**

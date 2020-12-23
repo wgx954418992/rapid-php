@@ -5,6 +5,7 @@ namespace rapidPHP\modules\server\classier\interfaces;
 use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Uri;
+use rapidPHP\modules\common\classier\XSS;
 use rapidPHP\modules\server\config\SessionConfig;
 use rapidPHP\modules\server\config\HttpConfig;
 
@@ -149,7 +150,11 @@ abstract class Request
     {
         if (is_null($name)) return $this->get;
 
-        return Build::getInstance()->getData($this->get, $name);
+        $value = Build::getInstance()->getData($this->get, $name);
+
+        XSS::getInstance()->filter($value);
+
+        return $value;
     }
 
     /**
@@ -161,7 +166,11 @@ abstract class Request
     {
         if (is_null($name)) return $this->post;
 
-        return Build::getInstance()->getData($this->post, $name);
+        $value = Build::getInstance()->getData($this->post, $name);
+
+        XSS::getInstance()->filter($value);
+
+        return $value;
     }
 
     /**
@@ -173,7 +182,11 @@ abstract class Request
     {
         if (is_null($name)) return $this->cookie;
 
-        return Build::getInstance()->getData($this->cookie, $name);
+        $value = Build::getInstance()->getData($this->cookie, $name);
+
+        XSS::getInstance()->filter($value);
+
+        return $value;
     }
 
     /**
@@ -200,6 +213,8 @@ abstract class Request
 
         if (!is_array($cacheData)) return $name ? null : [];
 
+        XSS::getInstance()->filter($cacheData);
+
         foreach ($cacheData as $index => $datum) {
             if (is_string($datum)) $datum = unserialize($datum);
 
@@ -222,7 +237,11 @@ abstract class Request
 
         if (is_null($name)) return $this->raw;
 
-        return Build::getInstance()->getData($this->raw, $name);
+        $value = Build::getInstance()->getData($this->raw, $name);
+
+        XSS::getInstance()->filter($value);
+
+        return $value;
     }
 
     /**
@@ -234,7 +253,11 @@ abstract class Request
     {
         if (is_null($name)) return $this->files;
 
-        return Build::getInstance()->getData($this->files, $name);
+        $value = Build::getInstance()->getData($this->files, $name);
+
+        XSS::getInstance()->filter($value);
+
+        return $value;
     }
 
     /**
@@ -289,7 +312,11 @@ abstract class Request
     {
         if (is_null($name)) return $this->header;
 
-        return Build::getInstance()->getData($this->header, $name);
+        $value = Build::getInstance()->getData($this->header, $name);
+
+        XSS::getInstance()->filter($value);
+
+        return $value;
     }
 
     /**
@@ -366,6 +393,9 @@ abstract class Request
 
             if (empty($ip)) $ip = Build::getInstance()->getData($this->serverInfo, 'REMOTE_IP');
         }
+
+        XSS::getInstance()->filter($ip);
+
         return $ip;
     }
 
@@ -375,7 +405,7 @@ abstract class Request
      */
     public function getUserAgent(): ?string
     {
-        return Build::getInstance()->getData($this->header, 'User-Agent');
+        return $this->header('User-Agent');
     }
 
     /**
@@ -389,7 +419,11 @@ abstract class Request
 
         $host = Build::getInstance()->getData($this->header, 'Host');
 
+        XSS::getInstance()->filter($host);
+
         $root = Build::getInstance()->getData($this->serverInfo, 'DOCUMENT_ROOT');
+
+        XSS::getInstance()->filter($root);
 
         if (empty($root)) $root = $rootPath;
 
@@ -423,7 +457,11 @@ abstract class Request
      */
     public function getMethod(): ?string
     {
-        return Build::getInstance()->getData($this->serverInfo, 'REQUEST_METHOD');
+        $value = Build::getInstance()->getData($this->serverInfo, 'REQUEST_METHOD');
+
+        XSS::getInstance()->filter($value);
+
+        return $value;
     }
 
     /**

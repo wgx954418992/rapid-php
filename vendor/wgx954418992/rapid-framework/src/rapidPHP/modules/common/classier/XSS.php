@@ -2,8 +2,15 @@
 
 namespace rapidPHP\modules\common\classier;
 
+use voku\helper\AntiXSS;
+
 class XSS
 {
+
+    /**
+     * @var AntiXSS
+     */
+    private static $antiXss;
 
     /**
      * 采用单例模式
@@ -16,31 +23,27 @@ class XSS
      */
     public static function onNotInstance()
     {
+        self::$antiXss = new AntiXSS();
+
         return new static();
     }
 
     /**
      * 过滤
-     * @param array|null $data
+     * @param mixed|null $data
      */
-    public function filter(?array &$data)
+    public function filter(&$data)
     {
-        foreach ($data as &$value) {
-            $this->filterValue($value);
+        if (is_array($data)) {
+            foreach ($data as &$value) {
+                $this->filter($value);
+            }
+        } else if (is_object($data)) {
+            foreach ($data as &$value) {
+                $this->filter($value);
+            }
+        } else {
+            $data = self::$antiXss->xss_clean($data);
         }
-    }
-
-    /**
-     * 过滤value
-     * @param $data
-     */
-    public function filterValue(&$data)
-    {
-
-    }
-
-    public function reduction()
-    {
-
     }
 }

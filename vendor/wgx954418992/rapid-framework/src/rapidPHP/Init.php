@@ -3,9 +3,6 @@
 
 namespace rapidPHP;
 
-use rapidPHP\modules\core\classier\Controller;
-use rapidPHP\modules\core\classier\web\WebController;
-use rapidPHP\modules\server\classier\interfaces\Request;
 use Spyc;
 use Exception;
 use rapidPHP\modules\application\config\ApplicationConfig;
@@ -20,7 +17,7 @@ use rapidPHP\modules\common\classier\Register;
 use rapidPHP\modules\common\classier\StrCharacter;
 use rapidPHP\modules\common\classier\Verify;
 use rapidPHP\modules\common\classier\Xml;
-use rapidPHP\modules\common\config\VarConfig;
+use rapidPHP\modules\common\classier\Variable;
 use rapidPHP\modules\core\classier\web\ViewTemplate;
 use rapidPHP\modules\exception\classier\RuntimeException;
 use rapidPHP\modules\reflection\classier\Classify;
@@ -30,7 +27,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.5.0');
+define('RAPIDPHP_VERSION', '3.5.3');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -283,7 +280,7 @@ class Init
      */
     public function parseConfig()
     {
-        VarConfig::parseVarByArray($this->rawConfig);
+        Variable::parseVarByArray($this->rawConfig);
 
         $this->config = Utils::getInstance()->toObject(ConfigWrapper::class, $this->rawConfig);
     }

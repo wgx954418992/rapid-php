@@ -252,6 +252,12 @@ class Classify
             $result[] = $method;
         }
 
+        if($parentClassify = $this->getParentClassify()){
+            $parentProperties = $parentClassify->getProperties($filter);
+
+            if(count($parentProperties) > 0) $result = array_merge($result, $parentProperties);
+        }
+
         return $result;
     }
 

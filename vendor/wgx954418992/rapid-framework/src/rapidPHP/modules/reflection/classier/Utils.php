@@ -3,13 +3,12 @@
 
 namespace rapidPHP\modules\reflection\classier;
 
-use Composer\Autoload\ClassLoader;
 use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\Instances;
-use rapidPHP\modules\common\classier\Path;
-use rapidPHP\modules\common\config\VarConfig;
+use rapidPHP\modules\common\classier\Variable;
+
 
 class Utils
 {
@@ -128,8 +127,8 @@ class Utils
 
             if (empty($type)) {
                 $result[] = $value;
-            } else if (VarConfig::isSetType($type)) {
-                settype($value, $type);
+            } else if (Variable::isSetType($type)) {
+                Variable::setType($value, $type);
 
                 $result[] = $value;
             } else if (empty($value) && $parameter->getParameter()->allowsNull()) {
@@ -186,6 +185,19 @@ class Utils
     }
 
     /**
+     * 批量转对象
+     * @param $object
+     * @param array $data
+     * @throws Exception
+     */
+    public function toObjects($object, &$data = [])
+    {
+        foreach ($data as $key => $datum) {
+            $data[$key] = $this->toObject($object, $datum);
+        }
+    }
+
+    /**
      * 对象转数组
      * @param $object
      * @param null $filter
@@ -224,6 +236,7 @@ class Utils
         return $result;
     }
 
+
     /**
      * 查找type 的class
      * @param $type
@@ -234,9 +247,9 @@ class Utils
     {
         if (empty($type)) {
             return null;
-        } else if (VarConfig::isSetType($type)) {
+        } else if (Variable::isSetType($type)) {
             return $type;
-        } else if ($type === VarConfig::MIXED) {
+        } else if ($type === Variable::MIXED) {
             return $type;
         } else {
             try {

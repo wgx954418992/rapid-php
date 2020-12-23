@@ -93,7 +93,7 @@ abstract class Driver
      * @param bool $isMergeOptions
      * @return self|static|Mysql|string|string[]
      */
-    private function getDriverSql($callOrDriver, $isMergeOptions = true)
+    private function getDriverSql($callOrDriver, $isMergeOptions = true, &$tableName = null)
     {
         if (is_callable($callOrDriver)) {
             $driver = call_user_func($callOrDriver, $this);
@@ -102,6 +102,8 @@ abstract class Driver
         }
 
         if (!($driver instanceof Driver)) return null;
+
+        $tableName = $driver->getTableName();
 
         $sql = $driver->getSql();
 
@@ -343,17 +345,27 @@ abstract class Driver
      */
     public function join($tableName, $callOrDriver = null, $location = null)
     {
-        $tableName = Utils::getInstance()->formatColumn($tableName, $this->joinString);
+        $drivetSql = '';
+
+        if ($tableName instanceof Driver) {
+            $callOrDriver = $tableName;
+
+            $drivetSql = $this->getDriverSql($callOrDriver);
+
+            $tableName = $callOrDriver->getTableName();
+        } else if (is_callable($tableName)) {
+            $callOrDriver = $tableName;
+
+            $drivetSql = $this->getDriverSql($callOrDriver, true, $tableName);
+        } else {
+            $tableName = Utils::getInstance()->formatColumn($tableName, $this->joinString);
+        }
 
         $currentSql = $this->getSql();
 
         $this->resetSql();
 
-        if (empty($currentSql)) {
-            $this->sql['join'] = " {$location} JOIN {$tableName}{$this->getDriverSql($callOrDriver)} ";
-        } else {
-            $this->sql['join'] = "{$currentSql} {$location} JOIN {$tableName}{$this->getDriverSql($callOrDriver)}";
-        }
+        $this->sql['join'] = "{$currentSql} {$location} JOIN {$tableName}{$drivetSql}";
 
         return $this;
     }
@@ -361,52 +373,52 @@ abstract class Driver
 
     /**
      * LEFT JOIN
-     * @param $table
+     * @param $tableName
      * @param $callOrDriver
      * @return self|static|Mysql
      */
-    public function leftJoin($table, $callOrDriver = null)
+    public function leftJoin($tableName, $callOrDriver = null)
     {
-        $this->join($table, $callOrDriver, 'LEFT');
+        $this->join($tableName, $callOrDriver, 'LEFT');
 
         return $this;
     }
 
     /**
      * LEFT JOIN
-     * @param $table
+     * @param $tableName
      * @param $callOrDriver
      * @return self|static|Mysql
      */
-    public function rightJoin($table, $callOrDriver = null)
+    public function rightJoin($tableName, $callOrDriver = null)
     {
-        $this->join($table, $callOrDriver, 'right');
+        $this->join($tableName, $callOrDriver, 'right');
 
         return $this;
     }
 
     /**
      * INNER JOIN
-     * @param $table
+     * @param $tableName
      * @param $callOrDriver
      * @return self|static|Mysql
      */
-    public function innerJoin($table, $callOrDriver = null)
+    public function innerJoin($tableName, $callOrDriver = null)
     {
-        $this->join($table, $callOrDriver, 'INNER');
+        $this->join($tableName, $callOrDriver, 'INNER');
 
         return $this;
     }
 
     /**
      * FULL  JOIN
-     * @param $table :表
+     * @param $tableName :表
      * @param $callOrDriver
      * @return self|static|Mysql
      */
-    public function fullJoin($table, $callOrDriver = null)
+    public function fullJoin($tableName, $callOrDriver = null)
     {
-        $this->join($table, $callOrDriver, 'FULL');
+        $this->join($tableName, $callOrDriver, 'FULL');
 
         return $this;
     }
@@ -754,6 +766,16 @@ abstract class Driver
         return $this;
     }
 
+
+    /**
+     * for update
+     * @return $this
+     */
+    public function forUpdate()
+    {
+        $this->sql['select'] .= " for update ";
+        return $this;
+    }
 
     /**
      * getTables
