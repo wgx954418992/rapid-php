@@ -4,6 +4,7 @@ namespace rapidPHP\modules\common\classier;
 
 use Exception;
 use rapidPHP\modules\core\classier\Model;
+use rapidPHP\modules\reflection\classier\Utils;
 
 class RESTFulApi
 {
@@ -148,8 +149,14 @@ class RESTFulApi
     {
         if ($data instanceof Model) {
             $data = $data->toData();
-        }else if ($data instanceof AB) {
+        } else if ($data instanceof AB) {
             $data = $data->toData();
+        } else if (is_array($data)) {
+            foreach ($data as &$datum) {
+                if (is_object($datum)) {
+                    $datum = Utils::getInstance()->toArray($datum);
+                }
+            }
         }
 
         $this->result[$this->dataKey] = $data;

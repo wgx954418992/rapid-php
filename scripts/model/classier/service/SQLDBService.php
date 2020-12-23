@@ -8,7 +8,7 @@ use Generator;
 use rapidPHP\Init;
 use rapidPHP\modules\common\classier\AB;
 use rapidPHP\modules\common\classier\Build;
-use rapidPHP\modules\common\config\VarConfig;
+use rapidPHP\modules\common\classier\Variable;
 use rapidPHP\modules\database\sql\classier\SQLDB;
 use rapidPHP\modules\database\sql\config\ConnectConfig;
 use rapidPHP\modules\exception\classier\RuntimeException;
@@ -70,7 +70,7 @@ class SQLDBService implements ServiceInterface
 
         $config = $init->getRawConfig();
 
-        VarConfig::parseVarByArray($config);
+        Variable::parseVarByArray($config);
 
         $database = AB::getInstance($config)->toAB('database')->toArray('sql');
 

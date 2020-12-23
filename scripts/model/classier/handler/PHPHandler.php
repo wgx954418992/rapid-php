@@ -163,7 +163,7 @@ EOF;
      * @length {$column->getLength()}
      * @typed {$column->getType()}
      */
-    public \${$column->getName()};
+    private \${$column->getName()};
 EOF;
 
             $classString .= <<<EOF

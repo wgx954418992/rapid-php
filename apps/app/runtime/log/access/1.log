@@ -1018,3 +1018,4 @@
 [2020-12-24T05:29:54.952536+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.038618803024292 [] []
 [2020-12-24T05:29:59.839610+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php?get=1 -0.0367112159729 [] []
 [2020-12-24T05:30:02.877927+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php?get=1\' onclick='alert(1) -0.033854007720947 [] []
+[2020-12-24T05:54:53.086585+08:00] access.INFO: -::1 -GET -http://localhost/rapid/code/rapid-php/apps/app/index.php -0.04108190536499 [] []
