@@ -87,7 +87,7 @@ class Server extends SwooleServer
         if (is_null($sessionId)) {
             $sessionId = BaseHttpConfig::getSessionId();
 
-            if ($res->cookie($sessionKey, $sessionId, 0, '/')) {
+            if ($res->cookie($sessionKey, $sessionId)) {
                 return $sessionId;
             } else {
                 return null;

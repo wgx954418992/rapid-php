@@ -4,6 +4,13 @@
 namespace rapidPHP\modules\application\classier;
 
 
+use apps\admin\classier\interceptor\AuthorityInterceptor;
+use rapidPHP\modules\common\classier\Verify;
+use rapidPHP\modules\router\classier\Action;
+use rapidPHP\modules\router\classier\Interceptor;
+use rapidPHP\modules\router\classier\Route;
+use rapidPHP\modules\router\classier\Router;
+
 abstract class Context
 {
 
@@ -13,6 +20,29 @@ abstract class Context
     private $supports;
 
     /**
+     * 拦截器
+     * @var Interceptor[]
+     */
+    private $interceptors = [];
+
+    /**
+     * @return array
+     */
+    public function getInterceptors(): array
+    {
+        return $this->interceptors;
+    }
+
+    /**
+     * 添加拦截器
+     * @param Interceptor $interceptors
+     */
+    public function addInterceptor(Interceptor $interceptors): void
+    {
+        $this->interceptors[] = $interceptors;
+    }
+
+    /**
      * Context constructor.
      */
     public function __construct()
@@ -20,6 +50,33 @@ abstract class Context
         $this->supports = [
             Context::class => $this,
         ];
+    }
+
+    /**
+     * 路由匹配之前
+     * @param Router $router
+     */
+    public function onMatchingBefore(Router $router)
+    {
+
+    }
+
+    /**
+     * 调用action 方法前
+     * @param Router $router
+     * @param Route $route
+     * @param Action $action
+     * @param $pathVariable
+     */
+    public function onInvokeActionBefore(Router $router, Action $action, Route $route, $pathVariable, $realPath)
+    {
+        foreach ($this->interceptors as $interceprtor) {
+            if ($interceprtor->isInExclude($realPath)) {
+                continue;
+            } else if ($interceprtor->isInRole($realPath, $role)) {
+                $interceprtor->onHandler($router, $action, $route, $pathVariable, $realPath, $role);
+            }
+        }
     }
 
     /**

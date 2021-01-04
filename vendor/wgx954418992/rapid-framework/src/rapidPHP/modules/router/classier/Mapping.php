@@ -265,7 +265,7 @@ class Mapping
     {
         $index = 1;
 
-        $pattern = $this->getPatternByRoute($route);
+        $pattern = Router::getPatternByString($route);
 
         $pathVariables = (array)Build::getInstance()->getRegularAll('/{(\w+)}/i', $pattern, 1);
 
@@ -275,7 +275,6 @@ class Mapping
             $parameter = &$parameters[$name];
 
             if ($parameter instanceof ActionParameter) {
-
                 $parameter->setSource('$' . $index);
             }
 
@@ -285,25 +284,6 @@ class Mapping
         }
 
         return new Route($route, $pattern, $className, $methodName);
-    }
-
-
-    /**
-     * 通过route 生成正则规
-     * @param $route
-     * @return string
-     */
-    private function getPatternByRoute($route): string
-    {
-        if (!is_int(strpos($route, '.'))) {
-            if (strlen($route) > 1 && substr($route, -1, 1) === '/') {
-                $route = rtrim($route, '/*');
-            }
-
-            $route .= '(|\.html|\.php)';
-        }
-
-        return '/^' . str_replace('/', '\/', $route) . '$/i';
     }
 
 

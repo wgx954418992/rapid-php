@@ -1,0 +1,63 @@
+application:
+  scans:
+    controller:
+      - '${PATH_APP}classier/controller/'
+  web:
+    view:
+      template_path: '${PATH_APP}public/src/view/'
+      cache_path: '${PATH_APP}runtime/build/view/'
+server:
+  cgi:
+    session:
+      key: PHPSESSID
+      service: >
+        apps\app\classier\service\SessionService
+    context: >
+      apps\app\classier\context\WebContext
+  swoole:
+    session:
+      key: PHPSESSID
+      service: >
+        apps\app\classier\service\SessionService
+    context: >
+      apps\app\classier\context\WebContext
+    co:
+      hook_flags: 2147483647
+    options:
+      enable_static_handler: true
+      document_root: '${PATH_APP}public/'
+      reload_async: true
+      enable_coroutine: true
+      package_max_length: 52428800
+      worker_num: 1
+      task_worker_num: 10
+    http:
+      ip: 0.0.0.0
+      port: 1700
+      options:
+        ssl_key_file: null
+        ssl_cert_file: null
+    websocket:
+      ip: 0.0.0.0
+      port: 1701
+      return_key: __c
+      options:
+        ssl_key_file: null
+        ssl_cert_file: null
+        heartbeat_check_interval: 30
+        heartbeat_idle_time: 30
+redis:
+  master:
+    host: 127.0.0.1
+    port: 6379
+    auth: root
+    select: 0
+  salve: null
+database:
+  sql:
+    master:
+      url: 'mysql://127.0.0.1:3306/?database=rapid-db&characterCode=utf8mb4'
+      username: root
+      password: root
+    salve: null
+  nosql: null

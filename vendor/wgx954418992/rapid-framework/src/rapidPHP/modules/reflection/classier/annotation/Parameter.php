@@ -40,7 +40,7 @@ class Parameter extends Value
     {
         parent::__construct(AnnotationConfig::AT_PARAM, $value);
 
-        preg_match("/(.*?)\\\$(\w+)(\s\w+)?(\s\w+)?/i", $value, $info);
+        preg_match("/(.*?)\\\$(\w+)(\s\w+)?(\s\w+.*)?/i", $value, $info);
 
         $type = Build::getInstance()->getData($info, 1);
 

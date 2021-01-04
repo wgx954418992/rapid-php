@@ -1,7 +1,7 @@
 <?php
 
 
-use apps\app\classier\model\AppUserModel;
+use apps\core\classier\model\AppUserModel;
 use function rapidPHP\VT; ?>
 <!DOCTYPE html>
 <html lang="zh">

@@ -3,12 +3,24 @@
 
 namespace rapidPHP\modules\application\wrapper;
 
-use rapidPHP\modules\application\wrapper\application\ConsoleWrapper;
+use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\application\wrapper\application\ScansWrapper;
 use rapidPHP\modules\application\wrapper\application\WebWrapper;
+use rapidPHP\modules\server\config\SessionConfig;
 
 class ApplicationWrapper
 {
+
+
+    /**
+     * @var SessionConfig|null
+     */
+    private $session;
+
+    /**
+     * @var string|WebContext|null
+     */
+    private $context;
 
     /**
      * @var ScansWrapper|null
@@ -16,14 +28,42 @@ class ApplicationWrapper
     private $scans;
 
     /**
-     * @var ConsoleWrapper|null
-     */
-    private $console;
-
-    /**
      * @var WebWrapper|null
      */
     private $web;
+
+    /**
+     * @return SessionConfig|null
+     */
+    public function getSession(): ?SessionConfig
+    {
+        return $this->session;
+    }
+
+    /**
+     * @param SessionConfig|null $session
+     */
+    public function setSession(?SessionConfig $session): void
+    {
+        $this->session = $session;
+    }
+
+    /**
+     * @return WebContext|string|null
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param WebContext|string|null $context
+     */
+    public function setContext($context): void
+    {
+        $this->context = $context;
+    }
+
 
     /**
      * @return ScansWrapper|null
@@ -40,21 +80,7 @@ class ApplicationWrapper
     {
         $this->scans = $scans;
     }
-    /**
-     * @return ConsoleWrapper|null
-     */
-    public function getConsole(): ?ConsoleWrapper
-    {
-        return $this->console;
-    }
 
-    /**
-     * @param ConsoleWrapper|null $console
-     */
-    public function setConsole(?ConsoleWrapper $console): void
-    {
-        $this->console = $console;
-    }
 
     /**
      * @return WebWrapper|null

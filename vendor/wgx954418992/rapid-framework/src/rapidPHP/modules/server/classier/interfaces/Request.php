@@ -6,10 +6,11 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Uri;
 use rapidPHP\modules\common\classier\XSS;
+use rapidPHP\modules\io\classier\Input;
 use rapidPHP\modules\server\config\SessionConfig;
 use rapidPHP\modules\server\config\HttpConfig;
 
-abstract class Request
+abstract class Request implements Input
 {
     /**
      * Http请求的GET参数，相当于PHP中的$_GET，格式为数组

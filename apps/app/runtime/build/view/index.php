@@ -1,8 +1,8 @@
-<?php /** cache Time 2020-12-13 00:16:43 */ defined('PATH_APP') or die();?>
+<?php /** cache Time 2021-01-05 00:15:16 */ defined('PATH_APP') or die();?>
 <?php
 
 
-use apps\app\classier\model\AppUserModel;
+use apps\core\classier\model\AppUserModel;
 use function rapidPHP\VT; ?>
 <!DOCTYPE html>
 <html lang="zh">

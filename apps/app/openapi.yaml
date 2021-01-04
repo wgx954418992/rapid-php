@@ -3,5 +3,5 @@ info:
   title: Api
   version: 1.0.0
 servers:
-  - url: https://api.coopunion.cn/
+  - url: https://.../
     description: 开发api地址

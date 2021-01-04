@@ -144,8 +144,8 @@ class Mysql extends Driver
     public function getTableCreateSqlString($type, string $database, string $tableName)
     {
         $data = [
-            1 => "show create table {$database}.{$tableName}",
-            2 => "show create view {$database}.{$tableName}",
+            1 => "show create table `{$database}`.`{$tableName}`",
+            2 => "show create view `{$database}`.`{$tableName}`",
         ];
 
         return Build::getInstance()->getData($data, $type);

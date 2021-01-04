@@ -23,7 +23,11 @@ class CGIApplication extends WebApplication
         try {
             $startTime = microtime(true);
 
-            $this->setSessionId($cigConfig, $_COOKIE, $sessionConfig, $sessionId, $isSetSessionId);
+            $cigConfig = $this->getConfig()->getServer()->getCgi();
+
+            $sessionConfig = $cigConfig->getSession();
+
+            $this->setSessionId($sessionConfig, $_COOKIE, $sessionId, $isSetSessionId);
 
             $request = new Request($_COOKIE, $sessionConfig, $sessionId);
 
@@ -52,18 +56,13 @@ class CGIApplication extends WebApplication
 
     /**
      * 设置客户端sessionId
-     * @param $cigConfig
-     * @param $cookie
      * @param SessionConfig|null $sessionConfig
+     * @param $cookie
      * @param $sessionId
      * @param bool $isSetSessionId
      */
-    private function setSessionId(&$cigConfig, &$cookie, ?SessionConfig &$sessionConfig, &$sessionId, &$isSetSessionId = false)
+    private function setSessionId(?SessionConfig $sessionConfig, &$cookie, &$sessionId, &$isSetSessionId = false)
     {
-        $cigConfig = $this->getConfig()->getServer()->getCgi();
-
-        $sessionConfig = $cigConfig->getSession();
-
         if (empty($sessionConfig)) return;
 
         $sessionId = Build::getInstance()->getData($cookie, $sessionConfig->getKey());

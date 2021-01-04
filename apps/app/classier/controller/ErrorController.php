@@ -5,10 +5,11 @@ namespace apps\app\classier\controller;
 use Exception;
 use rapidPHP\modules\common\classier\RESTFulApi;
 use rapidPHP\modules\exception\classier\ActionException;
+use rapidPHP\modules\server\classier\websocket\swoole\Response;
 
 /**
  * Class ErrorController
- * @package application\controller
+ * @package apps\app\classier\controller
  */
 class ErrorController extends BaseController
 {
@@ -20,14 +21,15 @@ class ErrorController extends BaseController
      * @template error/error
      * @param Exception|null $exception
      * @return array|RESTFulApi|null
+     * @throws Exception
      */
     public function error(?Exception $exception)
     {
         if (!$exception) return null;
 
-        $accept = $this->getRequest()->header('accept');
+        $accept = $this->getRequest()->header('Accept');
 
-        if ($accept === '*/*') {
+        if (($accept === '*/*') || ($this->getResponse() instanceof Response)) {
             return RESTFulApi::error($exception->getMessage(), $exception->getCode());
         } else {
             return [

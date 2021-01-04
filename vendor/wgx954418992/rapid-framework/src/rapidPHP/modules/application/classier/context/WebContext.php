@@ -4,6 +4,8 @@ namespace rapidPHP\modules\application\classier\context;
 
 
 use rapidPHP\modules\application\classier\Context;
+use rapidPHP\modules\router\classier\Route;
+use rapidPHP\modules\router\classier\Router;
 use rapidPHP\modules\server\classier\interfaces\Request;
 use rapidPHP\modules\server\classier\interfaces\Response;
 
@@ -59,5 +61,18 @@ class WebContext extends Context
     public function getResponse(): Response
     {
         return $this->response;
+    }
+
+    /**
+     * 路由匹配之前
+     * @param Router $router
+     */
+    public function onMatchingBefore(Router $router)
+    {
+        $this->response->header('Access-Control-Allow-Origin: *');
+
+        $this->response->header("Content-type: text/html; charset=utf-8");
+
+        parent::onMatchingBefore($router);
     }
 }

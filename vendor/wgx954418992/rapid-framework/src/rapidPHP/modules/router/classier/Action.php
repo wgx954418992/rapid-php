@@ -10,6 +10,12 @@ use rapidPHP\modules\router\classier\action\Returned as ActionReturned;
 class Action
 {
     /**
+     * 当前 routers index
+     * @var int|null
+     */
+    private $index;
+
+    /**
      * @var string|null
      */
     private $route;
@@ -53,6 +59,23 @@ class Action
      * @var ActionReturned|null
      */
     private $return;
+
+    /**
+     * @return int|null
+     */
+    public function getIndex(): ?int
+    {
+        return $this->index;
+    }
+
+    /**
+     * @param int|null $index
+     */
+    public function setIndex(?int $index): void
+    {
+        $this->index = $index;
+    }
+
 
     /**
      * @return string|null
@@ -99,7 +122,7 @@ class Action
      */
     public function setMethod(?string $method): void
     {
-        $this->method = $method;
+        $this->method = empty($method) ? '*' : $method;
     }
 
     /**

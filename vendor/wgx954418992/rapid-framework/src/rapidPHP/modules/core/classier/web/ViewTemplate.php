@@ -100,16 +100,20 @@ class ViewTemplate
 
     /**
      * @param AB $data
+     * @return $this
      */
     public function setData(AB $data)
     {
         $this->data = $data;
+
+        return $this;
     }
 
     /**
      * 设置变量
      * @param $key :key或者数据
      * @param string $value 值
+     * @return $this
      * @throws Exception
      */
     public function assign($key, $value = '')
@@ -123,6 +127,8 @@ class ViewTemplate
         } else {
             $this->data->value($key, $value);
         }
+
+        return $this;
     }
 
     /**
@@ -374,7 +380,7 @@ class ViewTemplate
     {
         $filepath = $this->getTemplateService()->findTemplateFile($this->filename);
 
-        if (!is_file($filepath)) throw new Exception('view error!');
+        if (!is_file($filepath)) throw new Exception($this->filename.' view error!');
 
         $cacheFile = $this->getTemplateService()->getCache($this->filename, $outputType);
 

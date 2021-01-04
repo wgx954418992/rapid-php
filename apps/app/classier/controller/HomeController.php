@@ -2,7 +2,7 @@
 
 namespace apps\app\classier\controller;
 
-use apps\app\classier\dao\master\UserDao;
+use apps\core\classier\dao\master\UserDao;
 use Exception;
 use rapidPHP\modules\server\classier\interfaces\Request;
 

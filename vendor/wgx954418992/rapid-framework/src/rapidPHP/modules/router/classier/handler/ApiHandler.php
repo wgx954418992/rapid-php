@@ -17,6 +17,7 @@ class ApiHandler extends HandlerInterface
      * @param $result
      * @param array $options
      * @return array|string
+     * @throws Exception
      */
     public function onResult(Controller $controller, $result, $options = [])
     {

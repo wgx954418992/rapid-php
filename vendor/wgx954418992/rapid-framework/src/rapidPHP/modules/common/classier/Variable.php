@@ -2,8 +2,8 @@
 
 namespace rapidPHP\modules\common\classier;
 
-use rapidPHP\modules\common\classier\Build;
-use rapidPHP\modules\common\classier\Console;
+use rapidPHP\modules\console\classier\Args;
+use rapidPHP\modules\console\classier\Utils;
 
 class Variable
 {
@@ -148,7 +148,7 @@ class Variable
      * 获取var 值
      * 1.先常量里面读取
      * 2.再从输入的命令行进行读取
-     * 3.最后从
+     * 3.最后从 $_ENV 环境变量中取
      * @param $var
      * @return false|false[]|mixed|string[]|null
      */
@@ -156,7 +156,7 @@ class Variable
     {
         if (defined($var)) return constant($var);
 
-        $value = Console::getInstance()->getParam($var);
+        $value = Args::getInstance()->getOptionValue($var);
 
         if (!empty($value)) return $value;
 

@@ -10,6 +10,7 @@ use rapidPHP\modules\server\classier\interfaces\Response;
 
 class WebContext extends BaseWebContext
 {
+
     /**
      * @var UserContext
      */
@@ -25,16 +26,17 @@ class WebContext extends BaseWebContext
         parent::__construct($request, $response);
 
         parent::supportsParameter([
+            WebContext::class => $this,
             UserContext::class => [$this, 'getUserContext'],
         ]);
     }
 
     /**
      * 获取用户context
-     * @return UserContext|null
+     * @return UserContext
      * @throws Exception
      */
-    public function getUserContext()
+    public function getUserContext(): UserContext
     {
         if (!is_null($this->userContext)) return $this->userContext;
 

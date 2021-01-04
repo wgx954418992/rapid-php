@@ -11,7 +11,6 @@ use rapidPHP\modules\common\classier\AB;
 use rapidPHP\modules\common\classier\AR;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Calendar;
-use rapidPHP\modules\common\classier\Console;
 use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\Register;
 use rapidPHP\modules\common\classier\StrCharacter;
@@ -27,7 +26,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.5.4');
+define('RAPIDPHP_VERSION', '3.6.0');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -85,15 +84,6 @@ function B(): Build
     return Build::getInstance();
 }
 
-
-/**
- * 快捷获取Console类
- * @return Console
- */
-function Con(): Console
-{
-    return Console::getInstance();
-}
 
 /**
  * 快捷获取StrCharacter类

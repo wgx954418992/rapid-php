@@ -2,17 +2,9 @@
 
 namespace apps\app\classier\controller;
 
-use rapidPHP\modules\core\classier\web\WebController;
+use apps\core\classier\controller\BaseController as CoreBaseController;
 
-
-class BaseController extends WebController
+class BaseController extends CoreBaseController
 {
 
-    /**
-     * 公用function
-     */
-    public function common()
-    {
-
-    }
 }

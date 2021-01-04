@@ -36,6 +36,11 @@ class ConfigWrapper
     private $database;
 
     /**
+     * @var ConsoleWrapper|null
+     */
+    private $console;
+
+    /**
      * @return ApplicationWrapper|null
      */
     public function getApplication(): ?ApplicationWrapper
@@ -133,4 +138,21 @@ class ConfigWrapper
     {
         $this->database = $database;
     }
+
+    /**
+     * @return ConsoleWrapper|null
+     */
+    public function getConsole(): ?ConsoleWrapper
+    {
+        return $this->console;
+    }
+
+    /**
+     * @param ConsoleWrapper|null $console
+     */
+    public function setConsole(?ConsoleWrapper $console): void
+    {
+        $this->console = $console;
+    }
+
 }

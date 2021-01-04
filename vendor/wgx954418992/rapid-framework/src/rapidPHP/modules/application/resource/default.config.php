@@ -39,6 +39,15 @@ return [
             'path' => '${PATH_APP_RUNTIME}log/access/{number}.log',
         ],
     ],
+    'console'=>[
+        'session' => [
+            'key' => 'PHPSESSID',
+
+            'service' => null,
+        ],
+
+        'context' => \rapidPHP\modules\application\classier\context\ConsoleContext::class,
+    ],
     'server' => [
         'cgi' => [
             'session' => [
@@ -168,6 +177,7 @@ return [
             ],
         ],
     ],
+
     'redis' => [
         'master' => [
             'host' => '127.0.0.1',

@@ -113,18 +113,6 @@ class WebRouter extends Router
     }
 
     /**
-     * 设置header 文字编码
-     */
-    private function setCharacterCode()
-    {
-        if (!($this->request instanceof SwooleWebSocketRequest)) {
-            $this->response->header('Access-Control-Allow-Origin: *');
-
-            $this->response->header("Content-type: text/html; charset=utf-8");
-        }
-    }
-
-    /**
      * 获取真实访问路径
      */
     private function getRealPath(): string
@@ -143,18 +131,25 @@ class WebRouter extends Router
      */
     protected function matching()
     {
-        $this->setCharacterCode();
-
         try {
-            $action = $this->getMatchingAction($this->getRealPath(), $route, $pathVariable, $index);
+            $realPath = $this->getRealPath();
 
-            if (!$action) throw new Exception('not match action', 404);
+            $this->getContext()->onMatchingBefore($this);
 
-            $method = explode(',', $action->getMethod());
+            $action = $this->getMatchingAction($realPath, $route, $pathVariable, $index);
 
-            if ($method && !in_array(strtoupper($this->request->getMethod()), $method)) {
-                throw new ActionException('request method not current method', 403, $action);
+            if (!$action) throw new Exception('Not match action', 404);
+
+            if ($action->getMethod() != '*') {
+
+                $method = explode(',', $action->getMethod());
+
+                if ($method && !in_array(strtoupper($this->request->getMethod()), $method)) {
+                    throw new ActionException('The request method is not allowed', 403, $action);
+                }
             }
+
+            $this->getContext()->onInvokeActionBefore($this, $action, $route, $pathVariable, $realPath);
 
             $this->invoke($route, $action, $pathVariable);
         } catch (Exception $e) {

@@ -5,9 +5,10 @@ namespace rapidPHP\modules\server\classier\interfaces;
 use Exception;
 use rapidPHP\modules\common\classier\AR;
 use rapidPHP\modules\common\classier\Build;
+use rapidPHP\modules\io\classier\Output;
 use rapidPHP\modules\server\config\SessionConfig;
 
-abstract class Response
+abstract class Response implements Output
 {
 
     /**

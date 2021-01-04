@@ -1,0 +1,7 @@
+console:
+  session:
+    key: PHPSESSID
+    service: >
+      apps\core\classier\service\SessionService
+    context: >
+      apps\queue\classier\context\ConsoleContext

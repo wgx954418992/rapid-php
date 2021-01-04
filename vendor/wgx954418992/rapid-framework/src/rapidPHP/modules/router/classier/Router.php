@@ -45,11 +45,11 @@ abstract class Router
      */
     protected $actions;
 
-
     /**
      * 采用单例模式
      */
     use Instances;
+
 
     /**
      * 实例不存在
@@ -90,6 +90,24 @@ abstract class Router
     public function getActions(): ?array
     {
         return $this->actions;
+    }
+
+    /**
+     * 通过字符串获取规则
+     * @param $string
+     * @return string
+     */
+    public static function getPatternByString($string): string
+    {
+        if (!is_int(strpos($string, '.'))) {
+            if (strlen($string) > 1 && substr($string, -1, 1) === '/') {
+                $string = rtrim($string, '/*');
+            }
+
+            $string .= '(|\.html|\.php)';
+        }
+
+        return '/^' . str_replace('/', '\/', $string) . '$/i';
     }
 
     /**
@@ -206,13 +224,16 @@ abstract class Router
 
                 $action = $this->getAction($route->getClassName(), $route->getMethodName());
 
-                if ($action != null) return $action;
+                if ($action != null) {
+                    $action->setIndex($index);
+
+                    return $action;
+                }
             }
         }
 
         return null;
     }
-
 
 
     /**
@@ -255,6 +276,7 @@ abstract class Router
         if (!$action) {
             $instance = $classify->newInstance();
         } else {
+
             $parameters = $this->getParameters($action, $action->getParameters(), $pathVariable);
 
             $instance = $classify->newInstanceKV($parameters);
@@ -357,7 +379,6 @@ abstract class Router
      * @throws Exception
      */
     protected function getParameterValues(Method $method, $dataPackage, $pathVariable, ...$supports): array
-
     {
         $values = [];
 

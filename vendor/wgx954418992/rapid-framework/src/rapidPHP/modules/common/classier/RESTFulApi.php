@@ -98,9 +98,10 @@ class RESTFulApi
     /**
      * 预设返回值
      * @param string $msg
-     * @param string $data
+     * @param null $data
      * @param int $code
-     * @return static|self|mixed|null
+     * @return $this
+     * @throws Exception
      */
     public function go($msg = '', $data = null, $code = 0)
     {
@@ -157,6 +158,8 @@ class RESTFulApi
                     $datum = Utils::getInstance()->toArray($datum);
                 }
             }
+        }else if(is_object($data)){
+            $data = Utils::getInstance()->toArray($data);
         }
 
         $this->result[$this->dataKey] = $data;
@@ -230,7 +233,8 @@ class RESTFulApi
      * @param $msg
      * @param int $code
      * @param null $data
-     * @return static|self|mixed|null
+     * @return RESTFulApi
+     * @throws Exception
      */
     public static function error($msg, $code = self::CODE_FAIL, $data = null)
     {
@@ -242,7 +246,8 @@ class RESTFulApi
      * @param null $data
      * @param string $msg
      * @param int $code
-     * @return static|self|mixed|null
+     * @return RESTFulApi
+     * @throws Exception
      */
     public static function success($data = null, $msg = 'success!', $code = self::CODE_SUCCESS)
     {
