@@ -33,13 +33,13 @@
   },
   "scripts": {
     "generator-model-php": [
-      "php -r \"require __DIR__.'/vendor/autoload.php';script\\model\\classier\\ToModel::run([__DIR__.'/apps/app/application.yaml'],'sql','php',__DIR__.'/apps/app/classier/model/','apps\\app\\classier\\model');\""
+      "php scripts/model/index.php php"
     ],
     "generator-model-swift": [
-      "php -r \"require __DIR__.'/vendor/autoload.php';script\\model\\classier\\ToModel::run([__DIR__.'/apps/app/application.yaml'],'sql','swift',__DIR__.'/models/swift/',null,['extends'=>'BaseModel','imports'=>['Foundation']]);\""
+      "php scripts/model/index.php swift"
     ],
     "generator-model-java": [
-      "php -r \"require __DIR__.'/vendor/autoload.php';script\\model\\classier\\ToModel::run([__DIR__.'/apps/app/application.yaml'],'sql','java',__DIR__.'/models/java/','models',['extends'=>'BaseModel']);\""
+      "php scripts/model/index.php java"
     ]
   },
   "minimum-stability": "dev",

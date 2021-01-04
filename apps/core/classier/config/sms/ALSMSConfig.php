@@ -13,7 +13,7 @@ class ALSMSConfig extends SMSConfig
      * 签名
      * @var string
      */
-    protected $sign = ['西欧贸易'];
+    protected $sign = [''];
 
     /**
      * 产品地域
@@ -24,12 +24,12 @@ class ALSMSConfig extends SMSConfig
     /**
      * @var string 阿里云发送短信api accessKeyId
      */
-    private $accessKeyId = 'LTAI4GBdfgzgfNiN8iN3CbSy';
+    private $accessKeyId = '';
 
     /**
      * @var string 阿里云发送短信api accessKeySecret
      */
-    private $accessKeySecret = 'pmUWu1GLxKvZRzQSAtoZmIFXFiwn8A';
+    private $accessKeySecret = '';
 
     /**
      * @return string
