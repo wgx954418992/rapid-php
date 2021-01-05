@@ -165,19 +165,17 @@ class QueueService
      * 获取没有执行的队列
      * @param $number
      * @param array $type
-     * @return AppQueueModel[]
+     * @return AppQueueModel[]|null
      * @throws Exception
      */
-    public function getNotExecQueue($number, ...$type): array
+    public function getNotExecQueue($number, ...$type): ?array
     {
         MasterDao::getSQLDB()->beginTransaction();
 
         try {
-            $list = $this->queueDao->getNotExecQueue($number, $type);
+            $list = $this->queueDao->getNotExecQueue($number, $type, $ids);
 
-            if (!empty($list)) {
-                $ids = array_column($list, 'id');
-
+            if (!empty($ids)) {
                 $this->setQueueStatus($ids, QueueConfig::STATUS_IN_EXECUTION);
             }
 

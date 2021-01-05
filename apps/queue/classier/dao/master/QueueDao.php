@@ -6,6 +6,7 @@ use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\AppQueueModel;
 use Exception;
 use apps\queue\classier\config\QueueConfig;
+use rapidPHP\modules\reflection\classier\Utils;
 use function rapidPHP\Cal;
 
 class QueueDao extends MasterDao
@@ -23,10 +24,11 @@ class QueueDao extends MasterDao
      * 获取没有执行的队列
      * @param $number
      * @param array $type
+     * @param null $ids
      * @return AppQueueModel[]|null
      * @throws Exception
      */
-    public function getNotExecQueue($number, $type = []): ?array
+    public function getNotExecQueue($number, $type = [], &$ids = null): ?array
     {
         $currentTime = (int)microtime(true) * 1000;
 
@@ -45,10 +47,18 @@ class QueueDao extends MasterDao
 
         if (!empty($type)) $select->in('type', $type);
 
-        return $select
+        $result = $select
             ->forUpdate()
             ->getStatement()
-            ->fetchAll($this->getModelOrClass());
+            ->fetchAll();
+
+        if (!$result) return null;
+
+        $ids = array_column($result, 'id');
+
+        Utils::getInstance()->toObjects($this->getModelOrClass(), $result);
+
+        return $result;
     }
 
 

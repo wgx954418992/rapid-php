@@ -10,18 +10,19 @@ use Exception;
 use apps\queue\classier\config\QueueConfig;
 use apps\queue\classier\process\order\CreatedProcess;
 use apps\queue\classier\service\QueueService;
+use rapidPHP\modules\console\classier\Output;
 use rapidPHP\modules\process\classier\swoole\PipeProcess;
 use rapidPHP\modules\reflection\classier\Classify;
+use ReflectionException;
 use Swoole\Process;
 
 class UnifiedDispatchProcess extends PipeProcess
 {
 
     /**
-     * 防止里面kill 导致数据错乱
-     * @var bool
+     * @var Output
      */
-    private $isRun = true;
+    private $output;
 
     /**
      * @var PipeProcess[]
@@ -32,18 +33,18 @@ class UnifiedDispatchProcess extends PipeProcess
 
     /**
      * UnifiedDispatchProcess constructor.
-     * @param $sleep
-     * @throws Exception
+     * @param int $sleep
+     * @param Output|null $output
+     * @throws ReflectionException
      */
-    public function __construct($sleep = 3)
+    public function __construct($sleep = 3,Output $output = null)
     {
         parent::__construct($sleep);
 
-        foreach ($this->handlerProcess as $type => $process) {
-            /** @var PipeProcess $process */
-            $process = Classify::getInstance($process)->newInstance($this->getSleep(), $this);
+        $this->output = $output;
 
-            $this->handlerProcess[$type] = $process;
+        foreach ($this->handlerProcess as $type => $processClass) {
+            $this->handlerProcess[$type] = $process = $this->newProcess($processClass);
 
             $process->start();
         }
@@ -51,10 +52,67 @@ class UnifiedDispatchProcess extends PipeProcess
         $this->start();
     }
 
+
+    /**
+     * 创建进程
+     * @param $processClass
+     * @return PipeProcess
+     * @throws ReflectionException
+     */
+    public function newProcess($processClass): PipeProcess
+    {
+        if ($processClass instanceof PipeProcess) $processClass = get_class($processClass);
+
+        /** @var PipeProcess $process */
+        $process = Classify::getInstance($processClass)->newInstance($this->getSleep(), $this);
+
+        return $process;
+    }
+
+    /**
+     * 杀死进程
+     * @param $type
+     * @return object|PipeProcess|string
+     * @throws Exception
+     */
+    public function pkill($type)
+    {
+        if (empty($type)) throw new Exception('type 错误');
+
+        $process = $this->getHandlerProcess($type);
+
+        if (empty($process)) throw new Exception('进程错误');
+
+        if ($process instanceof PipeProcess) {
+            Process::kill($process->pid);
+
+            return $this->handlerProcess[$type] = get_class($process);
+        }
+
+        return $process;
+    }
+
+    /**
+     * 重启进程
+     * @param $type
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function restart($type)
+    {
+        $process = $this->pkill($type);
+
+        if (empty($process)) throw new Exception('进程错误');
+
+        $this->handlerProcess[$type] = $process = $this->newProcess($process);
+
+        $process->start();
+    }
+
     /**
      * 获取处理任务进程
      * @param $type
-     * @return object|null
+     * @return object|PipeProcess|null
      */
     private function getHandlerProcess($type)
     {
@@ -65,13 +123,15 @@ class UnifiedDispatchProcess extends PipeProcess
     }
 
     /**
-     * 获取所有进程
+     * 获取所有进程 pids
      * @param bool $isSelf
-     * @return PipeProcess[]
+     * @return array
      */
-    public function getAllHandlerProcess($isSelf = true)
+    public function getHandlerPIDs($isSelf = false): array
     {
         $p = [];
+
+        if ($isSelf) $p[$this->pid] = self::class;
 
         /**
          * @var string $type
@@ -79,11 +139,9 @@ class UnifiedDispatchProcess extends PipeProcess
          */
         foreach ($this->handlerProcess as $type => $process) {
             if ($process instanceof PipeProcess) {
-                $p[$type] = $process;
+                $p[$process->pid] = $type;
             }
         }
-
-        if ($isSelf) $p[self::class] = $this;
 
         return $p;
     }
@@ -95,7 +153,7 @@ class UnifiedDispatchProcess extends PipeProcess
     {
         parent::run($process);
 
-        while ($this->isRun) {
+        while (true) {
             try {
                 $list = QueueService::getInstance()->getNotExecQueue(10);
 
@@ -118,10 +176,14 @@ class UnifiedDispatchProcess extends PipeProcess
 
                         $this->onHandler($data);
 
+                        $this->output->perror($e->getMessage());
+
                         BaseService::getInstance()->addLog($e->getMessage());
                     }
                 }
             } catch (Exception $e) {
+                $this->output->perror($e->getMessage());
+
                 BaseService::getInstance()->addLog($e->getMessage());
             }
 
@@ -148,4 +210,6 @@ class UnifiedDispatchProcess extends PipeProcess
             }
         }
     }
+
+
 }
