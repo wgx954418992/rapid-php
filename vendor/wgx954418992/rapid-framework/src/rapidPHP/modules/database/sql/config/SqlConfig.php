@@ -35,6 +35,7 @@ class SqlConfig
         'order' => '',
         'limit' => '',
         'having' => '',
-        'func' => ''
+        'func' => '',
+        'sql' => ''
     ];
 }

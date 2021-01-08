@@ -123,7 +123,7 @@ class ViewTemplate
         } else if ($key instanceof AB) {
             $this->data->data($key->toData());
         } else if ($key instanceof Model) {
-            $this->data->data($key->toData());
+            $this->data->value('data', $key);
         } else {
             $this->data->value($key, $value);
         }
@@ -380,7 +380,7 @@ class ViewTemplate
     {
         $filepath = $this->getTemplateService()->findTemplateFile($this->filename);
 
-        if (!is_file($filepath)) throw new Exception($this->filename.' view error!');
+        if (!is_file($filepath)) throw new Exception($this->filename . ' view error!');
 
         $cacheFile = $this->getTemplateService()->getCache($this->filename, $outputType);
 

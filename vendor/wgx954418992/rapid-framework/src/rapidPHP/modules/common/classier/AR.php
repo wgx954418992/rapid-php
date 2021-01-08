@@ -17,7 +17,7 @@ class AR
     {
         return new static();
     }
-    
+
     /**
      * 批量删除数组元素
      * @param array|null $array $array
@@ -386,5 +386,32 @@ class AR
         shuffle($result);
 
         return $result;
+    }
+
+    /**
+     * 获取树形结构数据
+     * @param $array
+     * @param string $pKey
+     * @param string $idKey
+     * @param string $childKey
+     * @param int $pid
+     * @return array
+     */
+    public function getTree($array, $pKey = 'pid', $idKey = 'id', $childKey = 'child', $pid = null)
+    {
+        $tree = [];
+
+        foreach ($array as $value) {
+            if ($value[$pKey] === $pid) {
+
+                $value[$childKey] = $this->getTree($array, $pKey, $idKey, $childKey, $value[$idKey]);
+
+                if (empty($value[$childKey])) unset($value[$childKey]);
+
+                $tree[] = $value;
+            }
+        }
+
+        return $tree;
     }
 }
