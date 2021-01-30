@@ -5,10 +5,6 @@ namespace rapidPHP\modules\application\classier;
 
 use Exception;
 use rapidPHP\Init;
-use rapidPHP\modules\application\classier\apps\CGIApplication;
-use rapidPHP\modules\application\classier\apps\SwooleHttpApplication;
-use rapidPHP\modules\application\classier\apps\SwooleWebsocketApplication;
-use rapidPHP\modules\application\classier\apps\WebApplication;
 use rapidPHP\modules\application\wrapper\ConfigWrapper;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\logger\classier\Logger;

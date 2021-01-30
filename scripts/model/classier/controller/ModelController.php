@@ -190,8 +190,8 @@ class ModelController extends ConsoleController
             [
                 PATH_ROOT . '/apps/core/application.yaml'
             ],
-            'sql',
-            'php',
+            self::SERVER_SQL,
+            self::HANDLER_PHP,
             PATH_ROOT . '/apps/core/classier/model/',
             'apps\core\classier\model'
         );
@@ -209,8 +209,8 @@ class ModelController extends ConsoleController
             [
                 PATH_ROOT . '/apps/core/application.yaml'
             ],
-            'sql',
-            'swift',
+            self::SERVER_SQL,
+            self::HANDLER_SWIFT,
             PATH_ROOT . '/models/swift/',
             null,
             [
@@ -234,8 +234,8 @@ class ModelController extends ConsoleController
             [
                 PATH_ROOT . '/apps/app/application.yaml'
             ],
-            'sql',
-            'java',
+            self::SERVER_SQL,
+            self::HANDLER_JAVA,
             PATH_ROOT . '/models/java/',
             'models',
             [

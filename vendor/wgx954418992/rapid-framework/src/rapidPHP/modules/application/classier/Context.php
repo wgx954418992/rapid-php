@@ -4,8 +4,6 @@
 namespace rapidPHP\modules\application\classier;
 
 
-use apps\admin\classier\interceptor\AuthorityInterceptor;
-use rapidPHP\modules\common\classier\Verify;
 use rapidPHP\modules\router\classier\Action;
 use rapidPHP\modules\router\classier\Interceptor;
 use rapidPHP\modules\router\classier\Route;

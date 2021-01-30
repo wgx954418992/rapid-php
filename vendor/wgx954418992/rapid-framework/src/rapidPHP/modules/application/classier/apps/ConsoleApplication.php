@@ -27,7 +27,7 @@ class ConsoleApplication extends Application
      * @throws ReflectionException
      * @throws Exception
      */
-    public function newWebContext(Input $request, Output $response, ?string $context)
+    public function newConsoleContext(Input $request, Output $response, ?string $context)
     {
         if (empty($context)) $context = ConsoleContext::class;
 
@@ -55,7 +55,7 @@ class ConsoleApplication extends Application
 
             $consoleConfig = $this->getConfig()->getConsole();
 
-            $context = $this->newWebContext($input, $output, $consoleConfig->getContext());
+            $context = $this->newConsoleContext($input, $output, $consoleConfig->getContext());
 
             ConsoleRouter::getInstance()->run($this, $context);
 

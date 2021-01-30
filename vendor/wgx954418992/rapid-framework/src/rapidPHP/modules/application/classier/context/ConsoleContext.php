@@ -5,8 +5,8 @@ namespace rapidPHP\modules\application\classier\context;
 use rapidPHP\modules\application\classier\Context;
 use rapidPHP\modules\console\classier\Input;
 use rapidPHP\modules\console\classier\Output;
-use rapidPHP\modules\server\classier\interfaces\Request;
-use rapidPHP\modules\server\classier\interfaces\Response;
+use rapidPHP\modules\io\classier\Input as IOInput;
+use rapidPHP\modules\io\classier\Output as IOOutput;
 
 class ConsoleContext extends Context
 {
@@ -40,8 +40,8 @@ class ConsoleContext extends Context
 
         $this->supportsParameter([
             ConsoleContext::class => $this,
-            Request::class => $this->input,
-            Response::class => $this->output,
+            IOInput::class => $this->input,
+            IOOutput::class => $this->output,
         ]);
     }
 
