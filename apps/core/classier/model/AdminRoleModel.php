@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 管理员权限表
  * @table admin_role
- * rapidPHP auto generate Model 2021-01-05 00:02:36
+ * rapidPHP auto generate Model 2021-01-25 21:19:26
  */
 class AdminRoleModel extends Model
 {
@@ -38,7 +38,7 @@ class AdminRoleModel extends Model
      * @length 
      * @typed bigint
      */
-    private $uri_id;    
+    private $route_id;    
     
     /**
      * 是否删除
@@ -134,18 +134,18 @@ class AdminRoleModel extends Model
      * 获取 uri id
      * @return mixed
      */
-    public function getUriId()
+    public function getRouteId()
     {
-        return $this->uri_id;
+        return $this->route_id;
     }
     
     /**
      * 设置 uri id
-     * @param $uri_id
+     * @param $route_id
      */
-    public function setUriId($uri_id)
+    public function setRouteId($route_id)
     {
-        $this->uri_id = $uri_id;
+        $this->route_id = $route_id;
     }
     
     /**
@@ -153,9 +153,9 @@ class AdminRoleModel extends Model
      * @param string $msg
      * @throws Exception
      */
-    public function validUriId(string $msg = 'uri_id Cannot be empty!')
+    public function validRouteId(string $msg = 'route_id Cannot be empty!')
     {
-        if(empty($this->uri_id)) throw new Exception($msg);
+        if(empty($this->route_id)) throw new Exception($msg);
     }
     
     /**

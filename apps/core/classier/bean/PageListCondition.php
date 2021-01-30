@@ -2,9 +2,10 @@
 
 namespace apps\core\classier\bean;
 
+use rapidPHP\modules\core\classier\Model;
 use function rapidPHP\B;
 
-class PageListCondition
+class PageListCondition extends Model
 {
 
     /**

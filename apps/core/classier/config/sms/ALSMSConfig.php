@@ -54,7 +54,8 @@ class ALSMSConfig extends SMSConfig
     public function getTemplateTypeDomestic(): array
     {
         return [
-            self::TEMPLATE_TYPE_ORDER_NOTIFY => 'SMS_194050536',
+            self::TEMPLATE_TYPE_ORDER_STATUS_CHANGE => 'SMS_209160683',
+            self::TEMPLATE_TYPE_ORDER_WAITING_TAKE => 'SMS_210061691',
         ];
     }
 
@@ -65,7 +66,8 @@ class ALSMSConfig extends SMSConfig
     public function getTemplateTypeAbroad(): array
     {
         return [
-            self::TEMPLATE_TYPE_ORDER_NOTIFY => 'SMS_193230065',
+            self::TEMPLATE_TYPE_ORDER_STATUS_CHANGE => 'SMS_210064637',
+            self::TEMPLATE_TYPE_ORDER_WAITING_TAKE => 'SMS_210076489',
         ];
     }
 }

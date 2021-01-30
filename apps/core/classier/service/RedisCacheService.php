@@ -22,7 +22,7 @@ class RedisCacheService extends RedisCache
         $config = Application::getInstance()->getConfig()
             ->getRedis()->getMaster();
 
-        $redis = new Redis($config);
+        $redis = new Redis($config);    
 
         parent::__construct($redis);
     }

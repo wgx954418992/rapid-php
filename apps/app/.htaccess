@@ -6,15 +6,9 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ index.php?__ROUTE__=$1 [QSA,PT,L]
 
-    RewriteRule ^.git - [F,L]
-    RewriteRule ^.sql - [F,L]
-    RewriteRule ^.lock - [F,L]
+    RewriteRule ^(.*runtime\/.*)$ error/protected?path=$1 [QSA,PT,L]
+    RewriteRule ^(.*\.(conf|yaml|gitignore|sql|git))$ error/protected?path=$1 [QSA,PT,L]
 </IfModule>
-
-<FilesMatch (.*)\.(sql)$>
-    Order allow,deny
-    deny from all
-</FilesMatch>
 
 <Files *>
     Options -Indexes

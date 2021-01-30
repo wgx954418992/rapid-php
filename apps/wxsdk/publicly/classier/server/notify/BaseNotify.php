@@ -42,12 +42,10 @@ class BaseNotify
 
     /**
      * @param string $ToUserName
-     * @return self
      */
-    public function setToUserName(string $ToUserName): self
+    public function setToUserName(string $ToUserName)
     {
         $this->ToUserName = $ToUserName;
-        return $this;
     }
 
     /**
@@ -60,12 +58,10 @@ class BaseNotify
 
     /**
      * @param string $FromUserName
-     * @return self
      */
-    public function setFromUserName(string $FromUserName): self
+    public function setFromUserName(string $FromUserName)
     {
         $this->FromUserName = $FromUserName;
-        return $this;
     }
 
     /**
@@ -78,12 +74,10 @@ class BaseNotify
 
     /**
      * @param string $CreateTime
-     * @return self
      */
-    public function setCreateTime(string $CreateTime): self
+    public function setCreateTime(string $CreateTime)
     {
         $this->CreateTime = $CreateTime;
-        return $this;
     }
 
     /**
@@ -96,12 +90,10 @@ class BaseNotify
 
     /**
      * @param string $MsgType
-     * @return self
      */
-    public function setMsgType(string $MsgType): self
+    public function setMsgType(string $MsgType)
     {
         $this->MsgType = $MsgType;
-        return $this;
     }
 
 

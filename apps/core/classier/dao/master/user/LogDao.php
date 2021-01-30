@@ -6,7 +6,6 @@ namespace apps\core\classier\dao\master\user;
 use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\UserLogModel;
 use Exception;
-use function rapidPHP\B;
 use function rapidPHP\Cal;
 
 class LogDao extends MasterDao
@@ -64,16 +63,16 @@ class LogDao extends MasterDao
     /**
      * 获取登录记录
      * @param $bindId
-     * @return array
+     * @return UserLogModel[]
      * @throws Exception
      */
     public function getLogList($bindId): array
     {
-        return $this->get()
+        return (array)$this->get()
             ->where('bind_id', $bindId)
             ->where('is_delete', false)
             ->order('date', 'DESC')
             ->getStatement()
-            ->fetchAll();
+            ->fetchAll($this->getModelOrClass());
     }
 }

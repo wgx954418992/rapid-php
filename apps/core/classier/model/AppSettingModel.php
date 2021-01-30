@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 系统设置表
  * @table app_setting
- * rapidPHP auto generate Model 2021-01-05 00:02:37
+ * rapidPHP auto generate Model 2021-01-25 21:19:26
  */
 class AppSettingModel extends Model
 {

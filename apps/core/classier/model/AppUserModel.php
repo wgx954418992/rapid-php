@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 用户表
  * @table app_user
- * rapidPHP auto generate Model 2021-01-05 00:02:37
+ * rapidPHP auto generate Model 2021-01-25 21:19:27
  */
 class AppUserModel extends Model
 {
@@ -76,18 +76,18 @@ class AppUserModel extends Model
     private $register_ip;    
     
     /**
+     * 邮箱
+     * @length 28
+     * @typed varchar
+     */
+    private $email;    
+    
+    /**
      * 来源
      * @length 20
      * @typed varchar
      */
     private $source;    
-    
-    /**
-     * 当前状态 0 待审核 1 正常
-     * @length 
-     * @typed tinyint
-     */
-    private $status;    
     
     /**
      * 是否删除
@@ -348,6 +348,34 @@ class AppUserModel extends Model
     }
     
     /**
+     * 获取 邮箱
+     * @return string
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+    
+    /**
+     * 设置 邮箱
+     * @param string|null $email
+     */
+    public function setEmail(?string $email)
+    {
+        $this->email = $email;
+    }
+    
+    /**
+     * 效验 邮箱
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validEmail(string $msg = 'email Cannot be empty!')
+    {
+        if(empty($this->email)) throw new Exception($msg);
+    }
+    
+    /**
      * 获取 来源
      * @return string
      */
@@ -373,34 +401,6 @@ class AppUserModel extends Model
     public function validSource(string $msg = 'source Cannot be empty!')
     {
         if(empty($this->source)) throw new Exception($msg);
-    }
-    
-    /**
-     * 获取 当前状态 0 待审核 1 正常
-     * @return int
-     */
-    public function getStatus(): ?int
-    {
-        return $this->status;
-    }
-    
-    /**
-     * 设置 当前状态 0 待审核 1 正常
-     * @param int|null $status
-     */
-    public function setStatus(?int $status)
-    {
-        $this->status = $status;
-    }
-    
-    /**
-     * 效验 当前状态 0 待审核 1 正常
-     * @param string $msg
-     * @throws Exception
-     */
-    public function validStatus(string $msg = 'status Cannot be empty!')
-    {
-        if(empty($this->status)) throw new Exception($msg);
     }
     
     /**

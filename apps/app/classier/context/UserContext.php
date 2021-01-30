@@ -3,7 +3,7 @@
 namespace apps\app\classier\context;
 
 use apps\core\classier\config\BaseConfig;
-use apps\core\classier\service\BaseService;
+use apps\app\classier\service\BaseService;
 use apps\core\classier\wrapper\UserWrapper;
 use Exception;
 
@@ -33,14 +33,15 @@ class UserContext
     {
         $this->context = $context;
 
-        $this->token = $this->context->getRequest()->cookie(BaseConfig::TOKEN_NAME_USER);
+        $this->token = $this->context->getRequest()->get(BaseConfig::TOKEN_NAME_USER);
+
+        if (empty($this->token)) $this->token = $this->context->getRequest()->post(BaseConfig::TOKEN_NAME_USER);
 
         try {
-            $this->userModel = BaseService::getInstance()->getUserByToken($this->token, $context->getRequest()->getHostUrl());
+            $this->userModel = BaseService::getInstance()->getUserByToken($this->token,
+                $context->getPathContext());
         } catch (Exception $e) {
             $this->token = null;
-
-            $this->context->getResponse()->cookie(BaseConfig::TOKEN_NAME_USER, null);
         }
     }
 
@@ -58,7 +59,7 @@ class UserContext
      * 获取用户信息
      * @return UserWrapper|null
      */
-    public function getCurrentUser(): ?UserWrapper
+    public function getCurrentUser()
     {
         return $this->userModel;
     }

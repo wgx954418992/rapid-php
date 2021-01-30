@@ -44,29 +44,12 @@ class BaseConfig
     /**
      * token
      */
-    const TOKEN_NAME_USER = 'user_token';
+    const TOKEN_NAME_USER = 'token';
 
     /**
      * admin
      */
     const TOKEN_NAME_ADMIN = 'admin_token';
-
-    /**
-     * 获取文件url地址
-     * @param $fileId
-     * @param null $hostUrl
-     * @return string
-     */
-    public static function getFileUrl($fileId, $hostUrl = null): string
-    {
-        if (empty($fileId)) return '';
-
-        if (V()->website($fileId)) {
-            return $fileId;
-        } else {
-            return $hostUrl . 'file/' . $fileId;
-        }
-    }
 
     /**
      * 加载页数算法

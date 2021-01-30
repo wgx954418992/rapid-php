@@ -5,10 +5,10 @@ namespace wxsdk\publicly\classier;
 
 use Exception;
 use rapidPHP\modules\reflection\classier\Utils;
-use wxsdk\publicly\classify\server\crypt\WXBizMsgCrypt;
-use wxsdk\publicly\classify\server\NoticeInterface;
-use wxsdk\publicly\classify\server\notify\EventNotify;
-use wxsdk\publicly\classify\server\notify\MsgNotify;
+use wxsdk\publicly\classier\server\crypt\WXBizMsgCrypt;
+use wxsdk\publicly\classier\server\notify\EventNotify;
+use wxsdk\publicly\classier\server\notify\MsgNotify;
+use wxsdk\publicly\classier\server\NoticeInterface;
 use wxsdk\publicly\config\CryptErrorConfig;
 use function rapidPHP\B;
 use function rapidPHP\X;

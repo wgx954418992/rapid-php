@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 用户登录日志表
  * @table user_log
- * rapidPHP auto generate Model 2021-01-05 00:02:37
+ * rapidPHP auto generate Model 2021-01-25 21:19:27
  */
 class UserLogModel extends Model
 {
@@ -42,8 +42,8 @@ class UserLogModel extends Model
     
     /**
      * 登录方式
-     * @length 
-     * @typed tinyint
+     * @length 50
+     * @typed varchar
      */
     private $mode;    
     
@@ -188,18 +188,18 @@ class UserLogModel extends Model
     
     /**
      * 获取 登录方式
-     * @return int
+     * @return string
      */
-    public function getMode(): ?int
+    public function getMode(): ?string
     {
         return $this->mode;
     }
     
     /**
      * 设置 登录方式
-     * @param int|null $mode
+     * @param string|null $mode
      */
-    public function setMode(?int $mode)
+    public function setMode(?string $mode)
     {
         $this->mode = $mode;
     }

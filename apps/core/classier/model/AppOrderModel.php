@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 订单表
  * @table app_order
- * rapidPHP auto generate Model 2021-01-05 00:02:37
+ * rapidPHP auto generate Model 2021-01-25 21:19:26
  */
 class AppOrderModel extends Model
 {
@@ -34,53 +34,11 @@ class AppOrderModel extends Model
     private $user_id;    
     
     /**
-     * 联系人名称
-     * @length 50
-     * @typed varchar
-     */
-    private $contacts_name;    
-    
-    /**
-     * 联系人电话
-     * @length 16
-     * @typed varchar
-     */
-    private $telephone;    
-    
-    /**
-     * 国家id
+     * 货物类型：1 散货/拼箱 2 整柜
      * @length 
-     * @typed bigint
+     * @typed tinyint
      */
-    private $contry_id;    
-    
-    /**
-     * 城市id
-     * @length 
-     * @typed bigint
-     */
-    private $city_id;    
-    
-    /**
-     * 地区id
-     * @length 
-     * @typed bigint
-     */
-    private $area_id;    
-    
-    /**
-     * 详细地址
-     * @length 120
-     * @typed varchar
-     */
-    private $address;    
-    
-    /**
-     * 邮编
-     * @length 20
-     * @typed varchar
-     */
-    private $postcode;    
+    private $goods_type;    
     
     /**
      * 箱数
@@ -88,6 +46,27 @@ class AppOrderModel extends Model
      * @typed int
      */
     private $number;    
+    
+    /**
+     * 取货码
+     * @length 50
+     * @typed varchar
+     */
+    private $pickup_code;    
+    
+    /**
+     * 入仓时间
+     * @length 
+     * @typed datetime
+     */
+    private $in_wtime;    
+    
+    /**
+     * 到仓时间
+     * @length 
+     * @typed datetime
+     */
+    private $reach_wtime;    
     
     /**
      * 订单状态 1.等待确认 2.确认订单 3.货物确认⼊库 4.离港 5.到港 6.清关完成 7.到达⽬的地仓库，等待取货 8.已签收 9.订单取消
@@ -194,199 +173,31 @@ class AppOrderModel extends Model
     }
     
     /**
-     * 获取 联系人名称
-     * @return string
+     * 获取 货物类型：1 散货/拼箱 2 整柜
+     * @return int
      */
-    public function getContactsName(): ?string
+    public function getGoodsType(): ?int
     {
-        return $this->contacts_name;
+        return $this->goods_type;
     }
     
     /**
-     * 设置 联系人名称
-     * @param string|null $contacts_name
+     * 设置 货物类型：1 散货/拼箱 2 整柜
+     * @param int|null $goods_type
      */
-    public function setContactsName(?string $contacts_name)
+    public function setGoodsType(?int $goods_type)
     {
-        $this->contacts_name = $contacts_name;
+        $this->goods_type = $goods_type;
     }
     
     /**
-     * 效验 联系人名称
+     * 效验 货物类型：1 散货/拼箱 2 整柜
      * @param string $msg
      * @throws Exception
      */
-    public function validContactsName(string $msg = 'contacts_name Cannot be empty!')
+    public function validGoodsType(string $msg = 'goods_type Cannot be empty!')
     {
-        if(empty($this->contacts_name)) throw new Exception($msg);
-    }
-    
-    /**
-     * 获取 联系人电话
-     * @return string
-     */
-    public function getTelephone(): ?string
-    {
-        return $this->telephone;
-    }
-    
-    /**
-     * 设置 联系人电话
-     * @param string|null $telephone
-     */
-    public function setTelephone(?string $telephone)
-    {
-        $this->telephone = $telephone;
-    }
-    
-    /**
-     * 效验 联系人电话
-     * @param string $msg
-     * @throws Exception
-     */
-    public function validTelephone(string $msg = 'telephone Cannot be empty!')
-    {
-        if(empty($this->telephone)) throw new Exception($msg);
-    }
-    
-    /**
-     * 获取 国家id
-     * @return mixed
-     */
-    public function getContryId()
-    {
-        return $this->contry_id;
-    }
-    
-    /**
-     * 设置 国家id
-     * @param $contry_id
-     */
-    public function setContryId($contry_id)
-    {
-        $this->contry_id = $contry_id;
-    }
-    
-    /**
-     * 效验 国家id
-     * @param string $msg
-     * @throws Exception
-     */
-    public function validContryId(string $msg = 'contry_id Cannot be empty!')
-    {
-        if(empty($this->contry_id)) throw new Exception($msg);
-    }
-    
-    /**
-     * 获取 城市id
-     * @return mixed
-     */
-    public function getCityId()
-    {
-        return $this->city_id;
-    }
-    
-    /**
-     * 设置 城市id
-     * @param $city_id
-     */
-    public function setCityId($city_id)
-    {
-        $this->city_id = $city_id;
-    }
-    
-    /**
-     * 效验 城市id
-     * @param string $msg
-     * @throws Exception
-     */
-    public function validCityId(string $msg = 'city_id Cannot be empty!')
-    {
-        if(empty($this->city_id)) throw new Exception($msg);
-    }
-    
-    /**
-     * 获取 地区id
-     * @return mixed
-     */
-    public function getAreaId()
-    {
-        return $this->area_id;
-    }
-    
-    /**
-     * 设置 地区id
-     * @param $area_id
-     */
-    public function setAreaId($area_id)
-    {
-        $this->area_id = $area_id;
-    }
-    
-    /**
-     * 效验 地区id
-     * @param string $msg
-     * @throws Exception
-     */
-    public function validAreaId(string $msg = 'area_id Cannot be empty!')
-    {
-        if(empty($this->area_id)) throw new Exception($msg);
-    }
-    
-    /**
-     * 获取 详细地址
-     * @return string
-     */
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-    
-    /**
-     * 设置 详细地址
-     * @param string|null $address
-     */
-    public function setAddress(?string $address)
-    {
-        $this->address = $address;
-    }
-    
-    /**
-     * 效验 详细地址
-     * @param string $msg
-     * @throws Exception
-     */
-    public function validAddress(string $msg = 'address Cannot be empty!')
-    {
-        if(empty($this->address)) throw new Exception($msg);
-    }
-    
-    /**
-     * 获取 邮编
-     * @return string
-     */
-    public function getPostcode(): ?string
-    {
-        return $this->postcode;
-    }
-    
-    /**
-     * 设置 邮编
-     * @param string|null $postcode
-     */
-    public function setPostcode(?string $postcode)
-    {
-        $this->postcode = $postcode;
-    }
-    
-    /**
-     * 效验 邮编
-     * @param string $msg
-     * @throws Exception
-     */
-    public function validPostcode(string $msg = 'postcode Cannot be empty!')
-    {
-        if(empty($this->postcode)) throw new Exception($msg);
+        if(empty($this->goods_type)) throw new Exception($msg);
     }
     
     /**
@@ -415,6 +226,90 @@ class AppOrderModel extends Model
     public function validNumber(string $msg = 'number Cannot be empty!')
     {
         if(empty($this->number)) throw new Exception($msg);
+    }
+    
+    /**
+     * 获取 取货码
+     * @return string
+     */
+    public function getPickupCode(): ?string
+    {
+        return $this->pickup_code;
+    }
+    
+    /**
+     * 设置 取货码
+     * @param string|null $pickup_code
+     */
+    public function setPickupCode(?string $pickup_code)
+    {
+        $this->pickup_code = $pickup_code;
+    }
+    
+    /**
+     * 效验 取货码
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validPickupCode(string $msg = 'pickup_code Cannot be empty!')
+    {
+        if(empty($this->pickup_code)) throw new Exception($msg);
+    }
+    
+    /**
+     * 获取 入仓时间
+     * @return string
+     */
+    public function getInWtime(): ?string
+    {
+        return $this->in_wtime;
+    }
+    
+    /**
+     * 设置 入仓时间
+     * @param string|null $in_wtime
+     */
+    public function setInWtime(?string $in_wtime)
+    {
+        $this->in_wtime = $in_wtime;
+    }
+    
+    /**
+     * 效验 入仓时间
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validInWtime(string $msg = 'in_wtime Cannot be empty!')
+    {
+        if(empty($this->in_wtime)) throw new Exception($msg);
+    }
+    
+    /**
+     * 获取 到仓时间
+     * @return string
+     */
+    public function getReachWtime(): ?string
+    {
+        return $this->reach_wtime;
+    }
+    
+    /**
+     * 设置 到仓时间
+     * @param string|null $reach_wtime
+     */
+    public function setReachWtime(?string $reach_wtime)
+    {
+        $this->reach_wtime = $reach_wtime;
+    }
+    
+    /**
+     * 效验 到仓时间
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validReachWtime(string $msg = 'reach_wtime Cannot be empty!')
+    {
+        if(empty($this->reach_wtime)) throw new Exception($msg);
     }
     
     /**

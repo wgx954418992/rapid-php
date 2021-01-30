@@ -21,12 +21,12 @@ class SettingDao extends MasterDao
 
     /**
      * 获取设置列表
-     * @return AppSettingModel[]|null
+     * @return AppSettingModel[]
      * @throws Exception
      */
     public function getSettingList(): array
     {
-        return parent::get()
+        return (array)parent::get()
             ->where('is_delete', false)
             ->getStatement()
             ->fetchAll(AppSettingModel::class);
@@ -34,12 +34,11 @@ class SettingDao extends MasterDao
 
     /**
      * 添加设置
-     * @param $adminId
      * @param AppSettingModel $settingModel
      * @return bool
      * @throws Exception
      */
-    public function addSetting($adminId, AppSettingModel $settingModel): bool
+    public function addSetting(AppSettingModel $settingModel): bool
     {
         $result = parent::add([
             'type' => $settingModel->getType(),
@@ -47,7 +46,7 @@ class SettingDao extends MasterDao
             'content' => $settingModel->getContent(),
             'remarks' => $settingModel->getRemarks(),
             'is_delete' => false,
-            'created_id' => $adminId,
+            'created_id' => $settingModel->getCreatedId(),
             'created_time' => Cal()->getDate(),
         ], $inserId);
 
@@ -58,19 +57,18 @@ class SettingDao extends MasterDao
 
     /**
      * 修改设置
-     * @param $adminId
      * @param AppSettingModel $settingModel
      * @return bool
      * @throws Exception
      */
-    public function setSetting($adminId, AppSettingModel $settingModel): bool
+    public function setSetting(AppSettingModel $settingModel): bool
     {
         return parent::set([
             'type' => $settingModel->getType(),
             'attribute' => $settingModel->getAttribute(),
             'content' => $settingModel->getContent(),
             'remarks' => $settingModel->getRemarks(),
-            'updated_id' => $adminId,
+            'updated_id' => $settingModel->getUpdatedId(),
             'updated_time' => Cal()->getDate(),
         ])->where('id', $settingModel->getId())->execute();
     }

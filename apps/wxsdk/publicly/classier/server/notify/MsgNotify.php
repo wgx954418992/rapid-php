@@ -32,12 +32,10 @@ class MsgNotify extends BaseNotify
 
     /**
      * @param string $Content
-     * @return self
      */
-    public function setContent(string $Content): self
+    public function setContent(string $Content)
     {
         $this->Content = $Content;
-        return $this;
     }
 
     /**
@@ -50,11 +48,9 @@ class MsgNotify extends BaseNotify
 
     /**
      * @param int $MsgId
-     * @return self
      */
-    public function setMsgId(int $MsgId): self
+    public function setMsgId(int $MsgId)
     {
         $this->MsgId = $MsgId;
-        return $this;
     }
 }

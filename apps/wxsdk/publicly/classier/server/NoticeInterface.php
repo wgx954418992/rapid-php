@@ -4,8 +4,8 @@
 namespace wxsdk\publicly\classier\server;
 
 
-use wxsdk\publicly\classify\server\notify\EventNotify;
-use wxsdk\publicly\classify\server\notify\MsgNotify;
+use wxsdk\publicly\classier\server\notify\EventNotify;
+use wxsdk\publicly\classier\server\notify\MsgNotify;
 
 /**
  * 本应该是个接口，但是为了可以移除不需要的时间监听，才写成类，开发时候大家继承这个类，重新下面需要的方法就可以了

@@ -29,9 +29,14 @@ abstract class SMSConfig
     const VALIDA_TIME = 60 * 5;
 
     /**
-     * 发送短信模板类型,订单通知
+     * 发送短信模板类型,订单状态更改通知
      */
-    const TEMPLATE_TYPE_ORDER_NOTIFY = 'orderNotify';
+    const TEMPLATE_TYPE_ORDER_STATUS_CHANGE = 'orderStatusChange';
+
+    /**
+     * 发送短信模板类型,订单到库等待取货
+     */
+    const TEMPLATE_TYPE_ORDER_WAITING_TAKE = 'orderWaitingTake';
 
     /**
      * 获取产品地域

@@ -563,7 +563,7 @@ abstract class Driver
     public function on($name, $values = null, $expression = '=:')
     {
         if (!is_null($name)) {
-            if (is_null($values)) {
+            if (func_num_args() === 1) {
                 if (!$this->sql['on']) {
                     $this->sql['on'] = "ON {$name} ";
                 } else {
@@ -596,7 +596,7 @@ abstract class Driver
     public function where($name, $values = null, $expression = '=:')
     {
         if (!is_null($name)) {
-            if (is_null($values)) {
+            if (func_num_args() === 1) {
                 if (!$this->sql['where']) {
                     $this->sql['where'] = "WHERE {$name} ";
                 } else {
@@ -610,7 +610,6 @@ abstract class Driver
                 if (!$this->sql['where']) {
                     $this->sql['where'] = "WHERE {$name}{$expression}{$optionsKey} ";
                 } else {
-
                     $this->sql['where'] .= "AND {$name}{$expression}{$optionsKey} ";
                 }
                 $this->addOptions($values, $optionsKey);

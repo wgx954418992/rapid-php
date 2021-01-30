@@ -36,8 +36,12 @@ class UserService
      * @return string
      * @throws Exception
      */
-    protected function login($userId, $type, $ip, $userAgent): string
+    public function login($userId, $type, $ip, $userAgent): string
     {
+        if (empty($userId)) throw new Exception('user id error!');
+
+        if (empty($type)) throw new Exception('type id error!');
+
         $token = B()->onlyId();
 
         $isThing = MasterDao::getSQLDB()->isInThing();

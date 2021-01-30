@@ -59,23 +59,27 @@ class Xml
      * @param array $array
      * @return XMLWriter
      */
-    private function xmlData(XMLWriter $xml, array $array): XMLWriter
+    private function xmlData(XMLWriter $xml, array $array, $rKey = null): XMLWriter
     {
         foreach ($array as $key => $value) {
-
             if (is_array($value)) {
 
-                $xml->startElement($key);
+                $cKey = !is_string($key)?$rKey:$key;
 
-                $this->xmlData($xml, $value);
+                if(is_string($cKey) ){
+                    $xml->startElement($cKey);
+                }
 
-                $xml->endElement();
+                $this->xmlData($xml, $value, $key);
 
-                continue;
+                if(is_string($cKey) ){
+                    $xml->endElement();
+                }
+            } else {
+                $xml->writeElement($key, $value);
             }
-
-            $xml->writeElement($key, $value);
         }
+
         return $xml;
     }
 

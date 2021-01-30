@@ -13,18 +13,22 @@ class OrderListCondition extends PageListCondition
 
     /**
      * 订单状态
-     * @var int|null
+     * @var string|null
      */
     private $status;
 
     /**
-     * 获取 排序名称
-     * @return string
+     * factory id
+     * @var int|null
      */
-    public function getOrderName(): string
-    {
-        return 'created_time';
-    }
+    private $factoryId;
+
+    /**
+     * warehouse id
+     * @var int|null
+     */
+    private $warehouseId;
+
 
     /**
      * @return int|null
@@ -43,19 +47,51 @@ class OrderListCondition extends PageListCondition
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getStatus(): ?int
+    public function getStatus()
     {
         return $this->status;
     }
 
     /**
-     * @param int|null $status
+     * @param string|null $status
      */
-    public function setStatus(?int $status): void
+    public function setStatus(?string $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFactoryId(): ?int
+    {
+        return $this->factoryId;
+    }
+
+    /**
+     * @param int|null $factoryId
+     */
+    public function setFactoryId(?int $factoryId): void
+    {
+        $this->factoryId = $factoryId;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getWarehouseId(): ?int
+    {
+        return $this->warehouseId;
+    }
+
+    /**
+     * @param int|null $warehouseId
+     */
+    public function setWarehouseId(?int $warehouseId): void
+    {
+        $this->warehouseId = $warehouseId;
     }
 
 }

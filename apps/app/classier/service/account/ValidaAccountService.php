@@ -29,7 +29,7 @@ class ValidaAccountService
      * 获取用户信息
      * @return UserWrapper
      */
-    public function getCurrentUser(): UserWrapper
+    public function getCurrentUser()
     {
         return $this->userModel;
     }
@@ -38,7 +38,7 @@ class ValidaAccountService
      * 获取用户id
      * @return int
      */
-    public function getUserId(): int
+    public function getUserId()
     {
         return $this->getCurrentUser()->getId();
     }

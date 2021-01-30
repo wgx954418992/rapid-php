@@ -10,7 +10,6 @@ class SetConfig
      */
     const TYPE_FILE_STORAGE = 'FILE_STORAGE';
 
-
     /**
      * 设置attribute类型，路径
      */

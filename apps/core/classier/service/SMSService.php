@@ -3,8 +3,10 @@
 
 namespace apps\core\classier\service;
 
+use apps\core\classier\config\BaseConfig;
 use apps\core\classier\config\SMSConfig;
 use apps\core\classier\dao\master\CodeDao;
+use apps\core\classier\helper\CommonHelper;
 use apps\core\classier\service\sms\ALSMSService;
 use apps\core\classier\service\sms\SMSInterface;
 use apps\core\classier\service\sms\TCSMSService;
@@ -17,7 +19,7 @@ use libphonenumber\PhoneNumberUtil;
 use rapidPHP\modules\reflection\classier\Classify;
 use function rapidPHP\B;
 
-class SMSService
+class SMSService extends CodeService
 {
 
     /**
@@ -70,34 +72,6 @@ class SMSService
         }
 
         return self::$instances[$sendSMSService] = new self($sendSMSService);
-    }
-
-    /**
-     * 效验手机号码
-     * @param $telephone
-     * @param bool $isReset 是否重置手机号码，会自动加上区号
-     * @param string $defaultRegion
-     * @return PhoneNumber
-     * @throws NumberParseException
-     * @throws Exception
-     */
-    public static function validTelephone(&$telephone, $isReset = false, $defaultRegion = 'CN'): PhoneNumber
-    {
-        if (empty($telephone)) throw new Exception('手机号码不能为空!');
-
-        $phoneUtil = PhoneNumberUtil::getInstance();
-
-        $phoneNumber = $phoneUtil->parse($telephone, $defaultRegion);
-
-        $isValid = $phoneUtil->isValidNumber($phoneNumber);
-
-        if (!$isValid) throw new Exception('手机号码无效！');
-
-        if ($isReset) {
-            $telephone = $phoneNumber->getCountryCode() . $phoneNumber->getNationalNumber();
-        }
-
-        return $phoneNumber;
     }
 
     /**
@@ -154,11 +128,13 @@ class SMSService
     {
         if (empty($templateCode)) throw new Exception('模版错误!');
 
-        if (empty($telephone)) throw new Exception('手机号码错误!');
+        if ($this->sendSMSService instanceof ALSMSService) {
+            $param = [$param];
+        }
 
         $result = $this->sendSMSService->send($templateCode, $telephone, $param);
 
-        if (!$result) throw new Exception('发送失败!');
+        if (!$result) throw new Exception($templateCode . ' 发送失败!');
 
         return true;
     }
@@ -166,75 +142,56 @@ class SMSService
     /**
      * 发送验证码
      * @param UserWrapper|null $userModel
-     * @param $telephone
+     * @param $receiver
      * @param $templateId
      * @param int $limitTime
      * @return string
-     * @throws NumberParseException
      * @throws Exception
      */
-    public function sendVerificationCode(?UserWrapper $userModel, $telephone, $templateId, $limitTime = SMSConfig::LIMIT_TIME)
+    public function sendVerificationCode(?UserWrapper $userModel, $receiver, $templateId, $limitTime = SMSConfig::LIMIT_TIME)
     {
-        $phoneNumber = self::validTelephone($telephone, true);
+        /** @var PhoneNumber $phoneNumber */
+        $receiver = CommonHelper::validTelephone($receiver, $phoneNumber);
 
-        if (!$this->toValidaTel($userModel, $templateId, $telephone))
+        if (!$this->toValidaTel($userModel, $templateId, $receiver))
             throw new Exception('效验能否发送短信失败!');
 
         $templateCode = $this->getTemplateCodeByType($templateId, $phoneNumber->getCountryCode());
 
-        $codeDao = CodeDao::getInstance();
-
-        $lastSendTime = $codeDao->getVerifyCodeLastSendTime($templateId, $telephone);
-
-        $waitTime = $limitTime - (time() - $lastSendTime);
-
-        if ($waitTime > 0) throw new Exception("请等待{$waitTime}秒后在发送!");
+        $this->checkLastSendTime($receiver, $templateId, $limitTime);
 
         $code = B()->randoms(4, '1234567890');
 
         $param = [$code];
 
         if ($this->sendSMSService instanceof ALSMSService) {
-            $param = [['code' => $code]];
+            $param = ['code' => $code];
         }
 
-        $this->send($templateCode, $telephone, $param);
+        $this->send($templateCode, $receiver, $param);
 
-        if (!$codeDao->addVerifyCode($templateId, $telephone, $code))
+        /** @var CodeDao $codeDao */
+        $codeDao = CodeDao::getInstance();
+
+        if (!$codeDao->addVerifyCode($templateId, $receiver, $code))
             throw new Exception("发送失败!");
 
         return true;
     }
 
-
     /**
      * 效验验证码
      * @param $templateId
-     * @param $tel
+     * @param $receiver
      * @param $code
+     * @param float|int $validaTime
      * @return bool
      * @throws Exception
      */
-    public function checkVerificationCode($templateId, $tel, $code): bool
+    public function checkVerificationCode($templateId, $receiver, $code, $validaTime = SMSConfig::VALIDA_TIME): bool
     {
-        if (empty($templateId)) throw new Exception("模板错误!");
+        if (empty($receiver)) throw new Exception("手机号码错误!");
 
-        if (empty($tel)) throw new Exception("手机号码错误!");
-
-        if (empty($code)) throw new Exception("验证码不能为空!");
-
-        $codeDao = CodeDao::getInstance();
-
-        $codeModel = $codeDao->getCheckVerifyCode($templateId, $tel, $code);
-
-        if ($codeModel == null) throw new Exception('验证码错误!');
-
-        if (($codeModel->getSendTime() + SMSConfig::VALIDA_TIME) < time())
-            throw new Exception('验证码已过期!');
-
-        if (!$codeDao->useVerifyCode($codeModel->getId()))
-            throw new Exception('效验验证码失败!');
-
-        return true;
+        return parent::checkVerificationCode($templateId, $receiver, $code, $validaTime);
     }
 }

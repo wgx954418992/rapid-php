@@ -1,0 +1,30 @@
+server:
+  cgi:
+    session:
+      key: PHPSESSID
+      service: >
+        apps\core\classier\service\SessionService
+    context: >
+      apps\admin\classier\context\WebContext
+  swoole:
+    session:
+      key: PHPSESSID
+      service: >
+        apps\core\classier\service\SessionService
+    context: >
+      apps\admin\classier\context\WebContext
+    http:
+      ip: 0.0.0.0
+      port: 1900
+      options:
+        ssl_key_file: null
+        ssl_cert_file: null
+    websocket:
+      ip: 0.0.0.0
+      port: 1901
+      return_key: __c
+      options:
+        ssl_key_file: null
+        ssl_cert_file: null
+        heartbeat_check_interval: 30
+        heartbeat_idle_time: 30

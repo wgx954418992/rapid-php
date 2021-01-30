@@ -3,6 +3,7 @@
 namespace apps\core\classier\dao\master;
 
 
+use apps\core\classier\bean\PageListCondition;
 use apps\core\classier\config\BaseConfig;
 use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\AppLogModel;
@@ -43,25 +44,23 @@ class LogDao extends MasterDao
 
     /**
      * 获取系统日志列表查询对象
-     * @param $keyword
-     * @param $startTime
-     * @param $endTime
+     * @param PageListCondition $condition
      * @return Driver|Mysql
      * @throws Exception
      */
-    private function getLogListSelect($keyword, $startTime, $endTime)
+    private function getLogListSelect(PageListCondition $condition)
     {
         $select = parent::get();
 
-        if ($startTime != '') $select->where("add_time", $startTime, '>=:');
+        if($condition->getStartTime()) $select->where("add_time", $condition->getStartTime(), '>=:');
 
-        if ($endTime != '') $select->where("add_time", $endTime, "<:");
+        if($condition->getEndTime()) $select->where("add_time", $condition->getEndTime(), '<:');
 
-        if ($keyword != '') {
+        if ($condition->getEndTime()) {
 
             $keyName = $select->getOptionsKey('keyword');
 
-            $select->addOptions("%{$keyword}%", $keyName);
+            $select->addOptions("%{$condition->getEndTime()}%", $keyName);
 
             $select->where("(concat(msg, '|', content)) LIKE :{$keyName} ");
         }
@@ -72,35 +71,30 @@ class LogDao extends MasterDao
 
     /**
      * 获取列表
-     * @param $page
-     * @param $keyword
-     * @param $startTime
-     * @param $endTime
-     * @return array
+     * @param PageListCondition $condition
+     * @return AppLogModel[]
      * @throws Exception
      */
-    public function getLogList($page, $keyword, $startTime, $endTime): array
+    public function getLogList(PageListCondition $condition): array
     {
-        $select = $this->getLogListSelect($keyword, $startTime, $endTime);
+        $select = $this->getLogListSelect($condition);
 
-        $select->limit($page, BaseConfig::PAGE_SIZE_DEFAULT);
+        $select->limit($condition->getPage(), BaseConfig::PAGE_SIZE_DEFAULT);
 
-        return $select->order('add_time', 'DESC')
+        return (array)$select->order('add_time', 'DESC')
             ->getStatement()
             ->fetchAll($this->getModelOrClass());
     }
 
     /**
      * 获取查询数量
-     * @param $keyword
-     * @param $startTime
-     * @param $endTime
+     * @param PageListCondition $condition
      * @return int
      * @throws Exception
      */
-    public function getLogListCount($keyword, $startTime, $endTime): int
+    public function getLogListCount(PageListCondition $condition): int
     {
-        $select = $this->getLogListSelect($keyword, $startTime, $endTime);
+        $select = $this->getLogListSelect($condition);
 
         return (int)$select->resetSql('select')->select('count(id) as count')
             ->getStatement()

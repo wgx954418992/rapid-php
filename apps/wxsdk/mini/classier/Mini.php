@@ -26,8 +26,6 @@ class Mini extends WXSdk
 
         if (empty($openId)) throw new Exception('openId错误');
 
-        if (empty($page)) throw new Exception('page 错误');
-
         $accessToken = $this->getAccessToken();
 
         $post = [

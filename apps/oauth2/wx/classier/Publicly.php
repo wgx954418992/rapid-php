@@ -19,7 +19,7 @@ class Publicly extends OAuth2
      * @return AB
      * @throws Exception
      */
-    private function getAccessInfo(string $code): AB
+    private function getAccessInfo(string $code)
     {
         $accessInfo = $this->sendHttpRequest(PubliclyConfig::getAccessTokenUrl($this->getAppId(), $this->getSecret(), $code));
 
@@ -50,7 +50,7 @@ class Publicly extends OAuth2
      * @return WXUserModel
      * @throws Exception
      */
-    public function getUserInfo(string $code, ?array $options = []): WXUserModel
+    public function getUserInfo(string $code, ?array $options = [])
     {
         if (empty($code)) throw new Exception('code 错误!');
 

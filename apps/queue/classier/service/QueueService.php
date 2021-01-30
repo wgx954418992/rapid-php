@@ -7,7 +7,6 @@ namespace apps\queue\classier\service;
 use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\AppOrderModel;
 use apps\core\classier\model\AppQueueModel;
-use apps\core\classier\model\AppUserModel;
 use Exception;
 use apps\queue\classier\config\QueueConfig;
 use apps\queue\classier\dao\master\QueueDao;
@@ -100,66 +99,72 @@ class QueueService
     }
 
     /**
-     * 添加发送模板消息
-     * @param $userId
-     * @param $templateId
+     * 添加小程序模板通知队列
      * @param $openIdList
-     * @param $page
-     * @param $data
+     * @param $templateId
+     * @param null $triggerTime
+     * @param array $options
+     * @param null $createdId
      * @param null $parentId
-     * @return array
      * @throws Exception
      */
-    public function addNotifyQueue(AppUserModel $userModel, $templateId, $openIdList, $page, $data, $parentId = null)
+    public function addMiniNotifyQueue($openIdList, $templateId, $triggerTime = null, $options = [], $createdId = null, $parentId = null)
     {
-        if (empty($openIdList)) return [];
+        if (empty($openIdList)) throw new Exception('openid错误!');
 
         if (empty($templateId)) throw new Exception('模板id错误!');
 
-        if (empty($data)) throw new Exception('data 错误!');
-
         if (is_string($openIdList)) $openIdList = [$openIdList];
-
-        $queueIdList = [];
 
         foreach ($openIdList as $openId) {
 
-            $params = [
-                QueueConfig::PARAM_KEY_MINI_TEMPLATE_ID => $templateId,
-                QueueConfig::PARAM_KEY_MINI_OPEN_ID => $openId,
-                QueueConfig::PARAM_KEY_MINI_PAGE => $page,
-                QueueConfig::PARAM_KEY_MINI_DATA => $data,
-            ];
-
-            $model = $this->addQueue(
+            $this->addQueue(
                 QueueConfig::TYPE_NOTIFY_MINI,
-                $params,
+                array_merge([
+                    QueueConfig::PARAM_KEY_MINI_TEMPLATE_ID => $templateId,
+                    QueueConfig::PARAM_KEY_MINI_OPEN_ID => $openId,
+                ], $options),
                 $openId,
                 $triggerTime,
-                $orderModel->getUserId(),
+                $createdId,
                 $parentId
             );
-
-            $model = new AppQueueModel();
-
-            if (!empty($parentId)) $model->setParentId($parentId);
-
-            $model->setType(QueueConfig::TYPE_NOTIFY_MINI);
-
-            $model->setParam($msg);
-
-            $model->setTriggerTime(time());
-
-            $model->setCreatedId($userId);
-
-            if (!$this->queueDao->addQueue($model)) throw new Exception('添加发送模板消息失败!');
-
-            $queueIdList[$openId] = $queueId;
         }
-
-        return $queueIdList;
     }
 
+    /**
+     * 添加短信模板通知队列
+     * @param $telephones
+     * @param $templateId
+     * @param null $triggerTime
+     * @param array $options
+     * @param null $createdId
+     * @param null $parentId
+     * @throws Exception
+     */
+    public function addSMSNotifyQueue($telephones, $templateId, $triggerTime = null, $options = [], $createdId = null, $parentId = null)
+    {
+        if (empty($telephones)) throw new Exception('telephones错误!');
+
+        if (empty($templateId)) throw new Exception('templateId错误!');
+
+        if (is_string($telephones)) $telephones = [$telephones];
+
+        foreach ($telephones as $telephone) {
+
+            $this->addQueue(
+                QueueConfig::TYPE_NOTIFY_SMS,
+                array_merge([
+                    QueueConfig::PARAM_KEY_SMS_TELEPHONE => $telephone,
+                    QueueConfig::PARAM_KEY_SMS_TEMPLATE_ID => $templateId,
+                ], $options),
+                $telephone,
+                $triggerTime,
+                $createdId,
+                $parentId
+            );
+        }
+    }
 
     /**
      * 获取没有执行的队列

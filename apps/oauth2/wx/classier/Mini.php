@@ -53,7 +53,7 @@ class Mini extends OAuth2
      * @return WXUserModel
      * @throws Exception
      */
-    public function getUserInfo(string $code, ?array $options = []): WXUserModel
+    public function getUserInfo(string $code, ?array $options = [])
     {
         if (empty($code)) throw new Exception('code 错误!');
 

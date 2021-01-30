@@ -34,7 +34,7 @@ class FileService
      * @return AppFileModel
      * @throws Exception
      */
-    public function getFileByMd5($md5): AppFileModel
+    public function getFileByMd5($md5)
     {
         if (empty($md5)) throw new Exception('文件md5错误!');
 
@@ -53,7 +53,7 @@ class FileService
      * @return AppFileModel
      * @throws Exception
      */
-    public function getFile($fileId): AppFileModel
+    public function getFile($fileId)
     {
         if (empty($fileId)) throw new Exception('文件id错误!');
 
@@ -78,7 +78,7 @@ class FileService
      * @return AppFileModel
      * @throws Exception
      */
-    public function addFile($userId, $filePath, $fileName, $limitSize = null): AppFileModel
+    public function addFile($userId, $filePath, $fileName, $limitSize = null)
     {
         if (!is_file($filePath)) throw new Exception('文件错误!');
 
@@ -120,7 +120,9 @@ class FileService
 
         $fileModel->setSize($fileSize);
 
-        if (!$fileDao->addFile($userId, $fileModel))
+        $fileModel->setCreatedId($userId);
+
+        if (!$fileDao->addFile($fileModel))
             throw new Exception('添加失败!');
 
         return $fileModel;

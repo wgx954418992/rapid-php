@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 验证码表
  * @table app_code
- * rapidPHP auto generate Model 2021-01-05 00:02:36
+ * rapidPHP auto generate Model 2021-01-25 21:19:26
  */
 class AppCodeModel extends Model
 {

@@ -76,7 +76,7 @@ class PropertyAccessor implements PropertyAccessorInterface
     private $writeInfoExtractor;
     private $readPropertyCache = [];
     private $writePropertyCache = [];
-    private static $resultProto = [self::VALUE => null];
+    private const RESULT_PROTO = [self::VALUE => null];
 
     /**
      * Should not be used by application code. Use
@@ -92,6 +92,8 @@ class PropertyAccessor implements PropertyAccessorInterface
             trigger_deprecation('symfony/property-access', '5.2', 'Passing a boolean as the first argument to "%s()" is deprecated. Pass a combination of bitwise flags instead (i.e an integer).', __METHOD__);
 
             $magicMethods = ($magicMethods ? self::MAGIC_CALL : 0) | self::MAGIC_GET | self::MAGIC_SET;
+        } elseif (!\is_int($magicMethods)) {
+            throw new \TypeError(sprintf('Argument 1 passed to "%s()" must be an integer, "%s" given.', __METHOD__, get_debug_type($readInfoExtractor)));
         }
 
         $this->magicMethodsFlags = $magicMethods;
@@ -377,7 +379,7 @@ class PropertyAccessor implements PropertyAccessorInterface
             throw new NoSuchIndexException(sprintf('Cannot read index "%s" from object of type "%s" because it doesn\'t implement \ArrayAccess.', $index, get_debug_type($zval[self::VALUE])));
         }
 
-        $result = self::$resultProto;
+        $result = self::RESULT_PROTO;
 
         if (isset($zval[self::VALUE][$index])) {
             $result[self::VALUE] = $zval[self::VALUE][$index];
@@ -405,7 +407,7 @@ class PropertyAccessor implements PropertyAccessorInterface
             throw new NoSuchPropertyException(sprintf('Cannot read property "%s" from an array. Maybe you intended to write the property path as "[%1$s]" instead.', $property));
         }
 
-        $result = self::$resultProto;
+        $result = self::RESULT_PROTO;
         $object = $zval[self::VALUE];
         $class = \get_class($object);
         $access = $this->getReadInfo($class, $property);
@@ -425,7 +427,7 @@ class PropertyAccessor implements PropertyAccessorInterface
                         if (__FILE__ === $trace['file']
                             && $name === $trace['function']
                             && $object instanceof $trace['class']
-                            && preg_match((sprintf('/Return value (?:of .*::\w+\(\) )?must be of (?:the )?type (\w+), null returned$/')), $e->getMessage(), $matches)
+                            && preg_match('/Return value (?:of .*::\w+\(\) )?must be of (?:the )?type (\w+), null returned$/', $e->getMessage(), $matches)
                         ) {
                             throw new UninitializedPropertyException(sprintf('The method "%s::%s()" returned "null", but expected type "%3$s". Did you forget to initialize a property or to make the return type nullable using "?%3$s"?', false === strpos(\get_class($object), "@anonymous\0") ? \get_class($object) : (get_parent_class($object) ?: key(class_implements($object)) ?: 'class').'@anonymous', $name, $matches[1]), 0, $e);
                         }
@@ -682,7 +684,7 @@ class PropertyAccessor implements PropertyAccessorInterface
      */
     public static function createCache(string $namespace, int $defaultLifetime, string $version, LoggerInterface $logger = null)
     {
-        if (!class_exists('Symfony\Component\Cache\Adapter\ApcuAdapter')) {
+        if (!class_exists(ApcuAdapter::class)) {
             throw new \LogicException(sprintf('The Symfony Cache component must be installed to use "%s()".', __METHOD__));
         }
 

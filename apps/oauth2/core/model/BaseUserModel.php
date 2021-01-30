@@ -3,6 +3,7 @@
 namespace oauth2\core\model;
 
 
+use rapidPHP\modules\common\classier\Build;
 use function rapidPHP\B;
 
 class BaseUserModel

@@ -6,9 +6,11 @@ namespace apps\queue\classier\process;
 
 use apps\core\classier\model\AppQueueModel;
 use apps\core\classier\service\BaseService;
+use apps\queue\classier\process\notify\MiniProcess;
+use apps\queue\classier\process\notify\SMSProcess;
 use Exception;
 use apps\queue\classier\config\QueueConfig;
-use apps\queue\classier\process\order\CreatedProcess;
+use apps\queue\classier\process\order\StatusChangeProcess;
 use apps\queue\classier\service\QueueService;
 use rapidPHP\modules\console\classier\Output;
 use rapidPHP\modules\process\classier\swoole\PipeProcess;
@@ -28,7 +30,9 @@ class UnifiedDispatchProcess extends PipeProcess
      * @var PipeProcess[]
      */
     private $handlerProcess = [
-        QueueConfig::TYPE_ORDER_CREATED => CreatedProcess::class,
+        QueueConfig::TYPE_ORDER_STATUS_CHANGE => StatusChangeProcess::class,
+        QueueConfig::TYPE_NOTIFY_SMS => SMSProcess::class,
+        QueueConfig::TYPE_NOTIFY_MINI => MiniProcess::class,
     ];
 
     /**
@@ -204,7 +208,6 @@ class UnifiedDispatchProcess extends PipeProcess
             try {
                 QueueService::getInstance()->setQueueStatus($queueModel->getId(),
                     QueueConfig::STATUS_COMPLETE);
-
             } catch (Exception $e) {
                 BaseService::getInstance()->addLog($e->getMessage(), $e);
             }

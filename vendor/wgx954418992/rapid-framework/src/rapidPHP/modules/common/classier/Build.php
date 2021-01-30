@@ -173,6 +173,8 @@ class Build
         } else if (Verify::getInstance()->decimal($value)) {
             $value = (double)$value;
         } else if (is_numeric($value)) {
+            if (substr($value, 0, 1) == '+') return;
+
             if (substr($value, 0, 1) == '0' && strlen($value) > 1) return;
 
             $value = (int)$value;

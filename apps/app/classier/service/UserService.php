@@ -9,17 +9,32 @@ use apps\core\classier\dao\master\UserDao;
 use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\AppUserModel;
 use apps\core\classier\model\UserWeixinModel;
+use apps\core\classier\service\AreaService;
 use apps\core\classier\service\FileService;
 use apps\core\classier\service\SettingService;
 use apps\core\classier\service\UserService as CoreUserService;
 use apps\core\classier\wrapper\UserWrapper;
 use Exception;
-use oauth2\wx\model\WXUserModel;
 use rapidPHP\modules\common\classier\Http;
+use rapidPHP\modules\common\classier\Instances;
 use function rapidPHP\B;
 
-class UserService extends CoreUserService
+class UserService
 {
+
+    /**
+     * 单例模式
+     */
+    use Instances;
+
+    /**
+     * 初始化当前
+     * @return static
+     */
+    public static function onNotInstance()
+    {
+        return new static();
+    }
 
     /**
      * 获取 UserModel
@@ -47,7 +62,7 @@ class UserService extends CoreUserService
 
             $userModel = new AppUserModel();
 
-            $userModel->setId($WXUserModel->getUserId());
+            $userModel->setId($userId);
 
             $userModel->setRegisterIp($ip);
 
@@ -58,7 +73,7 @@ class UserService extends CoreUserService
             /** @var UserDao $userDao */
             $userDao = UserDao::getInstance();
 
-            $userModel = $userDao->getUser($WXUserModel->getUserId());
+            $userModel = $userDao->getUser($currentWXUserModel->getUserId());
 
             if ($userModel != null) {
                 $userId = $userModel->getId();
@@ -83,23 +98,28 @@ class UserService extends CoreUserService
             if (!$WXDao->setWXUser($WXUserModel)) throw new Exception('修改 wx user 失败!');
         }
 
+        $headFid = $this->getHeadFid($currentWXUserModel, $WXUserModel);
+
+        if ($headFid) $userModel->setHeadFid($headFid);
+
         return $userModel;
     }
 
     /**
      * 获取headFid
+     * @param UserWeixinModel|null $currentWXUserModel
      * @param UserWeixinModel $WXUserModel
-     * @param WXUserModel $oauth2Model
      * @return mixed|null
      * @throws Exception
      */
-    public function getHeadFid(UserWeixinModel $WXUserModel, WXUserModel $oauth2Model)
+    private function getHeadFid(?UserWeixinModel $currentWXUserModel, UserWeixinModel $WXUserModel)
     {
+        $currentHeadImgUrl = $currentWXUserModel ? $currentWXUserModel->getHeadimgurl() : null;
+
         $headImgUrl = $WXUserModel->getHeadimgurl();
 
-        if ($headImgUrl != $oauth2Model->getHeader()) {
-
-            $data = Http::getInstance()->getHttpResponse($oauth2Model->getHeader());
+        if ($headImgUrl && $currentHeadImgUrl != $headImgUrl) {
+            $data = Http::getInstance()->getHttpResponse($headImgUrl);
 
             $path = SettingService::getStoragePath(md5($WXUserModel->getId()));
 
@@ -112,19 +132,19 @@ class UserService extends CoreUserService
             return $fileModel->getId();
         }
 
+
         return null;
     }
 
     /**
      * 小程序登录
      * @param UserWeixinModel $WXUserModel
-     * @param $headFid
      * @param $ip
      * @param $userAgent
      * @return string
      * @throws Exception
      */
-    public function loginByMini(UserWeixinModel $WXUserModel, $headFid, $ip, $userAgent): string
+    public function loginByMini(UserWeixinModel $WXUserModel, $ip, $userAgent): string
     {
         if (empty($WXUserModel->getOpenId())) throw new Exception('openId 错误!');
 
@@ -137,8 +157,6 @@ class UserService extends CoreUserService
 
         try {
             $userModel = $this->getUserModel($WXUserModel, $ip, $isAdd);
-
-            if (!empty($headFid)) $userModel->setHeadFid($headFid);
 
             $userModel->setNickname($WXUserModel->getNickname());
 
@@ -154,7 +172,8 @@ class UserService extends CoreUserService
                 $userDao->setUser($userModel);
             }
 
-            $token = $this->login($userModel->getId(), BaseConfig::LOGIN_MODE_MINI, $ip, $userAgent);
+            $token = CoreUserService::getInstance()
+                ->login($userModel->getId(), BaseConfig::LOGIN_MODE_MINI, $ip, $userAgent);
 
             if (!MasterDao::getSQLDB()->commit()) throw new Exception('添加小程序用户失败');
 

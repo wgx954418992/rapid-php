@@ -349,7 +349,9 @@ abstract class Router
 
         $value = $this->onGetParameterValue($name, $source);
 
-        if (empty($type) || Variable::isSetType($type)) return ActionConfig::getDecodeValue($encodeType, $value);
+        if (empty($type) || Variable::isSetType($type)) {
+            return ActionConfig::getDecodeValue($encodeType, $value);
+        }
 
         $encodeType = Build::getInstance()->contrast($encodeType, ActionConfig::ENCODE_TYPE_JSON);
 

@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 微信用户表
  * @table user_weixin
- * rapidPHP auto generate Model 2021-01-05 00:02:37
+ * rapidPHP auto generate Model 2021-01-25 21:19:27
  */
 class UserWeixinModel extends Model
 {

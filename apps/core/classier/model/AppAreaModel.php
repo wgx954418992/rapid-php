@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 全球地区库，采集自腾讯QQ国内+国际版.ADD.JENA.20141221
  * @table app_area
- * rapidPHP auto generate Model 2021-01-05 00:02:36
+ * rapidPHP auto generate Model 2021-01-25 21:19:26
  */
 class AppAreaModel extends Model
 {
@@ -52,7 +52,7 @@ class AppAreaModel extends Model
      * @length 255
      * @typed varchar
      */
-    private $aname;    
+    private $name;    
     
     /**
      * 英文名称
@@ -190,18 +190,18 @@ class AppAreaModel extends Model
      * 获取 中文名称
      * @return string
      */
-    public function getAname(): ?string
+    public function getName(): ?string
     {
-        return $this->aname;
+        return $this->name;
     }
     
     /**
      * 设置 中文名称
-     * @param string|null $aname
+     * @param string|null $name
      */
-    public function setAname(?string $aname)
+    public function setName(?string $name)
     {
-        $this->aname = $aname;
+        $this->name = $name;
     }
     
     /**
@@ -209,9 +209,9 @@ class AppAreaModel extends Model
      * @param string $msg
      * @throws Exception
      */
-    public function validAname(string $msg = 'aname Cannot be empty!')
+    public function validName(string $msg = 'name Cannot be empty!')
     {
-        if(empty($this->aname)) throw new Exception($msg);
+        if(empty($this->name)) throw new Exception($msg);
     }
     
     /**

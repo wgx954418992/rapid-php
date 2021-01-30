@@ -152,13 +152,7 @@ class RESTFulApi
             $data = $data->toData();
         } else if ($data instanceof AB) {
             $data = $data->toData();
-        } else if (is_array($data)) {
-            foreach ($data as &$datum) {
-                if (is_object($datum)) {
-                    $datum = Utils::getInstance()->toArray($datum);
-                }
-            }
-        }else if(is_object($data)){
+        } else if (is_object($data) || is_array($data)) {
             $data = Utils::getInstance()->toArray($data);
         }
 

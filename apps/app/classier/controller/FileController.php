@@ -3,9 +3,10 @@
 
 namespace apps\app\classier\controller;
 
+use apps\app\classier\context\PathContext;
 use apps\app\classier\context\UserContext;
-use apps\core\classier\config\BaseConfig;
 use apps\core\classier\config\ErrorConfig;
+use apps\core\classier\context\PathContextInterface;
 use apps\core\classier\service\FileService;
 use apps\core\classier\service\SettingService;
 use Exception;
@@ -55,12 +56,13 @@ class FileController extends BaseController
      * @route /file/upload
      * @method post
      * @typed api
-     * @param UserContext $context
+     * @param PathContext $pathContext
+     * @param UserContext $userContext
      * @param array $file file
      * @return RESTFulApi
      * @throws Exception
      */
-    public function uploadFile(UserContext $context, $file): RESTFulApi
+    public function uploadFile(PathContextInterface $pathContext, UserContext $userContext, array $file)
     {
         $error = (int)B()->getData($file, 'error');
 
@@ -91,14 +93,14 @@ class FileController extends BaseController
 
         if (empty($fileName)) $fileName = basename($filePath);
 
-        $currentUser = $context->getCurrentUser();
+        $currentUser = $userContext->getCurrentUser();
 
         $fileModel = FileService::getInstance()->addFile($currentUser ? $currentUser->getId() : null, $filePath, $fileName);
 
         $result = [
             'filename' => $fileModel->getName(),
             'file_id' => $fileModel->getId(),
-            'url' => BaseConfig::getFileUrl($fileModel->getId(), $this->getHostUrl())
+            'url' => $pathContext->getFileUrl($fileModel->getId())
         ];
 
         return RESTFulApi::success($result);

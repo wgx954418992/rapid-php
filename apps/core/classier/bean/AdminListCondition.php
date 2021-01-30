@@ -7,10 +7,31 @@ namespace apps\core\classier\bean;
 class AdminListCondition extends PageListCondition
 {
     /**
+     * @var string|int|null
+     */
+    private $adminId;
+
+    /**
      * 管理员类型
      * @var int|null
      */
-    public $type;
+    private $type;
+
+    /**
+     * @return int|string|null
+     */
+    public function getAdminId()
+    {
+        return $this->adminId;
+    }
+
+    /**
+     * @param int|string|null $adminId
+     */
+    public function setAdminId($adminId): void
+    {
+        $this->adminId = $adminId;
+    }
 
     /**
      * @return int|null

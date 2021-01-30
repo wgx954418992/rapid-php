@@ -94,7 +94,7 @@ class Publicly extends WXSdk
      * @return WXUserInfoModel
      * @throws Exception
      */
-    public function getUserInfo($openId): WXUserInfoModel
+    public function getUserInfo($openId)
     {
         if (empty($openId)) throw new Exception('openId错误!');
 

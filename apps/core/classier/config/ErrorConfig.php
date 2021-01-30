@@ -1,4 +1,5 @@
 <?php
+
 namespace apps\core\classier\config;
 
 class ErrorConfig
@@ -9,6 +10,10 @@ class ErrorConfig
      */
     const USER_LOGIN_NOT = 1001;
 
+    /**
+     * 用户信息，未完善
+     */
+    const USER_INFO_NOT_PERFECT = 1101;
 
     /**
      * 文件不存在

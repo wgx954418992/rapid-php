@@ -74,6 +74,24 @@ class WeixinDao extends MasterDao
 
 
     /**
+     * 通过userId获取WX user
+     * @param $userId
+     * @return UserWeixinModel|null
+     * @throws Exception
+     */
+    public function getWXUserByUserId($userId): ?UserWeixinModel
+    {
+        /** @var UserWeixinModel $model */
+        $model = parent::get()
+            ->where('is_delete', false)
+            ->where('user_id', $userId)
+            ->getStatement()
+            ->fetch($this->getModelOrClass());
+
+        return $model;
+    }
+
+    /**
      * 通过unionId 获取wx user
      * @param $unionId
      * @return UserWeixinModel|null
@@ -92,7 +110,7 @@ class WeixinDao extends MasterDao
     }
 
     /**
-     * 通过open获取WX user
+     * 通过openId获取WX user
      * @param $openId
      * @return UserWeixinModel|null
      * @throws Exception

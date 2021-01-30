@@ -20,7 +20,8 @@ class UserController extends BaseController
      * 微信登录后回调，通过code自动注册然后登录并获取token
      * @route /wx/mini/login
      * @param $code
-     * @param array|null $userinfo post json ddsd
+     * @param array|null $userinfo post json
+     * @method get
      * @method post
      * @typed api
      * @return RESTFulApi
@@ -58,14 +59,10 @@ class UserController extends BaseController
 
         $WXUserModel->setCity($oauth2Model->getCity());
 
-        $WXUserModel->setCity($oauth2Model->getCity());
-
         /** @var UserService $userService */
         $userService = UserService::getInstance();
 
-        $headFid = $userService->getHeadFid($WXUserModel, $oauth2Model);
-
-        $token = $userService->loginByMini($WXUserModel, $headFid, $this->getIp(), $this->getRequest()->getUserAgent());
+        $token = $userService->loginByMini($WXUserModel, $this->getIp(), $this->getRequest()->getUserAgent());
 
         return RESTFulApi::success($token);
     }

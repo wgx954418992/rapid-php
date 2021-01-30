@@ -2,16 +2,12 @@
 
 namespace apps\core\classier\dao\master;
 
-use apps\core\classier\bean\UserListCondition;
-use apps\core\classier\config\BaseConfig;
 use apps\core\classier\config\SaltConfig;
 use apps\core\classier\config\UserConfig;
 use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\AppUserModel;
 use apps\core\classier\wrapper\UserWrapper;
 use Exception;
-use rapidPHP\modules\database\sql\classier\Driver;
-use rapidPHP\modules\database\sql\classier\driver\Mysql;
 use function rapidPHP\Cal;
 
 class UserDao extends MasterDao
@@ -56,6 +52,10 @@ class UserDao extends MasterDao
             $data['head_fid'] = $userModel->getHeadFid();
         }
 
+        if (!empty($userModel->getEmail())) {
+            $data['email'] = $userModel->getEmail();
+        }
+
         if (!empty($userModel->getBirthday())) {
             $data['birthday'] = $userModel->getBirthday();
         }
@@ -86,6 +86,10 @@ class UserDao extends MasterDao
 
         if (!empty($userModel->getNickname())) {
             $data['nickname'] = $userModel->getNickname();
+        }
+
+        if (!empty($userModel->getEmail())) {
+            $data['email'] = $userModel->getEmail();
         }
 
         if (!empty($userModel->getHeadFid())) {
@@ -159,6 +163,23 @@ class UserDao extends MasterDao
     }
 
     /**
+     * 恢复用户
+     * @param $id
+     * @param $updateId
+     * @return bool
+     * @throws Exception
+     */
+    public function recover($id, $updateId): bool
+    {
+        return parent::set([
+            'is_delete' => false,
+            'updated_id' => $updateId,
+            'updated_time' => Cal()->getDate(),
+        ])->where('id', $id)->execute();
+    }
+
+
+    /**
      * 更改密码
      * @param $id
      * @param $password
@@ -186,77 +207,9 @@ class UserDao extends MasterDao
     public function delUser($id, $updatedId): bool
     {
         return parent::set([
-            'is_delete' => 1,
+            'is_delete' => true,
             'updated_id' => $updatedId,
             'updated_time' => Cal()->getDate(),
         ])->where('id', $id)->execute();
     }
-
-
-    /**
-     * 获取用户列表查询对象
-     * @param UserListCondition $condition
-     * @return Driver|Mysql
-     * @throws Exception
-     */
-    private function getUserListSelect(UserListCondition $condition)
-    {
-        $select = parent::get();
-
-        if (!empty($condition->getKeyword())) {
-
-            $keyName = $select->getOptionsKey('keyword');
-
-            $select->addOptions("%{$condition->getKeyword()}%", $keyName);
-
-            $select->where("(concat(id,nickname,telephone,register_ip)) LIKE :{$keyName} ");
-        }
-
-        if ($condition->getIds()) $select->in('id', $condition->getIds());
-
-        if ($condition->getType()) $select->where('type', $condition->getType());
-
-        if ($condition->getSource()) $select->where('source', $condition->getSource());
-
-        if (!empty($condition->getStartTime())) $select->where("created_time", $condition->getStartTime(), '>=:');
-
-        if (!empty($condition->getEndTime())) $select->where("created_time", $condition->getEndTime(), '<:');
-
-        return $select->where('is_delete', false);
-    }
-
-
-    /**
-     * 获取用户列表
-     * @param UserListCondition $condition
-     * @return array
-     * @throws Exception
-     */
-    public function getUserList(UserListCondition $condition): array
-    {
-        $select = $this->getUserListSelect($condition);
-
-        $select->limit($condition->getPage(), BaseConfig::PAGE_SIZE_DEFAULT);
-
-        return $select->order($condition->getOrderName(), $condition->getOrderType())
-            ->getStatement()
-            ->fetchAll($this->getModelOrClass());
-    }
-
-    /**
-     * 获取用户列表查询总数量
-     * @param UserListCondition $condition
-     * @return int
-     * @throws Exception
-     */
-    public function getUserListCount(UserListCondition $condition): int
-    {
-        $select = $this->getUserListSelect($condition);
-
-        return (int)$select->resetSql('select')
-            ->select('count(id) as count')
-            ->getStatement()
-            ->fetchValue('count');
-    }
-
 }

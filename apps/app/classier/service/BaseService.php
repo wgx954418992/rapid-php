@@ -4,6 +4,7 @@ namespace apps\app\classier\service;
 
 
 use apps\core\classier\config\ErrorConfig;
+use apps\core\classier\context\PathContextInterface;
 use apps\core\classier\dao\master\TokenDao;
 use apps\core\classier\dao\master\UserDao;
 use apps\core\classier\service\BaseService as CoreBaseService;
@@ -27,11 +28,11 @@ class BaseService extends CoreBaseService
     /**
      * 通过token获取用户信息
      * @param $token
-     * @param $hostUrl
+     * @param PathContextInterface $pathContext
      * @return UserWrapper
      * @throws Exception
      */
-    public function getUserByToken($token, $hostUrl): UserWrapper
+    public function getUserByToken($token, PathContextInterface $pathContext): UserWrapper
     {
         if (empty($token)) throw new Exception('请先登录!');
 
@@ -46,6 +47,6 @@ class BaseService extends CoreBaseService
 
         if ($userModel == null) throw new Exception('帐号不存在!');
 
-        return $this->updateUser($userModel, $hostUrl);
+        return $this->updateUser($userModel, $pathContext);
     }
 }

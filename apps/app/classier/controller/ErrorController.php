@@ -13,6 +13,19 @@ use rapidPHP\modules\server\classier\websocket\swoole\Response;
  */
 class ErrorController extends BaseController
 {
+    /**
+     * 访问受保护的文件或者目录
+     *  - /runtime/**
+     *  - .conf .yaml .gitignore .sql .git
+     * 详情请看app 跟目录的 .htaccess 或者自己配置的nginx.conf
+     * @route /error/protected
+     * @header status:403
+     * @typed raw
+     * @param $path
+     */
+    public function protected($path)
+    {
+    }
 
     /**
      * 全局错误捕获
@@ -29,7 +42,13 @@ class ErrorController extends BaseController
 
         $accept = $this->getRequest()->header('Accept');
 
-        if (($accept === '*/*') || ($this->getResponse() instanceof Response)) {
+        $typed = null;
+
+        if ($exception instanceof ActionException && $exception->getAction()) {
+            $typed = $exception->getAction()->getTyped();
+        }
+
+        if (($typed === 'api') || ($accept === '*/*') || ($this->getResponse() instanceof Response)) {
             return RESTFulApi::error($exception->getMessage(), $exception->getCode());
         } else {
             return [
@@ -38,30 +57,5 @@ class ErrorController extends BaseController
                 'code' => $exception->getCode()
             ];
         }
-    }
-
-    /**
-     * 404错误
-     * @route /error/404
-     * @param Exception|null $exception
-     * @return string[]
-     * @template error/500
-     */
-    public function notFound(?Exception $exception = null)
-    {
-        return [
-            'title' => '404 Not Found',
-            'msg' => $exception ? $exception->getMessage() : '',
-        ];
-    }
-
-    /**
-     * 403错误
-     * @route /error/403
-     * @param ActionException|null $exception
-     */
-    public function forbidden(?ActionException $exception = null)
-    {
-        $this->getResponse()->status(403);
     }
 }

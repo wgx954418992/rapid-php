@@ -2,13 +2,10 @@
 
 namespace apps\core\classier\dao\master;
 
-use apps\core\classier\bean\OrderListCondition;
-use apps\core\classier\config\BaseConfig;
 use apps\core\classier\config\OrderConfig;
 use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\AppOrderModel;
 use Exception;
-use rapidPHP\modules\database\sql\classier\Driver;
 use function rapidPHP\Cal;
 
 class OrderDao extends MasterDao
@@ -18,7 +15,6 @@ class OrderDao extends MasterDao
     {
         parent::__construct(AppOrderModel::class);
     }
-
 
     /**
      * 添加订单
@@ -31,29 +27,88 @@ class OrderDao extends MasterDao
         return parent::add([
             'id' => $orderModel->getId(),
             'user_id' => $orderModel->getUserId(),
+            'goods_type' => $orderModel->getGoodsType(),
+            'number' => $orderModel->getNumber(),
             'status' => OrderConfig::ORDER_STATUS_CONFIRMING,
+            'pay_status' => OrderConfig::PAY_STATUS_WAITING,
             'is_delete' => false,
             'created_id' => $orderModel->getCreatedId(),
             'created_time' => Cal()->getDate(),
         ]);
     }
 
-
     /**
-     * 设置订单信息
-     * @param $userId
-     * @param $orderId
-     * @param $data
+     * 修改订单
+     * @param AppOrderModel $orderModel
      * @return bool
      * @throws Exception
      */
-    public function setOrder($userId, $orderId, $data): bool
+    public function setOrder(AppOrderModel $orderModel): bool
     {
-        $data['updated_id'] = $userId;
+        $data = [
+            'updated_id' => $orderModel->getCreatedId(),
+            'updated_time' => Cal()->getDate(),
+        ];
 
-        $data['updated_time'] = Cal()->getDate();
+        if($orderModel->getGoodsType()){
+            $data['goods_type'] = $orderModel->getGoodsType();
+        }
 
-        return parent::set($data)->where('id', $orderId)->execute();
+        if($orderModel->getNumber()){
+            $data['number'] = $orderModel->getNumber();
+        }
+
+        if($orderModel->getStatus()){
+            $data['status'] = $orderModel->getStatus();
+        }
+
+        if($orderModel->getPayStatus()){
+            $data['pay_status'] = $orderModel->getPayStatus();
+        }
+
+        if($orderModel->getInWtime()){
+            $data['in_wtime'] = $orderModel->getInWtime();
+        }
+
+        if($orderModel->getReachWtime()){
+            $data['reach_wtime'] = $orderModel->getReachWtime();
+        }
+
+        if($orderModel->getPickupCode()){
+            $data['pickup_code'] = $orderModel->getPickupCode();
+        }
+
+        return parent::set($data)->where('id', $orderModel->getId())->execute();
+    }
+
+    /**
+     * 设置订单状态
+     * @param AppOrderModel $orderModel
+     * @return bool
+     * @throws Exception
+     */
+    public function setOrderStatus(AppOrderModel $orderModel): bool
+    {
+        return parent::set([
+            'status' => $orderModel->getStatus(),
+            'updated_id' => $orderModel->getUpdatedId(),
+            'updated_time' => Cal()->getDate(),
+        ])->where('id', $orderModel->getId())->execute();
+    }
+
+    /**
+     * 设置订单支付状态
+     * @param AppOrderModel $orderModel
+     * @return bool
+     * @throws Exception
+     */
+    public function setOrderPayStatus(AppOrderModel $orderModel): bool
+    {
+        return parent::set([
+            'pay_status' => $orderModel->getPayStatus(),
+            'updated_id' => $orderModel->getUpdatedId(),
+            'updated_time' => Cal()->getDate(),
+        ])->where('id', $orderModel->getId())->execute();
     }
 
     /**
@@ -72,75 +127,6 @@ class OrderDao extends MasterDao
             ->fetch($this->getModelOrClass());
 
         return $model;
-    }
-
-    /**
-     * 获取订单列表查询对象
-     * @param OrderListCondition $condition
-     * @return Driver
-     * @throws Exception
-     */
-    public function getOrderListSelect(OrderListCondition $condition)
-    {
-        $select = parent::get()->where('is_delete', false);
-
-        if ($condition->getKeyword()) {
-            $keyword = $condition->getKeyword();
-
-            $keyName = $select->getOptionsKey('keyword');
-
-            $select->addOptions("%{$keyword}%", $keyName);
-
-            $select->where("(concat(id,receipt_address,receipt_postcode,receipt_remark,receipt_name,remark)) LIKE :{$keyName} ");
-        }
-
-        $select->where('user_id', $condition->getUserId());
-
-        if ($condition->getStartTime()) {
-            $select->where('created_time', $condition->getStartTime(), '>=:');
-        }
-
-        if ($condition->getEndTime()) {
-            $select->where('created_time', $condition->getEndTime(), '<:');
-        }
-
-        if ($condition->getStatus()) {
-            $select->where('status', $condition->getStatus());
-        }
-
-        return $select;
-    }
-
-    /**
-     * 获取订单列表
-     * @param OrderListCondition $condition
-     * @return AppOrderModel[]|null
-     * @throws Exception
-     */
-    public function getOrderList(OrderListCondition $condition)
-    {
-        $orderName = $condition->getOrderName();
-
-        return $this->getOrderListSelect($condition)
-            ->order($orderName, $condition->getOrderType())
-            ->limit($condition->getPage(), BaseConfig::PAGE_SIZE_DEFAULT)
-            ->getStatement()
-            ->fetchAll($this->getModelOrClass());
-    }
-
-    /**
-     * 获取订单列表数量
-     * @param OrderListCondition $condition
-     * @return int
-     * @throws Exception
-     */
-    public function getOrderListCount(OrderListCondition $condition): int
-    {
-        return (int)$this->getOrderListSelect($condition)
-            ->resetSql('select')
-            ->select('count(*) as count')
-            ->getStatement()
-            ->fetchValue('count');
     }
 
 

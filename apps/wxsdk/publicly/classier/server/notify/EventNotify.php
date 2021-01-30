@@ -32,12 +32,10 @@ class EventNotify extends BaseNotify
 
     /**
      * @param string $Event
-     * @return self
      */
-    public function setEvent(string $Event): self
+    public function setEvent(string $Event)
     {
         $this->Event = $Event;
-        return $this;
     }
 
     /**
@@ -50,11 +48,9 @@ class EventNotify extends BaseNotify
 
     /**
      * @param  $EventKey
-     * @return self
      */
-    public function setEventKey($EventKey): self
+    public function setEventKey($EventKey)
     {
         $this->EventKey = $EventKey;
-        return $this;
     }
 }

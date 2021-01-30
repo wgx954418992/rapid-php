@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 消息队列表
  * @table app_queue
- * rapidPHP auto generate Model 2021-01-05 00:02:37
+ * rapidPHP auto generate Model 2021-01-25 21:19:26
  */
 class AppQueueModel extends Model
 {
@@ -34,9 +34,9 @@ class AppQueueModel extends Model
     private $parent_id;    
     
     /**
-     * 跟队列所关联的主键Id，用于取消队列
-     * @length 
-     * @typed bigint
+     * 跟队列所关联的值，用于取消队列
+     * @length 50
+     * @typed varchar
      */
     private $bind_id;    
     
@@ -173,25 +173,25 @@ class AppQueueModel extends Model
     }
     
     /**
-     * 获取 跟队列所关联的主键Id，用于取消队列
-     * @return mixed
+     * 获取 跟队列所关联的值，用于取消队列
+     * @return string
      */
-    public function getBindId()
+    public function getBindId(): ?string
     {
         return $this->bind_id;
     }
     
     /**
-     * 设置 跟队列所关联的主键Id，用于取消队列
-     * @param $bind_id
+     * 设置 跟队列所关联的值，用于取消队列
+     * @param string|null $bind_id
      */
-    public function setBindId($bind_id)
+    public function setBindId(?string $bind_id)
     {
         $this->bind_id = $bind_id;
     }
     
     /**
-     * 效验 跟队列所关联的主键Id，用于取消队列
+     * 效验 跟队列所关联的值，用于取消队列
      * @param string $msg
      * @throws Exception
      */
@@ -230,18 +230,18 @@ class AppQueueModel extends Model
     
     /**
      * 获取 参数
-     * @return string
+     * @return mixed
      */
-    public function getParam(): ?string
+    public function getParam()
     {
         return $this->param;
     }
     
     /**
      * 设置 参数
-     * @param string|null $param
+     * @param $param
      */
-    public function setParam(?string $param)
+    public function setParam($param)
     {
         $this->param = $param;
     }

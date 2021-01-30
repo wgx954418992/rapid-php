@@ -7,6 +7,7 @@ use apps\core\classier\dao\master\SettingDao;
 use apps\core\classier\model\AppSettingModel;
 use Exception;
 use rapidPHP\modules\common\classier\Instances;
+use rapidPHP\modules\common\classier\Variable;
 use function rapidPHP\B;
 use function rapidPHP\Cal;
 
@@ -48,7 +49,7 @@ class SettingService
      */
     private function init()
     {
-        $settingList = (array)SettingDao::getInstance()->getSettingList();
+        $settingList = SettingDao::getInstance()->getSettingList();
 
         foreach ($settingList as $value) {
 
@@ -95,7 +96,7 @@ class SettingService
      * @param $attribute
      * @return AppSettingModel|null
      */
-    public function getTypeAttrInfo($type, $attribute): ?AppSettingModel
+    public function getTypeAttrInfo($type, $attribute)
     {
         $typeList = $this->getTypeList($type);
 
@@ -123,6 +124,52 @@ class SettingService
         return $attributeInfo->getContent();
     }
 
+    /**
+     * 添加设置
+     * @param AppSettingModel $model
+     * @return bool
+     * @throws Exception
+     */
+    public function added(AppSettingModel $model): bool
+    {
+        $model->validType('类型错误!');
+
+        $model->validType('属性错误!');
+
+        $model->validType('值错误!');
+
+        /** @var SettingDao $settingDao */
+        $settingDao = SettingDao::getInstance();
+
+        if ($model->getId()) {
+            if (!$settingDao->setSetting($model)) throw new Exception('修改失败!');
+        } else {
+            if (!$settingDao->addSetting($model)) throw new Exception('添加失败!');
+        }
+
+        return true;
+    }
+
+    /**
+     * 删除设置
+     * @param $settingId
+     * @param $updatedId
+     * @return bool
+     * @throws Exception
+     */
+    public function del($settingId, $updatedId): bool
+    {
+        if (empty($settingId)) throw new Exception('设置Id错误!');
+
+        /** @var SettingDao $settingDao */
+        $settingDao = SettingDao::getInstance();
+
+        if (!$settingDao->delSetting($updatedId, $settingId))
+            throw new Exception('删除失败!');
+
+        return true;
+    }
+
     /***
      * 获取文件存储path
      * @param string $end
@@ -134,6 +181,8 @@ class SettingService
         $path = self::getInstance()
             ->getTypeAttrValue(SetConfig::TYPE_FILE_STORAGE,
                 SetConfig::ATTRIBUTE_FILE_STORAGE_PATH);
+
+        Variable::parseVarByString($path);
 
         $year = Cal()->getDate(time(), 'Y');
 

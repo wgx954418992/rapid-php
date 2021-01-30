@@ -30,8 +30,7 @@ class FileDao extends MasterDao
     public function addFile(AppFileModel $fileInfo): bool
     {
         $result = parent::add([
-            'id' => $fileInfo->getId(),
-            'fname' => $fileInfo->getName(),
+            'name' => $fileInfo->getName(),
             'size' => $fileInfo->getSize(),
             'md5' => $fileInfo->getMd5(),
             'mime' => $fileInfo->getMime(),

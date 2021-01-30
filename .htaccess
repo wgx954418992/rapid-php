@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+
+    RewriteRule ^(.*(runtime\/|vendor\/|scripts\/).*)$ - [F,L]
+    RewriteRule ^(.*\.(conf|yaml|gitignore|sql|git))$ - [F,L]
+
+    RewriteRule composer.json - [F,L]
+    RewriteRule composer.lock - [F,L]
+</IfModule>
+
+<Files *>
+    Options -Indexes
+</Files>

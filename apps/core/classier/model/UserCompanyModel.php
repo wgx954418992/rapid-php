@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 用户企业信息表
  * @table user_company
- * rapidPHP auto generate Model 2021-01-05 00:02:37
+ * rapidPHP auto generate Model 2021-01-25 21:19:27
  */
 class UserCompanyModel extends Model
 {
@@ -34,6 +34,13 @@ class UserCompanyModel extends Model
     private $user_id;    
     
     /**
+     * 营业执照对应的文件Id
+     * @length 
+     * @typed bigint
+     */
+    private $business_fid;    
+    
+    /**
      * 企业名称
      * @length 50
      * @typed varchar
@@ -41,25 +48,25 @@ class UserCompanyModel extends Model
     private $company_name;    
     
     /**
-     * 企业组织机构代码
+     * Eori 号码
      * @length 100
      * @typed varchar
      */
-    private $organization_code;    
+    private $eori;    
     
     /**
-     * 企业税号
+     * 欧盟税号 需要⼤写
      * @length 18
      * @typed varchar
      */
-    private $tax_no;    
+    private $tva;    
     
     /**
-     * 营业执照对应的文件Id
+     * 当前状态 1 正常 2 待审核
      * @length 
-     * @typed bigint
+     * @typed tinyint
      */
-    private $business_fid;    
+    private $status;    
     
     /**
      * 是否删除
@@ -152,6 +159,34 @@ class UserCompanyModel extends Model
     }
     
     /**
+     * 获取 营业执照对应的文件Id
+     * @return mixed
+     */
+    public function getBusinessFid()
+    {
+        return $this->business_fid;
+    }
+    
+    /**
+     * 设置 营业执照对应的文件Id
+     * @param $business_fid
+     */
+    public function setBusinessFid($business_fid)
+    {
+        $this->business_fid = $business_fid;
+    }
+    
+    /**
+     * 效验 营业执照对应的文件Id
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validBusinessFid(string $msg = 'business_fid Cannot be empty!')
+    {
+        if(empty($this->business_fid)) throw new Exception($msg);
+    }
+    
+    /**
      * 获取 企业名称
      * @return string
      */
@@ -180,87 +215,87 @@ class UserCompanyModel extends Model
     }
     
     /**
-     * 获取 企业组织机构代码
+     * 获取 Eori 号码
      * @return string
      */
-    public function getOrganizationCode(): ?string
+    public function getEori(): ?string
     {
-        return $this->organization_code;
+        return $this->eori;
     }
     
     /**
-     * 设置 企业组织机构代码
-     * @param string|null $organization_code
+     * 设置 Eori 号码
+     * @param string|null $eori
      */
-    public function setOrganizationCode(?string $organization_code)
+    public function setEori(?string $eori)
     {
-        $this->organization_code = $organization_code;
+        $this->eori = $eori;
     }
     
     /**
-     * 效验 企业组织机构代码
+     * 效验 Eori 号码
      * @param string $msg
      * @throws Exception
      */
-    public function validOrganizationCode(string $msg = 'organization_code Cannot be empty!')
+    public function validEori(string $msg = 'eori Cannot be empty!')
     {
-        if(empty($this->organization_code)) throw new Exception($msg);
+        if(empty($this->eori)) throw new Exception($msg);
     }
     
     /**
-     * 获取 企业税号
+     * 获取 欧盟税号 需要⼤写
      * @return string
      */
-    public function getTaxNo(): ?string
+    public function getTva(): ?string
     {
-        return $this->tax_no;
+        return $this->tva;
     }
     
     /**
-     * 设置 企业税号
-     * @param string|null $tax_no
+     * 设置 欧盟税号 需要⼤写
+     * @param string|null $tva
      */
-    public function setTaxNo(?string $tax_no)
+    public function setTva(?string $tva)
     {
-        $this->tax_no = $tax_no;
+        $this->tva = $tva;
     }
     
     /**
-     * 效验 企业税号
+     * 效验 欧盟税号 需要⼤写
      * @param string $msg
      * @throws Exception
      */
-    public function validTaxNo(string $msg = 'tax_no Cannot be empty!')
+    public function validTva(string $msg = 'tva Cannot be empty!')
     {
-        if(empty($this->tax_no)) throw new Exception($msg);
+        if(empty($this->tva)) throw new Exception($msg);
     }
     
     /**
-     * 获取 营业执照对应的文件Id
-     * @return mixed
+     * 获取 当前状态 1 正常 2 待审核
+     * @return int
      */
-    public function getBusinessFid()
+    public function getStatus(): ?int
     {
-        return $this->business_fid;
+        return $this->status;
     }
     
     /**
-     * 设置 营业执照对应的文件Id
-     * @param $business_fid
+     * 设置 当前状态 1 正常 2 待审核
+     * @param int|null $status
      */
-    public function setBusinessFid($business_fid)
+    public function setStatus(?int $status)
     {
-        $this->business_fid = $business_fid;
+        $this->status = $status;
     }
     
     /**
-     * 效验 营业执照对应的文件Id
+     * 效验 当前状态 1 正常 2 待审核
      * @param string $msg
      * @throws Exception
      */
-    public function validBusinessFid(string $msg = 'business_fid Cannot be empty!')
+    public function validStatus(string $msg = 'status Cannot be empty!')
     {
-        if(empty($this->business_fid)) throw new Exception($msg);
+        if(empty($this->status)) throw new Exception($msg);
     }
     
     /**

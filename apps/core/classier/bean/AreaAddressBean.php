@@ -9,79 +9,79 @@ class AreaAddressBean
      * 省id
      * @var int|null
      */
-    public $province_id;
+    private $province_id;
 
     /**
      * 省名称
      * @var string|null
      */
-    public $province_name;
+    private $province_name;
 
     /**
      * 省名称（英文）
      * @var string|null
      */
-    public $province_en;
+    private $province_en;
 
     /**
      * 省code
      * @var string|null
      */
-    public $province_code;
+    private $province_code;
 
     /**
      * 国家id
      * @var int|null
      */
-    public $country_id;
+    private $country_id;
 
     /**
      * 国家名称
      * @var string|null
      */
-    public $country_name;
+    private $country_name;
 
     /**
      * 国家名称（英文）
      * @var string|null
      */
-    public $country_en;
+    private $country_en;
 
     /**
      * 国家code
      * @var string|null
      */
-    public $country_code;
+    private $country_code;
 
     /**
      * 州id
      * @var int|null
      */
-    public $state_id;
+    private $state_id;
 
     /**
      * 州名称
      * @var string|null
      */
-    public $state_name;
+    private $state_name;
 
     /**
      * 州名称（英文）
      * @var string|null
      */
-    public $state_en;
+    private $state_en;
 
     /**
      * 州code
      * @var string|null
      */
-    public $state_code;
+    private $state_code;
 
     /**
      * 详细地址
      * @var string|null
      */
-    public $address;
+    private $address;
 
     /**
      * @return int|null

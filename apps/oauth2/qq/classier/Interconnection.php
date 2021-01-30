@@ -25,7 +25,7 @@ class Interconnection extends OAuth2
      * @return AB
      * @throws Exception
      */
-    private function getAccessInfo(string $code): AB
+    private function getAccessInfo(string $code)
     {
         $accessInfo = $this->sendHttpRequest(InterconnectionConfig::getAccessTokenUrl($this->getAppId(), $this->getSecret(), $code, $this->getCallUrl()));
 
@@ -63,7 +63,7 @@ class Interconnection extends OAuth2
      * @return QQUserModel
      * @throws Exception
      */
-    public function getUserInfo(string $code, ?array $options = []): QQUserModel
+    public function getUserInfo(string $code, ?array $options = [])
     {
         if (empty($code)) throw new Exception('code 错误!');
 

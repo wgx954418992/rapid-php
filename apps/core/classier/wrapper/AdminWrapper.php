@@ -25,6 +25,13 @@ class AdminWrapper extends AppAdminModel
     private $creator;
 
     /**
+     * 子账号数量
+     * @var int|null
+     */
+    private $child_count;
+
+
+    /**
      * @param int|null $type
      */
     public function setType(?int $type)
@@ -75,4 +82,21 @@ class AdminWrapper extends AppAdminModel
     {
         return $this->creator;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getChildCount(): ?int
+    {
+        return $this->child_count;
+    }
+
+    /**
+     * @param int|null $child_count
+     */
+    public function setChildCount(?int $child_count): void
+    {
+        $this->child_count = $child_count;
+    }
+
 }

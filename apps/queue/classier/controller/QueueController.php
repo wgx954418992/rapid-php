@@ -9,7 +9,6 @@ use rapidPHP\modules\application\classier\context\ConsoleContext;
 class QueueController extends BaseController
 {
 
-
     /**
      * @var UnifiedDispatchService
      */

@@ -33,9 +33,9 @@ class QueueConfig
     const EXECUTION_TIMEOUT = 60 * 10 * 1000;
 
     /**
-     * 队列类型 订单创建成功
+     * 队列类型 订单状态更改
      */
-    const TYPE_ORDER_CREATED = 'ORDER_CREATED';
+    const TYPE_ORDER_STATUS_CHANGE = 'ORDER_STATUS_CHANGE';
 
     /**
      * 队列类型 短信通知
@@ -58,9 +58,14 @@ class QueueConfig
     const PARAM_KEY_SMS_TELEPHONE = 'T';
 
     /**
-     * 参数key 短信 telephoneCode
+     * 参数key 短信 telephoneId
      */
-    const PARAM_KEY_SMS_TEMPLATE_CODE = 'TC';
+    const PARAM_KEY_SMS_TEMPLATE_ID = 'TD';
+
+    /**
+     * 参数key 短信 param
+     */
+    const PARAM_KEY_SMS_PARAM = 'TP';
 
     /**
      * 参数key 小程序 openId

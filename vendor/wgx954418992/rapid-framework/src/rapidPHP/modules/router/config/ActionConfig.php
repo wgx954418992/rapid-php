@@ -45,8 +45,12 @@ class ActionConfig
     {
         switch (strtolower($type)) {
             case self::ENCODE_TYPE_XML:
+                if (is_array($value)) return $value;
+
                 return Xml::getInstance()->decode($value);
             case self::ENCODE_TYPE_JSON:
+                if (is_array($value)) return $value;
+
                 return Build::getInstance()->jsonDecode($value);
         }
         return $value;

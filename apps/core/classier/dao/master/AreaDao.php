@@ -22,10 +22,10 @@ class AreaDao extends MasterDao
     /**
      * 获取中国地区列表
      * @param int|null $areaId
-     * @return array|null
+     * @return AppAreaModel[]
      * @throws Exception
      */
-    public function getAreaList(int $areaId = null): ?array
+    public function getAreaList($areaId = null): array
     {
         $select = parent::get()->order('level');
 
@@ -35,10 +35,9 @@ class AreaDao extends MasterDao
             $select->where('level', 2);
         }
 
-        return $select->getStatement()
+        return (array)$select->getStatement()
             ->fetchAll($this->getModelOrClass());
     }
-
 
     /**
      * 获取地址信息
@@ -53,7 +52,7 @@ class AreaDao extends MasterDao
 
         $cache = RedisCacheService::getInstance()->get($RId);
 
-        if ($cache instanceof AppAreaModel) return $cache;
+        if (!empty($cache) && $cache instanceof AppAreaModel) return $cache;
 
         $select = parent::get()->where('id', $areaId);
 
@@ -62,8 +61,22 @@ class AreaDao extends MasterDao
         /** @var AppAreaModel $model */
         $model = $select->getStatement()->fetch(AppAreaModel::class);
 
-        RedisCacheService::getInstance()->add($RId, $model);
+        if ($model) RedisCacheService::getInstance()->add($RId, $model);
 
         return $model;
+    }
+
+    /**
+     * 获取三级联动数据
+     * @return array
+     * @throws Exception
+     */
+    public function getAllAreaList(): array
+    {
+        return (array)parent::get('id,name,pid')
+            ->in('level', [1, 2, 3, 4])
+            ->order('level ASC,id ASC', '')
+            ->getStatement()
+            ->fetchAll();
     }
 }

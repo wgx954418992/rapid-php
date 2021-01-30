@@ -3,10 +3,11 @@
 
 namespace apps\queue\classier\service;
 
-
+use apps\queue\classier\config\QueueConfig;
 use apps\queue\classier\process\UnifiedDispatchProcess;
 use Exception;
 use rapidPHP\modules\console\classier\Output;
+use ReflectionException;
 use Swoole\Process;
 use function rapidPHP\B;
 use function rapidPHP\Cal;
@@ -71,6 +72,8 @@ class UnifiedDispatchService
 
     /**
      * 创建进程
+     * @throws ReflectionException
+     * @throws Exception
      */
     private function create()
     {
@@ -98,6 +101,7 @@ class UnifiedDispatchService
     /**
      * 启动
      * @param callable $call
+     * @throws ReflectionException
      */
     public function start(callable $call)
     {
@@ -179,6 +183,7 @@ class UnifiedDispatchService
     /**
      * 重启信号
      * @param $pid
+     * @throws ReflectionException
      */
     private function onSIGHUP($pid)
     {

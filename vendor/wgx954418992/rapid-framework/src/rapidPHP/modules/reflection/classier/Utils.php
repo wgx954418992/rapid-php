@@ -206,6 +206,16 @@ class Utils
      */
     public function toArray($object, $filter = null): ?array
     {
+        if (is_array($object)) {
+            foreach ($object as &$datum) {
+                if (is_array($datum) || is_object($datum)) {
+                    $datum = $this->toArray($datum);
+                }
+            }
+
+            return $object;
+        }
+
         if (!is_object($object)) return null;
 
         $classify = Classify::getInstance($object);

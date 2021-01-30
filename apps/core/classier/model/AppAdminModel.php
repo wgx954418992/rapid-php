@@ -8,7 +8,7 @@ use rapidPHP\modules\core\classier\Model;
 /**
  * 后台管理员
  * @table app_admin
- * rapidPHP auto generate Model 2021-01-05 00:02:36
+ * rapidPHP auto generate Model 2021-01-25 21:19:26
  */
 class AppAdminModel extends Model
 {
@@ -42,7 +42,7 @@ class AppAdminModel extends Model
     
     /**
      * 登录账号
-     * @length 15
+     * @length 50
      * @typed varchar
      */
     private $username;    
