@@ -128,7 +128,9 @@ class Utils
             if (empty($type)) {
                 $result[] = $value;
             } else if (Variable::isSetType($type)) {
-                Variable::setType($value, $type);
+                if (!($value === null && $parameter->getParameter()->allowsNull())) {
+                    Variable::setType($value, $type);
+                }
 
                 $result[] = $value;
             } else if (empty($value) && $parameter->getParameter()->allowsNull()) {
@@ -171,6 +173,7 @@ class Utils
         $setterMethods = $classify->getSetterMethods();
 
         foreach ($setterMethods as $method) {
+
             $parameters = $this->makeMethodParameters($method, $data);
 
             if ($method->getMethod()->isPrivate() ||

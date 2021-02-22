@@ -148,7 +148,7 @@ class WXServer
 
         if (empty($bean)) throw new Exception('undefined msgType ' . $msgType);
 
-        $instance = Utils::getInstance()->toObject($msg, $bean);
+        $instance = Utils::getInstance()->toObject($bean, $msg);
 
         if ($instance instanceof MsgNotify) {
             $result = $server->onMsg($instance);

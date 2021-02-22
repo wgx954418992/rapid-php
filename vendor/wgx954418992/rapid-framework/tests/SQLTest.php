@@ -147,6 +147,7 @@ class ColumnModel extends Model
 
 class SQLTest extends TestCase
 {
+
     /**
      * @var SQLDB
      */
@@ -160,7 +161,7 @@ class SQLTest extends TestCase
     {
         $config = new \rapidPHP\modules\database\sql\config\ConnectConfig();
 
-        $config->setUrl('mysql://rm-bp1un7cx4r5c28jj9yo.mysql.rds.aliyuncs.com:3306/?database=btqingcao&characterCode=utf8mb4');
+        $config->setUrl('mysql://127.0.0.1:3306/?database=test&characterCode=utf8mb4');
 
         $config->setUsername('root');
 

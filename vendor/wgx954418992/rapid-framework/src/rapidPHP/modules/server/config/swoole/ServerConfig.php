@@ -9,14 +9,14 @@ class ServerConfig extends BaseServerConfig
 {
 
     /**
-     * @var array|null
+     * @var array
      */
     private $co;
 
     /**
      * @return array|null
      */
-    public function getCo(): ?array
+    public function getCo(): array
     {
         return $this->co;
     }
@@ -24,7 +24,7 @@ class ServerConfig extends BaseServerConfig
     /**
      * @param array|null $co
      */
-    public function setCo(?array $co): void
+    public function setCo(array $co): void
     {
         $this->co = $co;
     }

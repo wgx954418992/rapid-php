@@ -114,6 +114,8 @@ abstract class OAuth2
             $data = B()->jsonDecode($httpResponse);
 
             if (!is_array($data)) {
+                if (substr($httpResponse, 0, 1) != '?') $httpResponse = '?' . $httpResponse;
+
                 $data = Uri::getInstance()->toArray($httpResponse);
             }
         }
@@ -131,6 +133,13 @@ abstract class OAuth2
     {
         return '';
     }
+
+    /**
+     * 获取 openid
+     * @param string $code
+     * @return BaseUserModel|QQUserModel|WXUserModel
+     */
+    abstract public function getOpenId(string $code): ?string;
 
     /**
      * 子类实现获取用户信息方法

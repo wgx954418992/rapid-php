@@ -62,35 +62,92 @@ class Uri
     }
 
     /**
-     * UTF-8 aware parse_url() replacement.
+     * 解析 url 信息，支持中文，可完全替代parse_url 并且兼容原 parse_url
      *
-     * @param $url
+     * - parse_url('https://wgx:dd@www.baidu.com:80/1?a=1')
+     * - parse_url('https://www.baidu.com/search#print')
+     * - parse_url('file:///xxx/xxx/xxx')
+     * - parse_url('ftp://www.baidu.com')
+     * - parse_url('?a=1')
+     * - parse_url('www.baidu.com/aa/1')
+     * @param $uri
      * @param int $component
-     * @return mixed|string
+     * @return array|int|mixed|string|null
      */
-    public function parseUrl($url, $component = -1)
+    public function parseUrl($uri, $component = -1)
     {
-        $encodedUrl = preg_replace_callback(
-            '%[^:/?#&=\.]+%usD',
-            function ($matches) {
-                return urlencode($matches[0]);
-            },
-            $url
-        );
+        preg_match('/^(?:([A-Za-z-\x{4e00}-\x{9fa5}+@#]+):)?(\/{0,3})?(?:(\w+:\w+)@)?([0-9.\-A-Za-z-\x{4e00}-\x{9fa5}]+)?(?::(\d+))?(?:(\/[^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/ui', $uri, $data);
 
-        $components = parse_url($encodedUrl, $component);
+        $scheme = isset($data[1]) ? $data[1] : null;
 
-        if (is_array($components)) {
-            foreach ($components as &$part) {
-                if (is_string($part)) {
-                    $part = urldecode($part);
-                }
-            }
-        } else if (is_string($components)) {
-            $components = urldecode($components);
+        $up = explode(':', isset($data[3]) ? $data[3] : null);
+
+        $host = isset($data[4]) ? $data[4] : null;
+
+        $port = isset($data[5]) ? $data[5] : null;
+
+        $path = isset($data[6]) ? $data[6] : null;
+
+        if ($path && substr($path, 0, 1) != '/') $path = '/' . $path;
+
+        $query = isset($data[7]) ? $data[7] : null;
+
+        $fragment = isset($data[8]) ? $data[8] : null;
+
+        if ($scheme === 'file') {
+            $path = "/{$host}{$path}";
+
+            $host = null;
         }
 
-        return $components;
+        $user = (!empty($up) && isset($up[0])) ? $up[0] : null;
+
+        $pass = (!empty($up) && isset($up[1])) ? $up[1] : null;
+
+        $intComponent = is_numeric($component) ? (int)$component : -1;
+
+        switch ($intComponent) {
+            case PHP_URL_SCHEME:
+                return $scheme;
+            case PHP_URL_HOST:
+                return $host;
+            case PHP_URL_PORT:
+                return $port;
+            case PHP_URL_USER:
+                return $user;
+            case PHP_URL_PASS:
+                return $pass;
+            case PHP_URL_PATH:
+                return $path;
+            case PHP_URL_QUERY:
+                return $query;
+            case PHP_URL_FRAGMENT:
+                return $fragment;
+            default:
+                $result = [];
+
+                if ($scheme != null) $result[self::URL_SCHEME] = $scheme;
+
+                if ($host != null) $result[self::URL_HOST] = $host;
+
+                if ($port != null) $result[self::URL_PORT] = (int)$port;
+
+                if ($user != null) $result[self::URL_USER] = $user;
+
+                if ($pass != null) $result[self::URL_PASS] = $pass;
+
+                if ($path != null) $result[self::URL_PATH] = $path;
+
+                if ($query != null) $result[self::URL_QUERY] = $query;
+
+                if ($fragment != null) $result[self::URL_FRAGMENT] = $fragment;
+
+                if ($component && is_string($component)) {
+                    return isset($result[$component]) ? $result[$component] : null;
+                }
+
+                return $result;
+        }
     }
 
     /**
@@ -103,7 +160,7 @@ class Uri
     {
         $urlQuery = $this->parseUrl($url, PHP_URL_QUERY);
 
-        if (empty($urlQuery)) return [];
+        if (empty($urlQuery)) $urlQuery = $url;
 
         parse_str($urlQuery, $list);
 

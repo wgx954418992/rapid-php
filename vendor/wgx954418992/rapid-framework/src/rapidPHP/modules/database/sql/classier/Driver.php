@@ -93,7 +93,7 @@ abstract class Driver
      * @param bool $isMergeOptions
      * @return self|static|Mysql|string|string[]
      */
-    private function getDriverSql($callOrDriver, $isMergeOptions = true, &$tableName = null)
+    public function getDriverSql($callOrDriver, $isMergeOptions = true, &$tableName = null)
     {
         if (is_callable($callOrDriver)) {
             $driver = call_user_func($callOrDriver, $this);

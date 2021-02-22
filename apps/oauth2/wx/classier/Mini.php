@@ -46,6 +46,27 @@ class Mini extends OAuth2
         return null;
     }
 
+
+    /**
+     * 获取用户信息 通过js opcode id
+     * @param string $code
+     * @return WXUserModel
+     * @throws Exception
+     */
+    public function getOpenId(string $code): ?string
+    {
+        if (empty($code)) throw new Exception('code 错误!');
+
+        $url = MiniConfig::JSCodeToSessionUrl($this->getAppId(), $this->getSecret(), $code);
+
+        $openInfo = $this->sendHttpRequest($url);
+
+        if ($openInfo->hasName('errcode')) throw new Exception($openInfo->toString('errmsg'));
+
+        return $openInfo->toString('openid');
+    }
+
+
     /**
      * 获取用户信息 通过js code options 需要小程序上传获取到的用户基本资料
      * @param string $code

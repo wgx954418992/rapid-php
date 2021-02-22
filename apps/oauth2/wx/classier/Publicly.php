@@ -37,10 +37,26 @@ class Publicly extends OAuth2
      * @param string $state
      * @return string
      */
-
     public function getCodeUrl(string $scope = 'snsapi_userinfo', string $state = ''): string
     {
         return PubliclyConfig::getCodeUrl($this->getAppId(), $this->getCallUrl(), $scope, $state);
+    }
+
+    /**
+     * 获取wx openid信息
+     * @param string $code
+     * @return WXUserModel
+     * @throws Exception
+     */
+    public function getOpenId(string $code): ?string
+    {
+        if (empty($code)) throw new Exception('code 错误!');
+
+        $accessInfo = $this->getAccessInfo($code);
+
+        if (empty($accessInfo)) throw new Exception("accessInfo 获取失败!");
+
+        return $accessInfo->toString('openid');
     }
 
     /**

@@ -71,7 +71,6 @@ class Mapping
             $read = File::getInstance()->readDirFiles($path);
 
             foreach ($read as $file) {
-
                 $className = ReflectionUtils::getInstance()->getClassFullNameByFile($file);
 
                 $classify = Classify::getInstance($className);
