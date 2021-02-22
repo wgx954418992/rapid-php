@@ -3,6 +3,7 @@
 namespace apps\openapi\classier\controller;
 
 
+use apps\admin\classier\context\AdminContext;
 use apps\app\classier\context\UserContext as AppUserContext;
 use apps\openapi\classier\Action;
 use apps\openapi\classier\OpenAPI;
@@ -112,6 +113,8 @@ class HomeController extends BaseController
         });
 
         $openAPI->setInterceptParameter(AppUserContext::class, [$this, 'tokenIntercept']);
+
+        $openAPI->setInterceptParameter(AdminContext::class, [$this, 'tokenIntercept']);
 
         $openAPI->transformation($routes, $paths, $components);
 
