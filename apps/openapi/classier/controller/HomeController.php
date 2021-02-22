@@ -112,6 +112,16 @@ class HomeController extends BaseController
             return false;
         });
 
+        $openAPI->setInterceptRoute('admin/.*', function (Route &$route, Method &$method, Action &$action) {
+            $parameters = $action->getParameters();
+
+            $parameters = array_merge([$this->getTokenParameter()], $parameters);
+
+            $action->setParameters($parameters);
+
+            return false;
+        });
+
         $openAPI->setInterceptParameter(AppUserContext::class, [$this, 'tokenIntercept']);
 
         $openAPI->setInterceptParameter(AdminContext::class, [$this, 'tokenIntercept']);
