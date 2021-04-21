@@ -13,13 +13,13 @@ abstract class Server
      * config
      * @var ServerConfig
      */
-    private $config;
+    protected $config;
 
     /**
      * 任务接口
      * @var Task|null
      */
-    private $task;
+    protected $task;
 
     /**
      * Server constructor.
@@ -54,5 +54,5 @@ abstract class Server
      * @param string $event
      * @param callable $callback
      */
-    abstract public function on(string $event, $callback);
+    abstract public function on(string $event, callable $callback);
 }

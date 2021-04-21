@@ -12,12 +12,12 @@ class Value
      * name
      * @var string|null
      */
-    private $atName;
+    protected $atName;
 
     /**
      * @var string|null
      */
-    private $value;
+    protected $value;
 
     /**
      * Value constructor.

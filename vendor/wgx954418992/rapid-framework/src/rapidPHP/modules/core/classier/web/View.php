@@ -30,6 +30,10 @@ class View
     {
         $dom = new DOMDocument('1.0');
 
-        return (new Element($dom, $name, $value, $parent))->setAttrList($attr);
+        $element = new Element($dom, $name, $value, $parent);
+
+        $element->setAttrList($attr);
+
+        return $element;
     }
 }

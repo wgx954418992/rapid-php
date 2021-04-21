@@ -10,7 +10,7 @@ class XSS
     /**
      * @var AntiXSS
      */
-    private static $antiXss;
+    protected static $antiXss;
 
     /**
      * 采用单例模式

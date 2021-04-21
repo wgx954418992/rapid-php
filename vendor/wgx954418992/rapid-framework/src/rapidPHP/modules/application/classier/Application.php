@@ -41,7 +41,7 @@ abstract class Application
     /**
      * @var Init
      */
-    private $init;
+    protected $init;
 
     /**
      * Application constructor.

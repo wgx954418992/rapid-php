@@ -22,7 +22,7 @@ class Server extends SwooleServer
      * request 原始body
      * @var array
      */
-    private $requestBody = [];
+    protected $requestBody = [];
 
     /**
      * Service constructor.

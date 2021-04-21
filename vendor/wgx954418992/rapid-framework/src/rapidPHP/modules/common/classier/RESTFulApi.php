@@ -11,12 +11,12 @@ class RESTFulApi
     /**
      * @var array 结果
      */
-    private $result = [];
+    protected $result = [];
 
     /**
      * @var string
      */
-    private $dataKey, $codeKey, $msgKey;
+    protected $dataKey, $codeKey, $msgKey;
 
     /**
      * 失败状态

@@ -13,7 +13,7 @@ class ActionException extends Exception
     /**
      * @var Action
      */
-    private $action;
+    protected $action;
 
     /**
      * @var string|int

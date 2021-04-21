@@ -1,8 +1,8 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => '3.6.5',
-    'version' => '3.6.5.0',
+    'pretty_version' => '3.6.6',
+    'version' => '3.6.6.0',
     'aliases' => 
     array (
     ),
@@ -50,12 +50,12 @@
     ),
     'endroid/qr-code' => 
     array (
-      'pretty_version' => '3.9.6',
-      'version' => '3.9.6.0',
+      'pretty_version' => '4.1.2',
+      'version' => '4.1.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '9cdd4f5d609bfc8811ca4a62b4d23eb16976242f',
+      'reference' => '9ed4de3c62fdee12a6bf2a63549da27bd0b1436f',
     ),
     'ezyang/htmlpurifier' => 
     array (
@@ -65,15 +65,6 @@
       array (
       ),
       'reference' => '08e27c97e4c6ed02f37c5b2b20488046c8d90d75',
-    ),
-    'khanamiryan/qrcode-detector-decoder' => 
-    array (
-      'pretty_version' => '1.0.4',
-      'version' => '1.0.4.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '07fceefb79d895e858e52921afb9c1433d2f3d5e',
     ),
     'maennchen/zipstream-php' => 
     array (
@@ -189,21 +180,21 @@
     ),
     'phpoffice/phpspreadsheet' => 
     array (
-      'pretty_version' => '1.16.0',
-      'version' => '1.16.0.0',
+      'pretty_version' => '1.17.1',
+      'version' => '1.17.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '76d4323b85129d0c368149c831a07a3e258b2b50',
+      'reference' => 'c55269cb06911575a126dc225a05c0e4626e5fb4',
     ),
     'phpspec/prophecy' => 
     array (
-      'pretty_version' => '1.12.2',
-      'version' => '1.12.2.0',
+      'pretty_version' => '1.13.0',
+      'version' => '1.13.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '245710e971a030f42e08f4912863805570f23d39',
+      'reference' => 'be1996ed8adc35c3fd795488a653f4b518be70ea',
     ),
     'phpunit/php-code-coverage' => 
     array (
@@ -410,24 +401,6 @@
       ),
       'reference' => '99732be0ddb3361e16ad77b68ba41efc8e979019',
     ),
-    'symfony/deprecation-contracts' => 
-    array (
-      'pretty_version' => 'v2.2.0',
-      'version' => '2.2.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '5fa56b4074d1ae755beb55617ddafe6f5d78f665',
-    ),
-    'symfony/options-resolver' => 
-    array (
-      'pretty_version' => 'v5.2.3',
-      'version' => '5.2.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '5d0f633f9bbfcf7ec642a2b5037268e61b0a62ce',
-    ),
     'symfony/polyfill-ctype' => 
     array (
       'pretty_version' => 'v1.22.1',
@@ -482,51 +455,6 @@
       ),
       'reference' => 'cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9',
     ),
-    'symfony/polyfill-php73' => 
-    array (
-      'pretty_version' => 'v1.22.1',
-      'version' => '1.22.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'a678b42e92f86eca04b7fa4c0f6f19d097fb69e2',
-    ),
-    'symfony/polyfill-php80' => 
-    array (
-      'pretty_version' => 'v1.22.1',
-      'version' => '1.22.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'dc3063ba22c2a1fd2f45ed856374d79114998f91',
-    ),
-    'symfony/property-access' => 
-    array (
-      'pretty_version' => 'v5.2.3',
-      'version' => '5.2.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '3af8ed262bd3217512a13b023981fe68f36ad5f3',
-    ),
-    'symfony/property-info' => 
-    array (
-      'pretty_version' => 'v5.2.3',
-      'version' => '5.2.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '4e4f368c3737b1c175d66f4fc0b99a5bcd161a77',
-    ),
-    'symfony/string' => 
-    array (
-      'pretty_version' => 'v5.2.3',
-      'version' => '5.2.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'c95468897f408dd0aca2ff582074423dd0455122',
-    ),
     'theseer/tokenizer' => 
     array (
       'pretty_version' => '1.2.0',
@@ -538,12 +466,12 @@
     ),
     'voku/anti-xss' => 
     array (
-      'pretty_version' => '4.1.31',
-      'version' => '4.1.31.0',
+      'pretty_version' => '4.1.32',
+      'version' => '4.1.32.0',
       'aliases' => 
       array (
       ),
-      'reference' => '22dea9be8dbffa466995ea87a12da5f3bce874bb',
+      'reference' => '159b49a50cf3f6cf72ee43b0dcf7c2580a0c12d1',
     ),
     'voku/portable-ascii' => 
     array (
@@ -565,26 +493,26 @@
     ),
     'webmozart/assert' => 
     array (
-      'pretty_version' => '1.9.1',
-      'version' => '1.9.1.0',
+      'pretty_version' => '1.10.0',
+      'version' => '1.10.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'bafc69caeb4d49c39fd0779086c03a3738cbb389',
+      'reference' => '6964c76c7804814a842473e0c8fd15bab0f18e25',
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.6.5',
-      'version' => '3.6.5.0',
+      'pretty_version' => '3.6.6',
+      'version' => '3.6.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f33c5cccc9dd44b03e2257d4d4790494fcb8f03e',
+      'reference' => '478ffa46ff760b32eb518396a0cdcbbc8f1e2b88',
     ),
     'wgx954418992/rapid-php' => 
     array (
-      'pretty_version' => '3.6.5',
-      'version' => '3.6.5.0',
+      'pretty_version' => '3.6.6',
+      'version' => '3.6.6.0',
       'aliases' => 
       array (
       ),

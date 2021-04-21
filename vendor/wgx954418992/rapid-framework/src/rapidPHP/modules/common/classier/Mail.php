@@ -8,80 +8,80 @@ class Mail
     /**
      * @var string 邮件传输代理用户名
      */
-    private $userName;
+    protected $userName;
 
     /**
      * @var string 邮件传输代理密码
      */
-    private $password;
+    protected $password;
 
     /**
      * @var string 邮件传输代理服务器地址
      */
-    private $sendServer;
+    protected $sendServer;
 
     /**
      * @var int 邮件传输代理服务器端口
      */
-    private $port;
+    protected $port;
 
     /**
      * @var string 发件人
      */
-    private $from;
+    protected $from;
 
     /**
      * @var array 收件人
      */
-    private $to = [];
+    protected $to = [];
 
     /**
      * @var array 抄送
      */
-    private $cc = [];
+    protected $cc = [];
 
     /**
      * @var array 秘密抄送
      */
-    private $bcc = [];
+    protected $bcc = [];
 
     /**
      * @var string 主题
      */
-    private $subject;
+    protected $subject;
 
     /**
      * @var string 邮件正文
      */
-    private $body;
+    protected $body;
 
 
     /**
      * @var array 附件
      */
-    private $attachment = [];
+    protected $attachment = [];
 
 
     /**
      * @var resource socket资源
      */
-    private $socket;
+    protected $socket;
 
     /**
      * @var resource 是否是安全连接
      */
-    private $isSecurity;
+    protected $isSecurity;
 
     /**
      * @var string 错误信息
      */
-    private $errorMessage;
+    protected $errorMessage;
 
     /**
      * mime 类型
      * @var array
      */
-    private $mimeTypes = array(
+    protected $mimeTypes = array(
         'txt' => 'text/plain',
         'htm' => 'text/html',
         'html' => 'text/html',
@@ -287,7 +287,7 @@ class Mail
      * 返回mail命令
      * @return array
      */
-    private function getCommand()
+    protected function getCommand()
     {
         $separator = "----=_Part_" . md5($this->from . time()) . uniqid();
 
@@ -417,7 +417,7 @@ class Mail
      * @param int $code 期望服务器返回的响应吗
      * @return boolean
      */
-    private function sendCommand($command, $code)
+    protected function sendCommand($command, $code)
     {
         if (!empty($code)) {
             try {
@@ -451,7 +451,7 @@ class Mail
      * @param int $code 期望服务器返回的响应吗
      * @return boolean
      */
-    private function sendCommandSecurity($command, $code)
+    protected function sendCommandSecurity($command, $code)
     {
         if (!empty($code)) {
             try {
@@ -483,7 +483,7 @@ class Mail
      * @param string $file 文件
      * @return mixed
      */
-    private function readFile($file)
+    protected function readFile($file)
     {
         if (file_exists($file)) {
             $fileObj = file_get_contents($file);
@@ -500,7 +500,7 @@ class Mail
      * @param $file
      * @return array|null|string
      */
-    private function getMimeContentType($file)
+    protected function getMimeContentType($file)
     {
         $fileInfo = B()->getPathInfo($file);
         if (function_exists('mime_content_type')) {
@@ -518,7 +518,7 @@ class Mail
      * @param string $file 文件
      * @return mixed
      */
-    private function getMIMEType($file)
+    protected function getMIMEType($file)
     {
         if (file_exists($file)) {
             return $this->getMimeContentType($file);
@@ -531,7 +531,7 @@ class Mail
      * 建立到服务器的网络连接
      * @return boolean
      */
-    private function socket()
+    protected function socket()
     {
         if (!$this->socket = socket_create(AF_INET, SOCK_STREAM, getprotobyname('tcp'))) {
             $this->errorMessage = socket_strerror(socket_last_error());
@@ -557,7 +557,7 @@ class Mail
      * 建立到服务器的SSL网络连接
      * @return boolean
      */
-    private function socketSecurity()
+    protected function socketSecurity()
     {
         $address = "tcp://" . $this->sendServer . ":" . $this->port;
 
@@ -583,7 +583,7 @@ class Mail
      * 关闭socket
      * @return boolean
      */
-    private function close()
+    protected function close()
     {
         if (isset($this->socket) && is_object($this->socket)) {
             socket_close($this->socket);
@@ -598,7 +598,7 @@ class Mail
      * 关闭安全socket
      * @return boolean
      */
-    private function closeSafety()
+    protected function closeSafety()
     {
         if (isset($this->socket) && is_resource($this->socket)) {
             stream_socket_shutdown($this->socket, STREAM_SHUT_WR);

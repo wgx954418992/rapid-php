@@ -13,12 +13,12 @@ class Response extends ResponseInterface
      * 是否结束
      * @var bool
      */
-    private $isEnd = false;
+    protected $isEnd = false;
 
     /**
      * @var SwooleResponse
      */
-    private $swooleResponse;
+    protected $swooleResponse;
 
     /**
      * Response constructor.

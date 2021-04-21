@@ -12,25 +12,25 @@ class Parameter extends Value
      * 参数注解类型
      * @var string|string[]
      */
-    private $type;
+    protected $type;
 
     /**
      * 名字
      * @var string|string[]
      */
-    private $name;
+    protected $name;
 
     /**
      * 来源
      * @var string|string[]
      */
-    private $source;
+    protected $source;
 
     /**
      * 说明
      * @var string
      */
-    private $remark;
+    protected $remark;
 
     /**
      * Parameter constructor.

@@ -23,7 +23,7 @@ abstract class SwooleServer extends Server
      * server
      * @var BaseSwooleServer|SwooleHttpServer|SwooleWebSocketServer
      */
-    private $server;
+    protected $server;
 
     /**
      * SwooleServer constructor.
@@ -81,7 +81,7 @@ abstract class SwooleServer extends Server
      * @param string $event
      * @param callable $callback
      */
-    public function on(string $event, $callback)
+    public function on(string $event, callable $callback)
     {
         $this->server->on($event, $callback);
     }

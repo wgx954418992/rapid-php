@@ -21,7 +21,7 @@ class Classify
     /**
      * @var ReflectionClass
      */
-    private $reflection;
+    protected $reflection;
 
     /**
      * Classify constructor.
@@ -53,7 +53,9 @@ class Classify
      */
     public static function getInstance($name)
     {
-        if (!$name) throw new Exception('Classify name empty');
+        if (!$name) {
+            throw new Exception('Classify name empty');
+        }
 
         try {
             return new Classify($name);

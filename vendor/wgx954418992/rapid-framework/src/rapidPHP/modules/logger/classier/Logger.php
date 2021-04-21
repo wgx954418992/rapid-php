@@ -14,12 +14,12 @@ class Logger extends Monolog
     /**
      * @var Logger[]
      */
-    private static $instances = [];
+    protected static $instances = [];
 
     /**
      * @var LoggerConfig
      */
-    private $config;
+    protected $config;
 
     /**
      * Logger constructor.

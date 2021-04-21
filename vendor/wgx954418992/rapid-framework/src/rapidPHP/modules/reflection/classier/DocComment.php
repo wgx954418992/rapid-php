@@ -17,12 +17,12 @@ class DocComment
     /**
      * @var string
      */
-    private $doc;
+    protected $doc;
 
     /**
      * @var array
      */
-    private static $registers = [];
+    protected static $registers = [];
 
     /**
      * @param $doc

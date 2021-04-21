@@ -55,7 +55,7 @@ class Handler
     /**
      * @var static[]
      */
-    private static $instances;
+    protected static $instances;
 
     /**
      * @return static

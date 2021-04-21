@@ -45,7 +45,6 @@ class Request extends RequestInterface
             $req->cookie,
             $req->header,
             $req->server,
-            $req->rawContent(),
             $sessionConfig,
             $sessionId
         );

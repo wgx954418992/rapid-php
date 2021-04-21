@@ -13,12 +13,12 @@ class ConsoleContext extends Context
     /**
      * @var Input
      */
-    private $input;
+    protected $input;
 
     /**
      * @var Output
      */
-    private $output;
+    protected $output;
 
     /**
      * @var array

@@ -9,13 +9,13 @@ class Language
      * 语言包映射路径
      * @var array
      */
-    private static $map = [];
+    protected static $map = [];
 
     /**
      * 语言包
      * @var array
      */
-    private static $languages = [];
+    protected static $languages = [];
 
     /**
      * 添加语言包映射路径
@@ -41,7 +41,7 @@ class Language
      * @param $lang
      * @return mixed
      */
-    private static function loadLanguage($lang): array
+    protected static function loadLanguage($lang): array
     {
         if (isset(self::$languages[$lang])) return self::$languages[$lang];
 

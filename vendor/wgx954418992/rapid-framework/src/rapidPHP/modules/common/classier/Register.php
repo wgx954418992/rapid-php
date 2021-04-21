@@ -59,6 +59,15 @@ class Register
     }
 
     /**
+     * 移除
+     * @param $name
+     */
+    public function remove($name)
+    {
+        unset($this->container[$name]);
+    }
+
+    /**
      * list
      * @return array
      */

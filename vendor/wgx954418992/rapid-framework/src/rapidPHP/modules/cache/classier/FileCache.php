@@ -41,6 +41,18 @@ class FileCache extends CacheInterface
     }
 
     /**
+     * exists
+     * @param $name
+     * @return bool|mixed
+     */
+    public function exists($name)
+    {
+        $cacheFile = $this->getCacheName($name);
+
+        return is_file($cacheFile);
+    }
+
+    /**
      * 添加缓存
      * @param string $name 缓存名
      * @param $value -值
@@ -100,6 +112,4 @@ class FileCache extends CacheInterface
 
         return unlink($cacheFile);
     }
-
-
 }

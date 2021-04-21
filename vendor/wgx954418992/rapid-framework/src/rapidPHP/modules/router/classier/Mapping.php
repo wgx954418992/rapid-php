@@ -92,7 +92,7 @@ class Mapping
      * 所以定义routes是按照 pathVariable 的数量 从小到大排列，以此解决优先级问题
      * @param $routes
      */
-    private function sortRoutes(&$routes)
+    protected function sortRoutes(&$routes)
     {
         if (!is_array($routes)) return;
 
@@ -113,7 +113,7 @@ class Mapping
      * @return void
      * @throws Exception
      */
-    private function compileMapping(Classify $classify, &$routes = [], &$actions = [])
+    protected function compileMapping(Classify $classify, &$routes = [], &$actions = [])
     {
         /** @var DocComment $classComment */
         $classComment = $classify->getDocComment(DocComment::class);
@@ -180,7 +180,7 @@ class Mapping
      * @return string|null
      * @throws Exception
      */
-    private function getRouteAnnotationValue(DocComment $comment): ?string
+    protected function getRouteAnnotationValue(DocComment $comment): ?string
     {
         $annotation = $comment->getRouteAnnotation();
 
@@ -195,7 +195,7 @@ class Mapping
      * @return array
      * @throws Exception
      */
-    private function getActionParameters(Method $method): array
+    protected function getActionParameters(Method $method): array
     {
         $result = [];
 
@@ -233,7 +233,7 @@ class Mapping
      * @return ActionReturned|null
      * @throws Exception
      */
-    private function getActionReturned(?ReturnedAnnotation $returnAnnotation, ?Classify $classify)
+    protected function getActionReturned(?ReturnedAnnotation $returnAnnotation, ?Classify $classify)
     {
         if (!$returnAnnotation) return null;
 
@@ -260,7 +260,7 @@ class Mapping
      * @param ActionParameter[]|null $parameters
      * @return Route
      */
-    private function getRoute($className, $methodName, $route, ?array &$parameters)
+    protected function getRoute($className, $methodName, $route, ?array &$parameters)
     {
         $index = 1;
 
@@ -321,7 +321,7 @@ class Mapping
      * @param $content :内容
      * @throws Exception 写出失败，抛出异常
      */
-    private function write($filePath, $content)
+    protected function write($filePath, $content)
     {
         $dir = dirname($filePath);
 

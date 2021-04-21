@@ -3,7 +3,6 @@
 namespace rapidPHP\modules\database\sql\classier;
 
 use Exception;
-use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\core\classier\Model;
 use rapidPHP\modules\database\sql\classier\driver\Mysql;
 use rapidPHP\modules\reflection\classier\Classify;

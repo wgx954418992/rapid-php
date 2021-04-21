@@ -12,12 +12,12 @@ class Element
     /**
      * @var DOMElement
      */
-    private $element;
+    protected $element;
 
     /**
      * @var DOMDocument
      */
-    private $document;
+    protected $document;
 
     /**
      * Element constructor.

@@ -15,12 +15,12 @@ abstract class Response implements Output
      * sessionId
      * @var string|null
      */
-    private $sessionId;
+    protected $sessionId;
 
     /**
      * @var SessionConfig|null
      */
-    private $sessionConfig;
+    protected $sessionConfig;
 
     /**
      * Response constructor.
@@ -208,7 +208,7 @@ abstract class Response implements Output
 
             $headers[] = 'Cache-Control: max-age=0';
 
-            $headers[] = 'Content-Range: bytes' . ($start - $end / $fileSize);
+            $headers[] = 'Content-Range: bytes ' . $start . "-" . $end . "/" . $fileSize;
         }
 
         $headers = array_merge($headers, (array)Build::getInstance()->getData($options, 'headers'));

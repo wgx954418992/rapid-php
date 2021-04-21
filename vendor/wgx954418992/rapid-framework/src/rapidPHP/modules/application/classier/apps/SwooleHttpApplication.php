@@ -18,7 +18,7 @@ class SwooleHttpApplication extends WebApplication
     /**
      * @var Server
      */
-    private $server;
+    protected $server;
 
     /**
      * @return Server

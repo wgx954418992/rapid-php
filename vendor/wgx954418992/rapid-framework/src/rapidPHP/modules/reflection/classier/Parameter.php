@@ -14,12 +14,12 @@ class Parameter
     /**
      * @var Method
      */
-    private $method;
+    protected $method;
 
     /**
      * @var ReflectionParameter
      */
-    private $parameter;
+    protected $parameter;
 
     /**
      * Parameter constructor.

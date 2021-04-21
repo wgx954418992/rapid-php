@@ -61,7 +61,7 @@ class CGIApplication extends WebApplication
      * @param $sessionId
      * @param bool $isSetSessionId
      */
-    private function setSessionId(?SessionConfig $sessionConfig, &$cookie, &$sessionId, &$isSetSessionId = false)
+    protected function setSessionId(?SessionConfig $sessionConfig, &$cookie, &$sessionId, &$isSetSessionId = false)
     {
         if (empty($sessionConfig)) return;
 

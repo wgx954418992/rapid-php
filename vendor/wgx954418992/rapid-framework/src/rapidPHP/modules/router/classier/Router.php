@@ -28,12 +28,12 @@ abstract class Router
     /**
      * @var Application
      */
-    private $application;
+    protected $application;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var array|null

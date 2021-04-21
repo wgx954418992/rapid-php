@@ -13,12 +13,12 @@ class Property
     /**
      * @var Classify
      */
-    private $classify;
+    protected $classify;
 
     /**
      * @var ReflectionProperty
      */
-    private $property;
+    protected $property;
 
 
     /**

@@ -28,6 +28,13 @@ abstract class CacheInterface
     abstract public function __construct(...$options);
 
     /**
+     * exists
+     * @param $name
+     * @return mixed
+     */
+    abstract public function exists($name);
+
+    /**
      * 添加或者更新缓存
      * @param string $name 缓存名
      * @param $value -缓存内容

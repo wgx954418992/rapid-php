@@ -25,12 +25,12 @@ class Args
     /**
      * @var array
      */
-    private $options = [];
+    protected $options = [];
 
     /**
      * @var array
      */
-    private $args = [];
+    protected $args = [];
 
     /**
      * CommandArgs constructor.

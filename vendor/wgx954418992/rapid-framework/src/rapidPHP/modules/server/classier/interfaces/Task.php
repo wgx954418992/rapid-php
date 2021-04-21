@@ -9,7 +9,7 @@ abstract class Task
     /**
      * @var Server
      */
-    private $server;
+    protected $server;
 
     /**
      * Task constructor.

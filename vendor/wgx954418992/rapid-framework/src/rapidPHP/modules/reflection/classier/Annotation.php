@@ -15,12 +15,12 @@ class Annotation
     /**
      * @var array
      */
-    private $mapping = [];
+    protected $mapping = [];
 
     /**
      * @var static[]
      */
-    private static $instances;
+    protected static $instances;
 
     /**
      * @return static

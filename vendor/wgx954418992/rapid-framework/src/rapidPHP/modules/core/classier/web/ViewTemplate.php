@@ -18,22 +18,22 @@ class ViewTemplate
     /**
      * @var WebController
      */
-    private $controller;
+    protected $controller;
 
     /**
      * @var string 文件名
      */
-    private $filename;
+    protected $filename;
 
     /**
      * @var AB 变量集合
      */
-    private $data;
+    protected $data;
 
     /**
      * @var TemplateService
      */
-    private $templateService;
+    protected $templateService;
 
     /**
      * ViewTemplate constructor.

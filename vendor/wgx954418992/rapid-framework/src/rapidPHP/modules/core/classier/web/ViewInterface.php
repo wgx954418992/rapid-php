@@ -11,12 +11,12 @@ abstract class ViewInterface
     /**
      * @var AB
      */
-    private $data;
+    protected $data;
 
     /**
      * @var WebController
      */
-    private $controller;
+    protected $controller;
 
 
     /**

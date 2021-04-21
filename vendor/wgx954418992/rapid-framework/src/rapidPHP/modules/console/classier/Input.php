@@ -11,7 +11,7 @@ class Input implements IOInput
     /**
      * @var Args
      */
-    private $args;
+    protected $args;
 
     /**
      * Input constructor.

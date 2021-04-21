@@ -12,12 +12,12 @@ class Method
     /**
      * @var Classify
      */
-    private $classify;
+    protected $classify;
 
     /**
      * @var ReflectionMethod
      */
-    private $method;
+    protected $method;
 
     /**
      * Method constructor.

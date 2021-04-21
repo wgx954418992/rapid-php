@@ -49,7 +49,6 @@ class Request extends RequestInterface
             $cookie,
             $header,
             $serverInfo,
-            file_get_contents('php://input'),
             $sessionConfig,
             $sessionId
         );

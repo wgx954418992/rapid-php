@@ -13,13 +13,13 @@ class Controller
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * 默认语言
      * @var string
      */
-    private $defaultLang = 'zh';
+    protected $defaultLang = 'zh';
 
     /**
      * Controller constructor.

@@ -17,61 +17,49 @@ abstract class Request implements Input
      * 为防止HASH攻击，GET参数最大不允许超过128个
      * @var array
      */
-    private $get;
+    public $get;
 
     /**
      * POST与Header加起来的尺寸不得超过package_max_length的设置，否则会认为是恶意请求
      * POST参数的个数最大不超过128个
      * @var array HTTP POST参数，格式为数组
      */
-    private $post;
+    public $post;
 
     /**
      * files
      * @var array
      */
-    private $files;
+    public $files;
 
     /**
      * HTTP请求携带的COOKIE信息，与PHP的$_COOKIE相同，格式为数组。
      * @var array
      */
-    private $cookie;
+    public $cookie;
 
     /**
      * Http请求的头部信息。类型为数组，所有key的首字母均为大写，并且 以 - 连接符分割。如：Accept-Language，User-Agent
      * @var array
      */
-    private $header;
+    public $header;
 
     /**
      * Http请求相关的服务器信息，相当于PHP的$_SERVER数组。包含了Http请求的方法，URL路径，客户端IP等信息。key全部为大写
      * @var array
      */
-    private $serverInfo;
-
-    /**
-     * 获取非urlencode-form表单的POST原始数据
-     * @var string
-     */
-    private $rawContent;
-
-    /**
-     * 获取非urlencode-form表单的POST处理后的数据
-     * @var array
-     */
-    private $raw;
+    public $serverInfo;
 
     /**
      * @var SessionConfig|null
      */
-    private $sessionConfig;
+    public $sessionConfig;
 
     /**
      * sessionId
      * @var string|null
      */
-    private $sessionId;
+    public $sessionId;
 
     /**
      * 获取重命名的server，key全部转大写
@@ -92,7 +80,6 @@ abstract class Request implements Input
      * @param $sessionId
      * @param $header
      * @param $serverInfo
-     * @param $rawContent
      * @param SessionConfig|null $sessionConfig
      */
     public function __construct(
@@ -102,7 +89,6 @@ abstract class Request implements Input
         $cookie,
         $header,
         $serverInfo,
-        $rawContent,
         ?SessionConfig $sessionConfig,
         ?string $sessionId
     )
@@ -118,8 +104,6 @@ abstract class Request implements Input
         $this->header = is_null($header) ? [] : $header;
 
         $this->serverInfo = is_null($serverInfo) ? [] : $serverInfo;
-
-        $this->rawContent = $rawContent;
 
         $this->sessionConfig = $sessionConfig;
 
@@ -228,24 +212,6 @@ abstract class Request implements Input
     }
 
     /**
-     * 获取put参数
-     * @param $name
-     * @return mixed|array|string|int|null
-     */
-    public function put($name = null)
-    {
-        if (is_null($this->raw)) parse_str($this->rawContent, $this->raw);
-
-        if (is_null($name)) return $this->raw;
-
-        $value = Build::getInstance()->getData($this->raw, $name);
-
-        XSS::getInstance()->filter($value);
-
-        return $value;
-    }
-
-    /**
      * 获取文件
      * @param $name
      * @return mixed|array|string|int|null
@@ -269,7 +235,7 @@ abstract class Request implements Input
      */
     public function request($name = null)
     {
-        $req = array_merge($this->get(), $this->post(), $this->cookie(), $this->session(), $this->put(), $this->file());
+        $req = array_merge($this->get(), $this->post(), $this->cookie(), $this->session(), $this->file());
 
         if (is_null($name)) return $req;
 
@@ -293,7 +259,7 @@ abstract class Request implements Input
             case HttpConfig::PARAM_COOKIE:
                 return $this->cookie($name);
             case HttpConfig::PARAM_PUT:
-                return $this->put($name);
+                throw new Exception('Put request not supported');
             case HttpConfig::PARAM_SESSION:
                 return $this->session($name);
             case HttpConfig::PARAM_FILE:

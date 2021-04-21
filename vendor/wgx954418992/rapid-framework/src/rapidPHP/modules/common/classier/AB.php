@@ -17,7 +17,7 @@ class AB
     /**
      * @var array
      */
-    private $data;
+    protected $data;
 
     /**
      * AB constructor.

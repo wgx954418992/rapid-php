@@ -14,7 +14,12 @@ class Request extends RequestInterface
     /**
      * @var mixed
      */
-    private $fd;
+    protected $fd;
+
+    /**
+     * @var string|null
+     */
+    protected $data;
 
     /**
      * Request constructor.
@@ -46,6 +51,8 @@ class Request extends RequestInterface
                 break;
         }
 
+        $this->data = $frame->data;
+
         parent::__construct(
             $data,
             $data,
@@ -53,7 +60,6 @@ class Request extends RequestInterface
             $cookie,
             $header,
             $serverParam,
-            $frame->data,
             $sessionConfig,
             $sessionId
         );

@@ -13,19 +13,19 @@ abstract class PipeProcess extends Process
      * 睡眠多少秒
      * @var
      */
-    private $sleep;
+    protected $sleep;
 
     /**
      * 最大读取的长度
      * @var int
      */
-    private $bufferLen = 8192;
+    protected $bufferLen = 8192;
 
     /**
      * 主进程 如果有的话
      * @var PipeProcess
      */
-    private $parentProcess;
+    protected $parentProcess;
 
     /**
      * @return int

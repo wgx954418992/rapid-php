@@ -25,12 +25,12 @@ class ConsoleRouter extends Router
     /**
      * @var Input
      */
-    private $input;
+    protected $input;
 
     /**
      * @var Output
      */
-    private $output;
+    protected $output;
 
     /**
      * @return ConsoleApplication
@@ -103,7 +103,7 @@ class ConsoleRouter extends Router
     /**
      * 获取真实访问路径
      */
-    private function getRealPath(): string
+    protected function getRealPath(): string
     {
         $data = $this->input->getArgs()->getArgs();
 

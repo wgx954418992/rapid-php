@@ -33,12 +33,12 @@ class WebRouter extends Router
     /**
      * @var Request
      */
-    private $request;
+    protected $request;
 
     /**
      * @var Response
      */
-    private $response;
+    protected $response;
 
     /**
      * @return WebApplication
@@ -78,6 +78,18 @@ class WebRouter extends Router
         }
 
         $this->request = $context->getRequest();
+
+        if ($context->getDecodeOptions() & Context::OPTIONS_DECODE_REQUEST_GET) {
+            $context->decode($this->request->get);
+        }
+
+        if ($context->getDecodeOptions() & Context::OPTIONS_DECODE_REQUEST_POST) {
+            $context->decode($this->request->post);
+        }
+
+        if ($context->getDecodeOptions() & Context::OPTIONS_DECODE_REQUEST_COOKIE) {
+            $context->decode($this->request->cookie);
+        }
 
         $this->response = $context->getResponse();
 
@@ -133,6 +145,10 @@ class WebRouter extends Router
     {
         try {
             $realPath = $this->getRealPath();
+
+            if ($this->context->getDecodeOptions() & Context::OPTIONS_DECODE_REALPATH) {
+                $this->context->decode($realPath);
+            }
 
             $this->getContext()->onMatchingBefore($this);
 

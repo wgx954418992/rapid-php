@@ -12,12 +12,12 @@ class Response extends ResponseInterface
     /**
      * @var mixed
      */
-    private $fd;
+    protected $fd;
 
     /**
      * @var Server
      */
-    private $server;
+    protected $server;
 
     /**
      * Response constructor.

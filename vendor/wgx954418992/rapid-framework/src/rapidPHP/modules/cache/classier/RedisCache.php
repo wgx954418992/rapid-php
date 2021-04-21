@@ -27,6 +27,16 @@ class RedisCache extends CacheInterface
     }
 
     /**
+     * exists
+     * @param $name
+     * @return bool|int
+     */
+    public function exists($name)
+    {
+        return $this->redis->exists($name);
+    }
+
+    /**
      * 添加缓存
      * @param string $name 缓存名
      * @param $value -值
@@ -50,6 +60,8 @@ class RedisCache extends CacheInterface
      */
     public function get(string $name)
     {
+        if (!$this->exists($name)) return null;
+
         $cache = $this->redis->get($name);
 
         if (empty($cache)) return null;

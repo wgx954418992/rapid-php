@@ -13,15 +13,73 @@ abstract class Context
 {
 
     /**
+     * 解码
+     */
+    const OPTIONS_DECODE = 1;
+
+    /**
+     * 解码 真实path
+     */
+    const OPTIONS_DECODE_REALPATH = self::OPTIONS_DECODE << 1;
+
+    /**
+     * 解码 get 请求参数
+     */
+    const OPTIONS_DECODE_REQUEST_GET = self::OPTIONS_DECODE << 2;
+
+    /**
+     * 解码 post 请求参数
+     */
+    const OPTIONS_DECODE_REQUEST_POST = self::OPTIONS_DECODE << 3;
+
+    /**
+     * 解码 cookie 请求参数
+     */
+    const OPTIONS_DECODE_REQUEST_COOKIE = self::OPTIONS_DECODE << 6;
+
+    /**
      * @var array
      */
-    private $supports;
+    protected $supports;
 
     /**
      * 拦截器
      * @var Interceptor[]
      */
-    private $interceptors = [];
+    protected $interceptors = [];
+
+    /**
+     * @var int
+     */
+    protected $decodeOptions = self::OPTIONS_DECODE;
+
+
+    /**
+     * Context constructor.
+     */
+    public function __construct()
+    {
+        $this->supports = [
+            Context::class => $this,
+        ];
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getDecodeOptions(): int
+    {
+        return $this->decodeOptions;
+    }
+
+    /**
+     * @param int $decodeOptions
+     */
+    public function setDecodeOptions(int $decodeOptions): void
+    {
+        $this->decodeOptions = $decodeOptions;
+    }
 
     /**
      * @return array
@@ -38,16 +96,6 @@ abstract class Context
     public function addInterceptor(Interceptor $interceptors): void
     {
         $this->interceptors[] = $interceptors;
-    }
-
-    /**
-     * Context constructor.
-     */
-    public function __construct()
-    {
-        $this->supports = [
-            Context::class => $this,
-        ];
     }
 
     /**
@@ -68,11 +116,11 @@ abstract class Context
      */
     public function onInvokeActionBefore(Router $router, Action $action, Route $route, $pathVariable, $realPath)
     {
-        foreach ($this->interceptors as $interceprtor) {
-            if ($interceprtor->isInExclude($realPath)) {
+        foreach ($this->interceptors as $interceptor) {
+            if ($interceptor->isInExclude($realPath)) {
                 continue;
-            } else if ($interceprtor->isInRole($realPath, $role)) {
-                $interceprtor->onHandler($router, $action, $route, $pathVariable, $realPath, $role);
+            } else if ($interceptor->isInRole($realPath, $role)) {
+                $interceptor->onHandler($router, $action, $route, $pathVariable, $realPath, $role);
             }
         }
     }
@@ -114,5 +162,14 @@ abstract class Context
         }
 
         return false;
+    }
+
+    /**
+     * 统一解码
+     * @param $value
+     */
+    public function decode(&$value)
+    {
+
     }
 }

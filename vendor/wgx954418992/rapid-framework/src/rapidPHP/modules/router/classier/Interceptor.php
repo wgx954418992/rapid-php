@@ -71,7 +71,8 @@ abstract class Interceptor
      * @param Action $action
      * @param Route $route
      * @param $pathVariable
+     * @param $realPath
      * @param $role
      */
-    abstract public function onHandler(Router $router, Action $action, Route $route, $pathVariable, $realPath, $role);
+    abstract public function onHandler(Router $router, Action $action, Route $route, &$pathVariable, &$realPath, &$role);
 }

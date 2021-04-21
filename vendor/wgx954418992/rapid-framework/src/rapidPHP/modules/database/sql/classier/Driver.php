@@ -91,6 +91,7 @@ abstract class Driver
      * 获取别的driver sql
      * @param $callOrDriver
      * @param bool $isMergeOptions
+     * @param null $tableName
      * @return self|static|Mysql|string|string[]
      */
     public function getDriverSql($callOrDriver, $isMergeOptions = true, &$tableName = null)
@@ -193,7 +194,7 @@ abstract class Driver
      * @param $data
      * @return array
      */
-    private function makeInsertData($data)
+    public function makeInsertData($data)
     {
         $array = ['keys' => '', 'values' => ''];
 
@@ -238,7 +239,7 @@ abstract class Driver
      * @param array $data
      * @return string
      */
-    private function makeUpdateData(array $data)
+    public function makeUpdateData(array $data)
     {
         $setting = '';
 
@@ -451,7 +452,7 @@ abstract class Driver
      * @param null $match
      * @return string
      */
-    private function makeInData($name, $parameter, $match = null)
+    public function makeInData($name, $parameter, $match = null)
     {
         $parameterStr = "{$match} IN (";
 
