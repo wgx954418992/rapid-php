@@ -14,8 +14,8 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => '3.6.6',
-    'version' => '3.6.6.0',
+    'pretty_version' => '3.6.7',
+    'version' => '3.6.7.0',
     'aliases' => 
     array (
     ),
@@ -24,24 +24,6 @@ private static $installed = array (
   ),
   'versions' => 
   array (
-    'bacon/bacon-qr-code' => 
-    array (
-      'pretty_version' => '2.0.3',
-      'version' => '2.0.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '3e9d791b67d0a2912922b7b7c7312f4b37af41e4',
-    ),
-    'dasprid/enum' => 
-    array (
-      'pretty_version' => '1.0.3',
-      'version' => '1.0.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '5abf82f213618696dda8e3bf6f64dd042d8542b2',
-    ),
     'doctrine/instantiator' => 
     array (
       'pretty_version' => '1.4.0',
@@ -60,15 +42,6 @@ private static $installed = array (
         0 => '9999999-dev',
       ),
       'reference' => 'fc8fe156391960c75505dd1ef869f52d4e109dc6',
-    ),
-    'endroid/qr-code' => 
-    array (
-      'pretty_version' => '4.1.2',
-      'version' => '4.1.2.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '9ed4de3c62fdee12a6bf2a63549da27bd0b1436f',
     ),
     'ezyang/htmlpurifier' => 
     array (
@@ -515,17 +488,17 @@ private static $installed = array (
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.6.6',
-      'version' => '3.6.6.0',
+      'pretty_version' => '3.6.7',
+      'version' => '3.6.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => '478ffa46ff760b32eb518396a0cdcbbc8f1e2b88',
+      'reference' => '3a10372d29008c312d82fdce1993b623a565ef82',
     ),
     'wgx954418992/rapid-php' => 
     array (
-      'pretty_version' => '3.6.6',
-      'version' => '3.6.6.0',
+      'pretty_version' => '3.6.7',
+      'version' => '3.6.7.0',
       'aliases' => 
       array (
       ),

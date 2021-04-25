@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-framework",
-  "version": "3.6.6",
+  "version": "3.6.7",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -35,8 +35,6 @@
     "ext-sockets": "*",
     "ext-xmlwriter": "*",
     "ext-zip": "*",
-    "endroid/qr-code": "*",
-    "ezyang/htmlpurifier": "^4.13",
     "monolog/monolog": "^2.1",
     "mustangostang/spyc": "^0.6.3",
     "phpoffice/phpspreadsheet": "^1.15",
