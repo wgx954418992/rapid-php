@@ -2,6 +2,7 @@
 
 namespace rapidPHP\modules\excel\classier;
 
+use Exception;
 use PhpOffice\PhpSpreadsheet\Exception as SpreadException;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception as ReaderException;
@@ -21,9 +22,14 @@ class Excel
     /**
      * 实例不存在
      * @return static
+     * @throws Exception
      */
     public static function onNotInstance()
     {
+        if (!class_exists(\PhpOffice\PhpSpreadsheet\Spreadsheet::class)) {
+            throw new Exception('PhpOffice Not Found，run `composer require phpoffice/phpspreadsheet`');
+        }
+
         return new static();
     }
 
