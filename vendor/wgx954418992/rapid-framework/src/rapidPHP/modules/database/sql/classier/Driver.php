@@ -163,18 +163,6 @@ abstract class Driver
 
 
     /**
-     * 执行存储过程
-     * @param array $parameter
-     * @param string $value
-     * @return self|static|Mysql
-     */
-    public function func($parameter = [], $value = '')
-    {
-        return $this;
-    }
-
-
-    /**
      * 写到数据
      * @param $data
      * @return self|static|Mysql
@@ -783,7 +771,7 @@ abstract class Driver
      * @param $database
      * @return static|Mysql
      */
-    abstract public function getTables($type, string $database);
+    abstract public function getTables(int $type, string $database);
 
 
     /**

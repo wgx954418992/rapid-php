@@ -1,8 +1,8 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => '3.6.8',
-    'version' => '3.6.8.0',
+    'pretty_version' => '3.7.0',
+    'version' => '3.7.0.0',
     'aliases' => 
     array (
     ),
@@ -171,12 +171,12 @@
     ),
     'psr/log' => 
     array (
-      'pretty_version' => '1.1.3',
-      'version' => '1.1.3.0',
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0f73288fd15629204f9d42b7055f72dacbe811fc',
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
     ),
     'psr/log-implementation' => 
     array (
@@ -385,17 +385,17 @@
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.6.8',
-      'version' => '3.6.8.0',
+      'pretty_version' => '3.7.0',
+      'version' => '3.7.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0e2f423138dbac400dfefda947c2d58508363c0f',
+      'reference' => '97d603de140629e810581f43bf2e52f89cf7fefa',
     ),
     'wgx954418992/rapid-php' => 
     array (
-      'pretty_version' => '3.6.8',
-      'version' => '3.6.8.0',
+      'pretty_version' => '3.7.0',
+      'version' => '3.7.0.0',
       'aliases' => 
       array (
       ),

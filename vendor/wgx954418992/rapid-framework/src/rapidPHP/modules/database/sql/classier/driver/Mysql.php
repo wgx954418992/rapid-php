@@ -30,37 +30,6 @@ class Mysql extends Driver
 
 
     /**
-     * 执行存储过程
-     * @param array $parameter
-     * @param string $value
-     * @return self|static|Driver
-     */
-    public function func($parameter = [], $value = '')
-    {
-        $parameterStr = '';
-
-        if (is_array($parameter)) {
-
-            foreach ($parameter as $val) {
-                $parameterStr .= "'{$val}',";
-            }
-
-        } else if (is_string($parameter)) {
-            $parameterStr = $this->sql['func'] ? ",'{$parameter}'" : "'{$parameter}',";
-        }
-
-        if ($this->sql['func']) {
-            $this->sql['func'] = preg_replace('#\)$#i', "{$parameterStr})", $this->sql['func']);
-        } else {
-            $parameterStr = StrCharacter::getInstance()->deleteStringLast($parameterStr);
-
-            $this->sql['func'] = "CALL `{$this->tableName}`({$parameterStr})";
-        }
-        return $this;
-    }
-
-
-    /**
      * 分页
      * @param $page
      * @param null $total
@@ -69,7 +38,9 @@ class Mysql extends Driver
     public function limit($page, $total = null)
     {
         $start = is_null($total) ? $page : ((int)$page) * ((int)$total) - ((int)$total);
+
         $this->sql['limit'] = "LIMIT $start" . (is_null($total) ? ' ' : ",$total ");
+
         return $this;
     }
 
@@ -80,7 +51,7 @@ class Mysql extends Driver
      * @param string $database
      * @return array|null|string
      */
-    private function getTablesTypeSql($type, $database)
+    private function getTablesTypeSql(int $type, string $database)
     {
         $data = array(
             1 => "SELECT TABLE_NAME AS name,TABLE_COMMENT AS comment FROM information_schema.TABLES WHERE TABLE_SCHEMA='{$database}' AND TABLE_TYPE='BASE TABLE' ORDER BY name",
@@ -96,7 +67,7 @@ class Mysql extends Driver
      * @param string $database
      * @return self|static|Driver
      */
-    public function getTables($type, $database)
+    public function getTables(int $type, string $database)
     {
         $this->sql['query'] = $this->getTablesTypeSql($type, $database);
         return $this;
@@ -123,13 +94,13 @@ class Mysql extends Driver
      * getTableStructure
      * @param $type
      * @param string $database
-     * @param $tableName
+     * @param $table
      * @return self|static|Driver
      * @throws Exception
      */
-    public function getTableStructure($type, string $database, string $tableName)
+    public function getTableStructure($type, string $database, string $table)
     {
-        $this->sql['query'] = $this->getTableStructureSql($type, $database, $tableName);
+        $this->sql['query'] = $this->getTableStructureSql($type, $database, $table);
 
         return $this;
     }

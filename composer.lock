@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d5c2b652a5aacbf2e1c8e5b65c732094",
+    "content-hash": "0144c2df5325f1c03a9b60e6a057942a",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -166,16 +166,16 @@
         },
         {
             "name": "psr/log",
-            "version": "1.1.3",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc"
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/0f73288fd15629204f9d42b7055f72dacbe811fc",
-                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -205,7 +205,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interface for logging libraries",
@@ -216,9 +216,9 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.3"
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
-            "time": "2020-03-23T09:12:05+00:00"
+            "time": "2021-05-03T11:20:27+00:00"
         },
         {
             "name": "symfony/polyfill-iconv",
@@ -927,16 +927,16 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.6.8",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "0e2f423138dbac400dfefda947c2d58508363c0f"
+                "reference": "97d603de140629e810581f43bf2e52f89cf7fefa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/0e2f423138dbac400dfefda947c2d58508363c0f",
-                "reference": "0e2f423138dbac400dfefda947c2d58508363c0f",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/97d603de140629e810581f43bf2e52f89cf7fefa",
+                "reference": "97d603de140629e810581f43bf2e52f89cf7fefa",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -999,9 +999,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.6.8"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.7.0"
             },
-            "time": "2021-04-26T04:57:23+00:00"
+            "time": "2021-05-06T11:27:44+00:00"
         }
     ],
     "packages-dev": [

@@ -1190,17 +1190,17 @@
         },
         {
             "name": "psr/log",
-            "version": "1.1.3",
-            "version_normalized": "1.1.3.0",
+            "version": "1.1.4",
+            "version_normalized": "1.1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc"
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/0f73288fd15629204f9d42b7055f72dacbe811fc",
-                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1212,7 +1212,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2020-03-23T09:12:05+00:00",
+            "time": "2021-05-03T11:20:27+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1232,7 +1232,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interface for logging libraries",
@@ -1243,7 +1243,7 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.3"
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
             "install-path": "../psr/log"
         },
@@ -2955,17 +2955,17 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.6.8",
-            "version_normalized": "3.6.8.0",
+            "version": "3.7.0",
+            "version_normalized": "3.7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "0e2f423138dbac400dfefda947c2d58508363c0f"
+                "reference": "97d603de140629e810581f43bf2e52f89cf7fefa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/0e2f423138dbac400dfefda947c2d58508363c0f",
-                "reference": "0e2f423138dbac400dfefda947c2d58508363c0f",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/97d603de140629e810581f43bf2e52f89cf7fefa",
+                "reference": "97d603de140629e810581f43bf2e52f89cf7fefa",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -3000,7 +3000,7 @@
                 "eaglewu/swoole-ide-helper": "dev-master",
                 "phpunit/phpunit": "^7.0"
             },
-            "time": "2021-04-26T04:57:23+00:00",
+            "time": "2021-05-06T11:27:44+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3030,7 +3030,7 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.6.8"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.7.0"
             },
             "install-path": "../wgx954418992/rapid-framework"
         }

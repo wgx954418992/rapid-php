@@ -66,7 +66,7 @@ class FileCache extends CacheInterface
 
         if (is_int($time) && $time > 0) $cache['time'] = time() + $time;
 
-        return File::getInstance()->write($this->getCacheName($name), json_encode($cache));
+        return File::getInstance()->write($this->getCacheName($name), serialize($cache));
     }
 
     /**
@@ -80,9 +80,9 @@ class FileCache extends CacheInterface
 
         if (!is_file($cacheFile)) return null;
 
-        $cache = Build::getInstance()->jsonDecode(file_get_contents($cacheFile));
+        $cache = unserialize(file_get_contents($cacheFile));
 
-        if (!is_array($cache)) return null;
+        if (empty($cache)) return null;
 
         $time = isset($cache['time']) ? $cache['time'] : null;
 
