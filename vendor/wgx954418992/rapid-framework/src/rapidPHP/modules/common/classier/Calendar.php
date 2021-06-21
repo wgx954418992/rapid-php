@@ -363,89 +363,15 @@ class Calendar
     }
 
     /**
-     * 是否超出指定时间
+     * 指定时间超出当前时间多少秒 负数为小于多少秒，正数为大于多少秒
      * @param $date
-     * @param $limit
-     * @return bool
+     * @param int $limit
+     * @return false|int|mixed
      */
-    public function isPassTime($date, $limit): bool
+    public function datePassTime($date, $limit = 0): int
     {
         $date = $this->dateToTime($date);
 
-        return $date >= (time() + $limit);
-    }
-
-    /**
-     * 是否超过一年
-     * @param $date
-     * @return bool
-     */
-    public function isPassYear($date): bool
-    {
-        $limit = $this->isIntercalaryYear($date) ? Calendar::TIME_YEAR_INTERCALARY : Calendar::TIME_YEAR;
-
-        return $this->isPassTime($date, $limit);
-    }
-
-    /**
-     * 是否超过一月
-     * @param $date
-     * @return bool
-     */
-    public function isPassMonth($date): bool
-    {
-        return $this->isPassTime($date, Calendar::TIME_MONTH);
-    }
-
-
-    /**
-     * 是否超过一周
-     * @param $date
-     * @return bool
-     */
-    public function isPassWeek($date): bool
-    {
-        return $this->isPassTime($date, Calendar::TIME_WEEK);
-    }
-
-    /**
-     * 是否超过一天
-     * @param $date
-     * @return bool
-     */
-    public function isPassDay($date): bool
-    {
-        return $this->isPassTime($date, Calendar::TIME_DAY);
-    }
-
-    /**
-     * 是否超过一小时
-     * @param $date
-     * @return bool
-     */
-    public function isPassHours($date): bool
-    {
-        return $this->isPassTime($date, Calendar::TIME_HOURS);
-    }
-
-    /**
-     * 是否超过一分钟
-     * @param $date
-     * @return bool
-     */
-    public function isPassMinute($date): bool
-    {
-        return $this->isPassTime($date, Calendar::TIME_MINUTE);
-    }
-
-    /**
-     * 是否超过多少秒
-     * @param $date
-     * @param $second
-     * @return bool
-     */
-    public function isPassSecond($date, $second): bool
-    {
-        return $this->isPassTime($date, $second);
+        return ($date + $limit) - time();
     }
 }

@@ -10,22 +10,29 @@ abstract class PipeProcess extends Process
 {
 
     /**
-     * 睡眠多少秒
-     * @var
-     */
-    protected $sleep;
-
-    /**
      * 最大读取的长度
      * @var int
      */
     protected $bufferLen = 8192;
 
     /**
-     * 主进程 如果有的话
+     * 父进程 如果有的话
      * @var PipeProcess
      */
     protected $parentProcess;
+
+
+    /**
+     * MQProcess constructor.
+     * @param $sleep
+     * @param null $parentProcess
+     */
+    public function __construct($parentProcess = null)
+    {
+        $this->parentProcess = $parentProcess;
+
+        parent::__construct([$this, 'run'], false, 2);
+    }
 
     /**
      * @return int
@@ -44,25 +51,9 @@ abstract class PipeProcess extends Process
     }
 
     /**
-     * @return mixed
-     */
-    public function getSleep()
-    {
-        return $this->sleep;
-    }
-
-    /**
-     * @param mixed $sleep
-     */
-    public function setSleep($sleep): void
-    {
-        $this->sleep = $sleep;
-    }
-
-    /**
      * @return PipeProcess
      */
-    public function getParentProcess(): PipeProcess
+    public function getParentProcess()
     {
         return $this->parentProcess;
     }
@@ -73,20 +64,6 @@ abstract class PipeProcess extends Process
     public function setParentProcess(PipeProcess $parentProcess): void
     {
         $this->parentProcess = $parentProcess;
-    }
-
-    /**
-     * MQProcess constructor.
-     * @param $sleep
-     * @param null $mainProcess
-     */
-    public function __construct($sleep, $mainProcess = null)
-    {
-        $this->sleep = $sleep;
-
-        $this->parentProcess = $mainProcess;
-
-        parent::__construct([$this, 'run'], false, 2);
     }
 
     /**
