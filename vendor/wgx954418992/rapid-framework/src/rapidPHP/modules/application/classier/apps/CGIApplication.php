@@ -4,6 +4,7 @@ namespace rapidPHP\modules\application\classier\apps;
 
 use Exception;
 use rapidPHP\modules\common\classier\Build;
+use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\router\classier\router\WebRouter;
 use rapidPHP\modules\server\classier\http\cgi\Request;
 use rapidPHP\modules\server\classier\http\cgi\Response;

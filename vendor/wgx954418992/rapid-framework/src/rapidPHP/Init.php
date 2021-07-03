@@ -23,10 +23,10 @@ use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\reflection\classier\Utils;
 
 // 检测PHP环境
-if (version_compare(PHP_VERSION, '7.2.0', '<')) die('require PHP > 7.2.0 !');
+if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.7.2');
+define('RAPIDPHP_VERSION', '3.8.0');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());

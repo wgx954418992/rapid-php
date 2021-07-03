@@ -124,7 +124,7 @@ class Utils
             $value = $this->getParamValue($parameter, $data);
 
             $type = $parameter->getType();
-
+        
             if (empty($type)) {
                 $result[] = $value;
             } else if (Variable::isSetType($type)) {

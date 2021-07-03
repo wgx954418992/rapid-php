@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-php",
-  "version": "3.7.2",
+  "version": "3.8.0",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "wgx954418992/rapid-framework": "^3.7.2"
+    "wgx954418992/rapid-framework": "^3.8.0"
   },
   "require-dev": {
     "eaglewu/swoole-ide-helper": "dev-master",
@@ -40,6 +40,9 @@
     ],
     "generator-model-java": [
       "php scripts/model/index.php java"
+    ],
+    "docker-run": [
+      "./scripts/docker/rapid-php"
     ]
   },
   "minimum-stability": "dev",

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+currentPath=$(cd $(dirname $0); pwd)
+
+projectPath=$(dirname $(dirname $currentPath))
+
+projectName=$(basename $projectPath)
+
+configs=$(ls "$projectPath"/apps/**/nginx.conf)
+
+volumes="--volume=$projectPath:/var/www/$projectName:rw "
+
+declare portsDict
+
+portsDict=()
+
+for item in ${configs[*]}
+do
+  name=$(basename `dirname $item`)
+  listens=$(cat $item | grep listen)
+  listens=${listens//[listen|ssl| |  |;]/ }
+  for listen in ${listens[*]}
+  do
+    portsDict["$listen"]=$listen
+  done
+
+  volumes="$volumes --volume=$item:/usr/local/nginx/conf/conf.d/"$projectName"_"$name".conf:rw"
+done
+
+ports=''
+
+for port in ${portsDict[*]}
+do
+  ports="$ports -p $port:$port"
+done
+
+docker run -it \
+ $ports \
+ --hostname=rapid-php-$projectName \
+ --name=rapid-php-$projectName \
+ $volumes \
+ -d registry.cn-chengdu.aliyuncs.com/wgx954418992/php8-redis-nginx:1.0.7 \
+ webserver start

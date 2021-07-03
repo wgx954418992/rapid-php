@@ -1,8 +1,8 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => '3.7.2',
-    'version' => '3.7.2.0',
+    'pretty_version' => '3.8.0',
+    'version' => '3.8.0.0',
     'aliases' => 
     array (
     ),
@@ -32,12 +32,12 @@
     ),
     'monolog/monolog' => 
     array (
-      'pretty_version' => '2.2.0',
-      'version' => '2.2.0.0',
+      'pretty_version' => '1.26.1',
+      'version' => '1.26.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1cb1cde8e8dd0f70cc0fe51354a59acad9302084',
+      'reference' => 'c6b00f05152ae2c9b04a448f99c7590beb6042f5',
     ),
     'mustangostang/spyc' => 
     array (
@@ -349,12 +349,12 @@
     ),
     'voku/anti-xss' => 
     array (
-      'pretty_version' => '4.1.32',
-      'version' => '4.1.32.0',
+      'pretty_version' => '4.1.0',
+      'version' => '4.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '159b49a50cf3f6cf72ee43b0dcf7c2580a0c12d1',
+      'reference' => '7debeae28e6337256835f60196bb7ae248641a8d',
     ),
     'voku/portable-ascii' => 
     array (
@@ -385,17 +385,17 @@
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.7.2',
-      'version' => '3.7.2.0',
+      'pretty_version' => '3.8.0',
+      'version' => '3.8.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '28fb40a7c1e64534c99b750f69f59c0ceb1c5b38',
+      'reference' => '5dcdaf2ff4cd146ea74cdd4a93ce7dd92c28896f',
     ),
     'wgx954418992/rapid-php' => 
     array (
-      'pretty_version' => '3.7.2',
-      'version' => '3.7.2.0',
+      'pretty_version' => '3.8.0',
+      'version' => '3.8.0.0',
       'aliases' => 
       array (
       ),

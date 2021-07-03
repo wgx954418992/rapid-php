@@ -101,7 +101,7 @@ class Mapping
 
             $bVariableCount = preg_match('/{\w+}/i', $b['route']);
 
-            return $aVariableCount > $bVariableCount;
+            return $aVariableCount - $bVariableCount;
         });
     }
 

@@ -100,7 +100,7 @@ class Build
      */
     public function contrast($value, $default)
     {
-        return !empty($value) ? $value : $default === '' || is_null($default) ? $value : $default;
+        return !empty($value) ? $value : ($default === '' || is_null($default) ? $value : $default);
     }
 
 
