@@ -87,23 +87,23 @@ class DocComment
 
     /**
      * 获取注解s
-     * @param string $name
+     * @param string|null $name
      * @param null $pattern
      * @return array
      * @throws Exception
      */
-    public function getAnnotations(string $name = '.*?', $pattern = null): array
+    public function getAnnotations(?string $name = '.*?', $pattern = null): array
     {
         return Annotation::getInstance()->getAnnotations($this->getDoc(), $name, $pattern);
     }
 
     /**
      * 获取一条注解
-     * @param string $name
+     * @param string|null $name
      * @return mixed|null
      * @throws Exception
      */
-    public function getOneAnnotation(string $name = '.*?')
+    public function getOneAnnotation(?string $name = '.*?')
     {
         return Annotation::getInstance()->getOneAnnotation($this->getDoc(), $name);
     }
