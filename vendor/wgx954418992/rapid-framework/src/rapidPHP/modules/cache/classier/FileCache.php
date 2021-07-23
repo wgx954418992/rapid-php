@@ -13,7 +13,7 @@ class FileCache extends CacheInterface
      * 缓存路径
      * @var string
      */
-    private $cachePath;
+    protected $cachePath;
 
     /**
      * FileCache constructor.
@@ -22,7 +22,7 @@ class FileCache extends CacheInterface
      */
     public function __construct(...$options)
     {
-        $this->cachePath = isset($options[0]) ? $options[0] : null;
+        $this->cachePath = $options[0] ?? null;
 
         if (empty($this->cachePath)) throw new Exception('cache path error!');
 
@@ -43,7 +43,7 @@ class FileCache extends CacheInterface
     /**
      * exists
      * @param $name
-     * @return bool|mixed
+     * @return bool
      */
     public function exists($name)
     {

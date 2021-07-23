@@ -3,7 +3,6 @@
 namespace rapidPHP\modules\cache\classier;
 
 use Exception;
-use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\redis\classier\Redis;
 
 class RedisCache extends CacheInterface
@@ -12,7 +11,7 @@ class RedisCache extends CacheInterface
     /**
      * @var Redis
      */
-    private $redis;
+    protected $redis;
 
     /**
      * RedisCache constructor.
@@ -21,7 +20,7 @@ class RedisCache extends CacheInterface
      */
     public function __construct(...$options)
     {
-        $this->redis = isset($options[0]) ? $options[0] : null;
+        $this->redis = $options[0] ?? null;
 
         if (!($this->redis instanceof Redis)) throw new Exception('redis instance error!');
     }
@@ -36,27 +35,24 @@ class RedisCache extends CacheInterface
         return $this->redis->exists($name);
     }
 
+
     /**
-     * 添加缓存
-     * @param string $name 缓存名
-     * @param $value -值
-     * @param int $time 到期时间 0则没有到期时间
+     * add
+     * @param string $name
+     * @param $value
+     * @param int $time
      * @return bool
      * @throws Exception
      */
     public function add(string $name, $value, $time = 0): bool
     {
-        $cache = ['data' => $value];
-
-        if (is_int($time) && $time > 0) $cache['time'] = time() + $time;
-
-        return $this->redis->set($name, serialize($cache));
+        return $this->redis->set($name, serialize($value), $time <= 0 ? null : $time);
     }
 
     /**
-     * 获取缓存
+     * get
      * @param string $name
-     * @return array|string|int|mixed|null
+     * @return array|int|mixed|string|null
      */
     public function get(string $name)
     {
@@ -70,19 +66,7 @@ class RedisCache extends CacheInterface
 
         if (empty($cache)) return null;
 
-        $time = isset($cache['time']) ? $cache['time'] : null;
-
-        $data = Build::getInstance()->getData($cache, 'data');
-
-        if (!is_int($time)) return $data;
-
-        if (time() <= $time) {
-            return $data;
-        } else {
-            $this->remove($name);
-
-            return null;
-        }
+        return $cache;
     }
 
     /**

@@ -86,6 +86,8 @@ class AB
      */
     public function hasName($name): bool
     {
+        if (empty($this->data)) return false;
+
         return array_key_exists($name, $this->data);
     }
 
@@ -96,7 +98,7 @@ class AB
      */
     public function toValue($name)
     {
-        return isset($this->data[$name]) ? $this->data[$name] : null;
+        return $this->data[$name] ?? null;
     }
 
     /**

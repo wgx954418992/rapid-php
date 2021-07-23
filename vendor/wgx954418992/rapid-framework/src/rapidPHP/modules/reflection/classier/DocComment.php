@@ -36,7 +36,7 @@ class DocComment
 
     /**
      * DocComment constructor.
-     * @param $doc
+     * @param string|null $doc
      * @throws Exception
      */
     public function __construct(?string $doc)
@@ -62,7 +62,7 @@ class DocComment
      * @throws Exception
      */
     /**
-     * @return string|AnnotationConfig
+     * @return string
      */
     public function getConfigClass()
     {
@@ -92,7 +92,7 @@ class DocComment
      * @return array
      * @throws Exception
      */
-    public function getAnnotations($name = '.*?', $pattern = null): array
+    public function getAnnotations(string $name = '.*?', $pattern = null): array
     {
         return Annotation::getInstance()->getAnnotations($this->getDoc(), $name, $pattern);
     }
@@ -103,7 +103,7 @@ class DocComment
      * @return mixed|null
      * @throws Exception
      */
-    public function getOneAnnotation($name = '.*?')
+    public function getOneAnnotation(string $name = '.*?')
     {
         return Annotation::getInstance()->getOneAnnotation($this->getDoc(), $name);
     }
@@ -117,7 +117,7 @@ class DocComment
     {
         /** @var Returned $annotation */
         $annotation = $this->getOneAnnotation(AnnotationConfig::AT_RETURNED);
-        
+
         if ($annotation instanceof Returned) return $annotation;
 
         return null;

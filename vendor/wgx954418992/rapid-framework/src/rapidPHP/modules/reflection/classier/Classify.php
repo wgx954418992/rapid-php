@@ -89,7 +89,7 @@ class Classify
     }
 
     /**
-     * @param string $class
+     * @param object|string $class
      * @return DocComment|\rapidPHP\modules\router\classier\DocComment|null
      */
     public function getDocComment($class = DocComment::class)
@@ -149,7 +149,7 @@ class Classify
 
     /**
      * 获取构造函数
-     * @return Method|ReflectionMethod|null
+     * @return Method|null
      */
     public function getConstructor()
     {
@@ -225,6 +225,7 @@ class Classify
      * 获取属性
      * @param null $filter
      * @return Property[]
+     * @throws Exception
      */
     public function getProperties($filter = null): array
     {
@@ -254,10 +255,10 @@ class Classify
             $result[] = $method;
         }
 
-        if($parentClassify = $this->getParentClassify()){
+        if ($parentClassify = $this->getParentClassify()) {
             $parentProperties = $parentClassify->getProperties($filter);
 
-            if(count($parentProperties) > 0) $result = array_merge($result, $parentProperties);
+            if (count($parentProperties) > 0) $result = array_merge($result, $parentProperties);
         }
 
         return $result;
@@ -331,7 +332,7 @@ class Classify
 
     /**
      * 获取set 方法
-     * @param int $filter
+     * @param int|callable $filter
      * @return Method[]
      */
     public function getSetterMethods($filter = ReflectionMethod::IS_PUBLIC): array
@@ -346,7 +347,7 @@ class Classify
 
     /**
      * 获取get 方法
-     * @param int $filter
+     * @param int|callable $filter
      * @return Method[]
      */
     public function getGetterMethods($filter = ReflectionMethod::IS_PUBLIC): array

@@ -26,7 +26,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.8.0');
+define('RAPIDPHP_VERSION', '3.8.2');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -138,7 +138,7 @@ function X(): Xml
  * @return array|null|object|string
  * @throws Exception
  */
-function M(string $name, $parameter = [], $forced = false)
+function M(string $name, array $parameter = [], bool $forced = false)
 {
     if ($forced == false) {
         if (Register::getInstance()->isPut($name)) {
@@ -178,7 +178,7 @@ function VT($view): ?ViewTemplate
  * @param string $format
  * @return string
  */
-function formatException(Exception $e, $format = "{msg} {code}\n{trace}\n thrown in {file} on line {line}"): string
+function formatException(Exception $e, string $format = "{msg} {code}\n{trace}\n thrown in {file} on line {line}"): string
 {
     $result = [
         'code' => $e->getCode(),
@@ -212,7 +212,7 @@ class Init
 
     /**
      * Init constructor.
-     * @param string|null $appFiles
+     * @param string|string[]|null $appFiles
      * @throws RuntimeException
      */
     public function __construct($appFiles = null)
@@ -246,7 +246,7 @@ class Init
     }
 
     /**
-     * @return array|ConfigWrapper
+     * @return ConfigWrapper
      */
     public function getConfig()
     {
@@ -259,7 +259,7 @@ class Init
      */
     public function getRawConfig(?string $key = null): ?array
     {
-        if ($key) return isset($this->rawConfig[$key]) ? $this->rawConfig[$key] : null;
+        if ($key) return $this->rawConfig[$key] ?? null;
 
         return $this->rawConfig;
     }

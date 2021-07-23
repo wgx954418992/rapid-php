@@ -23,9 +23,9 @@ class Input implements IOInput
     }
 
     /**
-     * 获取参数
+     * get
      * @param null $name
-     * @return array|int|mixed|object|string|null
+     * @return Args|array|string|NULL
      */
     public function get($name = null)
     {

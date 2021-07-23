@@ -20,7 +20,7 @@ class StrCharacter
 
     /**
      * 删除第一个字符串
-     * @param $strings
+     * @param string $strings
      * @return string
      */
     public function deleteStringFirst(string $strings): string
@@ -31,7 +31,7 @@ class StrCharacter
 
     /**
      * 删除最后一个字符串
-     * @param $strings
+     * @param string $strings
      * @return string
      */
     public function deleteStringLast(string $strings): string
@@ -42,7 +42,7 @@ class StrCharacter
 
     /**
      * 把字符串解析成数组
-     * @param $queryString
+     * @param string|null $queryString
      * @param string $delimiter
      * @return array
      */
@@ -69,11 +69,11 @@ class StrCharacter
     /**
      * 首字母转大写
      * @param $string
-     * @param string $ext
+     * @param string|null $ext
      * @param string $glue
      * @return string
      */
-    public function toFirstUppercase($string, $ext = null, $glue = ""): string
+    public function toFirstUppercase($string, string $ext = null, string $glue = ""): string
     {
         if ($ext === null || $ext === '') return ucfirst($string);
 
@@ -93,7 +93,7 @@ class StrCharacter
      * @param string $glue
      * @return string
      */
-    public function toFirstLowercase($string, $ext = null, $glue = ""): string
+    public function toFirstLowercase($string, $ext = null, string $glue = ""): string
     {
         if ($ext === null || $ext === '') return lcfirst($string);
 
@@ -138,7 +138,7 @@ class StrCharacter
      * @param string $encoding
      * @return array
      */
-    public function strSplitByLength($string, $length = 1, $encoding = 'utf8'): array
+    public function strSplitByLength($string, int $length = 1, string $encoding = 'utf8'): array
     {
         $start = 0;
 
@@ -162,9 +162,9 @@ class StrCharacter
      * @param $name
      * @param string $t
      * @param int $length
-     * @return string|string[]|null
+     * @return string
      */
-    public function hideName($name, $t = '*', $length = 1)
+    public function hideName($name, string $t = '*', int $length = 1)
     {
         if (mb_strlen($name, 'utf-8') == 1) return '*';
 
@@ -185,7 +185,7 @@ class StrCharacter
      * @param string $t
      * @return string|string[]|null
      */
-    public function hideTel($tel, $t = '*')
+    public function hideTel($tel, string $t = '*')
     {
         return substr_replace($tel, "{$t}{$t}{$t}{$t}", 3, 4);
     }
@@ -200,7 +200,7 @@ class StrCharacter
      * @param string $kvGlue
      * @return string
      */
-    public function join($glue, $pieces, $isEncoded = false, $isKey = false, $keyEncode = '`{key}`', $kvGlue = '='): string
+    public function join($glue, $pieces, bool $isEncoded = false, bool $isKey = false, string $keyEncode = '`{key}`', string $kvGlue = '='): string
     {
         $result = '';
 

@@ -97,6 +97,8 @@ abstract class Driver
     public function getDriverSql($callOrDriver, $isMergeOptions = true, &$tableName = null)
     {
         if (is_callable($callOrDriver)) {
+            if (is_string($callOrDriver)) throw new Exception('Only anonymous functions are supported');
+
             $driver = call_user_func($callOrDriver, $this);
         } else {
             $driver = $callOrDriver;
@@ -232,7 +234,7 @@ abstract class Driver
         $setting = '';
 
         foreach ($data as $name => $value) {
-            if (is_callable($value) || $value instanceof Driver) {
+            if ((is_callable($value) && !is_string($value)) || $value instanceof Driver) {
                 $name = Utils::getInstance()->formatColumn($name, $this->joinString);
 
                 $setting .= "{$name}=({$this->getDriverSql($value)}),";
@@ -342,7 +344,7 @@ abstract class Driver
             $drivetSql = $this->getDriverSql($callOrDriver);
 
             $tableName = $callOrDriver->getTableName();
-        } else if (is_callable($tableName)) {
+        } else if (is_callable($tableName) && !is_string($tableName)) {
             $callOrDriver = $tableName;
 
             $drivetSql = $this->getDriverSql($callOrDriver, true, $tableName);

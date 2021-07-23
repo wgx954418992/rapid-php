@@ -62,7 +62,7 @@ class Value
     }
 
     /**
-     * @return object|Value|Variable|mixed
+     * @return object|Value
      * @throws Exception
      */
     public function toObject()

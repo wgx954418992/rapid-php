@@ -91,7 +91,7 @@ class Args
 
     /**
      * 获取选项值
-     * @param string|NULL $opt
+     * @param int|string|null $opt
      * @return array|string|NULL
      */
     public function getOptionValue($opt = NULL)
@@ -107,7 +107,7 @@ class Args
 
     /**
      * 获取命令行参数值
-     * @param integer|NULL $index
+     * @param integer|null|string $index
      * @return array|string|NULL
      */
     public function getArgsValue($index = NULL)

@@ -56,7 +56,7 @@ class Method
     }
 
     /**
-     * @param string $class
+     * @param object|string $class
      * @return DocComment|\rapidPHP\modules\router\classier\DocComment|null
      */
     public function getDocComment($class = DocComment::class)

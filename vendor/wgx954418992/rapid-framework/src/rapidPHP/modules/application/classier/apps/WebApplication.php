@@ -19,7 +19,7 @@ abstract class WebApplication extends Application
      * @param Request $request
      * @param Response $response
      * @param string|null $context
-     * @return WebContext|Context|null|mixed
+     * @return Context|WebContext|null
      * @throws Exception
      */
     public function newWebContext(Request $request, Response $response, ?string $context)

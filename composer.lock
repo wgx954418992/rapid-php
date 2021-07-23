@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4238a06c6fa815e8fb0fab83b4d5962",
+    "content-hash": "0ad9499fd38b9156dc6b5502ee7ceb24",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -895,16 +895,16 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.8.0",
+            "version": "3.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "5dcdaf2ff4cd146ea74cdd4a93ce7dd92c28896f"
+                "reference": "06c1a06e11622c15e9c2de99ebf7089b2e295b68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/5dcdaf2ff4cd146ea74cdd4a93ce7dd92c28896f",
-                "reference": "5dcdaf2ff4cd146ea74cdd4a93ce7dd92c28896f",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/06c1a06e11622c15e9c2de99ebf7089b2e295b68",
+                "reference": "06c1a06e11622c15e9c2de99ebf7089b2e295b68",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -967,9 +967,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.8.0"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.8.2"
             },
-            "time": "2021-07-03T19:04:10+00:00"
+            "time": "2021-07-23T05:51:19+00:00"
         }
     ],
     "packages-dev": [
@@ -1612,16 +1612,16 @@
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "2.0.3",
+            "version": "2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "4b49fb70f067272b659ef0174ff9ca40fdaa6357"
+                "reference": "28af674ff175d0768a5a978e6de83f697d4a7f05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/4b49fb70f067272b659ef0174ff9ca40fdaa6357",
-                "reference": "4b49fb70f067272b659ef0174ff9ca40fdaa6357",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/28af674ff175d0768a5a978e6de83f697d4a7f05",
+                "reference": "28af674ff175d0768a5a978e6de83f697d4a7f05",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1666,7 +1666,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-file-iterator/issues",
-                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/2.0.3"
+                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/2.0.4"
             },
             "funding": [
                 {
@@ -1674,7 +1674,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-30T08:25:21+00:00"
+            "time": "2021-07-19T06:46:01+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -2627,6 +2627,7 @@
                     "type": "github"
                 }
             ],
+            "abandoned": true,
             "time": "2020-11-30T07:30:19+00:00"
         },
         {

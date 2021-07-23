@@ -57,6 +57,7 @@ class Xml
      * xml数据转换
      * @param XMLWriter $xml
      * @param array $array
+     * @param null $rKey
      * @return XMLWriter
      */
     private function xmlData(XMLWriter $xml, array $array, $rKey = null): XMLWriter
@@ -92,7 +93,7 @@ class Xml
      * @param string $encoding
      * @return string
      */
-    public function encode(array $array, $root = 'xml', $version = '1.0', $encoding = 'utf-8'): string
+    public function encode(array $array, string $root = 'xml', string $version = '1.0', string $encoding = 'utf-8'): string
     {
         $xml = $this->xmlStart($root, $version, $encoding);
 

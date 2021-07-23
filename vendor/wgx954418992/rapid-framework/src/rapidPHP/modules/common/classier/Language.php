@@ -45,7 +45,7 @@ class Language
     {
         if (isset(self::$languages[$lang])) return self::$languages[$lang];
 
-        $files = isset(self::$map[$lang]) ? self::$map[$lang] : null;
+        $files = self::$map[$lang] ?? null;
 
         if (empty($files)) return [];
 
@@ -64,23 +64,21 @@ class Language
      * 转换，翻译
      * @param $word
      * @param $lang
-     * @param mixed ...$arg
-     * @return mixed|string|string[]
+     * @param array|null $arg
+     * @return string|string[]|null
      */
-    public static function translate($word, $lang, $arg = [])
+    public static function translate($word, $lang, ?array $arg = [])
     {
         $language = self::loadLanguage($lang);
 
-        $value = isset($language[$word]) ? $language[$word] : $word;
+        $value = $language[$word] ?? $word;
 
-        if (is_array($arg) && !empty($arg)) {
+        if (!empty($arg)) {
             foreach ($arg as $name => $item) {
                 $value = str_replace("{{$name}}", $item, $value);
             }
         }
 
-        $value = preg_replace('#{(.*)}#i', '', $value);
-
-        return $value;
+        return preg_replace('#{(.*)}#i', '', $value);
     }
 }

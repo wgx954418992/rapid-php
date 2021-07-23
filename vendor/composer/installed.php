@@ -1,8 +1,8 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => '3.8.0',
-    'version' => '3.8.0.0',
+    'pretty_version' => '3.8.3',
+    'version' => '3.8.3.0',
     'aliases' => 
     array (
     ),
@@ -126,12 +126,12 @@
     ),
     'phpunit/php-file-iterator' => 
     array (
-      'pretty_version' => '2.0.3',
-      'version' => '2.0.3.0',
+      'pretty_version' => '2.0.4',
+      'version' => '2.0.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4b49fb70f067272b659ef0174ff9ca40fdaa6357',
+      'reference' => '28af674ff175d0768a5a978e6de83f697d4a7f05',
     ),
     'phpunit/php-text-template' => 
     array (
@@ -385,17 +385,17 @@
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.8.0',
-      'version' => '3.8.0.0',
+      'pretty_version' => '3.8.2',
+      'version' => '3.8.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5dcdaf2ff4cd146ea74cdd4a93ce7dd92c28896f',
+      'reference' => '06c1a06e11622c15e9c2de99ebf7089b2e295b68',
     ),
     'wgx954418992/rapid-php' => 
     array (
-      'pretty_version' => '3.8.0',
-      'version' => '3.8.0.0',
+      'pretty_version' => '3.8.3',
+      'version' => '3.8.3.0',
       'aliases' => 
       array (
       ),

@@ -23,7 +23,7 @@ class ConsoleApplication extends Application
      * @param Input $request
      * @param Output $response
      * @param string|null $context
-     * @return ConsoleContext|Context|null|mixed
+     * @return ConsoleContext|Context|null
      * @throws ReflectionException
      * @throws Exception
      */

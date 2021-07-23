@@ -4,6 +4,7 @@
 namespace rapidPHP\modules\reflection\classier;
 
 use Exception;
+use rapidPHP\modules\common\classier\AB;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\Instances;
@@ -40,7 +41,7 @@ class Utils
 
     /**
      * 获取文件内容里面的命名空间，只能支持单个
-     * @param $content
+     * @param string|null $content
      * @return mixed|null
      */
     public function getNamespaceName(?string $content)
@@ -50,7 +51,7 @@ class Utils
 
     /**
      * 获取文件内容里面的className，只能支持单个
-     * @param $content
+     * @param string|null $content
      * @return mixed|null
      */
     public function getClassName(?string $content)
@@ -60,7 +61,7 @@ class Utils
 
     /**
      * 获取文件内容里面的命名空间+className，只能支持单个
-     * @param $content
+     * @param string|null $content
      * @return string|null
      */
     public function getClassFullName(?string $content): ?string
@@ -76,7 +77,7 @@ class Utils
 
     /**
      * 获取文件里面的命名空间+className，只能支持单个
-     * @param $file
+     * @param string $file
      * @return string|null
      */
     public function getClassFullNameByFile(string $file): ?string
@@ -120,11 +121,11 @@ class Utils
 
         $result = [];
 
-        foreach ($parameters as $index => $parameter) {
+        foreach ($parameters as $parameter) {
             $value = $this->getParamValue($parameter, $data);
 
             $type = $parameter->getType();
-        
+
             if (empty($type)) {
                 $result[] = $value;
             } else if (Variable::isSetType($type)) {
@@ -154,7 +155,7 @@ class Utils
     /**
      * 转对象，支持对象关联对象
      * @param $object
-     * @param array $data -参数必须是key=>value形式，不能按照顺序传参
+     * @param object|array|null|AB $data -参数必须是key=>value形式，不能按照顺序传参
      * @return object|void|null
      * @throws Exception
      */
@@ -190,7 +191,7 @@ class Utils
     /**
      * 批量转对象
      * @param $object
-     * @param array $data
+     * @param object|array|null|AB $data
      * @throws Exception
      */
     public function toObjects($object, &$data = [])

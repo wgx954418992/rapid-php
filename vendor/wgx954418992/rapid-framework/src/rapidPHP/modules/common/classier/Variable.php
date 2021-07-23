@@ -127,7 +127,7 @@ class Variable
 
     /**
      * 解析var 通过字符串
-     * @param $content
+     * @param string $content
      */
     public static function parseVarByString(string &$content)
     {

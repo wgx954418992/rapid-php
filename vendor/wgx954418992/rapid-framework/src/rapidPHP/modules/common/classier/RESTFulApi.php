@@ -35,7 +35,7 @@ class RESTFulApi
      * @param string $codeKey
      * @param string $msgKey
      */
-    public function __construct($codeKey = 'code', $msgKey = 'msg', $dataKey = 'data')
+    public function __construct(string $codeKey = 'code', string $msgKey = 'msg', string $dataKey = 'data')
     {
         $this->setDataKey($dataKey)->setMsgKey($msgKey)->setRetKey($codeKey);
     }
@@ -62,7 +62,7 @@ class RESTFulApi
     /**
      * 设置返回key
      * @param mixed $dataKey
-     * @return static|self|mixed|null
+     * @return self|static
      */
     public function setDataKey($dataKey)
     {
@@ -74,7 +74,7 @@ class RESTFulApi
     /**
      * 设置返回状态key
      * @param mixed $codeKey
-     * @return static|self|mixed|null
+     * @return self|static
      */
     public function setRetKey($codeKey)
     {
@@ -86,7 +86,7 @@ class RESTFulApi
     /**
      * 设置返回状态key
      * @param mixed $msgKey
-     * @return static|self|mixed|null
+     * @return self|static
      */
     public function setMsgKey($msgKey)
     {
@@ -99,11 +99,11 @@ class RESTFulApi
      * 预设返回值
      * @param string $msg
      * @param null $data
-     * @param int $code
+     * @param int|string $code
      * @return $this
      * @throws Exception
      */
-    public function go($msg = '', $data = null, $code = 0)
+    public function go(string $msg = '', $data = null, $code = 0)
     {
         $this->setMsg($msg);
 
@@ -118,7 +118,7 @@ class RESTFulApi
     /**
      * 设置返回消息
      * @param $msg
-     * @return static|self|mixed|null
+     * @return self|static
      */
     public function setMsg($msg)
     {
@@ -131,7 +131,7 @@ class RESTFulApi
     /**
      * 设置返回状态
      * @param $code
-     * @return static|self|mixed|null
+     * @return self|static
      */
     public function setCode($code)
     {
@@ -143,7 +143,7 @@ class RESTFulApi
     /**
      * 设置返回状态
      * @param $data
-     * @return static|self|mixed|null|object
+     * @return self|static
      * @throws Exception
      */
     public function setData($data)
@@ -195,7 +195,7 @@ class RESTFulApi
 
     /**
      * 获取返回值
-     * @return array|string
+     * @return array
      */
     public function getResult()
     {
@@ -206,7 +206,7 @@ class RESTFulApi
 
     /**
      * 转json
-     * @return array|string
+     * @return false|string
      */
     public function toJson()
     {
@@ -215,9 +215,9 @@ class RESTFulApi
 
     /**
      * 转json
-     * @return array|string
+     * @return string
      */
-    public function toXml()
+    public function toXml(): string
     {
         return Xml::getInstance()->encode($this->getResult());
     }
@@ -225,7 +225,7 @@ class RESTFulApi
     /**
      * 错误
      * @param $msg
-     * @param int $code
+     * @param int|string $code
      * @param null $data
      * @return RESTFulApi
      * @throws Exception
@@ -238,8 +238,8 @@ class RESTFulApi
     /**
      * 成功
      * @param null $data
-     * @param string $msg
-     * @param int $code
+     * @param string|array $msg
+     * @param int|string $code
      * @return RESTFulApi
      * @throws Exception
      */

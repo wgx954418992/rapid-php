@@ -40,7 +40,7 @@ class Http
     /**
      * 发送httpResponse
      * @param string $url
-     * @param array $post
+     * @param array|string|null $post
      * @param int $timeout
      * @param array|null $cookie
      * @param array|null $setOpt
@@ -94,14 +94,14 @@ class Http
 
     /**
      * 解析http_response_headers
-     * @param $headers
+     * @param array $headers
      * @return array
      */
     public function parseHeaders(array $headers): array
     {
         $head = [];
 
-        foreach ($headers as $k => $v) {
+        foreach ($headers as $v) {
 
             $t = explode(':', $v, 2);
 
@@ -121,7 +121,7 @@ class Http
 
     /**
      * 获取Http响应头
-     * @param $url
+     * @param string $url
      * @param string $headers
      * @param array $context
      * @return array

@@ -71,28 +71,28 @@ class Uri
      * - parse_url('?a=1')
      * - parse_url('www.baidu.com/aa/1')
      * @param $uri
-     * @param int $component
+     * @param int|string $component
      * @return array|int|mixed|string|null
      */
     public function parseUrl($uri, $component = -1)
     {
         preg_match('/^(?:([A-Za-z-\x{4e00}-\x{9fa5}+@#]+):)?(\/{0,3})?(?:(\w+:\w+)@)?([0-9.\-A-Za-z-\x{4e00}-\x{9fa5}]+)?(?::(\d+))?(?:(\/[^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/ui', $uri, $data);
 
-        $scheme = isset($data[1]) ? $data[1] : null;
+        $scheme = $data[1] ?? null;
 
-        $up = explode(':', isset($data[3]) ? $data[3] : null);
+        $up = explode(':', $data[3] ?? null);
 
-        $host = isset($data[4]) ? $data[4] : null;
+        $host = $data[4] ?? null;
 
-        $port = isset($data[5]) ? $data[5] : null;
+        $port = $data[5] ?? null;
 
-        $path = isset($data[6]) ? $data[6] : null;
+        $path = $data[6] ?? null;
 
         if ($path && substr($path, 0, 1) != '/') $path = '/' . $path;
 
-        $query = isset($data[7]) ? $data[7] : null;
+        $query = $data[7] ?? null;
 
-        $fragment = isset($data[8]) ? $data[8] : null;
+        $fragment = $data[8] ?? null;
 
         if ($scheme === 'file') {
             $path = "/{$host}{$path}";
@@ -143,7 +143,7 @@ class Uri
                 if ($fragment != null) $result[self::URL_FRAGMENT] = $fragment;
 
                 if ($component && is_string($component)) {
-                    return isset($result[$component]) ? $result[$component] : null;
+                    return $result[$component] ?? null;
                 }
 
                 return $result;
@@ -156,7 +156,7 @@ class Uri
      * @param bool $isRemove
      * @return array
      */
-    public function toArray(string &$url, $isRemove = false): array
+    public function toArray(string &$url, bool $isRemove = false): array
     {
         $urlQuery = $this->parseUrl($url, PHP_URL_QUERY);
 
@@ -180,7 +180,7 @@ class Uri
      * @param string $connector
      * @return string
      */
-    public function toQuery($data, $isEncode = false, $isEmpty = true, $connector = '&'): string
+    public function toQuery($data, bool $isEncode = false, bool $isEmpty = true, string $connector = '&'): string
     {
         $arg = '';
 

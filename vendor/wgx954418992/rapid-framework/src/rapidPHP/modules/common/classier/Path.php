@@ -36,7 +36,7 @@ class Path
      * @param int $count
      * @return string
      */
-    public function dirName($path, $count = 1): string
+    public function dirName($path, int $count = 1): string
     {
         $count = (int)$count;
 
@@ -51,7 +51,7 @@ class Path
 
     /**
      * 获取路径信息
-     * @param $path
+     * @param string $path
      * @return array
      */
     public function getPathInfo(string $path): array

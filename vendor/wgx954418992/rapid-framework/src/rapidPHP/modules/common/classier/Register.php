@@ -29,7 +29,7 @@ class Register
      * put
      * @param $name
      * @param $value
-     * @return static|self|mixed|null
+     * @return self|static
      */
     public function put($name, $value)
     {
@@ -55,7 +55,7 @@ class Register
      */
     public function get($name)
     {
-        return isset($this->container[$name]) ? $this->container[$name] : null;
+        return $this->container[$name] ?? null;
     }
 
     /**

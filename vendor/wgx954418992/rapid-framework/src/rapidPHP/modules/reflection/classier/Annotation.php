@@ -73,7 +73,7 @@ class Annotation
      * 获取注解对象
      * @param $atName
      * @param $value
-     * @return object|Value|Parameter|Variable|Returned|null
+     * @return object|Value
      * @throws Exception
      */
     public function getAnnotation($atName, $value)
@@ -97,7 +97,7 @@ class Annotation
      * @return array
      * @throws Exception
      */
-    public function getAnnotations($doc, $name = '.*?', $pattern = null): array
+    public function getAnnotations($doc, string $name = '.*?', $pattern = null): array
     {
         if (empty($pattern)) {
             preg_match_all("/@($name)? (.*?)([\s\t\n])/i", $doc, $list);
@@ -129,7 +129,7 @@ class Annotation
      * @return mixed|null
      * @throws Exception
      */
-    public function getOneAnnotation($doc, $name = '.*?')
+    public function getOneAnnotation($doc, string $name = '.*?')
     {
         $annotations = $this->getAnnotations($doc, $name);
 

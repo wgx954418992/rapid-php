@@ -24,7 +24,6 @@ abstract class PipeProcess extends Process
 
     /**
      * MQProcess constructor.
-     * @param $sleep
      * @param null $parentProcess
      */
     public function __construct($parentProcess = null)

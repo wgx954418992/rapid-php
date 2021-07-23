@@ -1,7 +1,9 @@
 <?php
+
 namespace rapidPHP\modules\common\classier;
 
 use Exception;
+use function rapidPHP\B;
 
 class Mail
 {
@@ -133,7 +135,7 @@ class Mail
      * @param boolean $isSecurity 到服务器的连接是否为安全连接，默认false
      * @return $this
      */
-    public function setServer($server, $username = '', $password = '', $port = 25, $isSecurity = false)
+    public function setServer(string $server, string $username = '', string $password = '', int $port = 25, bool $isSecurity = false)
     {
         $this->sendServer = $server;
 
@@ -153,7 +155,7 @@ class Mail
      * @param string $from 发件人地址
      * @return $this
      */
-    public function setFrom($from)
+    public function setFrom(string $from)
     {
         $this->from = $from;
         return $this;
@@ -165,7 +167,7 @@ class Mail
      * @param string $to 收件人地址
      * @return $this
      */
-    public function setReceiver($to)
+    public function setReceiver(string $to)
     {
         if (isset($this->to)) {
             if (is_string($this->to)) {
@@ -185,7 +187,7 @@ class Mail
      * @param string $cc 抄送地址
      * @return $this
      */
-    public function setCc($cc)
+    public function setCc(string $cc)
     {
         if (isset($this->cc)) {
             if (is_string($this->cc)) {
@@ -205,7 +207,7 @@ class Mail
      * @param string $bcc 秘密抄送地址
      * @return $this
      */
-    public function setBcc($bcc)
+    public function setBcc(string $bcc)
     {
         if (isset($this->bcc)) {
             if (is_string($this->bcc)) {
@@ -228,7 +230,7 @@ class Mail
      * @param string $subject 邮件主体内容，可以是纯文本，也可是是HTML文本
      * @return $this
      */
-    public function setMail($subject, $body)
+    public function setMail(string $subject, string $body)
     {
         $this->subject = base64_encode($subject);
         $this->body = base64_encode($body);
@@ -241,7 +243,7 @@ class Mail
      * @param string $name
      * @return $this
      */
-    public function addAttachment($file, $name = '')
+    public function addAttachment($file, string $name = '')
     {
         if (!file_exists($file)) {
             $this->errorMessage = "file " . $file . " does not exist.";
@@ -368,8 +370,6 @@ class Mail
         $header .= "Subject: =?UTF-8?B?" . $this->subject . "?=\r\n";
         if (isset($this->attachment)) {
             $header .= "Content-Type: multipart/mixed;\r\n";
-        } elseif (false) {
-            $header .= "Content-Type: multipart/related;\r\n";
         } else {
             $header .= "Content-Type: multipart/alternative;\r\n";
         }
@@ -389,7 +389,7 @@ class Mail
                 $file = B()->getData($value, 'file');
                 $name = B()->getData($value, 'name');
                 if (!$name) {
-                    $fileInfo = B()->getPathInfo($file);
+                    $fileInfo = Path::getInstance()->getPathInfo($file);
                     $name = B()->getData($fileInfo, 'filename');
                 }
                 $header .= "\r\n--" . $separator . "\r\n";
@@ -417,7 +417,7 @@ class Mail
      * @param int $code 期望服务器返回的响应吗
      * @return boolean
      */
-    protected function sendCommand($command, $code)
+    protected function sendCommand(string $command, int $code)
     {
         if (!empty($code)) {
             try {
@@ -451,7 +451,7 @@ class Mail
      * @param int $code 期望服务器返回的响应吗
      * @return boolean
      */
-    protected function sendCommandSecurity($command, $code)
+    protected function sendCommandSecurity(string $command, int $code)
     {
         if (!empty($code)) {
             try {
@@ -481,9 +481,9 @@ class Mail
     /**
      * 读取附件文件内容，返回base64编码后的文件内容
      * @param string $file 文件
-     * @return mixed
+     * @return false|string
      */
-    protected function readFile($file)
+    protected function readFile(string $file)
     {
         if (file_exists($file)) {
             $fileObj = file_get_contents($file);
@@ -502,7 +502,7 @@ class Mail
      */
     protected function getMimeContentType($file)
     {
-        $fileInfo = B()->getPathInfo($file);
+        $fileInfo = Path::getInstance()->getPathInfo($file);
         if (function_exists('mime_content_type')) {
             $mime = mime_content_type($file);
             return preg_match("/gif|jpg|png|jpeg/", $mime) ? $mime : 'application/octet-stream';
@@ -516,9 +516,9 @@ class Mail
     /**
      * 获取附件MIME类型
      * @param string $file 文件
-     * @return mixed
+     * @return array|false|string|null
      */
-    protected function getMIMEType($file)
+    protected function getMIMEType(string $file)
     {
         if (file_exists($file)) {
             return $this->getMimeContentType($file);
