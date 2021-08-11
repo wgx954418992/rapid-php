@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e164e516daf5d391920d3aa0d8bcbfe3",
+    "content-hash": "399e5826cab04ab48bda8c16ea853590",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -892,6 +892,56 @@
                 }
             ],
             "time": "2020-12-02T01:58:49+00:00"
+        },
+        {
+            "name": "wgx954418992/php-enum",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wgx954418992/php-enmu.git",
+                "reference": "7f40fddd0c15e47e55d1877c13ab3d21969fac40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wgx954418992/php-enmu/zipball/7f40fddd0c15e47e55d1877c13ab3d21969fac40",
+                "reference": "7f40fddd0c15e47e55d1877c13ab3d21969fac40",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "type": "library",
+            "autoload": {
+                "files": [],
+                "psr-4": {
+                    "enum\\": "src/enum/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Renew",
+                    "email": "wgx954418992@qq.com"
+                }
+            ],
+            "description": "The simplest and fastest PHP enumeration, supports `then` matching callback",
+            "homepage": "https://www.rapid-framework.com/",
+            "keywords": [
+                "enum",
+                "php-enum",
+                "rapid-php-enum"
+            ],
+            "support": {
+                "issues": "https://github.com/wgx954418992/php-enmu/issues",
+                "source": "https://github.com/wgx954418992/php-enmu/tree/1.0.0"
+            },
+            "time": "2021-07-19T08:26:08+00:00"
         }
     ],
     "packages-dev": [

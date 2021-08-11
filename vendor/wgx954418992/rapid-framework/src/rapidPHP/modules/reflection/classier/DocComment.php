@@ -59,9 +59,6 @@ class DocComment
     }
 
     /**
-     * @throws Exception
-     */
-    /**
      * @return string
      */
     public function getConfigClass()

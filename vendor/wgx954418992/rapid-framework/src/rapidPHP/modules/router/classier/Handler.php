@@ -84,7 +84,7 @@ class Handler
 
     /**
      * @param $result
-     * @param $type
+     * @param string|null $type
      * @return HandlerInterface|ApiHandler|AutoHandler|RawHandler|ViewHandler
      */
     public function getService($result, ?string $type = null)

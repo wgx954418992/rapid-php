@@ -16,17 +16,17 @@ class Statement
     /**
      * @var array|null
      */
-    private $options;
+    protected $options;
 
     /**
      * @var SQLDB
      */
-    private $db;
+    protected $db;
 
     /**
      * @var string
      */
-    private $sql;
+    protected $sql;
 
     /**
      * Statement constructor.
@@ -96,8 +96,9 @@ class Statement
 
     /**
      * 获取一条
-     * @param string|null $objectClass
-     * @return object|array|null
+     * @template T
+     * @param string|static|T|null $objectClass
+     * @return T|array|null
      * @throws Exception
      */
     public function fetch($objectClass = null)
@@ -133,13 +134,14 @@ class Statement
 
         if (empty($data)) return null;
 
-        return isset($data[$name]) ? $data[$name] : null;
+        return array_key_exists($name, $data) ? $data[$name] : null;
     }
 
     /**
      * 获取全部
-     * @param string|null $objectClass
-     * @return array|null
+     * @template T
+     * @param string|static|T|null $objectClass
+     * @return T[]
      * @throws Exception
      */
     public function fetchAll($objectClass = null): ?array

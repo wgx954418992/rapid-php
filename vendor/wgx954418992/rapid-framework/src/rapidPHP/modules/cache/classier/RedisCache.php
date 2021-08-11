@@ -27,10 +27,10 @@ class RedisCache extends CacheInterface
 
     /**
      * exists
-     * @param $name
+     * @param string $name
      * @return bool|int
      */
-    public function exists($name)
+    public function exists(string $name): bool
     {
         return $this->redis->exists($name);
     }
@@ -44,7 +44,7 @@ class RedisCache extends CacheInterface
      * @return bool
      * @throws Exception
      */
-    public function add(string $name, $value, $time = 0): bool
+    public function add(string $name, $value, int $time = 0): bool
     {
         return $this->redis->set($name, serialize($value), $time <= 0 ? null : $time);
     }

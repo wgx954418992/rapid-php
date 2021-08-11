@@ -21,7 +21,6 @@ abstract class PipeProcess extends Process
      */
     protected $parentProcess;
 
-
     /**
      * MQProcess constructor.
      * @param null $parentProcess

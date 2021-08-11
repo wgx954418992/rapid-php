@@ -89,8 +89,9 @@ class Classify
     }
 
     /**
-     * @param object|string $class
-     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|null
+     * @template T
+     * @param object|T|static|string $class
+     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|T|null
      */
     public function getDocComment($class = DocComment::class)
     {

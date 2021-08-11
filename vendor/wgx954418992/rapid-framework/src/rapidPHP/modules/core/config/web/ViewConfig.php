@@ -15,7 +15,7 @@ class ViewConfig
     /**
      * @var TemplateService
      */
-    private $template_service;
+    protected $template_service;
 
     /**
      * ViewConfig constructor.

@@ -91,7 +91,7 @@ class Server extends SwooleServer
      */
     public function parseRequestBody($fd, &$header, &$cookie, SessionConfig $sessionConfig, &$sessionId)
     {
-        $body = isset($this->requestBody[$fd]) ? $this->requestBody[$fd] : null;
+        $body = array_key_exists($fd, $this->requestBody) ? $this->requestBody[$fd] : null;
 
         if (empty($body)) throw new Exception('request error!', 1008);
 
@@ -164,7 +164,7 @@ class Server extends SwooleServer
     {
         try {
             $sessionConfig = $this->getConfig()->getSession();
-            
+
             if (empty($sessionConfig)) throw new Exception('session error!');
 
             $req->cookie[$sessionConfig->getKey()] = $sessionId = $this->getClientSessionId($req, $server, $sessionConfig->getKey());

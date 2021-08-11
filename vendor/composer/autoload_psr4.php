@@ -11,6 +11,7 @@ return array(
     'script\\' => array($baseDir . '/scripts'),
     'rapidPHP\\' => array($vendorDir . '/wgx954418992/rapid-framework/src/rapidPHP'),
     'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/reflection-docblock/src', $vendorDir . '/phpdocumentor/type-resolver/src'),
+    'enum\\' => array($vendorDir . '/wgx954418992/php-enum/src/enum'),
     'apps\\' => array($baseDir . '/apps'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
     'Symfony\\Polyfill\\Php72\\' => array($vendorDir . '/symfony/polyfill-php72'),

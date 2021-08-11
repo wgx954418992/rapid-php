@@ -15,7 +15,7 @@ class Output implements IOOutput
      * @param array $options
      * @return bool
      */
-    public function write(?string $data, $options = []): bool
+    public function write(?string $data, array $options = []): bool
     {
         $foregroundColor = B()->getData($options, 0);
 
@@ -32,7 +32,7 @@ class Output implements IOOutput
      * @param array $options
      * @return bool
      */
-    public function printf(?string $data, $options = []): bool
+    public function printf(?string $data, array $options = []): bool
     {
         return $this->write($data, $options);
     }

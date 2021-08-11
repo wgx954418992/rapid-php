@@ -147,7 +147,7 @@ class Response extends ResponseInterface
      * @param array $options
      * @return bool
      */
-    public function write(?string $data, $options = []): bool
+    public function write(?string $data, array $options = []): bool
     {
         if (empty($data)) return false;
 

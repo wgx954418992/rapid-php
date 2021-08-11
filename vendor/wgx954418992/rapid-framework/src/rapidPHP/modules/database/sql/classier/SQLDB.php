@@ -59,9 +59,9 @@ class SQLDB
 
         $this->config = $config;
 
-        $code = $config->getCharacterCode();
-
-        $code ? $this->query("SET NAMES {$code}")->execute() : null;
+        if ($code = $config->getCharacterCode()) {
+            $this->query("SET NAMES {$code}")->execute();
+        }
     }
 
 
@@ -76,11 +76,11 @@ class SQLDB
 
     /**
      * 选择表
-     * @param string $tableName
+     * @param string|null $tableName
      * @return Driver|Mysql
      * @throws Exception
      */
-    public function table($tableName = null)
+    public function table(string $tableName = null)
     {
         $config = $this->getConfig();
 

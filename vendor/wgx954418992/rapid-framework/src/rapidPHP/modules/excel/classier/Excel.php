@@ -59,7 +59,7 @@ class Excel
      * @return Sheet
      * @throws SpreadException
      */
-    public function getSheet(Spreadsheet $spreadsheet, $index = 0): Sheet
+    public function getSheet(Spreadsheet $spreadsheet, int $index = 0): Sheet
     {
         $spreadsheet->setActiveSheetIndex($index);
 

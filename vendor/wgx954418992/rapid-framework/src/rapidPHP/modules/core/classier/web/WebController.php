@@ -2,6 +2,7 @@
 
 namespace rapidPHP\modules\core\classier\web;
 
+use rapidPHP\modules\application\classier\Context;
 use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\common\classier\Verify;
 use rapidPHP\modules\core\classier\Controller;
@@ -27,7 +28,7 @@ class WebController extends Controller
     }
 
     /**
-     * @return WebContext|object|mixed|null|static
+     * @return Context|WebContext
      */
     public function getContext()
     {
@@ -65,7 +66,7 @@ class WebController extends Controller
      * @param bool $isDecode
      * @return string
      */
-    public function getUrl($meter = false, $isDecode = true): string
+    public function getUrl(bool $meter = false, bool $isDecode = true): string
     {
         return $this->getRequest()->getUrl($meter, $isDecode);
     }

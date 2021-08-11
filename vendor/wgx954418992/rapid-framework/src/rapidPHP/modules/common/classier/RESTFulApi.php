@@ -8,15 +8,6 @@ use rapidPHP\modules\reflection\classier\Utils;
 
 class RESTFulApi
 {
-    /**
-     * @var array 结果
-     */
-    protected $result = [];
-
-    /**
-     * @var string
-     */
-    protected $dataKey, $codeKey, $msgKey;
 
     /**
      * 失败状态
@@ -27,6 +18,16 @@ class RESTFulApi
      * 成功状态
      */
     const CODE_SUCCESS = 1;
+
+    /**
+     * @var array 结果
+     */
+    protected $result = [];
+
+    /**
+     * @var string
+     */
+    protected $dataKey, $codeKey, $msgKey;
 
     /**
      * 构造函数，设置参数
@@ -79,6 +80,7 @@ class RESTFulApi
     public function setRetKey($codeKey)
     {
         $this->codeKey = $codeKey;
+
         return $this;
     }
 
@@ -91,6 +93,7 @@ class RESTFulApi
     public function setMsgKey($msgKey)
     {
         $this->msgKey = $msgKey;
+
         return $this;
     }
 
@@ -197,7 +200,7 @@ class RESTFulApi
      * 获取返回值
      * @return array
      */
-    public function getResult()
+    public function getResult(): array
     {
         if (!isset($this->result)) $this->result = [$this->codeKey => RESTFulApi::CODE_FAIL, $this->msgKey => 'error', $this->dataKey => null];
 

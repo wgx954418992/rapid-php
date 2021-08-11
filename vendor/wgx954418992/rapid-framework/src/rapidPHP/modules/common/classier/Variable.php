@@ -116,7 +116,7 @@ class Variable
      */
     public static function parseVarByArray(&$data)
     {
-        foreach ($data as $key => &$value) {
+        foreach ($data as &$value) {
             if (is_string($value) && !is_null($data)) {
                 self::parseVarByString($value);
             } else if (is_array($value)) {

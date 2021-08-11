@@ -154,9 +154,10 @@ class Utils
 
     /**
      * 转对象，支持对象关联对象
+     * @template T
      * @param $object
      * @param object|array|null|AB $data -参数必须是key=>value形式，不能按照顺序传参
-     * @return object|void|null
+     * @return object|void|T|null
      * @throws Exception
      */
     public function toObject($object, $data = [])

@@ -212,7 +212,7 @@ class Utils
      * @return bool
      * @throws Exception
      */
-    public function threadExec($bin, $param, $sleep = 1): bool
+    public function threadExec($bin, $param, int $sleep = 1): bool
     {
         if (!function_exists('exec')) throw new Exception('exec 方法不存在!');
 
@@ -221,7 +221,7 @@ class Utils
         if (!is_file($bin)) {
             exec('type -P ' . $bin, $out);
 
-            $bin = isset($out[0]) ? $out[0] : null;
+            $bin = array_key_exists(0, $out) ? $out[0] : null;
         }
 
         if (!is_file($bin)) throw new Exception($bin . ' 文件不存在!');
@@ -254,7 +254,7 @@ class Utils
      * @return bool
      * @throws Exception
      */
-    public function threadExecScript($bin, $script = null, $param = [], $sleep = 1): bool
+    public function threadExecScript($bin, $script = null, array $param = [], int $sleep = 1): bool
     {
         if (!is_file($script)) $script = PATH_ROOT . DIRECTORY_SEPARATOR . $script;
 

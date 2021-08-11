@@ -8,11 +8,6 @@ class XSS
 {
 
     /**
-     * @var AntiXSS
-     */
-    protected static $antiXss;
-
-    /**
      * 采用单例模式
      */
     use Instances;
@@ -27,6 +22,11 @@ class XSS
 
         return new static();
     }
+
+    /**
+     * @var AntiXSS
+     */
+    protected static $antiXss;
 
     /**
      * 过滤

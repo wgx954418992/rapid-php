@@ -35,7 +35,7 @@ class AR
      *      'b'=>2
      * )
      */
-    public function delete(?array $array, $key, $sort = false, $isTow = false): ?array
+    public function delete(?array $array, $key, bool $sort = false, bool $isTow = false): ?array
     {
         $keys = !is_array($key) ? explode(',', $key) : $key;
 
@@ -66,7 +66,7 @@ class AR
      * @return array
      * array('a'=>1,'c'=>3)
      */
-    public function getArray(?array $array, array $key, $isSort = false): array
+    public function getArray(?array $array, array $key, bool $isSort = false): array
     {
         $newArray = [];
 
@@ -182,7 +182,7 @@ class AR
 
     /**
      * 获取多维数组深度
-     * @param $array
+     * @param array $array
      * @return int
      */
     public function getDepth(array $array): int
@@ -293,7 +293,7 @@ class AR
      *      )
      * )
      */
-    public function arrayColumn(array $array, $key, $of = null, $isOne = false): array
+    public function arrayColumn(array $array, $key, $of = null, bool $isOne = false): array
     {
         $newArray = [];
 
@@ -323,7 +323,7 @@ class AR
      * @param bool $isRepeat
      * @return array
      */
-    public function rands(array $array, $number = 1, $isRepeat = false): array
+    public function rands(array $array, int $number = 1, bool $isRepeat = false): array
     {
         $rand = [];
 
@@ -361,7 +361,7 @@ class AR
      *  1=>a|null
      * )
      */
-    public function valueToKey($array, $isValue = true): array
+    public function valueToKey($array, bool $isValue = true): array
     {
         $newArray = [];
 
@@ -394,10 +394,10 @@ class AR
      * @param string $pKey
      * @param string $idKey
      * @param string $childKey
-     * @param int $pid
+     * @param int|null $pid
      * @return array
      */
-    public function getTree($array, $pKey = 'pid', $idKey = 'id', $childKey = 'child', $pid = null)
+    public function getTree($array, string $pKey = 'pid', string $idKey = 'id', string $childKey = 'child', int $pid = null): array
     {
         $tree = [];
 

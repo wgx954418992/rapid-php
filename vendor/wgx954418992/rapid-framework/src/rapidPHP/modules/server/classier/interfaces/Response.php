@@ -155,7 +155,7 @@ abstract class Response implements Output
      * @param array $options
      * @return bool
      */
-    abstract public function write(?string $data, $options = []): bool;
+    abstract public function write(?string $data, array $options = []): bool;
 
     /**
      * 输出文件到浏览器。

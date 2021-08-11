@@ -14,7 +14,7 @@ abstract class Driver
      * 连接对象
      * @var SQLDB
      */
-    private $db;
+    protected $db;
 
     /**
      * 表名

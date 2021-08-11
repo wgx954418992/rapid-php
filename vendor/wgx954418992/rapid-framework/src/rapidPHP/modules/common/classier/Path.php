@@ -38,8 +38,6 @@ class Path
      */
     public function dirName($path, int $count = 1): string
     {
-        $count = (int)$count;
-
         while ($count > 0) {
             $count--;
 

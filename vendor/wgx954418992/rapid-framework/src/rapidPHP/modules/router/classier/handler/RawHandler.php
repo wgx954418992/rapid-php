@@ -15,7 +15,7 @@ class RawHandler extends HandlerInterface
      * @param array $options
      * @return array|string
      */
-    public function onResult(Controller $controller, $result, $options = [])
+    public function onResult(Controller $controller, $result, array $options = [])
     {
         return $result;
     }

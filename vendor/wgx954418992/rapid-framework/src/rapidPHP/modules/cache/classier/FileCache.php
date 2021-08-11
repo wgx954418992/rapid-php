@@ -42,10 +42,10 @@ class FileCache extends CacheInterface
 
     /**
      * exists
-     * @param $name
+     * @param string $name
      * @return bool
      */
-    public function exists($name)
+    public function exists(string $name): bool
     {
         $cacheFile = $this->getCacheName($name);
 
@@ -60,7 +60,7 @@ class FileCache extends CacheInterface
      * @return bool
      * @throws Exception
      */
-    public function add(string $name, $value, $time = 0): bool
+    public function add(string $name, $value, int $time = 0): bool
     {
         $cache = ['data' => $value];
 
@@ -84,7 +84,7 @@ class FileCache extends CacheInterface
 
         if (empty($cache)) return null;
 
-        $time = isset($cache['time']) ? $cache['time'] : null;
+        $time = array_key_exists('time', $cache) ? $cache['time'] : null;
 
         $data = Build::getInstance()->getData($cache, 'data');
 

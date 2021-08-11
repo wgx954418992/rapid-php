@@ -14,23 +14,23 @@ abstract class SQLDao
      * SQL DB 子类可以继承这个，如果要实现读写分类，主从分离，就继承不同的SQLDao
      * @var SQLDB
      */
-    private $db;
+    protected $db;
 
     /**
      * 表名字
      * @var string
      */
-    private $tableName;
+    protected $tableName;
 
     /**
      * @var array|string
      */
-    private $tableField;
+    protected $tableField;
 
     /**
      * @var string|Model
      */
-    private $modelOrClass;
+    protected $modelOrClass;
 
     /**
      * SQLDao constructor.
@@ -139,11 +139,11 @@ abstract class SQLDao
     /**
      * 添加
      * @param $data
-     * @param int $insertId
+     * @param int|null $insertId
      * @return bool
      * @throws Exception
      */
-    public function add($data, &$insertId = -1): bool
+    public function add($data, ?int &$insertId = -1): bool
     {
         return $this->getDriver()
             ->resetSql()
@@ -182,7 +182,7 @@ abstract class SQLDao
      * @return Driver|Mysql
      * @throws Exception
      */
-    public function count($name = '*')
+    public function count(string $name = '*')
     {
         return $this->getDriver()
             ->resetSql()
@@ -195,7 +195,7 @@ abstract class SQLDao
      * @return Driver|Mysql
      * @throws Exception
      */
-    public function sum($name = '*')
+    public function sum(string $name = '*')
     {
         return $this->getDriver()
             ->resetSql()
@@ -208,7 +208,7 @@ abstract class SQLDao
      * @return Driver|Mysql
      * @throws Exception
      */
-    public function max($name = '*')
+    public function max(string $name = '*')
     {
         return $this->getDriver()
             ->resetSql()
@@ -221,7 +221,7 @@ abstract class SQLDao
      * @return Driver|Mysql
      * @throws Exception
      */
-    public function min($name = '*')
+    public function min(string $name = '*')
     {
         return $this->getDriver()
             ->resetSql()

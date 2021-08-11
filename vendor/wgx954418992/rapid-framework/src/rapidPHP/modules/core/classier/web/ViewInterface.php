@@ -18,7 +18,6 @@ abstract class ViewInterface
      */
     protected $controller;
 
-
     /**
      * ViewInterface constructor.
      * @param WebController $controller

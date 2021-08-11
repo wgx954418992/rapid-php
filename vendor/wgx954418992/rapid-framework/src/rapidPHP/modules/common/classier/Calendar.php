@@ -90,9 +90,9 @@ class Calendar
 
     /**
      * Calendar constructor.
-     * @param $zone
+     * @param string $zone
      */
-    public function __construct($zone = 'PRC')
+    public function __construct(string $zone = 'PRC')
     {
         self::setZone($zone);
     }
@@ -136,7 +136,7 @@ class Calendar
      */
     public function getDate(?int $time = null, string $format = 'Y-m-d H:i:s')
     {
-        return date($format, $time ? $time : time());
+        return date($format, !is_null($time) ? $time : time());
     }
 
     /**
@@ -161,7 +161,7 @@ class Calendar
      * @param string[] $weeks
      * @return array|string|null
      */
-    public function getDateWeekName(?int $time = null, $weeks = ['周天', '周一', '周二', '周三', '周四', '周五', '周六'])
+    public function getDateWeekName(?int $time = null, array $weeks = ['周天', '周一', '周二', '周三', '周四', '周五', '周六'])
     {
         if (is_null($time)) $time = time();
 
@@ -175,7 +175,7 @@ class Calendar
      * @param string[] $unitString 可以自己定义
      * @return string
      */
-    public function formatSecond($second = 0, $unitString = self::TIME_NAMES): ?string
+    public function formatSecond(int $second = 0, array $unitString = self::TIME_NAMES): ?string
     {
         ksort($unitString);
 
@@ -198,11 +198,11 @@ class Calendar
      * 获取指定时间内，有多少闰年，不包含当前年
      * @param $fromTime
      * @param $toTime
-     * @return false|float
+     * @return float
      */
-    public function getTimeIntercalary($fromTime, $toTime)
+    public function getYearIntercalary($fromTime, $toTime)
     {
-        return (int)abs(($fromTime - $toTime) / 4) + (($toTime % 4 == 0 ? 0 : -1));
+        return (int)abs(($fromTime - $toTime) / 4) + (($this->isIntercalaryYear($toTime) ? -1 : 0));
     }
 
     /**
@@ -212,7 +212,7 @@ class Calendar
      * @param string $format 默认是效验是否同一天数，如果要精确的天数的 时间分
      * @return float|int
      */
-    public function getTimeToTimeDay(&$formDatetime, &$toDatetime = '', $format = 'Y-m-d')
+    public function getTimeToTimeDay(&$formDatetime, &$toDatetime = '', string $format = 'Y-m-d')
     {
         if (is_string($formDatetime)) $formDatetime = $this->dateToTime($this->format($formDatetime, $format));
 
@@ -231,13 +231,18 @@ class Calendar
     public function isIntercalaryYear($date = null): bool
     {
         if (empty($date)) {
-            $date = $this->getDate(time(), 'Y');
+            $year = (int)$this->getDate(time(), 'Y');
         } else {
-            $date = $this->format($date, 'Y');
+            $year = (int)$this->format($date, 'Y');
         }
 
-        return ((int)$date) % 4 === 0;
+        if ($year % 100 === 0) {
+            return $year % 400 == 0 && $year % 3200 != 0;
+        } else {
+            return $year % 4 == 0 && $year % 100 != 0;
+        }
     }
+
 
     /**
      * 获取效验是否同一时间模式
@@ -296,7 +301,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsMonth($from, $to = null, $mode = self::HS_MODE_FULL): bool
+    public function hsMonth($from, $to = null, string $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'm', 'Ym'), $to);
     }
@@ -308,7 +313,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsWeek($from, $to = null, $mode = self::HS_MODE_FULL): bool
+    public function hsWeek($from, $to = null, string $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'w', 'Ymdw'), $to);
     }
@@ -320,7 +325,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsDay($from, $to = null, $mode = self::HS_MODE_FULL): bool
+    public function hsDay($from, $to = null, string $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'd', 'Ymd'), $to);
     }
@@ -333,7 +338,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsHours($from, $to = null, $mode = self::HS_MODE_FULL): bool
+    public function hsHours($from, $to = null, string $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'H', 'YmdH'), $to);
     }
@@ -345,7 +350,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsMinute($from, $to = null, $mode = self::HS_MODE_FULL): bool
+    public function hsMinute($from, $to = null, string $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 'i', 'YmdHi'), $to);
     }
@@ -357,7 +362,7 @@ class Calendar
      * @param string $mode
      * @return bool
      */
-    public function hsSecond($from, $to = null, $mode = self::HS_MODE_FULL): bool
+    public function hsSecond($from, $to = null, string $mode = self::HS_MODE_FULL): bool
     {
         return $this->hsTime($from, $this->getHsMode($mode, 's', 'YmdHis'), $to);
     }
@@ -368,7 +373,7 @@ class Calendar
      * @param int $limit
      * @return false|int|mixed
      */
-    public function datePassTime($date, $limit = 0): int
+    public function datePassTime($date, int $limit = 0): int
     {
         $date = $this->dateToTime($date);
 

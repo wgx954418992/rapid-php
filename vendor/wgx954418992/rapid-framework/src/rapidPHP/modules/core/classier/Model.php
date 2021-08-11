@@ -33,7 +33,7 @@ class Model
      */
     public function __construct($data = null)
     {
-        Utils::getInstance()->toObject($this, $data ? $data : []);
+        Utils::getInstance()->toObject($this, !is_null($data) ? $data : []);
     }
 
     /**

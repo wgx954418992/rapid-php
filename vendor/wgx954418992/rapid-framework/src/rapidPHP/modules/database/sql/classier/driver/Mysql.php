@@ -76,8 +76,8 @@ class Mysql extends Driver
     /**
      * getTableStructureSql
      * @param $type
-     * @param $tableName
      * @param string $database
+     * @param string $tableName
      * @return array|null|string
      */
     public function getTableStructureSql($type, string $database, string $tableName)
@@ -94,9 +94,8 @@ class Mysql extends Driver
      * getTableStructure
      * @param $type
      * @param string $database
-     * @param $table
+     * @param string $table
      * @return self|static|Driver
-     * @throws Exception
      */
     public function getTableStructure($type, string $database, string $table)
     {
@@ -109,7 +108,7 @@ class Mysql extends Driver
      * getTableStructureSql
      * @param $type
      * @param string $database
-     * @param $tableName
+     * @param string $tableName
      * @return array|null|string
      */
     public function getTableCreateSqlString($type, string $database, string $tableName)
@@ -125,10 +124,9 @@ class Mysql extends Driver
     /**
      * getTableStructure
      * @param $type
-     * @param  $database
-     * @param $tableName
+     * @param string $database
+     * @param string $tableName
      * @return self|static|Driver
-     * @throws Exception
      */
     public function getTableCreateSql($type, string $database, string $tableName)
     {

@@ -133,7 +133,6 @@ class Mail
      * @param string $password 认证密码
      * @param int $port 代理服务器的端口，smtp默认25号端口
      * @param boolean $isSecurity 到服务器的连接是否为安全连接，默认false
-     * @return $this
      */
     public function setServer(string $server, string $username = '', string $password = '', int $port = 25, bool $isSecurity = false)
     {
@@ -146,26 +145,21 @@ class Mail
         $this->userName = empty($username) ? '' : base64_encode($username);
 
         $this->password = empty($password) ? '' : base64_encode($password);
-
-        return $this;
     }
 
     /**
      * 设置发件人
      * @param string $from 发件人地址
-     * @return $this
      */
     public function setFrom(string $from)
     {
         $this->from = $from;
-        return $this;
     }
 
 
     /**
      * 设置收件人，多个收件人，连续调用多次.
      * @param string $to 收件人地址
-     * @return $this
      */
     public function setReceiver(string $to)
     {
@@ -179,13 +173,12 @@ class Mail
         } else {
             $this->to = $to;
         }
-        return $this;
+
     }
 
     /**
      * 设置抄送，多个抄送，连续调用多次.
      * @param string $cc 抄送地址
-     * @return $this
      */
     public function setCc(string $cc)
     {
@@ -199,13 +192,12 @@ class Mail
         } else {
             $this->cc = $cc;
         }
-        return $this;
+
     }
 
     /**
      * 设置秘密抄送，多个秘密抄送，连续调用多次
      * @param string $bcc 秘密抄送地址
-     * @return $this
      */
     public function setBcc(string $bcc)
     {
@@ -219,7 +211,7 @@ class Mail
         } else {
             $this->bcc = $bcc;
         }
-        return $this;
+
     }
 
 
@@ -228,20 +220,18 @@ class Mail
      * @access public
      * @param string $body 邮件主题
      * @param string $subject 邮件主体内容，可以是纯文本，也可是是HTML文本
-     * @return $this
      */
     public function setMail(string $subject, string $body)
     {
         $this->subject = base64_encode($subject);
         $this->body = base64_encode($body);
-        return $this;
+
     }
 
     /**
      * 设置邮件附件，多个附件，调用多次
      * @param $file
      * @param string $name
-     * @return $this
      */
     public function addAttachment($file, string $name = '')
     {
@@ -250,7 +240,7 @@ class Mail
         } else {
             $this->attachment[] = array('file' => $file, 'name' => $name);
         }
-        return $this;
+
     }
 
 
@@ -258,7 +248,7 @@ class Mail
      * 发送邮件
      * @return boolean
      */
-    public function sendMail()
+    public function sendMail(): bool
     {
         $command = $this->getCommand();
         if ($this->isSecurity ? $this->socketSecurity() : $this->socket()) {
@@ -280,7 +270,7 @@ class Mail
      * 返回错误信息
      * @return string
      */
-    public function getError()
+    public function getError(): string
     {
         return $this->errorMessage;
     }
@@ -289,7 +279,7 @@ class Mail
      * 返回mail命令
      * @return array
      */
-    protected function getCommand()
+    protected function getCommand(): array
     {
         $separator = "----=_Part_" . md5($this->from . time()) . uniqid();
 
@@ -415,9 +405,9 @@ class Mail
      * 发送命令
      * @param string $command 发送到服务器的smtp命令
      * @param int $code 期望服务器返回的响应吗
-     * @return boolean
+     * @return bool
      */
-    protected function sendCommand(string $command, int $code)
+    protected function sendCommand(string $command, int $code): bool
     {
         if (!empty($code)) {
             try {
@@ -451,7 +441,7 @@ class Mail
      * @param int $code 期望服务器返回的响应吗
      * @return boolean
      */
-    protected function sendCommandSecurity(string $command, int $code)
+    protected function sendCommandSecurity(string $command, int $code): bool
     {
         if (!empty($code)) {
             try {
@@ -498,25 +488,29 @@ class Mail
     /**
      * 获取文件类型
      * @param $file
-     * @return array|null|string
+     * @return false|string
      */
     protected function getMimeContentType($file)
     {
-        $fileInfo = Path::getInstance()->getPathInfo($file);
         if (function_exists('mime_content_type')) {
-            $mime = mime_content_type($file);
-            return preg_match("/gif|jpg|png|jpeg/", $mime) ? $mime : 'application/octet-stream';
+            return mime_content_type($file);
+        } elseif (function_exists('finfo_open')) {
+            $info = finfo_open(FILEINFO_MIME);
+
+            $mimetype = finfo_file($info, $file);
+
+            finfo_close($info);
+
+            return $mimetype;
         } else {
-            $ext = B()->getData($fileInfo, 'suffix');
-            $type = B()->getData($this->mimeTypes, $ext);
-            return $type ? $type : 'application/octet-stream';
+            return 'application/octet-stream';
         }
     }
 
     /**
      * 获取附件MIME类型
      * @param string $file 文件
-     * @return array|false|string|null
+     * @return false|string
      */
     protected function getMIMEType(string $file)
     {
@@ -531,7 +525,7 @@ class Mail
      * 建立到服务器的网络连接
      * @return boolean
      */
-    protected function socket()
+    protected function socket(): bool
     {
         if (!$this->socket = socket_create(AF_INET, SOCK_STREAM, getprotobyname('tcp'))) {
             $this->errorMessage = socket_strerror(socket_last_error());
@@ -557,7 +551,7 @@ class Mail
      * 建立到服务器的SSL网络连接
      * @return boolean
      */
-    protected function socketSecurity()
+    protected function socketSecurity(): bool
     {
         $address = "tcp://" . $this->sendServer . ":" . $this->port;
 
@@ -583,7 +577,7 @@ class Mail
      * 关闭socket
      * @return boolean
      */
-    protected function close()
+    protected function close(): bool
     {
         if (isset($this->socket) && is_object($this->socket)) {
             socket_close($this->socket);
@@ -598,7 +592,7 @@ class Mail
      * 关闭安全socket
      * @return boolean
      */
-    protected function closeSafety()
+    protected function closeSafety(): bool
     {
         if (isset($this->socket) && is_resource($this->socket)) {
             stream_socket_shutdown($this->socket, STREAM_SHUT_WR);

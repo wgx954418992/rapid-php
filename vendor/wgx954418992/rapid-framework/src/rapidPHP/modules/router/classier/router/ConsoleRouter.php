@@ -37,10 +37,7 @@ class ConsoleRouter extends Router
      */
     public function getApplication()
     {
-        /** @var ConsoleApplication $app */
-        $app = parent::getApplication();
-
-        return $app;
+        return parent::getApplication();
     }
 
     /**
@@ -48,10 +45,7 @@ class ConsoleRouter extends Router
      */
     public function getContext()
     {
-        /** @var ConsoleContext $context */
-        $context = parent::getContext();
-
-        return $context;
+        return parent::getContext();
     }
 
     /**
@@ -87,7 +81,7 @@ class ConsoleRouter extends Router
      * @param array $actions
      * @throws Exception
      */
-    protected function scanning(&$routes = [], &$actions = [])
+    protected function scanning(array &$routes = [], array &$actions = [])
     {
         $paths = $this->getApplication()->getConfig()->getApplication()->getScans()->getController();
 
@@ -139,7 +133,7 @@ class ConsoleRouter extends Router
      * 获取参数
      * @param $name
      * @param $source
-     * @return array|int|mixed|string|null
+     * @return array|string|null
      * @throws Exception
      */
     protected function onGetParameterValue($name, $source)

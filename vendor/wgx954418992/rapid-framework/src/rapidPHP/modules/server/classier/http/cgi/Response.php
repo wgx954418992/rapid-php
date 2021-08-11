@@ -82,7 +82,7 @@ class Response extends ResponseInterface
      * @param array $options
      * @return bool
      */
-    public function write(?string $data, $options = []): bool
+    public function write(?string $data, array $options = []): bool
     {
         echo $data;
         return true;

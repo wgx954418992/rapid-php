@@ -23,7 +23,7 @@ class ViewHandler extends HandlerInterface
      * @return false|mixed|string|void|null
      * @throws Exception
      */
-    public function onResult(Controller $controller, $result, $options = [])
+    public function onResult(Controller $controller, $result, array $options = [])
     {
 
         $action = Build::getInstance()->getData($options, 'action');

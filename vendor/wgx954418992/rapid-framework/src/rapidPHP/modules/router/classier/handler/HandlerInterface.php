@@ -32,5 +32,5 @@ abstract class HandlerInterface
      * @param array $options
      * @return array|mixed|null|string
      */
-    abstract public function onResult(Controller $controller, $result, $options = []);
+    abstract public function onResult(Controller $controller, $result, array $options = []);
 }

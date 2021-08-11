@@ -11,9 +11,9 @@ use Swoole\Http\Request as SwooleHttpRequest;
 class Request extends RequestInterface
 {
     /**
-     * @var
+     * @var int
      */
-    private $fd;
+    protected $fd;
 
     /**
      * Request constructor.
@@ -51,7 +51,7 @@ class Request extends RequestInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getFd()
     {

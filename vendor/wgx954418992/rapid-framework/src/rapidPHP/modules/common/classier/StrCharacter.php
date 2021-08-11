@@ -28,7 +28,6 @@ class StrCharacter
         return substr($strings, 1);
     }
 
-
     /**
      * 删除最后一个字符串
      * @param string $strings
@@ -52,7 +51,7 @@ class StrCharacter
 
         $list = [];
 
-        foreach ($queryArray as $name => $value) {
+        foreach ($queryArray as $value) {
             $data = explode('=', $value);
 
             $dataName = Build::getInstance()->getData($data, 0);
@@ -160,34 +159,47 @@ class StrCharacter
     /**
      * 隐藏姓名第二位
      * @param $name
-     * @param string $t
+     * @param string $replace
      * @param int $length
      * @return string
      */
-    public function hideName($name, string $t = '*', int $length = 1)
+    public function hideName($name, string $replace = '*', int $length = 1): string
     {
         if (mb_strlen($name, 'utf-8') == 1) return '*';
 
-        while (mb_strlen($t) <= ($length - 1)) {
-            $t = $t . $t;
+        while (mb_strlen($replace) <= ($length - 1)) {
+            $replace = $replace . $replace;
         }
 
         $first = mb_substr($name, 0, 1);
 
         $end = mb_substr($name, $length + 1);
 
-        return $first . $t . $end;
+        return $first . $replace . $end;
     }
 
     /**
-     * 隐藏手机号码中间4位
+     * 隐藏手机号码中间指定的数量
      * @param $tel
-     * @param string $t
+     * @param string $replace
+     * @param int $count
      * @return string|string[]|null
      */
-    public function hideTel($tel, string $t = '*')
+    public function hideTel($tel, string $replace = '*', int $count = 4)
     {
-        return substr_replace($tel, "{$t}{$t}{$t}{$t}", 3, 4);
+        $length = mb_strlen($tel);
+
+        $startIndex = intval(($length / 2 - 1));
+
+        $endIndex = $startIndex + min($length - $startIndex, $count);
+
+        $replaces = '';
+
+        for ($i = $startIndex; $i < $endIndex; $i++) {
+            $replaces .= "$replace";
+        }
+
+        return substr_replace($tel, $replaces, $startIndex, $endIndex);
     }
 
     /**

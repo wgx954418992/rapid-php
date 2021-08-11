@@ -19,17 +19,18 @@ abstract class WebApplication extends Application
      * @param Request $request
      * @param Response $response
      * @param string|null $context
-     * @return Context|WebContext|null
+     * @return WebContext|null
      * @throws Exception
      */
     public function newWebContext(Request $request, Response $response, ?string $context)
     {
         if (empty($context)) $context = WebContext::class;
 
-        /** @var WebContext $instance */
         $instance = Classify::getInstance($context)
             ->newInstance($request, $response);
 
-        return $instance;
+        if ($instance instanceof WebContext) return $instance;
+
+        return null;
     }
 }

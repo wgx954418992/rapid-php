@@ -49,7 +49,7 @@ class ConsoleController extends Controller
      * @param array $options
      * @return bool
      */
-    public function write(?string $data, $options = [])
+    public function write(?string $data, array $options = []): bool
     {
         return $this->getContext()->getOutput()->write($data, $options);
     }
@@ -58,7 +58,7 @@ class ConsoleController extends Controller
      * @param string|null $data
      * @return bool
      */
-    public function psuccess(?string $data)
+    public function psuccess(?string $data): bool
     {
         return $this->getContext()->getOutput()->psuccess($data);
     }
@@ -67,7 +67,7 @@ class ConsoleController extends Controller
      * @param string|null $data
      * @return bool
      */
-    public function perror(?string $data)
+    public function perror(?string $data): bool
     {
         return $this->getContext()->getOutput()->perror($data);
     }

@@ -26,7 +26,7 @@ class View
      * @param Element|null $parent
      * @return Element
      */
-    public static function createElement($name, $value = null, $attr = array(), Element $parent = null): Element
+    public static function createElement($name, $value = null, array $attr = [], Element $parent = null): Element
     {
         $dom = new DOMDocument('1.0');
 

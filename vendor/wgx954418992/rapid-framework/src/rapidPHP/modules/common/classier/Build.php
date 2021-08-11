@@ -26,7 +26,11 @@ class Build
      */
     public function getData(?array $array, $key)
     {
-        return $array[$key] ?? null;
+        if (is_null($array)) return null;
+
+        if (array_key_exists($key, $array)) return $array[$key];
+
+        return null;
     }
 
     /**

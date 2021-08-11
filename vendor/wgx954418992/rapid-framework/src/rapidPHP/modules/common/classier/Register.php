@@ -22,8 +22,7 @@ class Register
     /**
      * @var array
      */
-    private $container = [];
-
+    protected $container = [];
 
     /**
      * put

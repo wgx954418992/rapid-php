@@ -59,9 +59,9 @@ class Controller
      * @param $word
      * @param array $arg
      * @param string $lang
-     * @return mixed|string|string[]
+     * @return string|string[]
      */
-    public function t($word, $arg = [], $lang = '')
+    public function t($word, array $arg = [], string $lang = '')
     {
         if (empty($lang)) $lang = $this->getDefaultLang();
 

@@ -85,7 +85,7 @@ class Element
      * @param null $value
      * @param bool $isStack
      */
-    public function setAttr($name, $value = null, $isStack = false)
+    public function setAttr($name, $value = null, bool $isStack = false)
     {
         $attrValue = $this->getAttr($name);
 
@@ -105,7 +105,7 @@ class Element
      * @param array $attr
      * @param bool $isStack
      */
-    public function setAttrList($attr = array(), $isStack = false)
+    public function setAttrList(array $attr = [], bool $isStack = false)
     {
         foreach ($attr as $name => $value) {
             $this->setAttr($name, $value, $isStack);
@@ -157,7 +157,7 @@ class Element
      * @param bool $isAdd
      * @return Element
      */
-    public function createdView($name, $value = null, $isAdd = true)
+    public function createdView($name, $value = null, bool $isAdd = true)
     {
         return new Element($this->document, $name, $value, $isAdd === true ? $this : null);
     }
@@ -229,9 +229,9 @@ class Element
     }
 
     /**
-     * @param $value
+     * @param string $value
      */
-    public function setTarget($value = '_blank')
+    public function setTarget(string $value = '_blank')
     {
         $this->setAttr('target', $value);
     }

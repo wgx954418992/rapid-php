@@ -27,7 +27,7 @@ class File
      * @param bool $isNext 是否读取目录的目录
      * @return array|Generator 返回生成器，请用foreach读取
      */
-    public function readDirList($dir, $isNext = true)
+    public function readDirList($dir, bool $isNext = true)
     {
         if (!file_exists($dir)) return [];
 
@@ -66,7 +66,7 @@ class File
      * @param bool $isDir 是否包含目录
      * @return Generator|void 返回生成器，请用foreach读取
      */
-    public function readDirFiles($path, $isDir = false): Generator
+    public function readDirFiles($path, bool $isDir = false): Generator
     {
         $path = rtrim($path, '/*');
 
@@ -105,7 +105,7 @@ class File
      * @param string $mode
      * @return bool|int
      */
-    public function write($filePath, $data, $mode = 'w+')
+    public function write($filePath, $data, string $mode = 'w+')
     {
         if ($open = fopen($filePath, $mode)) {
 
@@ -153,7 +153,7 @@ class File
     /**
      * 获取大于2g文件的文件大小
      * @param $path
-     * @return bool|false|int|string
+     * @return bool|int|string
      */
     public function getMaxFileSize($path)
     {

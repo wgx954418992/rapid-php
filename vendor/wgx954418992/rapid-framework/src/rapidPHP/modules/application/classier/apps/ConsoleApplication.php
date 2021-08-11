@@ -20,10 +20,11 @@ class ConsoleApplication extends Application
 
     /**
      * 创建web context
+     * @template T
      * @param Input $request
      * @param Output $response
      * @param string|null $context
-     * @return ConsoleContext|Context|null
+     * @return ConsoleContext|null
      * @throws ReflectionException
      * @throws Exception
      */
@@ -31,11 +32,12 @@ class ConsoleApplication extends Application
     {
         if (empty($context)) $context = ConsoleContext::class;
 
-        /** @var ConsoleContext $instance */
         $instance = Classify::getInstance($context)
             ->newInstance($request, $response);
 
-        return $instance;
+        if ($instance instanceof ConsoleContext) return $instance;
+
+        return null;
     }
 
     /**

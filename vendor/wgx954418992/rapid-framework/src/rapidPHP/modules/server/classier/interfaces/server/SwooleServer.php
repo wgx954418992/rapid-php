@@ -40,7 +40,7 @@ abstract class SwooleServer extends Server
             $task = Classify::getInstance($taskClass)->newInstance($this);
         }
 
-        parent::__construct($config, isset($task) ? $task : null);
+        parent::__construct($config, $task ?? null);
 
         if (empty($serverClass)) throw new Exception('server class error!');
 

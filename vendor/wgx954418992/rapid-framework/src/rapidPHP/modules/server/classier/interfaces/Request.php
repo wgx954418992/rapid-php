@@ -77,10 +77,10 @@ abstract class Request implements Input
      * @param $post
      * @param $files
      * @param $cookie
-     * @param $sessionId
      * @param $header
      * @param $serverInfo
      * @param SessionConfig|null $sessionConfig
+     * @param string|null $sessionId
      */
     public function __construct(
         $get,
@@ -295,14 +295,6 @@ abstract class Request implements Input
     }
 
     /**
-     * @return string
-     */
-    public function rawContent(): string
-    {
-        return $this->rawContent;
-    }
-
-    /**
      * 获取请求scheme
      * @return mixed|string
      */
@@ -319,7 +311,7 @@ abstract class Request implements Input
      * @param bool $isDecode
      * @return string
      */
-    public function getUrl($meter = false, $isDecode = true): string
+    public function getUrl(bool $meter = false, bool $isDecode = true): string
     {
         $mode = $this->getScheme();
 

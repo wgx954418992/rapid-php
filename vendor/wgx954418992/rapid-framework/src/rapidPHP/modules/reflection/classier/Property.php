@@ -96,8 +96,9 @@ class Property
     }
 
     /**
-     * @param string $class
-     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|null
+     * @template T
+     * @param string|object|T|static $class
+     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|T|null
      */
     public function getDocComment($class = DocComment::class)
     {

@@ -116,7 +116,7 @@ class ViewTemplate
      * @return $this
      * @throws Exception
      */
-    public function assign($key, $value = '')
+    public function assign($key, string $value = '')
     {
         if (is_array($key)) {
             $this->data->data($key);
@@ -192,7 +192,7 @@ class ViewTemplate
      * 编译
      * @param $strings
      * @param $filepath
-     * @return mixed
+     * @return array|string|string[]|null
      */
     private function compile($strings, $filepath)
     {
@@ -416,7 +416,7 @@ class ViewTemplate
      * @param bool $isDecode
      * @return string
      */
-    public function getUrl($meter = false, $isDecode = true): string
+    public function getUrl(bool $meter = false, bool $isDecode = true): string
     {
         return $this->getController()->getUrl($meter, $isDecode);
     }
@@ -435,9 +435,9 @@ class ViewTemplate
      * @param $word
      * @param array $arg
      * @param string $lang
-     * @return mixed|string|string[]
+     * @return string|string[]
      */
-    public function t($word, $arg = [], $lang = '')
+    public function t($word, array $arg = [], string $lang = '')
     {
         return $this->getController()->t($word, $arg, $lang);
     }

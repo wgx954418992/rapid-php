@@ -32,7 +32,7 @@ trait Instances
 
     /**
      * 实例不存在
-     * @return mixed
+     * @return static
      */
     public static function onNotInstance()
     {

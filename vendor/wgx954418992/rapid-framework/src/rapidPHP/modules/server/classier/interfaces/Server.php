@@ -34,7 +34,7 @@ abstract class Server
     }
 
     /**
-     * @return ServerConfig|CGIConfig|SwooleHttpConfig|SwooleWebSocketConfig
+     * @return ServerConfig
      */
     public function getConfig()
     {

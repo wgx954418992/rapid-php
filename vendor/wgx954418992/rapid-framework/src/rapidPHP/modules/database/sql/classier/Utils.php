@@ -25,9 +25,9 @@ class Utils
      * 格式化字段
      * @param $column
      * @param string $joinString
-     * @return mixed
+     * @return array|string|string[]|null
      */
-    public function formatColumn($column, $joinString = '`')
+    public function formatColumn($column, string $joinString = '`')
     {
         return preg_replace('/(.*?)(\w+)/i', "$1{$joinString}$2{$joinString}", $column);
     }

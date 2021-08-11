@@ -29,10 +29,10 @@ abstract class CacheInterface
 
     /**
      * exists
-     * @param $name
+     * @param string $name
      * @return mixed
      */
-    abstract public function exists($name);
+    abstract public function exists(string $name): bool;
 
     /**
      * 添加或者更新缓存
@@ -41,7 +41,7 @@ abstract class CacheInterface
      * @param int $time 超时时间，如果是0则没有超时时间
      * @return bool
      */
-    abstract public function add(string $name, $value, $time = 0): bool;
+    abstract public function add(string $name, $value, int $time = 0): bool;
 
     /**
      * 获取缓存

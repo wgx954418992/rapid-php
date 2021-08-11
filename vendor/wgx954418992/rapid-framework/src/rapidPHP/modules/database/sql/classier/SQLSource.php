@@ -12,6 +12,20 @@ class SQLSource
 {
 
     /**
+     * 采用单例模式
+     */
+    use Instances;
+
+    /**
+     * 实例不存在
+     * @return static
+     */
+    public static function onNotInstance()
+    {
+        return new static(...func_get_args());
+    }
+
+    /**
      * 主库
      */
     const DB_MASTER = 'master';
@@ -25,21 +39,7 @@ class SQLSource
      * 数据监连接对象，默认为全局缓存，后期可以直接调用 连接池
      * @var SQLDB[]
      */
-    private $dbs;
-
-    /**
-     * 采用单例模式
-     */
-    use Instances;
-
-    /**
-     * 实例不存在
-     * @return static
-     */
-    public static function onNotInstance()
-    {
-        return new static(...func_get_args());
-    }
+    protected $dbs;
 
     /**
      * 获取数据库连接配置

@@ -20,7 +20,7 @@ class AutoHandler extends HandlerInterface
      * @param array $options
      * @return null
      */
-    public function onResult(Controller $controller, $result, $options = [])
+    public function onResult(Controller $controller, $result, array $options = [])
     {
         $accept = Build::getInstance()->getData($options, 'accept');
 

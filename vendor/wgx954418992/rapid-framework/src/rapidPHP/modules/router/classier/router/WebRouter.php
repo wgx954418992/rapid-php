@@ -45,10 +45,7 @@ class WebRouter extends Router
      */
     public function getApplication()
     {
-        /** @var WebApplication $app */
-        $app = parent::getApplication();
-
-        return $app;
+        return parent::getApplication();
     }
 
     /**
@@ -56,10 +53,7 @@ class WebRouter extends Router
      */
     public function getContext()
     {
-        /** @var WebContext $context */
-        $context = parent::getContext();
-
-        return $context;
+        return parent::getContext();
     }
 
     /**
@@ -107,7 +101,7 @@ class WebRouter extends Router
      * @param array $actions
      * @throws Exception
      */
-    protected function scanning(&$routes = [], &$actions = [])
+    protected function scanning(array &$routes = [], array &$actions = [])
     {
         $ip = $this->request->getIp();
 
@@ -133,7 +127,7 @@ class WebRouter extends Router
 
         if (empty($path)) $path = $this->request->getDocumentRoot();
 
-        return $path ? $path : '/';
+        return !empty($path) ? $path : '/';
     }
 
 

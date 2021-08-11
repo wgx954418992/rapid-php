@@ -3,6 +3,7 @@
 
 namespace rapidPHP;
 
+use rapidPHP\modules\core\classier\DI;
 use Spyc;
 use Exception;
 use rapidPHP\modules\application\config\ApplicationConfig;
@@ -26,7 +27,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.8.4');
+define('RAPIDPHP_VERSION', '3.8.5');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -169,6 +170,27 @@ function VT($view): ?ViewTemplate
     if ($view instanceof ViewTemplate) return $view;
 
     return null;
+}
+
+/**
+ * di
+ * @param $class
+ * @param ...$supports
+ * @return false|mixed|void
+ */
+function DI($class, ...$supports)
+{
+    if (func_num_args() <= 1) {
+        if (!is_array($class)) {
+            return DI::resolveArgument($class);
+        } else {
+            DI::supportsParameter($class);
+        }
+    } else {
+        DI::supportParameter($class, ...$supports);
+    }
+
+    return;
 }
 
 /**

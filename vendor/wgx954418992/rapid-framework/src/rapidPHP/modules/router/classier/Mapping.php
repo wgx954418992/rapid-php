@@ -61,7 +61,7 @@ class Mapping
      * @param array $actions
      * @throws Exception
      */
-    public function scanning($paths, &$routes = [], &$actions = [])
+    public function scanning($paths, array &$routes = [], array &$actions = [])
     {
         if (empty($paths)) return;
 
@@ -113,7 +113,7 @@ class Mapping
      * @return void
      * @throws Exception
      */
-    protected function compileMapping(Classify $classify, &$routes = [], &$actions = [])
+    protected function compileMapping(Classify $classify, array &$routes = [], array &$actions = [])
     {
         /** @var DocComment $classComment */
         $classComment = $classify->getDocComment(DocComment::class);
@@ -310,9 +310,21 @@ class Mapping
      */
     public function save($routes = null, $actions = null)
     {
-        if (!is_null($routes)) $this->write(self::ROUTES_FILE_PATH, json_encode($routes));
+        if (!is_null($routes)) {
+            $lastTime = filemtime(self::ROUTES_FILE_PATH);
 
-        if (!is_null($actions)) $this->write(self::ACTIONS_FILE_PATH, json_encode($actions));
+            if (!(is_int($lastTime) && $lastTime + 1 > time())) {
+                $this->write(self::ROUTES_FILE_PATH, json_encode($routes));
+            }
+        }
+
+        if (!is_null($actions)) {
+            $lastTime = filemtime(self::ACTIONS_FILE_PATH);
+
+            if (!(is_int($lastTime) && $lastTime + 1 > time())) {
+                $this->write(self::ACTIONS_FILE_PATH, json_encode($actions));
+            }
+        }
     }
 
     /**

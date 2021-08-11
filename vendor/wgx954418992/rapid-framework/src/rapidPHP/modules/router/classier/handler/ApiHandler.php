@@ -19,7 +19,7 @@ class ApiHandler extends HandlerInterface
      * @return array|string
      * @throws Exception
      */
-    public function onResult(Controller $controller, $result, $options = [])
+    public function onResult(Controller $controller, $result, array $options = [])
     {
         if ($result instanceof Exception) {
             $result = RESTFulApi::error($result->getMessage(), $result->getCode());

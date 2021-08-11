@@ -57,7 +57,7 @@ class Sheet
      * @param string $horizontalIndex 水平开始索引，默认为A,(B,C,D)....
      * @param int $verticalIndex 垂直开始索引，默认为1,(2,3,4)....
      */
-    public function putHead($heads, $horizontalIndex = 'A', $verticalIndex = 1)
+    public function putHead($heads, string $horizontalIndex = 'A', int $verticalIndex = 1)
     {
         foreach ($heads as $key => $head) {
 
@@ -97,7 +97,7 @@ class Sheet
      * @param string $horizontalIndex 水平开始索引，默认为A,(B,C,D)....
      * @param int $verticalIndex 垂直开始索引，默认为2，因为head默认是从1开始的，所以list要下一行
      */
-    public function putList($list, $heads, $horizontalIndex = 'A', $verticalIndex = 2)
+    public function putList($list, $heads, string $horizontalIndex = 'A', int $verticalIndex = 2)
     {
         foreach ($list as $item) {
 
@@ -142,7 +142,7 @@ class Sheet
      * @return Generator
      * @throws SpreadException
      */
-    public function read($fields, $horizontalIndex = 'A', $verticalIndex = 2): Generator
+    public function read($fields, string $horizontalIndex = 'A', int $verticalIndex = 2): Generator
     {
         $highestRow = $this->sheet->getHighestRow();
 

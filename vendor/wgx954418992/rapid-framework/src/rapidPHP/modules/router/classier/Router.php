@@ -5,8 +5,10 @@ namespace rapidPHP\modules\router\classier;
 
 use Exception;
 use rapidPHP\modules\application\classier\Application;
+use rapidPHP\modules\application\classier\apps\ConsoleApplication;
 use rapidPHP\modules\application\classier\apps\WebApplication;
 use rapidPHP\modules\application\classier\Context;
+use rapidPHP\modules\application\classier\context\ConsoleContext;
 use rapidPHP\modules\application\classier\context\WebContext;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Instances;
@@ -24,6 +26,20 @@ use ReflectionException;
 
 abstract class Router
 {
+
+    /**
+     * 采用单例模式
+     */
+    use Instances;
+
+    /**
+     * 实例不存在
+     * @return static
+     */
+    public static function onNotInstance()
+    {
+        return new static(...func_get_args());
+    }
 
     /**
      * @var Application
@@ -46,22 +62,7 @@ abstract class Router
     protected $actions;
 
     /**
-     * 采用单例模式
-     */
-    use Instances;
-
-
-    /**
-     * 实例不存在
-     * @return static
-     */
-    public static function onNotInstance()
-    {
-        return new static(...func_get_args());
-    }
-
-    /**
-     * @return Application|WebApplication
+     * @return Application|WebApplication|ConsoleApplication
      */
     public function getApplication()
     {
@@ -69,7 +70,7 @@ abstract class Router
     }
 
     /**
-     * @return Context|WebContext
+     * @return Context|WebContext|ConsoleContext
      */
     public function getContext()
     {
@@ -139,7 +140,7 @@ abstract class Router
      * @param array $actions
      * @throws Exception
      */
-    abstract protected function scanning(&$routes = [], &$actions = []);
+    abstract protected function scanning(array &$routes = [], array &$actions = []);
 
     /**
      * 匹配路由
@@ -189,22 +190,19 @@ abstract class Router
 
         if (empty($action)) return null;
 
-        /** @var Action $action */
-        $action = ReflectionUtils::getInstance()->toObject(Action::class, $action);
-
-        return $action;
+        return ReflectionUtils::getInstance()->toObject(Action::class, $action);
     }
 
     /**
      * 获取匹配的action
      * @param $realPath
      * @param Route|null $route
-     * @param array $pathVariable
-     * @param int $index
+     * @param array|null $pathVariable
+     * @param int|null $index
      * @return Action|null
      * @throws Exception
      */
-    public function getMatchingAction($realPath, ?Route &$route = null, &$pathVariable = [], &$index = 0)
+    public function getMatchingAction($realPath, ?Route &$route = null, ?array &$pathVariable = [], ?int &$index = 0)
     {
         if (is_null($index)) $index = 0;
 
@@ -266,7 +264,7 @@ abstract class Router
      * @param Classify $classify
      * @param Route $route
      * @param $pathVariable
-     * @return object|Controller|WebController
+     * @return Controller
      * @throws Exception
      */
     private function newController(Classify $classify, Route $route, $pathVariable)
