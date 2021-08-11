@@ -97,11 +97,11 @@ class WebRouter extends Router
 
     /**
      * 内网扫描controller映射
-     * @param array $routes
-     * @param array $actions
+     * @param array|null $routes
+     * @param array|null $actions
      * @throws Exception
      */
-    protected function scanning(array &$routes = [], array &$actions = [])
+    protected function scanning(?array &$routes = [], ?array &$actions = [])
     {
         $ip = $this->request->getIp();
 

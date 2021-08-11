@@ -136,11 +136,11 @@ abstract class Router
 
     /**
      * 扫描controller映射(一般只在内网进行扫描)
-     * @param array $routes
-     * @param array $actions
+     * @param array|null $routes
+     * @param array|null $actions
      * @throws Exception
      */
-    abstract protected function scanning(array &$routes = [], array &$actions = []);
+    abstract protected function scanning(?array &$routes = [],? array &$actions = []);
 
     /**
      * 匹配路由

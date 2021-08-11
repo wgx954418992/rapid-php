@@ -57,11 +57,11 @@ class Mapping
     /**
      * 开始扫描编译
      * @param $paths
-     * @param array $routes
-     * @param array $actions
+     * @param array|null $routes
+     * @param array|null $actions
      * @throws Exception
      */
-    public function scanning($paths, array &$routes = [], array &$actions = [])
+    public function scanning($paths, ?array &$routes = [], ?array &$actions = [])
     {
         if (empty($paths)) return;
 
