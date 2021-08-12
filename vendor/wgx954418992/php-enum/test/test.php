@@ -160,7 +160,7 @@ function testOrderStatus()
  */
 function testOrderStatusInt()
 {
-    $status = new OrderStatusInt(OrderStatus::WAIT_PAY);
+    $status = OrderStatusInt::i(OrderStatusInt::WAIT_PAY);
 
     echo "name: {$status->getName()}" . PHP_EOL;
 
@@ -170,16 +170,16 @@ function testOrderStatusInt()
 
     echo PHP_EOL;
 
-    $status->then(OrderStatus::WAIT_PAY, OrderStatus::PAYED, function () {
+    $status->then(OrderStatusInt::WAIT_PAY, OrderStatusInt::PAYED, function () {
         echo 'Hit WAIT_PAY,PAYED' . PHP_EOL;
     })
-        ->then(OrderStatus::DELIVERING, function () {
+        ->then(OrderStatusInt::DELIVERING, function () {
             echo 'Hit DELIVERING' . PHP_EOL;
         })
-        ->then(OrderStatus::COMPLETE, function () {
+        ->then(OrderStatusInt::COMPLETE, function () {
             echo 'Hit COMPLETE' . PHP_EOL;
         })
-        ->then(OrderStatus::COMMENTED, function () {
+        ->then(OrderStatusInt::COMMENTED, function () {
             echo 'Hit COMMENTED' . PHP_EOL;
         })
         ->fetch();
@@ -198,6 +198,6 @@ try {
 
     echo '--------------------------------------' . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL;
 } catch (Exception $e) {
-    exit($e->getMessage());
+    exit($e->getMessage() . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL);
 }
 

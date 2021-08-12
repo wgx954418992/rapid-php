@@ -1,4 +1,4 @@
-﻿PHP Enum 1.0.0
+﻿PHP Enum 1.1.1
 ===============
 [English](README.md)
 >最简单、最快的PHP枚举，支持` then`匹配回调和特定`value`
@@ -81,7 +81,7 @@ class OrderStatus extends Enum
 }
 
 try {
-    $status = new OrderStatus(OrderStatus::WAIT_PAY);
+    $status = OrderStatus::i(OrderStatus::WAIT_PAY);
 
     echo "name: {$status->getName()}" . PHP_EOL;
 

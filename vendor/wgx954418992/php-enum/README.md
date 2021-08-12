@@ -1,4 +1,4 @@
-﻿PHP Enum 1.0.0
+﻿PHP Enum 1.1.1
 ===============
 [简体中文](README-zh.md)
 >The simplest and fastest PHP enumeration, supports `then` matching callback and Specific `value`
@@ -81,7 +81,7 @@ class OrderStatus extends Enum
 }
 
 try {
-    $status = new OrderStatus(OrderStatus::WAIT_PAY);
+    $status = OrderStatus::i(OrderStatus::WAIT_PAY);
 
     echo "name: {$status->getName()}" . PHP_EOL;
 

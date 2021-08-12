@@ -2923,17 +2923,17 @@
         },
         {
             "name": "wgx954418992/php-enum",
-            "version": "1.0.0",
-            "version_normalized": "1.0.0.0",
+            "version": "1.1.1",
+            "version_normalized": "1.1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/php-enmu.git",
-                "reference": "7f40fddd0c15e47e55d1877c13ab3d21969fac40"
+                "reference": "ab6c8980a02bb9c4c92a4348b45157e61ea35fae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/php-enmu/zipball/7f40fddd0c15e47e55d1877c13ab3d21969fac40",
-                "reference": "7f40fddd0c15e47e55d1877c13ab3d21969fac40",
+                "url": "https://api.github.com/repos/wgx954418992/php-enmu/zipball/ab6c8980a02bb9c4c92a4348b45157e61ea35fae",
+                "reference": "ab6c8980a02bb9c4c92a4348b45157e61ea35fae",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2942,7 +2942,7 @@
                     }
                 ]
             },
-            "time": "2021-07-19T08:26:08+00:00",
+            "time": "2021-08-12T04:59:45+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2970,23 +2970,23 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/php-enmu/issues",
-                "source": "https://github.com/wgx954418992/php-enmu/tree/1.0.0"
+                "source": "https://github.com/wgx954418992/php-enmu/tree/1.1.1"
             },
             "install-path": "../wgx954418992/php-enum"
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.8.6",
-            "version_normalized": "3.8.6.0",
+            "version": "3.8.7",
+            "version_normalized": "3.8.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "be2b98e6e42f9c1a6cc9441a9788009acd7561a1"
+                "reference": "8d07d598857cd69e9842903a40893fd25e36365b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/be2b98e6e42f9c1a6cc9441a9788009acd7561a1",
-                "reference": "be2b98e6e42f9c1a6cc9441a9788009acd7561a1",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/8d07d598857cd69e9842903a40893fd25e36365b",
+                "reference": "8d07d598857cd69e9842903a40893fd25e36365b",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -3016,13 +3016,13 @@
                 "mustangostang/spyc": "0.6.3",
                 "php": ">=7.1.0",
                 "voku/anti-xss": "4.1",
-                "wgx954418992/php-enum": "^1.0"
+                "wgx954418992/php-enum": "^1.1.1"
             },
             "require-dev": {
                 "eaglewu/swoole-ide-helper": "dev-master",
                 "phpunit/phpunit": "7.0"
             },
-            "time": "2021-08-11T17:29:19+00:00",
+            "time": "2021-08-12T05:19:10+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3052,7 +3052,7 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.8.6"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.8.7"
             },
             "install-path": "../wgx954418992/rapid-framework"
         }

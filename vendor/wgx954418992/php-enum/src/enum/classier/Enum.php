@@ -11,6 +11,73 @@ abstract class Enum
 {
 
     /**
+     * instances
+     * @var static[][]
+     */
+    protected static $instances;
+
+    /**
+     * i constants
+     * @return static[]
+     * @throws ReflectionException
+     */
+    public static function getIConstants($instance = null)
+    {
+        if (isset(static::$instances[static::class])) {
+            return static::$instances[static::class];
+        }
+
+        if (is_null($instance)) $instance = new static();
+
+        $reflection = Utils::getReflection(static::class);
+
+        $constants = Utils::getConstants($reflection);
+
+        foreach ($constants as $name => $value) {
+            $self = clone $instance;
+
+            $methodName = 'get' . Utils::toFirstUppercase(strtolower($name), '_');
+
+            if (method_exists($self, $methodName)) {
+                $self->realValue = call_user_func([$self, $methodName]);
+            } else {
+                $staticProperties = Utils::getStaticProperties($reflection);
+
+                if (isset($staticProperties['_' . $name])) {
+                    $self->realValue = $staticProperties['_' . $name];
+                }
+            }
+
+            $self->constName = $name;
+
+            $self->constValue = $value;
+
+            $constants[$name] = $self;
+        }
+
+        return static::$instances[static::class] = $constants;
+    }
+
+    /**
+     * instance
+     * @return static
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public static function i($constValue = null)
+    {
+        $constants = self::getIConstants();
+
+        if ($constValue instanceof Enum) $constValue = $constValue->constValue;
+
+        foreach ($constants as $instance) {
+            if ($instance->constValue === $constValue) return $instance;
+        }
+
+        throw new Exception("Const Value: {$constValue} is not in enum " . __CLASS__);
+    }
+
+    /**
      * const name
      * @var mixed|null
      */
@@ -29,58 +96,59 @@ abstract class Enum
     protected $realValue;
 
     /**
-     * constants
-     * @var array
-     */
-    protected $constants = [];
-
-    /**
      * switch 如果是false 则停止继续往下匹配，如果是true，则继续匹配
      * @var bool
      */
     protected $thenState = true;
 
     /**
-     * BaseEnum constructor.
+     * Enum constructor.
      * @param null $constValue
      * @throws ReflectionException
      * @throws Exception
      */
     public function __construct($constValue = null)
     {
-        if ($constValue instanceof Enum) {
-            $this->constValue = $constValue->constValue;
-        } else {
-            $this->constValue = $constValue;
+        if ($constValue === null) return;
+
+        $constants = self::getIConstants($this);
+
+        if ($constValue instanceof Enum) $constValue = $constValue->constValue;
+
+        foreach ($constants as $instance) {
+
+            if ($instance->constValue !== $constValue) continue;
+
+            $this->constName = $instance->constName;
+
+            $this->constValue = $instance->constValue;
+
+            $this->realValue = $instance->realValue;
         }
 
-        $reflection = Utils::getReflection($this);
-
-        $this->constants = Utils::getConstants($reflection);
-
-        if (count($this->constants) != count(array_unique($this->constants))) {
-            throw new Exception("Constant values cannot be repeated " . __CLASS__);
+        if (is_null($this->constValue)) {
+            throw new Exception("Const Value: {$constValue} is not in enum " . __CLASS__);
         }
+    }
 
-        if (!in_array($this->constValue, $this->constants)) {
-            throw new Exception("Const Value: {$this->constValue} is not in enum " . __CLASS__);
-        }
+    /**
+     * constants
+     * @return static[]
+     * @throws ReflectionException
+     */
+    public function getConstants(): array
+    {
+        return self::getIConstants();
+    }
 
-        $this->constName = array_search($this->constValue, $this->constants);
-
-        $methodName = 'get' . Utils::toFirstUppercase(strtolower($this->constName), '_');
-
-        if (method_exists($this, $methodName)) {
-            $this->realValue = call_user_func([$this, $methodName]);
-        } else {
-            $staticName = "_" . $this->constants[$this->constName];
-
-            $staticProperties = Utils::getStaticProperties($reflection);
-
-            if (isset($staticProperties[$staticName])) {
-                $this->realValue = $staticProperties[$staticName];
-            }
-        }
+    /**
+     * constants
+     * @return static[]
+     * @throws ReflectionException
+     */
+    public static function getConstantsWithStatic(): array
+    {
+        return self::getIConstants();
     }
 
     /**
@@ -164,5 +232,13 @@ abstract class Enum
     public function getValue()
     {
         return $this->realValue ?? $this->constValue;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return (string)$this->getValue();
     }
 }
