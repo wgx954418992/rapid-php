@@ -83,6 +83,21 @@ class Property
     }
 
     /**
+     * 设置属性值
+     * @param $value
+     * @param null $object
+     */
+    public function setValue($value, $object = null)
+    {
+        if ($this->getProperty()->isPrivate() ||
+            $this->getProperty()->isProtected()) {
+            $this->getProperty()->setAccessible(true);
+        }
+
+        $this->getProperty()->setValue($object, $value);
+    }
+
+    /**
      * 获取参数类型 7.x
      * 因为7.x都是单个类型，所以返会的是string
      * @return string

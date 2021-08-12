@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-php",
-  "version": "3.8.7",
+  "version": "3.8.8",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "wgx954418992/rapid-framework": "^3.8.7"
+    "wgx954418992/rapid-framework": "^3.8.8"
   },
   "require-dev": {
     "eaglewu/swoole-ide-helper": "dev-master",

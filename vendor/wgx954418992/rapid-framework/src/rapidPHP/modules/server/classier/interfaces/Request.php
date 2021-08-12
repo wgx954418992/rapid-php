@@ -372,7 +372,7 @@ abstract class Request implements Input
      * @param string $rootPath
      * @return mixed
      */
-    public function getHostUrl(string $rootPath = PATH_APP): string
+    public function getHostUrl(string $rootPath = PATH_PUBLIC): string
     {
         $mode = $this->getScheme();
 

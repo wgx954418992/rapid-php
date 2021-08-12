@@ -6,7 +6,6 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\core\classier\Controller;
 use rapidPHP\modules\core\classier\web\View;
-use rapidPHP\modules\core\classier\web\ViewInterface;
 use rapidPHP\modules\core\classier\web\ViewTemplate;
 use rapidPHP\modules\core\classier\web\WebController;
 use rapidPHP\modules\reflection\classier\Classify;
@@ -30,22 +29,12 @@ class ViewHandler extends HandlerInterface
 
         if ($result instanceof ViewTemplate) {
             return $result->view();
-        } else if ($result instanceof ViewInterface) {
-            return $result->display();
         } else if ($action instanceof Action) {
             $template = $action->getTemplate();
 
             if (empty($template)) return;
 
-            if (is_subclass_of($template, ViewInterface::class)) {
-                if (is_string($result)) $result = ['data' => $result];
-
-                /** @var ViewInterface $viewInterface */
-                $viewInterface = Classify::getInstance($template)
-                    ->newInstance($controller, $result);
-
-                return $viewInterface->display();
-            } else if ($controller instanceof WebController) {
+            if ($controller instanceof WebController) {
 
                 $view = View::display($controller, $template);
 

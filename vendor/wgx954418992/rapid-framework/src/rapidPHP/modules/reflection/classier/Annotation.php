@@ -5,9 +5,7 @@ namespace rapidPHP\modules\reflection\classier;
 
 use Exception;
 use rapidPHP\modules\common\classier\Build;
-use rapidPHP\modules\reflection\classier\annotation\Returned;
 use rapidPHP\modules\reflection\classier\annotation\Value;
-use rapidPHP\modules\reflection\classier\annotation\Variable;
 
 class Annotation
 {
@@ -86,7 +84,8 @@ class Annotation
 
         if (!$class) return new Value($atName, $value);
 
-        return Classify::getInstance($class)->newInstanceKV(['atName' => $atName, 'value' => $value]);
+        return Classify::getInstance($class)
+            ->newInstanceKV(['atName' => $atName, 'value' => $value]);
     }
 
     /**

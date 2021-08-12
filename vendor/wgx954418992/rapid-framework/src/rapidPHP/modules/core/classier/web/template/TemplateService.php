@@ -44,7 +44,9 @@ class TemplateService
     public function __construct(?array $ext, ?string $template_path, ?string $cache_path)
     {
         $this->ext = $ext;
+        
         $this->template_path = $template_path;
+        
         $this->cache_path = $cache_path;
     }
 

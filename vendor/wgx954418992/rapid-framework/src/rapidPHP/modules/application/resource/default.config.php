@@ -11,7 +11,7 @@ return [
         'web' => [
             'view' => [
                 'ext' => ['php', 'html', 'htm'],
-                'template_path' => '${PATH_APP}public/src/view/',
+                'template_path' => '${PATH_APP}classier/view/',
                 'cache_path' => '${PATH_APP}runtime/build/view/',
                 'template_service' => \rapidPHP\modules\core\classier\web\template\TemplateService::class,
             ],

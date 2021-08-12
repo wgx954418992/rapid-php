@@ -116,13 +116,21 @@ class Variable
      */
     public static function parseVarByArray(&$data)
     {
-        foreach ($data as &$value) {
+        $result = [];
+
+        foreach ($data as $key => $value) {
             if (is_string($value) && !is_null($data)) {
                 self::parseVarByString($value);
             } else if (is_array($value)) {
                 self::parseVarByArray($value);
             }
+
+            self::parseVarByString($key);
+
+            $result[$key] = $value;
         }
+
+        $data = $result;
     }
 
     /**
@@ -133,14 +141,13 @@ class Variable
     {
         $vars = Build::getInstance()->getRegularAll('/\${(.*?)}/i', $content);
 
-        if (!empty($vars)) {
+        if (empty($vars)) return;
 
-            foreach ($vars as $var) {
+        foreach ($vars as $var) {
 
-                $value = self::getVarValue($var);
+            $value = self::getVarValue($var);
 
-                $content = str_replace("\${{$var}}", $value, $content);
-            }
+            $content = str_replace("\${{$var}}", $value, $content);
         }
     }
 

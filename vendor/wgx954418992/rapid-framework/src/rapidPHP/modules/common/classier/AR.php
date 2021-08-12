@@ -19,6 +19,32 @@ class AR
     }
 
     /**
+     * 获取array value 里面的值
+     * 支持 a.b.c.e
+     * @param $array array
+     * @param $name
+     * @return array|mixed|null
+     */
+    public function value(array $array, $name)
+    {
+        if (empty($array)) return null;
+
+        if (empty($name)) return null;
+
+        $names = explode('.', $name);
+
+        while (!empty($names)) {
+            $key = array_shift($names);
+
+            if (!array_key_exists($key, $array)) return null;
+
+            $array = $array[$key];
+        }
+
+        return $array;
+    }
+
+    /**
      * 批量删除数组元素
      * @param array|null $array $array
      * array(

@@ -49,7 +49,7 @@ class ViewTemplate
 
         $this->filename = $fileName;
 
-        if (empty($config)) {
+        if (is_null($templateService)) {
             $this->templateService = Application::getInstance()
                 ->getConfig()
                 ->getApplication()
@@ -88,7 +88,6 @@ class ViewTemplate
 
         return $this;
     }
-
 
     /**
      * @return TemplateService
@@ -140,30 +139,6 @@ class ViewTemplate
     }
 
     /**
-     * 生成预处理引入模板替换规则
-     * @param $patterns
-     * @param $includes
-     * @return array
-     */
-    private function getPreIncludesPregReplaceRule($patterns, $includes): array
-    {
-        $rule = [];
-
-        foreach ($includes as $index => $include) {
-            $filepath = $this->getTemplateService()->findTemplateFile($include);
-
-            $strings = File::getInstance()->getContent($filepath);
-
-            $strings = $this->compile($strings, $filepath);
-
-            $pattern = Build::getInstance()->getData($patterns, $index);
-
-            $rule["#" . preg_quote($pattern) . "#i"] = $strings;
-        }
-        return $rule;
-    }
-
-    /**
      * 预处理引入模板
      * @param $strings
      * @return mixed
@@ -180,7 +155,19 @@ class ViewTemplate
             return $strings;
         } else {
 
-            $rule = $this->getPreIncludesPregReplaceRule($patterns, $includes);
+            $rule = [];
+
+            foreach ($includes as $index => $include) {
+                $filepath = $this->getTemplateService()->findTemplateFile($include);
+
+                $content = File::getInstance()->getContent($filepath);
+
+                $content = $this->compile($content, $filepath);
+
+                $pattern = Build::getInstance()->getData($patterns, $index);
+
+                $rule["#" . preg_quote($pattern) . "#i"] = $content;
+            }
 
             $strings = preg_replace(array_keys($rule), $rule, $strings);
 
@@ -196,17 +183,40 @@ class ViewTemplate
      */
     private function compile($strings, $filepath)
     {
-        $likeRule = $this->getCompileLikeRule($strings, $filepath);
+        $linkRule = $this->getCompileLinkRule($strings, $filepath);
 
-        return preg_replace(array_keys($likeRule), $likeRule, $strings);
+        return preg_replace(array_keys($linkRule), $linkRule, $strings);
     }
 
     /**
-     * 获取编译链接列表 A
-     * @param $strings
-     * @return array
+     * 获取编译链接 path 目录
+     * @param $filedir
+     * @param $value
+     * @return mixed
      */
-    private function getCompileLikeListA($strings): array
+    private function getCompileLinkPathDir($filedir, $value): string
+    {
+        $result = (array)Build::getInstance()->getRegularAll("#(\.\./|\./)#i", $value);
+
+        if (count($result) === 0) {
+            $pathDir = "{$filedir}/{$value}";
+        } else {
+            $path = count($result) === 1 && $result[0] === './' ? "{$filedir}/" : Path::getInstance()->dirName($filedir, count($result));
+
+            $pathDir = str_replace(join('', $result), $path, $value);
+        }
+
+        return str_replace([PATH_PUBLIC, PATH_APP, PATH_ROOT], '/', $pathDir);
+    }
+
+
+    /**
+     * 获取编译链接规则
+     * @param $strings
+     * @param $filepath
+     * @return mixed
+     */
+    private function getCompileLinkRule($strings, $filepath): array
     {
         $list = [];
 
@@ -220,103 +230,31 @@ class ViewTemplate
             }
         }
 
-        return $list;
-    }
+        preg_match_all("#(src|href|action)=([\"'])((?!(\s|<\?=|<\?php|{.*}|https|data:image|http|ftp|rtsp|mms|//|\#|\.\./|\./|javascript:)).*?)([\"'])#", $strings, $linkList);
 
-    /**
-     * 获取编译链接列表 B
-     * @param $strings
-     * @return array
-     */
-    private function getCompileLikeListB($strings): array
-    {
-        $list = [];
+        if ($linkList && isset($linkList[0]) && isset($linkList[3]) && count($linkList[0]) == count($linkList[3])) {
 
-        preg_match_all("#(src|href|action)=([\"'])((?!(\s|<\?=|<\?php|{.*}|https|data:image|http|ftp|rtsp|mms|//|\#|\.\./|\./|javascript:)).*?)([\"'])#", $strings, $likeList);
+            foreach ($linkList[3] as $item => $value) {
 
-        if ($likeList && isset($likeList[0]) && isset($likeList[3]) && count($likeList[0]) == count($likeList[3])) {
-
-            foreach ($likeList[3] as $item => $value) {
-
-                if ($value) $list[$likeList[0][$item]] = $value;
+                if ($value) $list[$linkList[0][$item]] = $value;
             }
         }
 
-        return $list;
-    }
-
-    /**
-     * 获取编译链接列表
-     * @param $strings
-     * @return array
-     */
-    private function getCompileLikeList($strings): array
-    {
-        $listA = $this->getCompileLikeListA($strings);
-
-        $listB = $this->getCompileLikeListB($strings);
-
-        return array_merge($listA, $listB);
-    }
-
-    /**
-     * 获取编译链接 path 目录
-     * @param $dir
-     * @param $value
-     * @return mixed
-     */
-    private function getCompileLikePathDir($dir, $value): string
-    {
-        $result = (array)Build::getInstance()->getRegularAll("#(\.\./|\./)#i", $value);
-
-        if (count($result) === 0) {
-            $pathDir = "$dir/$value";
-        } else {
-            $path = count($result) === 1 && $result[0] === './' ? "$dir/" : Path::getInstance()->dirName($dir, count($result));
-
-            $pathDir = str_replace(join('', $result), $path, $value);
-        }
-        return $pathDir;
-    }
-
-    /**
-     * 获取编译链接规则列表
-     * @param $list
-     * @param $filepath
-     * @return mixed
-     */
-    private function getCompileLikeRuleList($list, $filepath): array
-    {
         $rule = [];
-
-        $dir = str_replace([PATH_APP, PATH_ROOT], '/', dirname($filepath));
 
         $appRootUrl = rtrim($this->getController()->getHostUrl(), '/*');
 
         foreach ($list as $item => $value) {
 
-            $pathDir = $this->getCompileLikePathDir($dir, $value);
+            $pathDir = $this->getCompileLinkPathDir(dirname($filepath), $value);
 
             $link = str_replace($value, "{$appRootUrl}{$pathDir}", $item);
 
             $rule["#" . preg_quote($item) . "#i"] = $link;
         }
+
         return $rule;
     }
-
-    /**
-     * 获取编译链接规则
-     * @param $strings
-     * @param $filepath
-     * @return mixed
-     */
-    private function getCompileLikeRule($strings, $filepath): array
-    {
-        $likeList = $this->getCompileLikeList($strings);
-
-        return $this->getCompileLikeRuleList($likeList, $filepath);
-    }
-
 
     /**
      * @param $compileResult

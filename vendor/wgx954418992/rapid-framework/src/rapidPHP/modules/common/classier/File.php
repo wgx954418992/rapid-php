@@ -24,10 +24,10 @@ class File
     /**
      * 读取目录列表
      * @param $dir :目录
-     * @param bool $isNext 是否读取目录的目录
+     * @param bool $isSub 是否读取目录的目录
      * @return array|Generator 返回生成器，请用foreach读取
      */
-    public function readDirList($dir, bool $isNext = true)
+    public function readDirList($dir, bool $isSub = true)
     {
         if (!file_exists($dir)) return [];
 
@@ -44,7 +44,7 @@ class File
                 if (is_dir($dirPath)) {
                     yield $dirPath;
 
-                    if (!$isNext) continue;
+                    if (!$isSub) continue;
 
                     $sub = $this->readDirList($dirPath);
 
@@ -64,9 +64,10 @@ class File
      * 利用生成器读取目录文件
      * @param $path :路径
      * @param bool $isDir 是否包含目录
+     * @param bool $isSub 是否读取子目录
      * @return Generator|void 返回生成器，请用foreach读取
      */
-    public function readDirFiles($path, bool $isDir = false): Generator
+    public function readDirFiles($path, bool $isDir = false, $isSub = true): Generator
     {
         $path = rtrim($path, '/*');
 
@@ -80,6 +81,8 @@ class File
             $filePath = $path . DIRECTORY_SEPARATOR . $file;
 
             if (is_dir($filePath)) {
+                if (!$isSub) continue;
+
                 $sub = $this->readDirFiles($filePath, $isDir);
 
                 while ($sub->valid()) {

@@ -3,10 +3,9 @@
 
 namespace rapidPHP;
 
+use rapidPHP\modules\config\classier\Config;
 use rapidPHP\modules\core\classier\DI;
-use Spyc;
 use Exception;
-use rapidPHP\modules\application\config\ApplicationConfig;
 use rapidPHP\modules\application\wrapper\ConfigWrapper;
 use rapidPHP\modules\common\classier\AB;
 use rapidPHP\modules\common\classier\AR;
@@ -27,7 +26,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.8.7');
+define('RAPIDPHP_VERSION', '3.8.8');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -235,24 +234,12 @@ class Init
 
     /**
      * Init constructor.
-     * @param string|string[]|null $appFiles
      * @throws RuntimeException
      */
-    public function __construct($appFiles = null)
+    public function __construct(Config $config)
     {
         try {
-
-            $this->setConfig(ApplicationConfig::getDefaultConfig());
-
-            if (is_null($appFiles)) {
-                $appFiles = [(defined('PATH_APP') ? PATH_APP : PATH_ROOT) . 'application.yaml'];
-            } else if (!is_array($appFiles)) {
-                $appFiles = [$appFiles];
-            }
-
-            foreach ($appFiles as $file) {
-                $this->setConfig(Spyc::YAMLLoad($file));
-            }
+            $this->setConfig($config->getConfig());
         } catch (Exception $e) {
             throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }

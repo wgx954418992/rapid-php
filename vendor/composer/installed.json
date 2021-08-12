@@ -105,7 +105,7 @@
             "time": "2021-06-02T17:13:45+00:00",
             "default-branch": true,
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -2976,17 +2976,17 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.8.7",
-            "version_normalized": "3.8.7.0",
+            "version": "3.8.8",
+            "version_normalized": "3.8.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "8d07d598857cd69e9842903a40893fd25e36365b"
+                "reference": "aa9d82f6ce91fe2a886cd564d3d75193ebcce6b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/8d07d598857cd69e9842903a40893fd25e36365b",
-                "reference": "8d07d598857cd69e9842903a40893fd25e36365b",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/aa9d82f6ce91fe2a886cd564d3d75193ebcce6b7",
+                "reference": "aa9d82f6ce91fe2a886cd564d3d75193ebcce6b7",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -3022,7 +3022,7 @@
                 "eaglewu/swoole-ide-helper": "dev-master",
                 "phpunit/phpunit": "7.0"
             },
-            "time": "2021-08-12T05:19:10+00:00",
+            "time": "2021-08-12T15:29:17+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3052,7 +3052,7 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.8.7"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.8.8"
             },
             "install-path": "../wgx954418992/rapid-framework"
         }
