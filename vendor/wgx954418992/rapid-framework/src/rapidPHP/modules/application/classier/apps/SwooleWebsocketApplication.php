@@ -33,7 +33,7 @@ class SwooleWebsocketApplication extends WebApplication
      */
     public function run()
     {
-        $this->server = new Server($this->getConfig()->getServer()->getSwoole()->getWebsocket());
+        $this->server = new Server($this->getConfigWrapper()->getServer()->getSwoole()->getWebsocket());
 
         $this->server->on('message', [$this, 'onMessage']);
 

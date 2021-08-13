@@ -55,7 +55,7 @@ class ConsoleApplication extends Application
 
             $output = new Output();
 
-            $consoleConfig = $this->getConfig()->getConsole();
+            $consoleConfig = $this->getConfigWrapper()->getConsole();
 
             $context = $this->newConsoleContext($input, $output, $consoleConfig->getContext());
 

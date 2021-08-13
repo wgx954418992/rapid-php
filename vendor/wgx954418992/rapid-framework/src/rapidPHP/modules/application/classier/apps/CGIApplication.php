@@ -23,7 +23,7 @@ class CGIApplication extends WebApplication
         try {
             $startTime = microtime(true);
 
-            $cigConfig = $this->getConfig()->getServer()->getCgi();
+            $cigConfig = $this->getConfigWrapper()->getServer()->getCgi();
 
             $sessionConfig = $cigConfig->getSession();
 

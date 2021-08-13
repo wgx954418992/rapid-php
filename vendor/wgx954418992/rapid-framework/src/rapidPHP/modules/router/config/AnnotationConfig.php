@@ -4,12 +4,12 @@
 namespace rapidPHP\modules\router\config;
 
 use rapidPHP\modules\reflection\config\AnnotationConfig as ReflectionAnnotationConfig;
-use rapidPHP\modules\router\classier\annotation\Encode;
-use rapidPHP\modules\router\classier\annotation\Header;
-use rapidPHP\modules\router\classier\annotation\Method;
-use rapidPHP\modules\router\classier\annotation\Route;
-use rapidPHP\modules\router\classier\annotation\Template;
-use rapidPHP\modules\router\classier\annotation\Typed;
+use rapidPHP\modules\router\classier\reflection\annotation\Encode;
+use rapidPHP\modules\router\classier\reflection\annotation\Header;
+use rapidPHP\modules\router\classier\reflection\annotation\Method;
+use rapidPHP\modules\router\classier\reflection\annotation\Route;
+use rapidPHP\modules\router\classier\reflection\annotation\Template;
+use rapidPHP\modules\router\classier\reflection\annotation\Typed;
 
 class AnnotationConfig extends ReflectionAnnotationConfig
 {

@@ -3,7 +3,7 @@
 
 namespace rapidPHP;
 
-use rapidPHP\modules\config\classier\Config;
+use rapidPHP\modules\config\classier\PConfig;
 use rapidPHP\modules\core\classier\DI;
 use Exception;
 use rapidPHP\modules\application\wrapper\ConfigWrapper;
@@ -26,7 +26,7 @@ use rapidPHP\modules\reflection\classier\Utils;
 if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.8.8');
+define('RAPIDPHP_VERSION', '3.9.0');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
@@ -215,73 +215,4 @@ function formatException(Exception $e, string $format = "{msg} {code}\n{trace}\n
     }
 
     return $format;
-}
-
-class Init
-{
-
-    /**
-     * 基本配置
-     * @var ConfigWrapper
-     */
-    private $config;
-
-    /**
-     * 基本配置 (原始数据)
-     * @var array
-     */
-    private $rawConfig = [];
-
-    /**
-     * Init constructor.
-     * @throws RuntimeException
-     */
-    public function __construct(Config $config)
-    {
-        try {
-            $this->setConfig($config->getConfig());
-        } catch (Exception $e) {
-            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * 设置全局config
-     * 请在run之前调用，否则无法调用
-     * @param array $config
-     */
-    public function setConfig(array $config)
-    {
-        AR::getInstance()->merge($this->rawConfig, $config);
-    }
-
-    /**
-     * @return ConfigWrapper
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @param string|null $key
-     * @return array
-     */
-    public function getRawConfig(?string $key = null): ?array
-    {
-        if ($key) return $this->rawConfig[$key] ?? null;
-
-        return $this->rawConfig;
-    }
-
-    /**
-     * 解析config
-     * @throws Exception
-     */
-    public function parseConfig()
-    {
-        Variable::parseVarByArray($this->rawConfig);
-
-        $this->config = Utils::getInstance()->toObject(ConfigWrapper::class, $this->rawConfig);
-    }
 }

@@ -31,9 +31,9 @@ class Modules
      */
     public function getModulesPath($name, $submodule): string
     {
-        $submodule = "/" . ltrim($submodule, "/*");
+        $submodule = '/' . ltrim($submodule, '/*');
 
-        $submodule = rtrim($submodule, "*/") . "/";
+        $submodule = rtrim($submodule, '*/') . '/';
 
         return Path::getInstance()->formatPath(PATH_MODULES . $name . $submodule);
     }

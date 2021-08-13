@@ -14,8 +14,8 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => '3.8.8',
-    'version' => '3.8.8.0',
+    'pretty_version' => '3.8.9',
+    'version' => '3.8.9.0',
     'aliases' => 
     array (
     ),
@@ -407,17 +407,17 @@ private static $installed = array (
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.8.8',
-      'version' => '3.8.8.0',
+      'pretty_version' => '3.9.0',
+      'version' => '3.9.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'aa9d82f6ce91fe2a886cd564d3d75193ebcce6b7',
+      'reference' => 'a95cf5f41b24563931c82820742152a1f4537a01',
     ),
     'wgx954418992/rapid-php' => 
     array (
-      'pretty_version' => '3.8.8',
-      'version' => '3.8.8.0',
+      'pretty_version' => '3.8.9',
+      'version' => '3.8.9.0',
       'aliases' => 
       array (
       ),

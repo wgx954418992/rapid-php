@@ -119,7 +119,7 @@ class Handler
      * @param array $options
      * @return null
      */
-    public function handler(Controller $controller, $service, $result, $options = [])
+    public function handler(Controller $controller, $service, $result, array $options = [])
     {
         if ($service instanceof HandlerInterface) {
             return $service->onResult($controller, $result, $options);

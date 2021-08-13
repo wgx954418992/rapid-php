@@ -15,7 +15,6 @@ use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Verify;
 use rapidPHP\modules\common\classier\Variable;
 use rapidPHP\modules\core\classier\Controller;
-use rapidPHP\modules\core\classier\web\WebController;
 use rapidPHP\modules\exception\classier\ActionException;
 use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\reflection\classier\Method;
@@ -140,7 +139,7 @@ abstract class Router
      * @param array|null $actions
      * @throws Exception
      */
-    abstract protected function scanning(?array &$routes = [],? array &$actions = []);
+    abstract protected function scanning(?array &$routes = [], ?array &$actions = []);
 
     /**
      * 匹配路由
@@ -442,8 +441,5 @@ abstract class Router
      * @param Route $route
      * @param Action $action
      */
-    protected function onResult(Controller $controller, Route $route, Action $action, $result)
-    {
-        Handler::getInstance()->handler($controller, $result, $route, $action);
-    }
+    abstract public function onResult(Controller $controller, Route $route, Action $action, $result);
 }

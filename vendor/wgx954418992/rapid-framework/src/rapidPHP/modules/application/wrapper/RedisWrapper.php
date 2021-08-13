@@ -13,7 +13,6 @@ class RedisWrapper
      */
     private $master;
 
-
     /**
      * @var ConnectConfig|null
      */

@@ -19,7 +19,6 @@ use rapidPHP\modules\router\classier\Route;
 use rapidPHP\modules\router\classier\Router;
 use rapidPHP\modules\server\classier\http\cgi\Response;
 use rapidPHP\modules\server\classier\interfaces\Request;
-use rapidPHP\modules\server\classier\websocket\swoole\Request as SwooleWebSocketRequest;
 use rapidPHP\modules\server\classier\websocket\swoole\Response as SwooleWebSocketResponse;
 
 class WebRouter extends Router
@@ -107,7 +106,7 @@ class WebRouter extends Router
 
         if (!(is_null($ip) || Build::getInstance()->isIntranet($ip))) return;
 
-        $paths = $this->getApplication()->getConfig()->getApplication()->getScans()->getController();
+        $paths = $this->getApplication()->getConfigWrapper()->getApplication()->getScans()->getController();
 
         $routes = [];
 
@@ -196,7 +195,7 @@ class WebRouter extends Router
 
         if ($this->response instanceof SwooleWebSocketResponse) {
             $returnKey = $this->getApplication()
-                ->getConfig()
+                ->getConfigWrapper()
                 ->getServer()
                 ->getSwoole()
                 ->getWebsocket()
@@ -215,7 +214,7 @@ class WebRouter extends Router
      * @param Action $action
      * @throws Exception
      */
-    protected function onResult(Controller $controller, Route $route, Action $action, $result)
+    public function onResult(Controller $controller, Route $route, Action $action, $result)
     {
         if (!empty($action->getHeader())) {
             $this->response->setHeader($action->getHeader());

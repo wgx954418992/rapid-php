@@ -4,7 +4,7 @@ application:
       - '${PATH_APP}classier/controller/'
   web:
     view:
-      template_path: '${PATH_APP}public/src/view/'
+      template_path: '${PATH_APP}classier/view/'
       cache_path: '${PATH_APP}runtime/build/view/'
 log:
   error:

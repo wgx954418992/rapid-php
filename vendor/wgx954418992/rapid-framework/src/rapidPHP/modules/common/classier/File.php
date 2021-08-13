@@ -67,7 +67,7 @@ class File
      * @param bool $isSub 是否读取子目录
      * @return Generator|void 返回生成器，请用foreach读取
      */
-    public function readDirFiles($path, bool $isDir = false, $isSub = true): Generator
+    public function readDirFiles($path, bool $isDir = false, bool $isSub = true): Generator
     {
         $path = rtrim($path, '/*');
 

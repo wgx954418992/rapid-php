@@ -51,7 +51,7 @@ class SQLSource
     {
         if ($config instanceof ConnectConfig) return $config;
 
-        $sql = Application::getInstance()->getConfig()->getDatabase()->getSql();
+        $sql = Application::getInstance()->getConfigWrapper()->getDatabase()->getSql();
 
         if (empty($sql)) throw new Exception('sql config error');
 

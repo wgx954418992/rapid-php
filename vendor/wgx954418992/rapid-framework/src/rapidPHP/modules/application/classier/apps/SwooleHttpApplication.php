@@ -33,7 +33,7 @@ class SwooleHttpApplication extends WebApplication
      */
     public function run()
     {
-        $this->server = new Server($this->getConfig()->getServer()->getSwoole()->getHttp());
+        $this->server = new Server($this->getConfigWrapper()->getServer()->getSwoole()->getHttp());
 
         $this->server->on('request', [$this, 'onRequest']);
 

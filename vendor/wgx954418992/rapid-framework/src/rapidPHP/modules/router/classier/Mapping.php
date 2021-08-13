@@ -13,6 +13,7 @@ use rapidPHP\modules\router\classier\action\Parameter as ActionParameter;
 use rapidPHP\modules\router\classier\action\Property as ActionProperty;
 use rapidPHP\modules\router\classier\action\Returned as ActionReturned;
 use rapidPHP\modules\reflection\classier\annotation\Returned as ReturnedAnnotation;
+use rapidPHP\modules\router\classier\reflection\DocComment;
 use ReflectionMethod;
 
 class Mapping

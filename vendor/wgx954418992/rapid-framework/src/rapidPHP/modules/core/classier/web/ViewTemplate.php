@@ -51,7 +51,7 @@ class ViewTemplate
 
         if (is_null($templateService)) {
             $this->templateService = Application::getInstance()
-                ->getConfig()
+                ->getConfigWrapper()
                 ->getApplication()
                 ->getWeb()
                 ->getView()

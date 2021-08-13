@@ -4,10 +4,11 @@
 namespace rapidPHP\modules\application\classier;
 
 use Exception;
-use rapidPHP\Init;
 use rapidPHP\modules\application\wrapper\ConfigWrapper;
 use rapidPHP\modules\common\classier\Instances;
+use rapidPHP\modules\config\classier\PConfig;
 use rapidPHP\modules\logger\classier\Logger;
+use rapidPHP\modules\reflection\classier\Utils;
 
 
 abstract class Application
@@ -39,35 +40,43 @@ abstract class Application
     const LOGGER_ACCESS = 'access';
 
     /**
-     * @var Init
+     * @var PConfig
      */
-    protected $init;
+    protected $config;
+
+    /**
+     * @var ConfigWrapper
+     */
+    protected $configWrapper;
 
     /**
      * Application constructor.
-     * @param Init $init
+     * @param PConfig $config
+     * @throws Exception
      */
-    public function __construct(Init $init)
+    public function __construct(PConfig $config)
     {
         self::$instances[static::class] = $this;
 
-        $this->init = $init;
+        $this->config = $config;
+
+        $this->configWrapper = Utils::getInstance()->toObject(ConfigWrapper::class, $config->getConfig());
     }
 
     /**
-     * @return Init
+     * @return PConfig
      */
-    public function getInit(): Init
+    public function getConfig(): PConfig
     {
-        return $this->init;
+        return $this->config;
     }
 
     /**
      * @return ConfigWrapper
      */
-    public function getConfig()
+    public function getConfigWrapper()
     {
-        return $this->getInit()->getConfig();
+        return $this->configWrapper;
     }
 
     /**
@@ -78,7 +87,7 @@ abstract class Application
      */
     public function logger(string $name = self::LOGGER_WARNING): ?Logger
     {
-        $config = $this->getConfig()->getLogConfig($name);
+        $config = $this->getConfigWrapper()->getLogConfig($name);
 
         if (empty($config)) return null;
 
