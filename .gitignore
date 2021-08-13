@@ -2,6 +2,10 @@
 
 .DS_Store
 
+build/view
+
+log/
+
 *.sql
 
 !express-mini.sql

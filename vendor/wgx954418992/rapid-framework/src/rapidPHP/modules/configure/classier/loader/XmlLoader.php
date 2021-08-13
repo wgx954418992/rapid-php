@@ -1,13 +1,13 @@
 <?php
 
 
-namespace rapidPHP\modules\config\classier\loader;
+namespace rapidPHP\modules\configure\classier\loader;
 
 
 use Exception;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Path;
-use rapidPHP\modules\config\classier\ILoader;
+use rapidPHP\modules\configure\classier\ILoader;
 use function rapidPHP\B;
 use function rapidPHP\X;
 

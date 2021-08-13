@@ -1,10 +1,10 @@
 <?php
 
 
-namespace rapidPHP\modules\config\classier\reflection\annotation;
+namespace rapidPHP\modules\configure\classier\reflection\annotation;
 
 
-use rapidPHP\modules\config\config\AnnotationConfig;
+use rapidPHP\modules\configure\config\AnnotationConfig;
 use rapidPHP\modules\reflection\classier\annotation\Value;
 
 class Config extends Value

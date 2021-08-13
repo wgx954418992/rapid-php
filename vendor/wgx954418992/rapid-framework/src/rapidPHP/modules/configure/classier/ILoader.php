@@ -1,6 +1,6 @@
 <?php
 
-namespace rapidPHP\modules\config\classier;
+namespace rapidPHP\modules\configure\classier;
 
 
 interface ILoader

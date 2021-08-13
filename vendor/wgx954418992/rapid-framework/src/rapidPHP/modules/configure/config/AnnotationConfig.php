@@ -1,9 +1,9 @@
 <?php
 
 
-namespace rapidPHP\modules\config\config;
+namespace rapidPHP\modules\configure\config;
 
-use rapidPHP\modules\config\classier\reflection\annotation\Config;
+use rapidPHP\modules\configure\classier\reflection\annotation\Config;
 use rapidPHP\modules\reflection\config\AnnotationConfig as ReflectionAnnotationConfig;
 
 class AnnotationConfig extends ReflectionAnnotationConfig

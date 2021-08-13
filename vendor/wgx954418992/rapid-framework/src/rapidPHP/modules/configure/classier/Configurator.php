@@ -1,6 +1,6 @@
 <?php
 
-namespace rapidPHP\modules\config\classier;
+namespace rapidPHP\modules\configure\classier;
 
 use Exception;
 use rapidPHP\modules\application\config\ApplicationConfig;
@@ -8,15 +8,15 @@ use rapidPHP\modules\common\classier\AR;
 use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Variable;
-use rapidPHP\modules\config\classier\loader\JsonLoader;
-use rapidPHP\modules\config\classier\loader\PHPLoader;
-use rapidPHP\modules\config\classier\loader\XmlLoader;
-use rapidPHP\modules\config\classier\loader\YamlLoader;
-use rapidPHP\modules\config\classier\reflection\DocComment;
+use rapidPHP\modules\configure\classier\loader\JsonLoader;
+use rapidPHP\modules\configure\classier\loader\PHPLoader;
+use rapidPHP\modules\configure\classier\loader\XmlLoader;
+use rapidPHP\modules\configure\classier\loader\YamlLoader;
+use rapidPHP\modules\configure\classier\reflection\DocComment;
 use rapidPHP\modules\reflection\classier\Classify;
 use function rapidPHP\AR;
 
-class PConfig
+class Configurator implements IConfigurator
 {
 
     /**
@@ -61,19 +61,25 @@ class PConfig
     /**
      * set paths
      * @param array $paths
+     * @return Configurator
      */
     public function setPaths(array $paths)
     {
         $this->paths = $paths;
+
+        return $this;
     }
 
     /**
      * 追加path
      * @param string $path
+     * @return Configurator
      */
-    public function appendPath(string $path)
+    public function addPath(string $path)
     {
         $this->paths[] = $path;
+
+        return $this;
     }
 
     /**
@@ -91,6 +97,43 @@ class PConfig
     public function getConfig(): array
     {
         return $this->config;
+    }
+
+
+    /**
+     * 获取config value 里面的值
+     * 支持 a.b.c.e
+     * @param $name
+     * @return array|mixed|null
+     */
+    public function getConfigValue($name)
+    {
+        return AR()->value($this->config, $name);
+    }
+
+    /**
+     * set object properties
+     * @param $object
+     * @throws Exception
+     */
+    public static function setProperties($object)
+    {
+        $classify = Classify::getInstance($object);
+
+        $properties = $classify->getProperties();
+
+        foreach ($properties as $property) {
+            /** @var DocComment $comment */
+            $comment = $property->getDocComment(DocComment::class);
+
+            $config = $comment->getConfigAnnotation();
+
+            if ($config != null) {
+                $value = Configurator::getInstance()->getConfigValue($config->getName());
+
+                $property->setValue($value, $object);
+            }
+        }
     }
 
     /**
@@ -113,6 +156,7 @@ class PConfig
     /**
      * 载入配置文件
      * @param bool $isAppend
+     * @return Configurator
      * @throws Exception
      */
     public function load(bool $isAppend = true)
@@ -143,41 +187,7 @@ class PConfig
                 AR::getInstance()->merge($this->config, $config);
             }
         }
-    }
 
-    /**
-     * 获取config value 里面的值
-     * 支持 a.b.c.e
-     * @param $name
-     * @return array|mixed|null
-     */
-    public function value($name)
-    {
-        return AR()->value($this->config, $name);
-    }
-
-    /**
-     * set object properties
-     * @param $object
-     * @throws Exception
-     */
-    public static function object($object)
-    {
-        $classify = Classify::getInstance($object);
-
-        $properties = $classify->getProperties();
-
-        foreach ($properties as $property) {
-            /** @var DocComment $comment */
-            $comment = $property->getDocComment(DocComment::class);
-
-            $config = $comment->getConfigAnnotation();
-
-            if ($config != null) {
-                $value = PConfig::getInstance()->value($config->getName());
-
-                $property->setValue($value, $object);
-            }
-        }
+        return $this;
     }
 }

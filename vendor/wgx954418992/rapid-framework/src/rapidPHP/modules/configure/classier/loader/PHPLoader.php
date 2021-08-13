@@ -1,15 +1,16 @@
 <?php
 
-namespace rapidPHP\modules\config\classier\loader;
+
+namespace rapidPHP\modules\configure\classier\loader;
 
 
 use Exception;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Path;
-use rapidPHP\modules\config\classier\ILoader;
+use rapidPHP\modules\configure\classier\ILoader;
 use function rapidPHP\B;
 
-class JsonLoader implements ILoader
+class PHPLoader implements ILoader
 {
 
 
@@ -27,6 +28,7 @@ class JsonLoader implements ILoader
         return new static();
     }
 
+
     /**
      * 是否支持
      * @param string $filename
@@ -38,11 +40,11 @@ class JsonLoader implements ILoader
 
         $ext = B()->getData($info, 'suffix');
 
-        return strtolower($ext) === 'json';
+        return strtolower($ext) === 'php';
     }
 
     /**
-     * load json
+     * load php
      * @param string $filename
      * @return array
      * @throws Exception
@@ -51,6 +53,6 @@ class JsonLoader implements ILoader
     {
         if (!is_file($filename)) throw new Exception('文件错误!');
 
-        return B()->jsonDecode(file_get_contents($filename));
+        return include($filename . '');
     }
 }

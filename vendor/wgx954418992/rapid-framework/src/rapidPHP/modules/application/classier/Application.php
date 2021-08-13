@@ -6,7 +6,7 @@ namespace rapidPHP\modules\application\classier;
 use Exception;
 use rapidPHP\modules\application\wrapper\ConfigWrapper;
 use rapidPHP\modules\common\classier\Instances;
-use rapidPHP\modules\config\classier\PConfig;
+use rapidPHP\modules\configure\classier\IConfigurator;
 use rapidPHP\modules\logger\classier\Logger;
 use rapidPHP\modules\reflection\classier\Utils;
 
@@ -40,7 +40,7 @@ abstract class Application
     const LOGGER_ACCESS = 'access';
 
     /**
-     * @var PConfig
+     * @var IConfigurator
      */
     protected $config;
 
@@ -51,10 +51,10 @@ abstract class Application
 
     /**
      * Application constructor.
-     * @param PConfig $config
+     * @param IConfigurator $config
      * @throws Exception
      */
-    public function __construct(PConfig $config)
+    public function __construct(IConfigurator $config)
     {
         self::$instances[static::class] = $this;
 
@@ -64,9 +64,9 @@ abstract class Application
     }
 
     /**
-     * @return PConfig
+     * @return IConfigurator
      */
-    public function getConfig(): PConfig
+    public function getConfig(): IConfigurator
     {
         return $this->config;
     }

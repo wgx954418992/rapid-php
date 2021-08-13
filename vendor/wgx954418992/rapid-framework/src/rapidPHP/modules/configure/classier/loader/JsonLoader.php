@@ -1,17 +1,17 @@
 <?php
 
-namespace rapidPHP\modules\config\classier\loader;
+namespace rapidPHP\modules\configure\classier\loader;
 
 
 use Exception;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Path;
-use rapidPHP\modules\config\classier\ILoader;
-use Spyc;
+use rapidPHP\modules\configure\classier\ILoader;
 use function rapidPHP\B;
 
-class YamlLoader implements ILoader
+class JsonLoader implements ILoader
 {
+
 
     /**
      * 单例模式
@@ -27,7 +27,6 @@ class YamlLoader implements ILoader
         return new static();
     }
 
-
     /**
      * 是否支持
      * @param string $filename
@@ -39,11 +38,11 @@ class YamlLoader implements ILoader
 
         $ext = B()->getData($info, 'suffix');
 
-        return strtolower($ext) === 'yaml' || strtolower($ext) === 'yml';
+        return strtolower($ext) === 'json';
     }
 
     /**
-     * load yaml
+     * load json
      * @param string $filename
      * @return array
      * @throws Exception
@@ -52,6 +51,6 @@ class YamlLoader implements ILoader
     {
         if (!is_file($filename)) throw new Exception('文件错误!');
 
-        return Spyc::YAMLLoad($filename);
+        return B()->jsonDecode(file_get_contents($filename));
     }
 }

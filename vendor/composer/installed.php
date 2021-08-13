@@ -1,8 +1,8 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => '3.8.9',
-    'version' => '3.8.9.0',
+    'pretty_version' => '3.9.1',
+    'version' => '3.9.1.0',
     'aliases' => 
     array (
     ),
@@ -394,17 +394,17 @@
     ),
     'wgx954418992/rapid-framework' => 
     array (
-      'pretty_version' => '3.9.0',
-      'version' => '3.9.0.0',
+      'pretty_version' => '3.9.1',
+      'version' => '3.9.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a95cf5f41b24563931c82820742152a1f4537a01',
+      'reference' => 'c5a63c0bc4fca0ce4afef2735e3e0859f4d6d011',
     ),
     'wgx954418992/rapid-php' => 
     array (
-      'pretty_version' => '3.8.9',
-      'version' => '3.8.9.0',
+      'pretty_version' => '3.9.1',
+      'version' => '3.9.1.0',
       'aliases' => 
       array (
       ),
