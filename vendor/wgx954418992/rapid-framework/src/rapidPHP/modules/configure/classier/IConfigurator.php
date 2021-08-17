@@ -10,19 +10,21 @@ interface IConfigurator
     /**
      * observer
      * @param callable $callback
-     * @return void
+     * @return static
      */
     public function observer(callable $callback);
 
     /**
      * set paths
      * @param array $paths
+     * @return static
      */
     public function setPaths(array $paths);
 
     /**
      * add path
      * @param string $path
+     * @return static
      */
     public function addPath(string $path);
 
@@ -56,6 +58,7 @@ interface IConfigurator
      * 载入配置文件
      * @param bool $isAppend
      * @throws Exception
+     * @return static
      */
     public function load(bool $isAppend = true);
 }

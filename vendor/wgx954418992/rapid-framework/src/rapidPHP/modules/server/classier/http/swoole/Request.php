@@ -10,10 +10,11 @@ use Swoole\Http\Request as SwooleHttpRequest;
 
 class Request extends RequestInterface
 {
+
     /**
-     * @var int
+     * @var SwooleHttpRequest
      */
-    protected $fd;
+    protected $request;
 
     /**
      * Request constructor.
@@ -24,37 +25,54 @@ class Request extends RequestInterface
      */
     public function __construct($isHttps, SwooleHttpRequest $req, ?SessionConfig $sessionConfig, ?string $sessionId)
     {
-        $this->fd = $req->fd;
+        $this->request = $req;
 
-        $req->server = self::getRenameServerInfo($req->server);
+        $server = self::getRenameServerInfo($this->request->server);
 
-        $req->header = HttpConfig::getRenameHeader($req->header);
+        $header = HttpConfig::getRenameHeader($this->request->header);
 
-        $uri = Build::getInstance()->getData($req->server, 'REQUEST_URI');
+        $uri = Build::getInstance()->getData($server, 'REQUEST_URI');
 
-        $query = Build::getInstance()->getData($req->server, 'QUERY_STRING');
+        $query = Build::getInstance()->getData($server, 'QUERY_STRING');
 
-        if ($uri && $query) $req->server['REQUEST_URI'] .= '?' . $query;
+        if ($uri && $query) $server['REQUEST_URI'] .= '?' . $query;
 
-        $req->server['SCHEME'] = $isHttps ? 'https' : 'http';
+        $server['SCHEME'] = $isHttps ? 'https' : 'http';
 
         parent::__construct(
             $req->get,
             $req->post,
             $req->files,
             $req->cookie,
-            $req->header,
-            $req->server,
+            $header,
+            $server,
             $sessionConfig,
             $sessionId
         );
     }
 
     /**
+     * @return SwooleHttpRequest
+     */
+    public function getSwooleRequest()
+    {
+        return $this->request;
+    }
+
+    /**
      * @return int
      */
-    public function getFd()
+    public function getFd(): int
     {
-        return $this->fd;
+        return $this->request->fd;
+    }
+
+    /**
+     * raw content
+     * @return string
+     */
+    public function rawContent(): string
+    {
+        return $this->request->rawContent();
     }
 }

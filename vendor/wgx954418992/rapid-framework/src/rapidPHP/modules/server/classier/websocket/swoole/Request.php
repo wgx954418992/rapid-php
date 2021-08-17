@@ -12,9 +12,9 @@ use Swoole\WebSocket\Server as SwooleWebSocketServer;
 class Request extends RequestInterface
 {
     /**
-     * @var mixed
+     * @var Frame
      */
-    protected $fd;
+    protected $frame;
 
     /**
      * @var string|null
@@ -32,17 +32,17 @@ class Request extends RequestInterface
      */
     public function __construct(SwooleWebSocketServer $server, Frame $frame, $header, $cookie, SessionConfig $sessionConfig, string $sessionId)
     {
-        $this->fd = $frame->fd;
+        $this->frame = $frame;
 
         switch ($frame->opcode) {
             case WEBSOCKET_OPCODE_TEXT:
-                $frame->data = rawurldecode($frame->data);
+                $this->data = rawurldecode($this->frame->data);
 
-                $data = Uri::getInstance()->toArray($frame->data);
+                $data = Uri::getInstance()->toArray($this->data);
 
-                $clientInfo = $server->getClientInfo($frame->fd);
+                $clientInfo = $server->getClientInfo($this->frame->fd);
 
-                $serverParam = $this->parseServer($clientInfo, $frame->data);
+                $serverParam = $this->parseServer($clientInfo, $this->data);
                 break;
             default:
                 $data = [];
@@ -50,8 +50,6 @@ class Request extends RequestInterface
                 $serverParam = [];
                 break;
         }
-
-        $this->data = $frame->data;
 
         parent::__construct(
             $data,
@@ -66,13 +64,30 @@ class Request extends RequestInterface
     }
 
     /**
-     * @return mixed
+     * frame
+     * @return Frame
      */
-    public function getFd()
+    public function getFrame()
     {
-        return $this->fd;
+        return $this->frame;
     }
 
+    /**
+     * @return int
+     */
+    public function getFd(): int
+    {
+        return $this->frame->fd;
+    }
+
+    /**
+     * frame
+     * @return string
+     */
+    public function rawContent(): string
+    {
+        return $this->frame->data;
+    }
 
     /**
      * 解析server

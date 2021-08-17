@@ -67,6 +67,7 @@ class Configurator implements IConfigurator
     /**
      * observer
      * @param callable $callback
+     * @return Configurator
      */
     public function observer(callable $callback)
     {

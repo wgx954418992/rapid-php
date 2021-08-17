@@ -53,4 +53,13 @@ class Request extends RequestInterface
             $sessionId
         );
     }
+
+    /**
+     * raw content
+     * @return string
+     */
+    public function rawContent(): string
+    {
+        return file_get_contents('php://input');
+    }
 }

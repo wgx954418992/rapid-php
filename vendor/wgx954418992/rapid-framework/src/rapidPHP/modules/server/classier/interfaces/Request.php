@@ -127,6 +127,12 @@ abstract class Request implements Input
     }
 
     /**
+     * raw content
+     * @return string
+     */
+    abstract public function rawContent(): string;
+
+    /**
      * 获取get参数
      * @param $name
      * @return mixed|array|string|int|null

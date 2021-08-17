@@ -21,7 +21,7 @@ use rapidPHP\modules\reflection\classier\Classify;
 if (version_compare(PHP_VERSION, '7.2.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.9.4');
+define('RAPIDPHP_VERSION', '3.9.5');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
