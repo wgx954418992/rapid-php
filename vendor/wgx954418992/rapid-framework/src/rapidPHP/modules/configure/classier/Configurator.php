@@ -194,6 +194,8 @@ class Configurator implements IConfigurator
             }
 
             foreach ($files as $filename) {
+                if (substr(basename($filename), 0, 1) == '.') continue;
+
                 $loader = $this->getLoader($filename);
 
                 if (!$loader) continue;

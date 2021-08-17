@@ -69,13 +69,15 @@ class Mapping
         if (!is_array($paths)) $paths = (array)$paths;
 
         if (!is_array($routes)) $routes = (array)$routes;
-        
+
         if (!is_array($actions)) $actions = (array)$actions;
 
         foreach ($paths as $path) {
             $read = File::getInstance()->readDirFiles($path);
 
             foreach ($read as $file) {
+                if (substr(basename($file), 0, 1) == '.') continue;
+
                 $className = ReflectionUtils::getInstance()->getClassFullNameByFile($file);
 
                 $classify = Classify::getInstance($className);

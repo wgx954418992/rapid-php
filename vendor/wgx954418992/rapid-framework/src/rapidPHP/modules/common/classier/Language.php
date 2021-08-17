@@ -30,6 +30,8 @@ class Language
         foreach ($readFile as $file) {
             $filename = basename($file, '.php');
 
+            if (substr($filename, 0, 1) == '.') continue;
+
             if (!isset(self::$map[$filename])) self::$map[$filename] = [];
 
             self::$map[$filename][] = $file;
