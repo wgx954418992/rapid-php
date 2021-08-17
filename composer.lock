@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e8f08b6e3d106a15b72c466c65a8201e",
+    "content-hash": "6e7d16f67b5367a2cdca10d8a2001e80",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -945,16 +945,16 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.9.3",
+            "version": "3.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "50b2614c5dd4881ef9c64cc7f74acbd48d035ce1"
+                "reference": "8da640e93f8675880af3c146b7f8157850e0534f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/50b2614c5dd4881ef9c64cc7f74acbd48d035ce1",
-                "reference": "50b2614c5dd4881ef9c64cc7f74acbd48d035ce1",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/8da640e93f8675880af3c146b7f8157850e0534f",
+                "reference": "8da640e93f8675880af3c146b7f8157850e0534f",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1018,9 +1018,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.9.3"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.9.4"
             },
-            "time": "2021-08-17T05:47:43+00:00"
+            "time": "2021-08-17T06:06:55+00:00"
         }
     ],
     "packages-dev": [
@@ -2946,7 +2946,10 @@
     },
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-zip": "*",
+        "ext-json": "*"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
 }

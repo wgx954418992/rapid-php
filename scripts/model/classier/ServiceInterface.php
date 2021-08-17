@@ -3,6 +3,7 @@
 namespace script\model\classier;
 
 use Generator;
+use rapidPHP\modules\configure\classier\IConfigurator;
 
 interface ServiceInterface
 {
@@ -10,11 +11,11 @@ interface ServiceInterface
 
     /**
      * 获取实例
-     * @param $appFiles
+     * @param IConfigurator $configurator
      * @param HandlerInterface $handler
-     * @return mixed
+     * @return Generator
      */
-    public static function getInstance($appFiles, HandlerInterface $handler);
+    public static function getInstance(IConfigurator $configurator, HandlerInterface $handler);
 
     /**
      * 获取types

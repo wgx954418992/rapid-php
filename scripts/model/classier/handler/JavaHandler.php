@@ -177,7 +177,8 @@ EOF;
 
             $conversionType = $this->getConversionType($column->getType());
 
-            $classString .= <<<EOF
+            $properties .= <<<EOF
+    
     
     /**
      * {$column->getComment()}
@@ -185,6 +186,10 @@ EOF;
      * @typed {$column->getType()}
      */
     private {$conversionType} {$column->getName()};
+EOF;
+            $classString .= <<<EOF
+    
+
     
     /**
      * 获取 {$column->getComment()}

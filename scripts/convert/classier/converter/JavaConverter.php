@@ -1,6 +1,6 @@
 <?php
 
-namespace script\model\classier\handler;
+namespace script\convert\classier\converter;
 
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Calendar;
@@ -9,31 +9,32 @@ use script\model\classier\Column;
 use script\model\classier\HandlerInterface;
 use script\model\classier\Table;
 
-class SwiftHandler extends HandlerInterface
+class JavaConverter extends HandlerInterface
+
 {
 
     /**
      * CONVERSION
      */
     const CONVERSION = [
-        'Int' => [
+        'Integer' => [
             'int',
-            'bigint',
             'integer',
             'numeric',
             'year',
             'time',
-        ],
-        'Int8' => [
-            'year',
-            'tinyint',
-        ],
-        'Int32' => [
             'mediumint',
             'smallint',
         ],
+        'Long' => [
+            'bigint',
+        ],
+        'char' => [
+            'char',
+            'year',
+            'tinyint',
+        ],
         'Bool' => [
-            'bit',
             'real',
         ],
         'Float' => [
@@ -42,14 +43,22 @@ class SwiftHandler extends HandlerInterface
         'Double' => [
             'double',
         ],
-        'Money' => [
+        'Byte' => [
+            'bit',
+            'blob',
+            'longblob',
+            'mediumblob',
+        ],
+        'BigDecimal' => [
             'decimal',
+        ],
+        'Object' => [
+            'json'
         ],
         'String' => [
             'binary',
             'varchar',
             'varbinary',
-            'char',
             'text',
             'textarea',
             'mediumtext',
@@ -63,13 +72,7 @@ class SwiftHandler extends HandlerInterface
             'date',
             'datetime',
             'enum',
-            'json'
         ],
-        'Any' => [
-            'blob',
-            'longblob',
-            'mediumblob',
-        ]
     ];
 
 
@@ -77,7 +80,6 @@ class SwiftHandler extends HandlerInterface
      * @var array
      */
     private $conversionMapping = [];
-
 
     /**
      * PHPHandler constructor.
@@ -118,7 +120,7 @@ class SwiftHandler extends HandlerInterface
      */
     public function getExt(): string
     {
-        return '.swift';
+        return '.java';
     }
 
     /**
@@ -132,29 +134,36 @@ class SwiftHandler extends HandlerInterface
     {
         $extends = Build::getInstance()->getData($options, 'extends');
 
-        if (!empty($extends)) $extends = ': ' . join(',', is_array($extends) ? $extends : (array)$extends);
+        $imports = '';
 
-        $imports = Build::getInstance()->getData($options, 'imports');
+        if (!empty($extends)) $imports = 'import ' . join(";\nimport ", is_array($extends) ? $extends : (array)$extends) . ';';
 
-        if (!empty($imports)) $imports = 'import ' . join("\nimport ", is_array($imports) ? $imports : (array)$imports);
+        if (!empty($extends)) $extends = 'extends ' . join(',', is_array($extends) ? $extends : (array)$extends);
 
         $uTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
+
+        if ($namespace) $namespace = "package {$namespace};";
 
         $className = "{$uTableName}Model";
 
         $date = Calendar::getInstance()->getDate();
 
         $classString = <<<EOF
+{$namespace}
+
 {$imports}
 
-/// 
-/// {$table->getComment()}
-/// table {$table->getName()}
-/// rapidPHP auto generate Model {$date}
-class {$className}{$extends} {
+/**
+ * {$table->getComment()}
+ * @table {$table->getName()}
+ * rapidPHP auto generate Model {$date}
+ */
+class {$className} {$extends} {
 
-    /// table name
-    public static let NAME = "{$table->getName()}"
+    /**
+    * table name
+    */
+    public static final String NAME = "{$table->getName()}"
     {properties}
 
 EOF;
@@ -164,17 +173,44 @@ EOF;
         /** @var Column $column */
         foreach ($columns as $column) {
 
+            $uColumnName = StrCharacter::getInstance()->toFirstUppercase($column->getName(), '_');
+
             $conversionType = $this->getConversionType($column->getType());
 
             $properties .= <<<EOF
-
-
-    ///
-    /// {$column->getComment()}
-    /// length {$column->getLength()}
-    /// typed {$column->getType()}
-    public var {$column->getName()}: {$conversionType} = {$conversionType}()
+    
+    
+    /**
+     * {$column->getComment()}
+     * @length {$column->getLength()}
+     * @typed {$column->getType()}
+     */
+    private {$conversionType} {$column->getName()};
 EOF;
+            $classString .= <<<EOF
+    
+
+    
+    /**
+     * 获取 {$column->getComment()}
+     * @return {$conversionType}
+     */
+    public {$conversionType} get{$uColumnName}()
+    {
+        return this.{$column->getName()};
+    }
+    
+    /**
+     * 设置 {$column->getComment()}
+     * @param {$conversionType} {$column->getName()}
+     */
+    public void set{$uColumnName}({$conversionType} {$column->getName()})
+    {
+        this.{$column->getName()} = {$column->getName()};
+    }
+
+EOF;
+
         }
 
         $classString .= <<<EOF

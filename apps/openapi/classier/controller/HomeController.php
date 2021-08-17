@@ -4,7 +4,6 @@ namespace apps\openapi\classier\controller;
 
 
 use apps\app\classier\context\UserContext as AppUserContext;
-use apps\file\classier\context\UserContext as FileUserContext;
 use apps\openapi\classier\config\ExportConfig;
 use apps\openapi\classier\openapi\Action;
 use apps\openapi\classier\openapi\OpenAPI;
@@ -39,12 +38,7 @@ class HomeController extends BaseController
                 'host' => Application::getInstance()->getConfig()->getValue('host.app'),
                 'api' => 'api/app.json',
                 'description' => 'app - api地址',
-            ],
-            'file' => [
-                'host' => Application::getInstance()->getConfig()->getValue('host.file'),
-                'api' => 'api/file.json',
-                'description' => 'file - 文件地址',
-            ],
+            ]
         ];
     }
 
@@ -135,8 +129,6 @@ class HomeController extends BaseController
         });
 
         $openAPI->setInterceptParameter(AppUserContext::class, [$this, 'tokenIntercept']);
-
-        $openAPI->setInterceptParameter(FileUserContext::class, [$this, 'tokenIntercept']);
 
         $openAPI->transformation($routes, $paths, $components);
 

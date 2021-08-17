@@ -5,13 +5,10 @@ namespace script\model\classier\service;
 
 use Exception;
 use Generator;
-use rapidPHP\Init;
-use rapidPHP\modules\common\classier\AB;
 use rapidPHP\modules\common\classier\Build;
-use rapidPHP\modules\common\classier\Variable;
+use rapidPHP\modules\configure\classier\IConfigurator;
 use rapidPHP\modules\database\sql\classier\SQLDB;
 use rapidPHP\modules\database\sql\config\ConnectConfig;
-use rapidPHP\modules\exception\classier\RuntimeException;
 use rapidPHP\modules\reflection\classier\Utils;
 use script\model\classier\Column;
 use script\model\classier\HandlerInterface;
@@ -58,21 +55,14 @@ class SQLDBService implements ServiceInterface
 
     /**
      * 获取实例
-     * @param $appFiles
+     * @param IConfigurator $configurator
      * @param HandlerInterface $handler
      * @return Generator
-     * @throws RuntimeException
      * @throws Exception
      */
-    public static function getInstance($appFiles, HandlerInterface $handler): Generator
+    public static function getInstance(IConfigurator $configurator, HandlerInterface $handler): Generator
     {
-        $init = new Init($appFiles);
-
-        $config = $init->getRawConfig();
-
-        Variable::parseVarByArray($config);
-
-        $database = AB::getInstance($config)->toAB('database')->toArray('sql');
+        $database = $configurator->getValue('database.sql');
 
         foreach ($database as $data) {
             if (empty($data)) continue;
@@ -106,14 +96,15 @@ class SQLDBService implements ServiceInterface
 
     /**
      * @param $type
-     * @return mixed|object|void|null
+     * @return array|null
      * @throws Exception
      */
-    public function getTables($type)
+    public function getTables($type): ?array
     {
         return $this->db->table()
             ->getTables($type, $this->database)
-            ->getStatement()->fetchAll(Table::class);
+            ->getStatement()
+            ->fetchAll(Table::class);
     }
 
     /**
@@ -140,7 +131,9 @@ class SQLDBService implements ServiceInterface
      */
     public function getTableCreateCommand($type, $tableName)
     {
-        $result = $this->db->table()->getTableCreateSql($type, $this->database, $tableName)
+        $result = $this->db
+            ->table()
+            ->getTableCreateSql($type, $this->database, $tableName)
             ->getStatement()
             ->fetch();
 

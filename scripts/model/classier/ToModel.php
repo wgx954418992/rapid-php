@@ -1,21 +1,17 @@
 <?php
 
-namespace script\model\classier\controller;
+namespace script\model\classier;
 
 use Exception;
+use Generator;
 use rapidPHP\modules\common\classier\StrCharacter;
-use rapidPHP\modules\configure\classier\Configurator;
-use rapidPHP\modules\configure\classier\IConfigurator;
-use rapidPHP\modules\core\classier\console\ConsoleController;
 use script\model\classier\handler\JavaHandler;
 use script\model\classier\handler\PHPHandler;
 use script\model\classier\handler\SwiftHandler;
-use script\model\classier\HandlerInterface;
 use script\model\classier\service\SQLDBService;
-use script\model\classier\ServiceInterface;
-use script\model\classier\Table;
 
-class ModelController extends ConsoleController
+
+class ToModel
 {
 
     /**
@@ -79,18 +75,18 @@ class ModelController extends ConsoleController
     /**
      * 获取服务接口
      * @param string $type
-     * @param IConfigurator $configurator
+     * @param $appFiles
      * @param HandlerInterface $handler
      * @return mixed
      * @throws Exception
      */
-    public function getService(string $type, IConfigurator $configurator, HandlerInterface $handler)
+    public function getService(string $type, $appFiles, HandlerInterface $handler)
     {
         if (!isset($this->services[$type])) throw new Exception('service type error');
 
         $service = $this->services[$type];
 
-        return call_user_func([$service, 'getInstance'], $configurator, $handler);
+        return call_user_func([$service, 'getInstance'], $appFiles, $handler);
     }
 
     /**
@@ -100,7 +96,7 @@ class ModelController extends ConsoleController
      * @param $data
      * @throws Exception
      */
-    public function writeFile($path, $fileName, $data)
+    public function write($path, $fileName, $data)
     {
         if (!is_dir($path)) if (!mkdir($path, 0777, true)) throw new Exception('mkdir error!');
 
@@ -117,7 +113,7 @@ class ModelController extends ConsoleController
 
     /**
      * run
-     * @param IConfigurator $configurator
+     * @param $appFiles
      * @param string $serviceType
      * @param string $handlerType
      * @param string $savePath
@@ -125,23 +121,27 @@ class ModelController extends ConsoleController
      * @param array|null $options
      * @throws Exception
      */
-    public function run(IConfigurator $configurator,
-                        string $serviceType = self::SERVER_SQL,
-                        string $handlerType = self::HANDLER_PHP,
-                        string $savePath = PATH_APP . 'model/',
-                        string $namespace = 'apps\\app\model',
-                        ?array $options = []
+    public static function run($appFiles,
+                               $serviceType = self::SERVER_SQL,
+                               $handlerType = self::HANDLER_PHP,
+                               $savePath = PATH_APP . 'model/',
+                               $namespace = 'apps\\app\model',
+                               ?array $options = []
     )
     {
+        if (empty($appFiles)) throw new Exception('app config files error!');
+
         if (empty($serviceType)) throw new Exception('service error!');
 
         if (empty($handlerType)) throw new Exception('handler error!');
 
         if (empty($savePath)) throw new Exception('savePath error!');
 
-        $handler = $this->getHandler($handlerType);
+        $that = new ToModel();
 
-        $services = $this->getService($serviceType, $configurator, $handler);
+        $handler = $that->getHandler($handlerType);
+
+        $services = $that->getService($serviceType, $appFiles, $handler);
 
         /** @var ServiceInterface $service */
         foreach ($services as $service) {
@@ -167,78 +167,16 @@ class ModelController extends ConsoleController
 
                     $uTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
 
-                    $this->writeFile($savePath, "{$uTableName}Model" . $handler->getExt(), $content);
+                    $that->write($savePath, "{$uTableName}Model" . $handler->getExt(), $content);
                 }
 
                 $randId = md5($service->getRandId());
 
-                $this->writeFile($savePath, ".{$randId}_$typeName.sql", join(";\n\n", $sql));
+                $that->write($savePath, ".{$randId}_$typeName.sql", join(";\n\n", $sql));
 
-                $this->psuccess("{$typeName}编译完成");
+                echo "{$typeName}编译完成\n";
             }
         }
     }
-
-
-    /**
-     * 转php model
-     * @route /php
-     */
-    public function php()
-    {
-        $this->run(
-            Configurator::getInstance(),
-            'sql',
-            'php',
-            PATH_ROOT . '/apps/core/classier/model/',
-            'apps\core\classier\model'
-        );
-
-        $this->psuccess("php model 转换完成");
-    }
-
-    /**
-     * 转swift model
-     * @route /swift
-     */
-    public function swift()
-    {
-        $this->run(
-            Configurator::getInstance(),
-            'sql',
-            'swift',
-            PATH_ROOT . '/models/swift/',
-            null,
-            [
-                'extends' => 'BaseModel',
-                'imports' => [
-                    'Foundation'
-                ]
-            ]
-        );
-
-        $this->psuccess("swift model 转换完成");
-    }
-
-    /**
-     * 转java model
-     * @route /java
-     */
-    public function java()
-    {
-        $this->run(
-            Configurator::getInstance(),
-            'sql',
-            'java',
-            PATH_ROOT . '/models/java/',
-            'models',
-            [
-                'extends' => 'BaseModel'
-            ]
-        );
-
-        $this->psuccess("java model 转换完成");
-    }
-
 
 }

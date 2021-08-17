@@ -68,6 +68,10 @@ class Mapping
 
         if (!is_array($paths)) $paths = (array)$paths;
 
+        if (!is_array($routes)) $routes = (array)$routes;
+        
+        if (!is_array($actions)) $actions = (array)$actions;
+
         foreach ($paths as $path) {
             $read = File::getInstance()->readDirFiles($path);
 
@@ -305,11 +309,11 @@ class Mapping
 
     /**
      * 保存
-     * @param null $routes
-     * @param null $actions
+     * @param array $routes
+     * @param array $actions
      * @throws Exception
      */
-    public function save($routes = null, $actions = null)
+    public function save(array $routes, array $actions)
     {
         if (!is_null($routes)) {
             $lastTime = filemtime(self::ROUTES_FILE_PATH);

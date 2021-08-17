@@ -55,7 +55,6 @@ class PHPHandler extends HandlerInterface
             'date',
             'datetime',
             'enum',
-            'json'
         ],
     ];
 
