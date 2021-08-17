@@ -159,9 +159,6 @@ class SQLTest extends TestCase
      */
     public function testSQLDBConnect()
     {
-        var_dump(\rapidPHP\modules\excel\classier\Excel::getInstance());
-
-
         $config = new \rapidPHP\modules\database\sql\config\ConnectConfig();
 
         $config->setUrl('mysql://127.0.0.1:3306/?database=test&characterCode=utf8mb4');

@@ -40,6 +40,12 @@ class Configurator implements IConfigurator
     protected $config = [];
 
     /**
+     * observers
+     * @var callable[]
+     */
+    protected $observers = [];
+
+    /**
      * config path
      * @var string[]
      */
@@ -56,6 +62,17 @@ class Configurator implements IConfigurator
         $this->config = ApplicationConfig::getDefaultConfig();
 
         Variable::parseVarByArray($this->config);
+    }
+
+    /**
+     * observer
+     * @param callable $callback
+     */
+    public function observer(callable $callback)
+    {
+        $this->observers[] = $callback;
+
+        return $this;
     }
 
     /**
@@ -106,7 +123,7 @@ class Configurator implements IConfigurator
      * @param $name
      * @return array|mixed|null
      */
-    public function getConfigValue($name)
+    public function getValue($name)
     {
         return AR()->value($this->config, $name);
     }
@@ -116,7 +133,7 @@ class Configurator implements IConfigurator
      * @param $object
      * @throws Exception
      */
-    public static function setProperties($object)
+    public function setProperties($object)
     {
         $classify = Classify::getInstance($object);
 
@@ -129,7 +146,7 @@ class Configurator implements IConfigurator
             $config = $comment->getConfigAnnotation();
 
             if ($config != null) {
-                $value = Configurator::getInstance()->getConfigValue($config->getName());
+                $value = $this->getValue($config->getName());
 
                 $property->setValue($value, $object);
             }
@@ -186,6 +203,10 @@ class Configurator implements IConfigurator
 
                 AR::getInstance()->merge($this->config, $config);
             }
+        }
+
+        foreach ($this->observers as $observer) {
+            if (is_callable($observer)) call_user_func($observer);
         }
 
         return $this;

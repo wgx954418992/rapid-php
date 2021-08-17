@@ -37,7 +37,7 @@ class File
 
             while (false !== ($file = readdir($handle))) {
 
-                if (substr($file, 0, 1) == '.') continue;
+                if ($file == '.' || $file == '..') continue;
 
                 $dirPath = $dir . '/' . $file;
 
@@ -76,7 +76,7 @@ class File
         $dh = opendir($path);
 
         while (($file = readdir($dh)) !== false) {
-            if (substr($file, 0, 1) == '.') continue;
+            if ($file == '.' || $file == '..') continue;
 
             $filePath = $path . DIRECTORY_SEPARATOR . $file;
 
@@ -106,9 +106,9 @@ class File
      * @param $filePath
      * @param $data
      * @param string $mode
-     * @return bool|int
+     * @return bool
      */
-    public function write($filePath, $data, string $mode = 'w+')
+    public function write($filePath, $data, string $mode = 'w+'): bool
     {
         if ($open = fopen($filePath, $mode)) {
 
@@ -151,6 +151,38 @@ class File
         if (!file_exists($filePath) || !is_file($filePath) || !is_readable($filePath)) return null;
 
         return file_get_contents($filePath, null, $context);
+    }
+
+    /**
+     * 删除目录
+     * @param $path
+     * @return bool
+     */
+    public function rmdir($path): bool
+    {
+        $path = rtrim($path, '/*');
+
+        if (!is_readable($path)) return false;
+
+        $dh = opendir($path);
+
+        while (($file = readdir($dh)) !== false) {
+            if ($file == '.' || $file == '..') continue;
+
+            $filePath = $path . DIRECTORY_SEPARATOR . $file;
+
+            if (is_dir($filePath)) {
+                if (!$this->rmdir($filePath)) return false;
+            } else if (is_file($filePath)) {
+                @unlink($filePath);
+            }
+        }
+
+        closedir($dh);
+
+        @rmdir($path);
+
+        return true;
     }
 
     /**

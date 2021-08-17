@@ -1,0 +1,17 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php?__ROUTE__=$1 [QSA,PT,L]
+
+    RewriteRule ^(.*runtime\/.*)$ error/protected?path=$1 [QSA,PT,L]
+    RewriteRule ^(.*\.(htaccess|conf|yaml|gitignore|sql|git|auth))$ error/protected?path=$1 [QSA,PT,L]
+
+    SetEnvIf Authorization ^(.*) HTTP_AUTHORIZATION=$1
+</IfModule>
+
+<Files *>
+    Options -Indexes
+</Files>

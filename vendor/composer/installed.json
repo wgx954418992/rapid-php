@@ -2976,17 +2976,17 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.9.1",
-            "version_normalized": "3.9.1.0",
+            "version": "3.9.3",
+            "version_normalized": "3.9.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "c5a63c0bc4fca0ce4afef2735e3e0859f4d6d011"
+                "reference": "50b2614c5dd4881ef9c64cc7f74acbd48d035ce1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/c5a63c0bc4fca0ce4afef2735e3e0859f4d6d011",
-                "reference": "c5a63c0bc4fca0ce4afef2735e3e0859f4d6d011",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/50b2614c5dd4881ef9c64cc7f74acbd48d035ce1",
+                "reference": "50b2614c5dd4881ef9c64cc7f74acbd48d035ce1",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -3014,7 +3014,7 @@
                 "ext-zip": "*",
                 "monolog/monolog": "^1.26",
                 "mustangostang/spyc": "0.6.3",
-                "php": ">=7.1.0",
+                "php": ">=7.2.0",
                 "voku/anti-xss": "4.1",
                 "wgx954418992/php-enum": "^1.1.1"
             },
@@ -3022,7 +3022,7 @@
                 "eaglewu/swoole-ide-helper": "dev-master",
                 "phpunit/phpunit": "7.0"
             },
-            "time": "2021-08-13T06:46:10+00:00",
+            "time": "2021-08-17T05:47:43+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3052,7 +3052,7 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.9.1"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.9.3"
             },
             "install-path": "../wgx954418992/rapid-framework"
         }

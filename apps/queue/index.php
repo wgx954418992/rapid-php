@@ -1,19 +1,26 @@
 <?php
 
-use rapidPHP\Init;
 use rapidPHP\modules\application\classier\apps\ConsoleApplication;
+use rapidPHP\modules\configure\classier\Configurator;
+
+define('EVN_NAME', empty(get_cfg_var('env.name')) ? get_cfg_var('env.name') : 'dev');
 
 define('PATH_APP', str_replace('\\', '/', __DIR__) . '/');
 
+define('PATH_PUBLIC', PATH_APP);
+
 require dirname(dirname(__DIR__)) . '/vendor/autoload.php' . '';
 
-$init = new Init([
-    PATH_ROOT . 'apps/core/application.yaml',
-    PATH_APP . 'application.yaml'
-]);
+require dirname(dirname(__DIR__)) . '/vendor/wgx954418992/rapid-framework/src/rapidPHP/init.php' . '';
 
-$init->parseConfig();
+$app = new ConsoleApplication(Configurator::getInstance());
 
-$app = new ConsoleApplication($init);
+$app->getConfig()
+    ->setPaths([
+        PATH_ROOT . 'apps/core/application.yaml',
+        PATH_ROOT . 'apps/core/config/' . EVN_NAME,
+        PATH_APP . 'application.yaml'
+    ])
+    ->load();
 
 $app->run();

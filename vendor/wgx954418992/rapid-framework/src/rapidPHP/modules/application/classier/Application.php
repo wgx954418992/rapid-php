@@ -56,11 +56,13 @@ abstract class Application
      */
     public function __construct(IConfigurator $config)
     {
-        self::$instances[static::class] = $this;
-
         $this->config = $config;
 
-        $this->configWrapper = Utils::getInstance()->toObject(ConfigWrapper::class, $config->getConfig());
+        $this->config->observer(function () {
+            $this->configWrapper = Utils::getInstance()->toObject(ConfigWrapper::class, $this->config->getConfig());
+        });
+
+        self::$instances[static::class] = $this;
     }
 
     /**

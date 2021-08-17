@@ -18,10 +18,10 @@ use rapidPHP\modules\core\classier\web\ViewTemplate;
 use rapidPHP\modules\reflection\classier\Classify;
 
 // 检测PHP环境
-if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
+if (version_compare(PHP_VERSION, '7.2.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.9.1');
+define('RAPIDPHP_VERSION', '3.9.3');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());

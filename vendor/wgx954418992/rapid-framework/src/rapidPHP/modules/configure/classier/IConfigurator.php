@@ -8,6 +8,13 @@ interface IConfigurator
 {
 
     /**
+     * observer
+     * @param callable $callback
+     * @return void
+     */
+    public function observer(callable $callback);
+
+    /**
      * set paths
      * @param array $paths
      */
@@ -36,14 +43,14 @@ interface IConfigurator
      * @param $name
      * @return array|mixed|null
      */
-    public function getConfigValue($name);
+    public function getValue($name);
 
     /**
      * set object properties
      * @param $object
      * @throws Exception
      */
-    public static function setProperties($object);
+    public function setProperties($object);
 
     /**
      * 载入配置文件
