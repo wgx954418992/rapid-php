@@ -1,0 +1,162 @@
+model:
+  php:
+    mapping:
+      int:
+        - int
+        - tinyint
+        - integer
+        - numeric
+        - year
+        - time
+        - year
+        - tinyint
+        - mediumint
+        - smallint
+      float:
+        - float
+        - double
+        - decimal
+      bool:
+        - bit
+        - real
+      string:
+        - binary
+        - varchar
+        - varbinary
+        - char
+        - text
+        - textarea
+        - mediumtext
+        - linestring
+        - multilinestring
+        - tinytext
+        - longtext
+        - multipolygon
+        - multipoint
+        - polygon
+        - date
+        - datetime
+        - enum
+      apps\core\classier\enum\user\Status:
+        - app_user.status
+    output: '${PATH_ROOT}/apps/core/classier/model/'
+    namespace: 'apps\core\classier\model'
+    imports:
+      - Exception
+      - rapidPHP\modules\core\classier\Model
+    extends:
+      - Model
+    is_getter: true
+    is_setter: true
+    is_valida: true
+  java:
+    mapping:
+      Integer:
+        - int
+        - integer
+        - numeric
+        - year
+        - time
+        - mediumint
+        - smallint
+      Long:
+        - bigint
+      char:
+        - char
+        - year
+        - tinyint
+      Bool:
+        - real
+      Float:
+        - float
+      Double:
+        - double
+      Byte:
+        - bit
+        - blob
+        - longblob
+        - mediumblob
+      BigDecimal:
+        - decimal
+      String:
+        - binary
+        - varchar
+        - varbinary
+        - text
+        - textarea
+        - mediumtext
+        - linestring
+        - multilinestring
+        - tinytext
+        - longtext
+        - multipolygon
+        - multipoint
+        - polygon
+        - date
+        - datetime
+        - enum
+        - json
+    output: '${PATH_ROOT}/models/java/'
+    package: 'com.app.model'
+    imports:
+      - java.io.Serializable
+      - lombok.Data
+    implements:
+      - Serializable
+    annotations:
+      class:
+        - Data
+    is_getter: false
+    is_setter: false
+  swift:
+    mapping:
+      Int:
+        - int
+        - bigint
+        - integer
+        - numeric
+        - year
+        - time
+      Int8:
+        - year
+        - tinyint
+      Int32:
+        - mediumint
+        - smallint
+      Bool:
+        - bit
+        - real
+      Float:
+        - float
+      Double:
+        - double
+      Money:
+        - decimal
+      String:
+        - binary
+        - varchar
+        - varbinary
+        - char
+        - text
+        - textarea
+        - mediumtext
+        - linestring
+        - multilinestring
+        - tinytext
+        - longtext
+        - multipolygon
+        - multipoint
+        - polygon
+        - date
+        - datetime
+        - enum
+        - json
+      Any:
+        - blob
+        - longblob
+        - mediumblob
+    output: '${PATH_ROOT}/models/swift/'
+    imports:
+      - Foundation
+    extends:
+      - BaseModel

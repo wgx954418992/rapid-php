@@ -113,6 +113,43 @@ class UnifiedOrderRequest extends BaseRequest
     private $openid;
 
     /**
+     * 该字段用于上报支付的场景信息,针对H5支付有以下三种场景,请根据对应场景上报,H5支付不建议在APP端使用，针对场景1，2请接入APP支付，不然可能会出现兼容性问题
+     * 1，IOS移动应用
+     * {"h5_info": //h5支付固定传"h5_info"
+     * {"type": "",  //场景类型
+     * "app_name": "",  //应用名
+     * "bundle_id": ""  //bundle_id
+     * }
+     * }
+     *
+     * 2，安卓移动应用
+     * {"h5_info": //h5支付固定传"h5_info"
+     * {"type": "",  //场景类型
+     * "app_name": "",  //应用名
+     * "package_name": ""  //包名
+     * }
+     * }
+     *
+     * 3，WAP网站应用
+     * {"h5_info": //h5支付固定传"h5_info"
+     * {"type": "",  //场景类型
+     * "wap_url": "",//WAP网站URL地址
+     * "wap_name": ""  //WAP 网站名
+     * }
+     * }
+     *
+     * 4，门店信息
+     * {"store_info" : {
+     * "id": "", //门店ID
+     * "name": "", //门店名称
+     * "area_code": "", //门店所在地行政区划码，详细见《最新县及县以上行政区划代码》
+     * "address": "" //门店地址 }}
+     * @var array|null
+     */
+    private $scene_info;
+
+
+    /**
      * @return string|null
      */
     public function getDeviceInfo(): ?string
@@ -351,4 +388,21 @@ class UnifiedOrderRequest extends BaseRequest
     {
         $this->openid = $openid;
     }
+
+    /**
+     * @return array|null
+     */
+    public function getSceneInfo(): ?array
+    {
+        return $this->scene_info;
+    }
+
+    /**
+     * @param array|null $scene_info
+     */
+    public function setSceneInfo(?array $scene_info): void
+    {
+        $this->scene_info = $scene_info;
+    }
+
 }

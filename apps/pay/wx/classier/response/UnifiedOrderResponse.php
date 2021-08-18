@@ -59,6 +59,14 @@ class UnifiedOrderResponse extends BaseResponse
      */
     private $code_url;
 
+    /**
+     * mweb_url为拉起微信支付收银台的中间页面，
+     * 可通过访问该url来拉起微信客户端，
+     * 完成支付,mweb_url的有效期为5分钟。
+     * @var string|null
+     */
+    private $mweb_url;
+
 
     /**
      * @return string|null
@@ -122,5 +130,21 @@ class UnifiedOrderResponse extends BaseResponse
     public function setCodeUrl(?string $code_url): void
     {
         $this->code_url = $code_url;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMwebUrl(): ?string
+    {
+        return $this->mweb_url;
+    }
+
+    /**
+     * @param string|null $mweb_url
+     */
+    public function setMwebUrl(?string $mweb_url): void
+    {
+        $this->mweb_url = $mweb_url;
     }
 }

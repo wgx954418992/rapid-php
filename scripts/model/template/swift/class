@@ -1,0 +1,14 @@
+${imports}
+
+///
+/// ${tableComment}
+/// table ${tableName}
+/// rapidPHP auto generate Model ${date}
+${classAnnotation}
+class ${className}${extends} {
+
+    /// table name
+    public static let NAME = "${tableName}"
+
+    ${properties}
+}

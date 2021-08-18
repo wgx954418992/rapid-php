@@ -25,12 +25,10 @@ class Language
     {
         if (!is_dir($path)) return;
 
-        $readFile = File::getInstance()->readDirFiles($path);
+        $readFile = File::getInstance()->readDirFiles($path, File::OPTIONS_SUBDIRECTORY);
 
         foreach ($readFile as $file) {
             $filename = basename($file, '.php');
-
-            if (substr($filename, 0, 1) == '.') continue;
 
             if (!isset(self::$map[$filename])) self::$map[$filename] = [];
 

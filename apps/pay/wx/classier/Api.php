@@ -3,7 +3,6 @@
 namespace pay\wx\classier;
 
 use Exception;
-use pay\wx\config\Config;
 use pay\wx\classier\request\BizPayUrlRequest;
 use pay\wx\classier\request\CloseOrderRequest;
 use pay\wx\classier\request\DownloadBillRequest;
@@ -22,15 +21,15 @@ use function rapidPHP\B;
 class Api
 {
     /**
-     * @var Config
+     * @var IConfig
      */
     private $config;
 
     /**
      * Utils constructor.
-     * @param Config $config
+     * @param IConfig $config
      */
-    public function __construct(Config $config)
+    public function __construct(IConfig $config)
     {
         $this->config = $config;
     }
@@ -63,10 +62,7 @@ class Api
 
         if (empty($request->getNotifyUrl())) $request->setNotifyUrl($this->config->getNotifyUrl());
 
-        /** @var UnifiedOrderResponse|null $response */
-        $response = Utils::getInstance()->sendHttpRequest($this->config, $request, UnifiedOrderResponse::class);
-
-        return $response;
+        return Utils::getInstance()->sendHttpRequest($this->config, $request, UnifiedOrderResponse::class);
     }
 
     /**
@@ -82,10 +78,7 @@ class Api
         if (empty($request->getOutTradeNo()) && empty($request->getTransactionId()))
             throw new Exception("订单查询接口中，out_trade_no、transaction_id至少填一个！");
 
-        /** @var BaseResponse|null $response */
-        $response = Utils::getInstance()->sendHttpRequest($this->config, $request);
-
-        return $response;
+        return Utils::getInstance()->sendHttpRequest($this->config, $request);
     }
 
     /**
@@ -99,10 +92,7 @@ class Api
     {
         if (empty($request->getOutTradeNo())) throw new Exception("订单查询接口中，out_trade_no必填！");
 
-        /** @var BaseResponse|null $response */
-        $response = Utils::getInstance()->sendHttpRequest($this->config, $request);
-
-        return $response;
+        return Utils::getInstance()->sendHttpRequest($this->config, $request);
     }
 
     /**
@@ -126,10 +116,7 @@ class Api
 
         if (empty($request->getOpUserId())) throw new Exception("退款申请接口中，缺少必填参数op_user_id！");
 
-        /** @var BaseResponse|null $response */
-        $response = Utils::getInstance()->sendHttpRequest($this->config, $request);
-
-        return $response;
+        return Utils::getInstance()->sendHttpRequest($this->config, $request);
     }
 
     /**
@@ -148,24 +135,20 @@ class Api
             throw new Exception("退款查询接口中，out_refund_no、out_trade_no、transaction_id、refund_id四个参数必填一个！");
         }
 
-        /** @var BaseResponse|null $response */
-        $response = Utils::getInstance()->sendHttpRequest($this->config, $request);
-
-        return $response;
+        return Utils::getInstance()->sendHttpRequest($this->config, $request);
     }
 
     /**
      * 下载对账单，WxPayDownloadBill中bill_date为必填参数
      * appid、mchid、spbill_create_ip、nonce_str不需要填入
      * @param DownloadBillRequest $request
-     * @return mixed|string
+     * @return BaseResponse|string
      * @throws Exception
      */
     public function downloadBill(DownloadBillRequest $request)
     {
         if (empty($request->getBillDate())) throw new Exception("对账单接口中，缺少必填参数bill_date！");
 
-        /** @var BaseResponse|null $response */
         $response = Utils::getInstance()->sendHttpRequest($this->config, $request, null);
 
         if (substr($response, 0, 5) == "<xml>") return "";
@@ -196,10 +179,7 @@ class Api
 
         if (empty($request->getSpbillCreateIp())) throw new Exception('sp bill create ip error!');
 
-        /** @var BaseResponse|null $response */
-        $response = Utils::getInstance()->sendHttpRequest($this->config, $request);
-
-        return $response;
+        return Utils::getInstance()->sendHttpRequest($this->config, $request);
     }
 
 
@@ -216,10 +196,7 @@ class Api
             throw new Exception("撤销订单API接口中，参数out_trade_no和transaction_id必须填写一个！");
         }
 
-        /** @var BaseResponse|null $response */
-        $response = Utils::getInstance()->sendHttpRequest($this->config, $request);
-
-        return $response;
+        return Utils::getInstance()->sendHttpRequest($this->config, $request);
     }
 
 
@@ -265,10 +242,7 @@ class Api
     {
         if (empty($request->getLongUrl())) throw new Exception("需要转换的URL，签名用原串，传输需URL encode！");
 
-        /** @var BaseResponse|null $response */
-        $response = Utils::getInstance()->sendHttpRequest($this->config, $request);
-
-        return $response;
+        return Utils::getInstance()->sendHttpRequest($this->config, $request);
     }
 
     /**
@@ -317,6 +291,44 @@ class Api
         $object['paySign'] = Utils::getInstance()->getSign($this->config, $object);
 
         return $object;
+    }
+
+    /**
+     * h5支付
+     * @param $sceneInfo
+     * @param $body
+     * @param $outTradeNo
+     * @param $totalFee
+     * @param $ip
+     * @return UnifiedOrderResponse|null
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function getH5MWEB($sceneInfo, $body, $outTradeNo, $totalFee, $ip): ?UnifiedOrderResponse
+    {
+        $request = new UnifiedOrderRequest();
+
+        $request->setBody($body);
+
+        $request->setOutTradeNo($outTradeNo);
+
+        $request->setTotalFee($totalFee);
+
+        $request->setTradeType('MWEB');
+
+        $request->setSpbillCreateIp($ip);
+
+        $request->setSceneInfo($sceneInfo);
+
+        $order = $this->unifiedOrder($request);
+
+        if (strtoupper($order->getResultCode()) != 'SUCCESS') {
+            $msg = B()->contrast($order->getErrCodeDes(), '创建微信支付失败!');
+
+            throw new Exception($msg);
+        }
+
+        return $order;
     }
 
 }

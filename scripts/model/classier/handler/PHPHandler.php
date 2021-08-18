@@ -2,98 +2,17 @@
 
 namespace script\model\classier\handler;
 
-use rapidPHP\modules\common\classier\Build;
-use rapidPHP\modules\common\classier\Calendar;
 use rapidPHP\modules\common\classier\StrCharacter;
+use rapidPHP\modules\common\classier\Variable;
 use script\model\classier\Column;
 use script\model\classier\HandlerInterface;
 use script\model\classier\Table;
+use function rapidPHP\AR;
+use function rapidPHP\B;
+use function rapidPHP\Cal;
 
 class PHPHandler extends HandlerInterface
 {
-
-    /**
-     * CONVERSION
-     */
-    const CONVERSION = [
-        'int' => [
-            'int',
-            'tinyint',
-            'integer',
-            'numeric',
-            'year',
-            'time',
-            'year',
-            'tinyint',
-            'mediumint',
-            'smallint',
-        ],
-        'float' => [
-            'float',
-            'double',
-            'decimal',
-        ],
-        'bool' => [
-            'bit',
-            'real',
-        ],
-        'string' => [
-            'binary',
-            'varchar',
-            'varbinary',
-            'char',
-            'text',
-            'textarea',
-            'mediumtext',
-            'linestring',
-            'multilinestring',
-            'tinytext',
-            'longtext',
-            'multipolygon',
-            'multipoint',
-            'polygon',
-            'date',
-            'datetime',
-            'enum',
-        ],
-    ];
-
-    /**
-     * @var array
-     */
-    private $conversionMapping = [];
-
-    /**
-     * PHPHandler constructor.
-     */
-    public function __construct()
-    {
-        $this->initConversionMapping();
-    }
-
-    /**
-     * 初始化映射
-     */
-    private function initConversionMapping()
-    {
-        foreach (self::CONVERSION as $type => $value) {
-            foreach ($value as $t) {
-                $this->conversionMapping[$t] = $type;
-            }
-        }
-    }
-
-    /**
-     * 把数据库字段类型转换成 php强类型
-     * @param $type
-     * @return mixed|string|null
-     */
-    private function getConversionType($type): ?string
-    {
-        if (!version_compare(PHP_VERSION, '7.0.0')) return null;
-
-        return Build::getInstance()->getData($this->conversionMapping, $type);
-    }
 
     /**
      * 获取后缀
@@ -105,115 +24,297 @@ class PHPHandler extends HandlerInterface
     }
 
     /**
+     * 格式化class name
+     * @param string $className
+     * @return string
+     */
+    private function formatClassName(string $className): string
+    {
+        return ltrim($className, '\\');
+    }
+
+    /**
+     * 获取映射
+     */
+    private function getConversionMapping(?array $options): array
+    {
+        $conversion = [];
+
+        $mapping = (array)B()->getData($options, 'mapping');
+
+        foreach ($mapping as $type => $value) {
+            foreach ($value as $t) {
+                $conversion[$t] = $type;
+            }
+        }
+
+        return $conversion;
+    }
+
+    /**
+     * 把数据库字段类型转换成 php强类型
+     * @param $mapping
+     * @param Table $table
+     * @param Column $column
+     * @return mixed|string|null
+     */
+    private function getConversionType($mapping, Table $table, Column $column): ?string
+    {
+        $customType = $table->getName() . '.' . $column->getName();
+
+        if (isset($mapping[$customType])) return $mapping[$customType];
+
+        if (version_compare(PHP_VERSION, '7.0.0', '<')) return '';
+
+        return B()->getData($mapping, $column->getType());
+    }
+
+    /**
+     * 获取 namespace
+     * @param array|null $options
+     * @return string
+     */
+    private function getNamespace(?array $options): string
+    {
+        $namespace = (string)B()->getData($options, 'namespace');
+
+        if (empty($namespace)) return '';
+
+        return "namespace {$namespace};";
+    }
+
+    /**
+     * 获取 imports
+     * @param array|null $options
+     * @return array
+     */
+    private function getImports(?array $options): array
+    {
+        $imports = (array)B()->getData($options, 'imports');
+
+        if (empty($imports)) return [];
+
+        $result = [];
+
+        foreach ($imports as $import) {
+            $import = '\\' . $this->formatClassName($import);
+
+            $shortName = preg_replace('/(.*)\\\(\w+)/i', '$2', $import);
+
+            $result[$shortName] = $import;
+        }
+
+        return $result;
+    }
+
+    /**
+     * 获取接口
+     * @param array|null $options
+     * @return string
+     */
+    private function getImplements(?array $options): string
+    {
+        $implements = (array)B()->getData($options, 'implements');
+
+        if (empty($implements)) return '';
+
+        return 'implements ' . join(',', $implements);
+    }
+
+    /**
+     * 获取继承
+     * @param array|null $options
+     * @return string
+     */
+    private function getExtends(?array $options): string
+    {
+        $extends = (array)B()->getData($options, 'extends');
+
+        if (empty($extends)) return '';
+
+        return 'extends ' . join(',', $extends);
+    }
+
+    /**
+     * 获取Class 注解
+     * @param array|null $options
+     * @return string
+     */
+    private function getClassAnnotation(?array $options): string
+    {
+        $annotations = (array)AR()->value((array)$options, 'annotations.class');
+
+        if (empty($annotations)) return '';
+
+        $result = '';
+
+        foreach ($annotations as $annotation) {
+            $result .= "#{$annotation};\n";
+        }
+
+        return $result;
+    }
+
+    /**
+     * 字段属性
+     * @param array|null $options
+     * @return string
+     */
+    private function getFieldProperty(?array $options): string
+    {
+        $property = (string)B()->getData($options, 'field.property');
+
+        if ($property) return $property;
+
+        return 'protected';
+    }
+
+    /**
+     * 是否生成getter
+     * @param array|null $options
+     * @return string
+     */
+    private function getIsMakeGetter(?array $options): string
+    {
+        return (bool)B()->getData($options, 'is_getter');
+    }
+
+    /**
+     * 是否生成setter
+     * @param array|null $options
+     * @return string
+     */
+    private function getIsMakeSetter(?array $options): string
+    {
+        return (bool)B()->getData($options, 'is_setter');
+    }
+
+    /**
+     * 是否生成 valida
+     * @param array|null $options
+     * @return string
+     */
+    private function getIsMakeValida(?array $options): string
+    {
+        return (bool)B()->getData($options, 'is_valida');
+    }
+
+    /**
+     * 格式化imports
+     * @param array $imports
+     * @return string
+     */
+    private function formatImports(array $imports): string
+    {
+        $result = '';
+
+        foreach ($imports as $import) {
+            $import = $this->formatClassName($import);
+
+            $result .= "use {$import};\n";
+        }
+
+        return $result;
+    }
+
+    /**
      * 收到字段
      * @param Table $table
      * @param $columns
-     * @param null $namespace
      * @param array|null $options
-     * @return string|string[]|void
+     * @return string
      */
-    public function onReceive(Table $table, $columns, $namespace = null, ?array $options = [])
+    public function onReceive(Table $table, $columns, ?array $options = []): string
     {
+        $CMapping = $this->getConversionMapping($options);
+
+        $namespace = $this->getNamespace($options);
+
+        $imports = $this->getImports($options);
+
+        $extends = $this->getExtends($options);
+
+        $implements = $this->getImplements($options);
+
+        $classAnnotation = $this->getClassAnnotation($options);
+
+        $fieldProperty = $this->getFieldProperty($options);
+
+        $isMakeGetter = $this->getIsMakeGetter($options);
+
+        $isMakeSetter = $this->getIsMakeSetter($options);
+
+        $isMakeValida = $this->getIsMakeValida($options);
+
         $uTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
 
-        $className = "{$uTableName}Model";
+        $classTemplate = file_get_contents(PATH_APP . 'template/php/class');
 
-        if ($namespace) $namespace = "namespace {$namespace};";
+        $propertyTemplate = file_get_contents(PATH_APP . 'template/php/property');
 
-        $date = Calendar::getInstance()->getDate();
+        if ($isMakeSetter) $propertyTemplate .= file_get_contents(PATH_APP . 'template/php/setter');
 
-        $classString = <<<EOF
-<?php
+        if ($isMakeGetter) $propertyTemplate .= file_get_contents(PATH_APP . 'template/php/getter');
 
-{$namespace}
-
-use Exception;
-use rapidPHP\modules\core\classier\Model;
-
-/**
- * {$table->getComment()}
- * @table {$table->getName()}
- * rapidPHP auto generate Model {$date}
- */
-class {$className} extends Model
-{
-    
-    /**
-     * table name
-     */
-    const NAME = '{$table->getName()}';
-    {properties}
-EOF;
+        if ($isMakeValida) $propertyTemplate .= file_get_contents(PATH_APP . 'template/php/valida');
 
         $properties = '';
 
         /** @var Column $column */
         foreach ($columns as $column) {
 
-            $uColumnName = StrCharacter::getInstance()->toFirstUppercase($column->getName(), '_');
+            $CType = $this->getConversionType($CMapping, $table, $column);
 
-            $conversionType = $this->getConversionType($column->getType());
+            $UName = StrCharacter::getInstance()->toFirstUppercase($column->getName(), '_');
 
-            $properties .= <<<EOF
-    
-    
-    /**
-     * {$column->getComment()}
-     * @length {$column->getLength()}
-     * @typed {$column->getType()}
-     */
-    private \${$column->getName()};
-EOF;
+            if ($CType && !Variable::isSetType($CType)
+                && $CType != Variable::MIXED
+                && !in_array($CType, $imports)) {
 
-            $classString .= <<<EOF
-    
-    /**
-     * 获取 {$column->getComment()}
-     * @return {getReturnType}
-     */
-    public function get{$uColumnName}(){returnType}
-    {
-        return \$this->{$column->getName()};
-    }
-    
-    /**
-     * 设置 {$column->getComment()}
-     * @param {paramSetType}\${$column->getName()}
-     */
-    public function set{$uColumnName}({setType}\${$column->getName()})
-    {
-        \$this->{$column->getName()} = \${$column->getName()};
-    }
-    
-    /**
-     * 效验 {$column->getComment()}
-     * @param string \$msg
-     * @throws Exception
-     */
-    public function valid{$uColumnName}(string \$msg = '{$column->getName()} Cannot be empty!')
-    {
-        if(empty(\$this->{$column->getName()})) throw new Exception(\$msg);
-    }
+                $CType = '\\' . $this->formatClassName($CType);
 
-EOF;
+                $CShortName = preg_replace('/(.*)\\\(\w+)/i', '$2', $CType);
 
-            $returnType = empty($conversionType) ? "" : ": ?{$conversionType}";
+                if (!$imports[$CShortName]) {
+                    $imports[$CShortName] = $CType;
 
-            $getReturnType = empty($conversionType) ? "mixed" : "{$conversionType}";
+                    $CType = $CShortName;
+                }
+            }
 
-            $setType = empty($conversionType) ? "" : "?{$conversionType} ";
+            $RType = empty($CType) ? '' : ": ?{$CType}";
 
-            $paramSetType = empty($conversionType) ? "" : "{$conversionType}|null ";
+            $SType = empty($CType) ? '' : "?{$CType} ";
 
-            $classString = str_replace(['{returnType}', '{getReturnType}', '{setType}', '{paramSetType}'],
-                [$returnType, $getReturnType, $setType, $paramSetType],
-                $classString);
+            $DRType = empty($CType) ? 'mixed' : "{$CType}";
+
+            $DSType = empty($CType) ? '' : "{$CType}|null ";
+
+            $properties .= $this->parseVariable($propertyTemplate, [
+                'comment' => $column->getComment(),
+                'length' => $column->getLength(),
+                'type' => $column->getType(),
+                'name' => $column->getName(),
+                'UName' => $UName,
+                'property' => $fieldProperty,
+                'RType' => $RType,
+                'SType' => $SType,
+                'DRType' => $DRType,
+                'DSType' => $DSType,
+            ]);
         }
 
-        $classString .= <<<EOF
-}
-EOF;
-
-        return str_replace(['{properties}'], $properties, $classString);
+        return $this->parseVariable($classTemplate, [
+            'date' => Cal()->getDate(),
+            'namespace' => $namespace,
+            'imports' => $this->formatImports($imports),
+            'tableComment' => $table->getComment(),
+            'tableName' => $table->getName(),
+            'classAnnotation' => $classAnnotation,
+            'className' => "{$uTableName}Model",
+            'extends' => $extends,
+            'implements' => $implements,
+            'properties' => $properties,
+        ]);
     }
 }

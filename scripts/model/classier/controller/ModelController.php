@@ -14,6 +14,7 @@ use script\model\classier\HandlerInterface;
 use script\model\classier\service\SQLDBService;
 use script\model\classier\ServiceInterface;
 use script\model\classier\Table;
+use function rapidPHP\B;
 
 class ModelController extends ConsoleController
 {
@@ -120,22 +121,20 @@ class ModelController extends ConsoleController
      * @param IConfigurator $configurator
      * @param string $serviceType
      * @param string $handlerType
-     * @param string $savePath
-     * @param string $namespace
      * @param array|null $options
      * @throws Exception
      */
     public function run(IConfigurator $configurator,
                         string $serviceType = self::SERVER_SQL,
                         string $handlerType = self::HANDLER_PHP,
-                        string $savePath = PATH_APP . 'model/',
-                        string $namespace = 'apps\\app\model',
                         ?array $options = []
     )
     {
         if (empty($serviceType)) throw new Exception('service error!');
 
         if (empty($handlerType)) throw new Exception('handler error!');
+
+        $savePath = (string)B()->getData($options, 'output');
 
         if (empty($savePath)) throw new Exception('savePath error!');
 
@@ -163,7 +162,7 @@ class ModelController extends ConsoleController
 
                     array_push($sql, $service->getTableCreateCommand($type, $table->getName()));
 
-                    $content = $service->getModelContent($table, $columns, $namespace, $options);
+                    $content = $service->getModelContent($table, $columns, $options);
 
                     $uTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
 
@@ -179,7 +178,6 @@ class ModelController extends ConsoleController
         }
     }
 
-
     /**
      * 转php model
      * @route /php
@@ -188,36 +186,12 @@ class ModelController extends ConsoleController
     {
         $this->run(
             Configurator::getInstance(),
-            'sql',
-            'php',
-            PATH_ROOT . '/apps/core/classier/model/',
-            'apps\core\classier\model'
+            self::SERVER_SQL,
+            self::HANDLER_PHP,
+            Configurator::getInstance()->getValue('model.php')
         );
 
         $this->psuccess("php model 转换完成");
-    }
-
-    /**
-     * 转swift model
-     * @route /swift
-     */
-    public function swift()
-    {
-        $this->run(
-            Configurator::getInstance(),
-            'sql',
-            'swift',
-            PATH_ROOT . '/models/swift/',
-            null,
-            [
-                'extends' => 'BaseModel',
-                'imports' => [
-                    'Foundation'
-                ]
-            ]
-        );
-
-        $this->psuccess("swift model 转换完成");
     }
 
     /**
@@ -228,17 +202,27 @@ class ModelController extends ConsoleController
     {
         $this->run(
             Configurator::getInstance(),
-            'sql',
-            'java',
-            PATH_ROOT . '/models/java/',
-            'models',
-            [
-                'extends' => 'BaseModel'
-            ]
+            self::SERVER_SQL,
+            self::HANDLER_JAVA,
+            Configurator::getInstance()->getValue('model.java')
         );
 
         $this->psuccess("java model 转换完成");
     }
 
+    /**
+     * 转swift model
+     * @route /swift
+     */
+    public function swift()
+    {
+        $this->run(
+            Configurator::getInstance(),
+            self::SERVER_SQL,
+            self::HANDLER_SWIFT,
+            Configurator::getInstance()->getValue('model.swift')
+        );
 
+        $this->psuccess("swift model 转换完成");
+    }
 }

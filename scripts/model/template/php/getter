@@ -1,0 +1,9 @@
+
+    /**
+     * 获取 ${comment}
+     * @return ${DRType}
+     */
+    public function get${UName}()${RType}
+    {
+        return $this->${name};
+    }

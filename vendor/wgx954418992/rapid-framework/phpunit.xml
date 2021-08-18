@@ -2,7 +2,7 @@
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
          beStrictAboutTestsThatDoNotTestAnything="false"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -14,12 +14,7 @@
 >
     <testsuites>
         <testsuite name="rapidPHP test suffix">
-            <directory suffix="Test.php">./tests</directory>
+            <directory suffix="Test.php">./apps/tests</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src/rapidPHP</directory>
-        </whitelist>
-    </filter>
 </phpunit>

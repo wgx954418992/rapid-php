@@ -1,0 +1,9 @@
+
+    /**
+     * 获取 ${comment}
+     * @return ${CType}
+     */
+    public ${CType} get${UName}()
+    {
+        return this.${name};
+    }

@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-php",
-  "version": "3.9.6",
+  "version": "3.9.7",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -18,7 +18,7 @@
     }
   ],
   "require": {
-    "wgx954418992/rapid-framework": "^3.9.6",
+    "wgx954418992/rapid-framework": "^3.9.7",
     "ext-zip": "*",
     "ext-json": "*"
   },
@@ -35,18 +35,18 @@
   },
   "scripts": {
     "generator-model-php": [
-      "php scripts/model/index.php php"
-    ],
-    "generator-model-swift": [
-      "php scripts/model/index.php swift"
+      "php scripts/model/index.php php --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml'"
     ],
     "generator-model-java": [
-      "php scripts/model/index.php java"
+      "php scripts/model/index.php java --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml'"
+    ],
+    "generator-model-swift": [
+      "php scripts/model/index.php swift --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml'"
     ],
     "php-conver-wrapper-to-swift": [
       "php scripts/convert/index.php wrapper/swift"
     ],
-    "php-conver-wrapper-to-bean": [
+    "php-conver-bean-to-swift": [
       "php scripts/convert/index.php bean/swift"
     ],
     "docker-run": [

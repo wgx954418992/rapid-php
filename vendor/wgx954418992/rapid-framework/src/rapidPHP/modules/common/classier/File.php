@@ -8,6 +8,26 @@ class File
 {
 
     /**
+     * OPTIONS
+     */
+    const OPTIONS_NONE = 1;
+
+    /**
+     * 包含子目录
+     */
+    const OPTIONS_SUBDIRECTORY = self::OPTIONS_NONE << 1;
+
+    /**
+     * 包含 目录
+     */
+    const OPTIONS_DIR = self::OPTIONS_NONE << 2;
+
+    /**
+     * 包含 隐藏目录、隐藏文件
+     */
+    const OPTIONS_HIDDEN = self::OPTIONS_NONE << 3;
+
+    /**
      * 采用单例模式
      */
     use Instances;
@@ -24,10 +44,10 @@ class File
     /**
      * 读取目录列表
      * @param $dir :目录
-     * @param bool $isSub 是否读取目录的目录
+     * @param int $options
      * @return array|Generator 返回生成器，请用foreach读取
      */
-    public function readDirList($dir, bool $isSub = true)
+    public function readDirList($dir, int $options = self::OPTIONS_SUBDIRECTORY | self::OPTIONS_HIDDEN)
     {
         if (!file_exists($dir)) return [];
 
@@ -39,14 +59,20 @@ class File
 
                 if ($file == '.' || $file == '..') continue;
 
+                if (($options & self::OPTIONS_HIDDEN) === 0 && substr(basename($file), 0, 1) == '.') {
+                    continue;
+                }
+
                 $dirPath = $dir . '/' . $file;
 
                 if (is_dir($dirPath)) {
                     yield $dirPath;
 
-                    if (!$isSub) continue;
+                    if (($options & self::OPTIONS_SUBDIRECTORY) === 0) {
+                        continue;
+                    }
 
-                    $sub = $this->readDirList($dirPath);
+                    $sub = $this->readDirList($dirPath, $options);
 
                     while ($sub->valid()) {
                         yield $sub->current();
@@ -63,11 +89,10 @@ class File
     /**
      * 利用生成器读取目录文件
      * @param $path :路径
-     * @param bool $isDir 是否包含目录
-     * @param bool $isSub 是否读取子目录
+     * @param int $options
      * @return Generator|void 返回生成器，请用foreach读取
      */
-    public function readDirFiles($path, bool $isDir = false, bool $isSub = true): Generator
+    public function readDirFiles($path, int $options = self::OPTIONS_SUBDIRECTORY | self::OPTIONS_HIDDEN): Generator
     {
         $path = rtrim($path, '/*');
 
@@ -78,12 +103,19 @@ class File
         while (($file = readdir($dh)) !== false) {
             if ($file == '.' || $file == '..') continue;
 
+            if (($options & self::OPTIONS_HIDDEN) === 0 && substr(basename($file), 0, 1) == '.') {
+                continue;
+            }
+
             $filePath = $path . DIRECTORY_SEPARATOR . $file;
 
             if (is_dir($filePath)) {
-                if (!$isSub) continue;
 
-                $sub = $this->readDirFiles($filePath, $isDir);
+                if (($options & self::OPTIONS_SUBDIRECTORY) === 0) {
+                    continue;
+                }
+
+                $sub = $this->readDirFiles($filePath, $options);
 
                 while ($sub->valid()) {
                     yield $sub->current();
@@ -91,7 +123,9 @@ class File
                     $sub->next();
                 }
 
-                if ($isDir) yield $file => $filePath;
+                if ($options & self::OPTIONS_DIR) {
+                    yield $file => $filePath;
+                }
             } else {
                 yield $file => $filePath;
             }

@@ -51,11 +51,10 @@ interface ServiceInterface
      * 获取model
      * @param Table $table
      * @param $columns
-     * @param string|null $namespace
      * @param array|null $options
-     * @return mixed
+     * @return string
      */
-    public function getModelContent(Table $table, $columns, string $namespace = null, ?array $options = []);
+    public function getModelContent(Table $table, $columns, ?array $options = []): string;
 
     /**
      * RandId

@@ -188,13 +188,12 @@ class Configurator implements IConfigurator
         foreach ($this->paths as $path) {
 
             if (is_dir($path)) {
-                $files = File::getInstance()->readDirFiles($path, false, false);
+                $files = File::getInstance()->readDirFiles($path, File::OPTIONS_NONE);
             } else {
                 $files = [$path];
             }
 
             foreach ($files as $filename) {
-                if (substr(basename($filename), 0, 1) == '.') continue;
 
                 $loader = $this->getLoader($filename);
 

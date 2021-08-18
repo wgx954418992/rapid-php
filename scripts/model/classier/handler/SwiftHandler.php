@@ -8,109 +8,12 @@ use rapidPHP\modules\common\classier\StrCharacter;
 use script\model\classier\Column;
 use script\model\classier\HandlerInterface;
 use script\model\classier\Table;
+use function rapidPHP\AR;
+use function rapidPHP\B;
+use function rapidPHP\Cal;
 
 class SwiftHandler extends HandlerInterface
 {
-
-    /**
-     * CONVERSION
-     */
-    const CONVERSION = [
-        'Int' => [
-            'int',
-            'bigint',
-            'integer',
-            'numeric',
-            'year',
-            'time',
-        ],
-        'Int8' => [
-            'year',
-            'tinyint',
-        ],
-        'Int32' => [
-            'mediumint',
-            'smallint',
-        ],
-        'Bool' => [
-            'bit',
-            'real',
-        ],
-        'Float' => [
-            'float',
-        ],
-        'Double' => [
-            'double',
-        ],
-        'Money' => [
-            'decimal',
-        ],
-        'String' => [
-            'binary',
-            'varchar',
-            'varbinary',
-            'char',
-            'text',
-            'textarea',
-            'mediumtext',
-            'linestring',
-            'multilinestring',
-            'tinytext',
-            'longtext',
-            'multipolygon',
-            'multipoint',
-            'polygon',
-            'date',
-            'datetime',
-            'enum',
-            'json'
-        ],
-        'Any' => [
-            'blob',
-            'longblob',
-            'mediumblob',
-        ]
-    ];
-
-
-    /**
-     * @var array
-     */
-    private $conversionMapping = [];
-
-
-    /**
-     * PHPHandler constructor.
-     */
-    public function __construct()
-    {
-        $this->initConversionMapping();
-    }
-
-    /**
-     * 初始化映射
-     */
-    private function initConversionMapping()
-    {
-        foreach (self::CONVERSION as $type => $value) {
-            foreach ($value as $t) {
-                $this->conversionMapping[$t] = $type;
-            }
-        }
-    }
-
-    /**
-     * 把数据库字段类型转换成 php强类型
-     * @param $type
-     * @return mixed|string|null
-     */
-    private function getConversionType($type): ?string
-    {
-        if (isset($this->conversionMapping[$type])) return $this->conversionMapping[$type];
-
-        return 'String';
-    }
-
 
     /**
      * 获取后缀
@@ -122,66 +25,162 @@ class SwiftHandler extends HandlerInterface
     }
 
     /**
+     * 获取映射
+     */
+    private function getConversionMapping(?array $options): array
+    {
+        $conversion = [];
+
+        $mapping = (array)B()->getData($options, 'mapping');
+
+        foreach ($mapping as $type => $value) {
+            foreach ($value as $t) {
+                $conversion[$t] = $type;
+            }
+        }
+
+        return $conversion;
+    }
+
+    /**
+     * 把数据库字段类型转换成 swift类型
+     * @param $mapping
+     * @param Table $table
+     * @param Column $column
+     * @return mixed|string|null
+     */
+    private function getConversionType($mapping, Table $table, Column $column): ?string
+    {
+        $customType = $table->getName() . '.' . $column->getName();
+
+        if (isset($mapping[$customType])) return $mapping[$customType];
+
+        if (isset($mapping[$column->getType()])) return $mapping[$column->getType()];
+
+        return 'String';
+    }
+
+    /**
+     * 获取 import
+     * @param array|null $options
+     * @return string
+     */
+    private function getImports(?array $options): string
+    {
+        $imports = (array)Build::getInstance()->getData($options, 'imports');
+
+        if (empty($imports)) return '';
+
+        $result = '';
+
+        foreach ($imports as $import) {
+            $result .= "import {$import}\n";
+        }
+
+        return $result;
+    }
+
+    /**
+     * 获取继承
+     * @param array|null $options
+     * @return string
+     */
+    private function getExtends(?array $options): string
+    {
+        $extends = (array)Build::getInstance()->getData($options, 'extends');
+
+        if (empty($extends)) return '';
+
+        return ': ' . join(',', $extends);
+    }
+
+    /**
+     * 获取Class 注解
+     * @param array|null $options
+     * @return string
+     */
+    private function getClassAnnotation(?array $options): string
+    {
+        $annotations = (array)AR()->value((array)$options, 'annotations.class');
+
+        if (empty($annotations)) return '';
+
+        $result = '';
+
+        foreach ($annotations as $annotation) {
+            $result .= "@{$annotation}\n";
+        }
+
+        return $result;
+    }
+
+    /**
+     * 字段属性
+     * @param array|null $options
+     * @return string
+     */
+    private function getFieldProperty(?array $options): string
+    {
+        $property = (string)Build::getInstance()->getData($options, 'field.property');
+
+        if ($property) return $property;
+
+        return 'public var';
+    }
+
+    /**
      * @param Table $table
      * @param $columns
-     * @param null $namespace
      * @param array|null $options
-     * @return mixed|void
+     * @return array|string|string[]
      */
-    public function onReceive(Table $table, $columns, $namespace = null, ?array $options = [])
+    public function onReceive(Table $table, $columns, ?array $options = []): string
     {
-        $extends = Build::getInstance()->getData($options, 'extends');
+        $CMapping = $this->getConversionMapping($options);
 
-        if (!empty($extends)) $extends = ': ' . join(',', is_array($extends) ? $extends : (array)$extends);
+        $imports = $this->getImports($options);
 
-        $imports = Build::getInstance()->getData($options, 'imports');
+        $extends = $this->getExtends($options);
 
-        if (!empty($imports)) $imports = 'import ' . join("\nimport ", is_array($imports) ? $imports : (array)$imports);
+        $classAnnotation = $this->getClassAnnotation($options);
+
+        $fieldProperty = $this->getFieldProperty($options);
 
         $uTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
 
-        $className = "{$uTableName}Model";
+        $classTemplate = file_get_contents(PATH_APP . 'template/swift/class');
 
-        $date = Calendar::getInstance()->getDate();
-
-        $classString = <<<EOF
-{$imports}
-
-/// 
-/// {$table->getComment()}
-/// table {$table->getName()}
-/// rapidPHP auto generate Model {$date}
-class {$className}{$extends} {
-
-    /// table name
-    public static let NAME = "{$table->getName()}"
-    {properties}
-
-EOF;
+        $propertyTemplate = file_get_contents(PATH_APP . 'template/swift/property');
 
         $properties = '';
 
         /** @var Column $column */
         foreach ($columns as $column) {
 
-            $conversionType = $this->getConversionType($column->getType());
+            $UName = StrCharacter::getInstance()->toFirstUppercase($column->getName(), '_');
 
-            $properties .= <<<EOF
+            $CType = $this->getConversionType($CMapping, $table, $column);
 
-
-    ///
-    /// {$column->getComment()}
-    /// length {$column->getLength()}
-    /// typed {$column->getType()}
-    public var {$column->getName()}: {$conversionType} = {$conversionType}()
-EOF;
+            $properties .= $this->parseVariable($propertyTemplate, [
+                'comment' => $column->getComment(),
+                'length' => $column->getLength(),
+                'type' => $column->getType(),
+                'name' => $column->getName(),
+                'UName' => $UName,
+                'property' => $fieldProperty,
+                'CType' => $CType
+            ]);
         }
 
-        $classString .= <<<EOF
-
-}
-EOF;
-
-        return str_replace(['{properties}'], $properties, $classString);
+        return $this->parseVariable($classTemplate, [
+            'date' => Cal()->getDate(),
+            'imports' => $imports,
+            'tableComment' => $table->getComment(),
+            'tableName' => $table->getName(),
+            'classAnnotation' => $classAnnotation,
+            'className' => "{$uTableName}Model",
+            'extends' => $extends,
+            'properties' => $properties,
+        ]);
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17a17d4075c04838eb6d55644bae7de3",
+    "content-hash": "ca17478990630b053e9488f4ee115de3",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -945,16 +945,16 @@
         },
         {
             "name": "wgx954418992/rapid-framework",
-            "version": "3.9.6",
+            "version": "3.9.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wgx954418992/rapid-framework.git",
-                "reference": "e263299f484064c226e8558506836e1c53e4d975"
+                "reference": "14bc2e730c75a3dde639ae348245bf4486646b3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/e263299f484064c226e8558506836e1c53e4d975",
-                "reference": "e263299f484064c226e8558506836e1c53e4d975",
+                "url": "https://api.github.com/repos/wgx954418992/rapid-framework/zipball/14bc2e730c75a3dde639ae348245bf4486646b3d",
+                "reference": "14bc2e730c75a3dde639ae348245bf4486646b3d",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1018,9 +1018,9 @@
             ],
             "support": {
                 "issues": "https://github.com/wgx954418992/rapid-framework/issues",
-                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.9.6"
+                "source": "https://github.com/wgx954418992/rapid-framework/tree/3.9.7"
             },
-            "time": "2021-08-17T15:00:48+00:00"
+            "time": "2021-08-18T06:29:31+00:00"
         }
     ],
     "packages-dev": [
@@ -2951,5 +2951,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }

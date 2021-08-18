@@ -3,10 +3,8 @@
 namespace pay\wx\classier;
 
 use Exception;
-use pay\wx\config\Config;
 use pay\wx\classier\request\BaseRequest;
 use pay\wx\classier\response\BaseResponse;
-use pay\wx\classier\response\UnifiedOrderResponse;
 use rapidPHP\modules\common\classier\Http;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Uri;
@@ -34,12 +32,12 @@ class Utils
 
     /**
      * 获取签名
-     * @param Config $config
-     * @param $data
+     * @param IConfig $config
+     * @param array $data
      * @return string
      * @throws Exception
      */
-    public function getSign(Config $config, array $data): string
+    public function getSign(IConfig $config, array $data): string
     {
         unset($data['sign']);
 
@@ -87,14 +85,15 @@ class Utils
 
     /**
      * 发送http请求
-     * @param Config $config
+     * @template T
+     * @param IConfig $config
      * @param BaseRequest $request
-     * @param string $responseClass
-     * @return BaseResponse|UnifiedOrderResponse|array|null|string
+     * @param string|T $responseClass
+     * @return BaseResponse|T|string
      * @throws ReflectionException
      * @throws Exception
      */
-    public function sendHttpRequest(Config $config, BaseRequest $request, $responseClass = BaseResponse::class)
+    public function sendHttpRequest(IConfig $config, BaseRequest $request, $responseClass = BaseResponse::class)
     {
         if (empty($request->getAppid())) $request->setAppId($config->getAppId());
 
@@ -133,7 +132,7 @@ class Utils
 
         if (empty($responseClass)) return $responseXml;
 
-        /** @var BaseResponse $response */
+        /** @var BaseResponse|T $response */
         $response = Classify::getInstance($responseClass)->newInstance();
 
         $response->loadData($this->parseResponseByXML($responseXml));

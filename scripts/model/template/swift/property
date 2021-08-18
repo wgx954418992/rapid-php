@@ -1,0 +1,6 @@
+
+    ///
+    /// ${comment}
+    /// length ${length}
+    /// typed ${type}
+    ${property} ${name}: ${CType} = ${CType}()

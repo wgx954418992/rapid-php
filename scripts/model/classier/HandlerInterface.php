@@ -3,10 +3,12 @@
 namespace script\model\classier;
 
 
+use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Instances;
 
 abstract class HandlerInterface
 {
+
     /**
      * 单例模式
      */
@@ -31,10 +33,30 @@ abstract class HandlerInterface
      * onReceive
      * @param Table $table
      * @param $columns
-     * @param null $namespace
      * @param array|null $options
-     * @return mixed
+     * @return string
      */
-    abstract public function onReceive(Table $table, $columns, $namespace = null, ?array $options = []);
+    abstract public function onReceive(Table $table, $columns, ?array $options = []): string;
 
+    /**
+     * 解析变量
+     * @param string $content
+     * @param array $defined
+     * @return array|mixed|string|string[]|void
+     */
+    protected function parseVariable(string $content, array $defined): string
+    {
+        $vars = Build::getInstance()->getRegularAll('/\${(.*?)}/i', $content);
+
+        if (empty($vars)) return $content;
+
+        foreach ($vars as $var) {
+
+            $value = $defined[$var] ?? '';
+
+            $content = str_replace("\${{$var}}", $value, $content);
+        }
+
+        return $content;
+    }
 }

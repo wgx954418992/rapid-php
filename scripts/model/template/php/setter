@@ -1,0 +1,9 @@
+
+    /**
+     * 设置 ${comment}
+     * @param ${DSType}$${name}
+     */
+    public function set${UName}(${SType}$${name})
+    {
+        $this->${name} = $${name};
+    }
