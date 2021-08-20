@@ -39,9 +39,9 @@ model:
             - date
             - datetime
             - enum
-      custom:
-        app_user.status: >
-          apps\core\classier\enum\user\Status
+        custom:
+          app_user.status: >
+            apps\core\classier\enum\user\Status
       output: '${PATH_ROOT}/apps/core/classier/model/#{UTableName}Model.php'
       namespace: 'apps\core\classier\model'
       imports:
