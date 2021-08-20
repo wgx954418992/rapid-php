@@ -1,7 +1,7 @@
 
     /**
-     * ${comment}
-     * @length ${length}
-     * @typed ${type}
+     * #{comment}
+     * @length #{length}
+     * @typed #{type}
      */
-    ${property} ${CType} ${name};
+    #{modifiers} #{CType} #{name};

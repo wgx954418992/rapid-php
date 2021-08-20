@@ -6,7 +6,7 @@ projectPath=$(dirname $(dirname $currentPath))
 
 projectName=$(basename $projectPath)
 
-configs=$(ls "$projectPath"/apps/**/nginx.conf)
+configs=$(find "$projectPath" -iname 'nginx.conf')
 
 volumes="--volume=$projectPath:/var/www/$projectName:rw "
 

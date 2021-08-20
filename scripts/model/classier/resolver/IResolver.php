@@ -1,21 +1,25 @@
 <?php
 
-namespace script\model\classier;
+namespace script\model\classier\resolver;
 
 use Generator;
 use rapidPHP\modules\configure\classier\IConfigurator;
+use script\model\classier\config\IHandlerConfig;
+use script\model\classier\handler\IHandler;
+use script\model\classier\model\ColumnModel;
+use script\model\classier\model\TableModel;
 
-interface ServiceInterface
+interface IResolver
 {
 
 
     /**
      * 获取实例
      * @param IConfigurator $configurator
-     * @param HandlerInterface $handler
+     * @param IHandler $handler
      * @return Generator
      */
-    public static function getInstance(IConfigurator $configurator, HandlerInterface $handler);
+    public static function getInstance(IConfigurator $configurator, IHandler $handler);
 
     /**
      * 获取types
@@ -27,15 +31,15 @@ interface ServiceInterface
     /**
      * getTables
      * @param $type
-     * @return mixed|object|void|null
+     * @return TableModel[]
      */
-    public function getTables($type);
+    public function getTables($type): array;
 
     /**
      * getTableColumn
      * @param $type
      * @param $tableName
-     * @return array
+     * @return ColumnModel[]
      */
     public function getTableColumn($type, $tableName): array;
 
@@ -43,18 +47,18 @@ interface ServiceInterface
      * getTableCreateCommand
      * @param $type
      * @param $tableName
-     * @return mixed
+     * @return string
      */
-    public function getTableCreateCommand($type, $tableName);
+    public function getTableCreateCommand($type, $tableName): string;
 
     /**
      * 获取model
-     * @param Table $table
+     * @param IHandlerConfig $config
+     * @param TableModel $table
      * @param $columns
-     * @param array|null $options
      * @return string
      */
-    public function getModelContent(Table $table, $columns, ?array $options = []): string;
+    public function getModelContent(IHandlerConfig $config, TableModel $table, $columns): string;
 
     /**
      * RandId

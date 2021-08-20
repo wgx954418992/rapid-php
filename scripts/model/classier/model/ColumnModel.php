@@ -1,28 +1,34 @@
 <?php
 
-namespace script\model\classier;
+namespace script\model\classier\model;
 
-class Column
+class ColumnModel
 {
     /**
      * @var string|null
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string|null
      */
-    private $comment;
+    protected $comment;
 
     /**
      * @var string|null
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string|null
      */
-    private $length;
+    protected $length;
+
+    /**
+     * 是否可以为null
+     * @var bool
+     */
+    protected $is_nullable;
 
     /**
      * @return string|null
@@ -86,5 +92,21 @@ class Column
     public function setLength(?string $length): void
     {
         $this->length = $length;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIsNullable(): bool
+    {
+        return $this->is_nullable;
+    }
+
+    /**
+     * @param bool $is_nullable
+     */
+    public function setIsNullable(bool $is_nullable = true): void
+    {
+        $this->is_nullable = $is_nullable;
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
 
-namespace script\model\classier;
+namespace script\model\classier\model;
 
-class Table
+class TableModel
 {
 
     /**

@@ -7,7 +7,7 @@ use rapidPHP\modules\core\classier\console\ConsoleController;
 
 /**
  * Class ErrorController
- * @package script\model\classier\controller
+ * @package script\convert\classier\controller
  */
 class ErrorController extends ConsoleController
 {
@@ -24,7 +24,7 @@ class ErrorController extends ConsoleController
 
         $this->perror("输入的命令错误");
 
-        $this->psuccess("- php index.php php \n- php index.php swfit \n- php index.php java");
+        $this->psuccess("- php index.php swfit --config='a.yaml \${PATH_PATH}b.yaml' --key=model.swift.app \n- php index.php java --config='a.yaml \${PATH_PATH}b.yaml' --key=model.java.app");
     }
 
     /**

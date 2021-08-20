@@ -1,19 +1,19 @@
-${package}
+#{package}
 
-${imports}
+#{imports}
 
 /**
- * ${tableComment}
- * @table ${tableName}
- * rapidPHP auto generate Model ${date}
+ * #{tableComment}
+ * @table #{tableName}
+ * rapidPHP auto generate Model #{date}
  */
-${classAnnotation}
-class ${className} ${extends} ${implements} {
+#{classAnnotation}
+class #{className} #{extends} #{implements} {
 
     /**
     * table name
     */
-    public static final String NAME = "${tableName}";
+    public static final String NAME = "#{tableName}";
 
-    ${properties}
+    #{properties}
 }

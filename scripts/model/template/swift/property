@@ -1,6 +1,6 @@
 
     ///
-    /// ${comment}
-    /// length ${length}
-    /// typed ${type}
-    ${property} ${name}: ${CType} = ${CType}()
+    /// #{comment}
+    /// length #{length}
+    /// typed #{type}
+    #{modifiers} #{name}: #{CType} = #{value}

@@ -1,10 +1,10 @@
 
     /**
-     * 效验 ${comment}
+     * 效验 #{comment}
      * @param string $msg
      * @throws Exception
      */
-    public function valid${UName}(string $msg = '${name} Cannot be empty!')
+    public function valid#{UName}(string $msg = '#{name} Cannot be empty!')
     {
-        if (empty($this->${name})) throw new Exception($msg);
+        if (empty($this->#{name})) throw new Exception($msg);
     }

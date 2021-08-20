@@ -1,7 +1,8 @@
 
     /**
-     * ${comment}
-     * @length ${length}
-     * @typed ${type}
+     * #{comment}
+     * @var #{DSType}
+     * @length #{length}
+     * @typed #{type}
      */
-    ${property} $${name};
+    #{modifiers} $#{name};

@@ -1,7 +1,10 @@
 <?php
 
 use rapidPHP\modules\application\classier\apps\ConsoleApplication;
+use rapidPHP\modules\common\classier\Variable;
 use rapidPHP\modules\configure\classier\Configurator;
+use rapidPHP\modules\console\classier\Args;
+use script\convert\classier\controller\ConvertController;
 
 define('PATH_APP', str_replace('\\', '/', __DIR__) . '/');
 
@@ -12,10 +15,16 @@ require dirname(dirname(__DIR__)) . '/vendor/wgx954418992/rapid-framework/src/ra
 
 $app = new ConsoleApplication(Configurator::getInstance());
 
+$configFilepath = Args::getInstance()->getOptionValue('conf');
+
+if (!empty($configFilepath)) {
+    Variable::parseVarByString($configFilepath);
+
+    $app->getConfig()
+        ->setPaths(explode(' ', $configFilepath));
+}
+
 $app->getConfig()
-    ->setPaths([
-        PATH_ROOT . 'apps/core/application.yaml'
-    ])
     ->load();
 
 $app->run();

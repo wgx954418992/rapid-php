@@ -1,6 +1,6 @@
 <?php
 
-namespace script\model\classier\service;
+namespace script\model\classier\resolver;
 
 
 use Exception;
@@ -10,39 +10,40 @@ use rapidPHP\modules\configure\classier\IConfigurator;
 use rapidPHP\modules\database\sql\classier\SQLDB;
 use rapidPHP\modules\database\sql\config\ConnectConfig;
 use rapidPHP\modules\reflection\classier\Utils;
-use script\model\classier\Column;
-use script\model\classier\HandlerInterface;
-use script\model\classier\ServiceInterface;
-use script\model\classier\Table;
+use script\model\classier\config\IHandlerConfig;
+use script\model\classier\handler\IHandler;
+use script\model\classier\model\ColumnModel;
+use script\model\classier\model\TableModel;
 
-class SQLDBService implements ServiceInterface
+class SQLDBResolver implements IResolver
 {
+
     /**
      * @var SQLDB
      */
-    private $db;
+    protected $db;
 
     /**
      * @var string|null
      */
-    private $database;
+    protected $database;
 
     /**
      * @var ConnectConfig
      */
-    private $config;
+    protected $config;
 
     /**
-     * @var HandlerInterface
+     * @var IHandler
      */
-    private $handler;
+    protected $handler;
 
     /**
      * ServiceInterface constructor.
      * @param SQLDB $db
-     * @param HandlerInterface $handler
+     * @param IHandler $handler
      */
-    public function __construct(SQLDB $db, HandlerInterface $handler)
+    public function __construct(SQLDB $db, IHandler $handler)
     {
         $this->db = $db;
 
@@ -56,11 +57,11 @@ class SQLDBService implements ServiceInterface
     /**
      * 获取实例
      * @param IConfigurator $configurator
-     * @param HandlerInterface $handler
+     * @param IHandler $handler
      * @return Generator
      * @throws Exception
      */
-    public static function getInstance(IConfigurator $configurator, HandlerInterface $handler): Generator
+    public static function getInstance(IConfigurator $configurator, IHandler $handler): Generator
     {
         $database = $configurator->getValue('database.sql');
 
@@ -75,7 +76,7 @@ class SQLDBService implements ServiceInterface
 
                 $db->connect($config);
 
-                yield new SQLDBService($db, $handler);
+                yield new SQLDBResolver($db, $handler);
             }
         }
     }
@@ -96,15 +97,15 @@ class SQLDBService implements ServiceInterface
 
     /**
      * @param $type
-     * @return array|null
+     * @return TableModel[]
      * @throws Exception
      */
-    public function getTables($type): ?array
+    public function getTables($type): array
     {
-        return $this->db->table()
+        return (array)$this->db->table()
             ->getTables($type, $this->database)
             ->getStatement()
-            ->fetchAll(Table::class);
+            ->fetchAll(TableModel::class);
     }
 
     /**
@@ -119,17 +120,17 @@ class SQLDBService implements ServiceInterface
         return $this->db->table()
             ->getTableStructure($type, $this->database, $tableName)
             ->getStatement()
-            ->fetchAll(Column::class);
+            ->fetchAll(ColumnModel::class);
     }
 
     /**
      * getTableCreateCommand
      * @param $type
      * @param $tableName
-     * @return mixed|null
+     * @return string
      * @throws Exception
      */
-    public function getTableCreateCommand($type, $tableName)
+    public function getTableCreateCommand($type, $tableName): string
     {
         $result = $this->db
             ->table()
@@ -143,20 +144,19 @@ class SQLDBService implements ServiceInterface
             }
         }
 
-        return null;
+        return '';
     }
 
     /**
-     *
      * 获取model内容
-     * @param Table $table
+     * @param IHandlerConfig $config
+     * @param TableModel $table
      * @param $columns
-     * @param array|null $options
      * @return string
      */
-    public function getModelContent(Table $table, $columns, ?array $options = []): string
+    public function getModelContent(IHandlerConfig $config, TableModel $table, $columns): string
     {
-        return $this->handler->onReceive($table, $columns, $options);
+        return $this->handler->onHandler($config, $table, $columns);
     }
 
     /**

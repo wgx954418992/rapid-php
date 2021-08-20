@@ -1,162 +1,347 @@
 model:
   php:
-    mapping:
-      int:
-        - int
-        - tinyint
-        - integer
-        - numeric
-        - year
-        - time
-        - year
-        - tinyint
-        - mediumint
-        - smallint
-      float:
-        - float
-        - double
-        - decimal
-      bool:
-        - bit
-        - real
-      string:
-        - binary
-        - varchar
-        - varbinary
-        - char
-        - text
-        - textarea
-        - mediumtext
-        - linestring
-        - multilinestring
-        - tinytext
-        - longtext
-        - multipolygon
-        - multipoint
-        - polygon
-        - date
-        - datetime
-        - enum
-      apps\core\classier\enum\user\Status:
-        - app_user.status
-    output: '${PATH_ROOT}/apps/core/classier/model/'
-    namespace: 'apps\core\classier\model'
-    imports:
-      - Exception
-      - rapidPHP\modules\core\classier\Model
-    extends:
-      - Model
-    is_getter: true
-    is_setter: true
-    is_valida: true
+    app:
+      mapping:
+        system:
+          int:
+            - int
+            - tinyint
+            - integer
+            - numeric
+            - year
+            - time
+            - year
+            - tinyint
+            - mediumint
+            - smallint
+          float:
+            - float
+            - double
+            - decimal
+          bool:
+            - bit
+            - real
+          string:
+            - binary
+            - varchar
+            - varbinary
+            - char
+            - text
+            - textarea
+            - mediumtext
+            - linestring
+            - multilinestring
+            - tinytext
+            - longtext
+            - multipolygon
+            - multipoint
+            - polygon
+            - date
+            - datetime
+            - enum
+      custom:
+        app_user.status: >
+          apps\core\classier\enum\user\Status
+      output: '${PATH_ROOT}/apps/core/classier/model/#{UTableName}Model.php'
+      namespace: 'apps\core\classier\model'
+      imports:
+        - Exception
+        - rapidPHP\modules\core\classier\Model
+      class_name: '#{UTableName}Model'
+      extends:
+        - Model
+      optional: 'auto' #auto、all、never
+      is_getter: true
+      is_setter: true
+      is_valida: true
+      property:
+        modifiers: 'protected'
+      templates:
+        class: '${PATH_ROOT}/scripts/model/template/php/class'
+        property: '${PATH_ROOT}/scripts/model/template/php/property'
+        getter: '${PATH_ROOT}/scripts/model/template/php/getter'
+        setter: '${PATH_ROOT}/scripts/model/template/php/setter'
+        valida: '${PATH_ROOT}/scripts/model/template/php/valida'
   java:
-    mapping:
-      Integer:
-        - int
-        - integer
-        - numeric
-        - year
-        - time
-        - mediumint
-        - smallint
-      Long:
-        - bigint
-      char:
-        - char
-        - year
-        - tinyint
-      Bool:
-        - real
-      Float:
-        - float
-      Double:
-        - double
-      Byte:
-        - bit
-        - blob
-        - longblob
-        - mediumblob
-      BigDecimal:
-        - decimal
-      String:
-        - binary
-        - varchar
-        - varbinary
-        - text
-        - textarea
-        - mediumtext
-        - linestring
-        - multilinestring
-        - tinytext
-        - longtext
-        - multipolygon
-        - multipoint
-        - polygon
-        - date
-        - datetime
-        - enum
-        - json
-    output: '${PATH_ROOT}/models/java/'
-    package: 'com.app.model'
-    imports:
-      - java.io.Serializable
-      - lombok.Data
-    implements:
-      - Serializable
-    annotations:
-      class:
-        - Data
-    is_getter: false
-    is_setter: false
+    app:
+      mapping:
+        system:
+          Integer:
+            - int
+            - integer
+            - numeric
+            - year
+            - time
+            - mediumint
+            - smallint
+          Long:
+            - bigint
+          char:
+            - char
+            - year
+            - tinyint
+          Bool:
+            - real
+          Float:
+            - float
+          Double:
+            - double
+          Byte:
+            - bit
+            - blob
+            - longblob
+            - mediumblob
+          BigDecimal:
+            - decimal
+          String:
+            - binary
+            - varchar
+            - varbinary
+            - text
+            - textarea
+            - mediumtext
+            - linestring
+            - multilinestring
+            - tinytext
+            - longtext
+            - multipolygon
+            - multipoint
+            - polygon
+            - date
+            - datetime
+            - enum
+            - json
+      output: '${PATH_ROOT}/models/java/#{UTableName}Model.java'
+      package: 'com.app.model'
+      imports:
+        - java.io.Serializable
+        - lombok.Data
+      class_name: '#{UTableName}Model'
+      annotations:
+        class:
+          - Data
+      implements:
+        - Serializable
+      optional: 'never' #auto、all、never
+      is_getter: false
+      is_setter: false
+      property:
+        modifiers: 'private'
+      templates:
+        class: '${PATH_ROOT}/scripts/model/template/java/class'
+        property: '${PATH_ROOT}/scripts/model/template/java/property'
+        getter: '${PATH_ROOT}/scripts/model/template/java/getter'
+        setter: '${PATH_ROOT}/scripts/model/template/java/setter'
   swift:
-    mapping:
-      Int:
-        - int
-        - bigint
-        - integer
-        - numeric
-        - year
-        - time
-      Int8:
-        - year
-        - tinyint
-      Int32:
-        - mediumint
-        - smallint
-      Bool:
-        - bit
-        - real
-      Float:
-        - float
-      Double:
-        - double
-      Money:
-        - decimal
-      String:
-        - binary
-        - varchar
-        - varbinary
-        - char
-        - text
-        - textarea
-        - mediumtext
-        - linestring
-        - multilinestring
-        - tinytext
-        - longtext
-        - multipolygon
-        - multipoint
-        - polygon
-        - date
-        - datetime
-        - enum
-        - json
-      Any:
-        - blob
-        - longblob
-        - mediumblob
-    output: '${PATH_ROOT}/models/swift/'
-    imports:
-      - Foundation
-    extends:
-      - BaseModel
+    app:
+      mapping:
+        system:
+          Int:
+            - int
+            - bigint
+            - integer
+            - numeric
+            - year
+            - time
+          Int8:
+            - year
+            - tinyint
+          Int32:
+            - mediumint
+            - smallint
+          Bool:
+            - bit
+            - real
+          Float:
+            - float
+          Double:
+            - double
+          Money:
+            - decimal
+          String:
+            - binary
+            - varchar
+            - varbinary
+            - char
+            - text
+            - textarea
+            - mediumtext
+            - linestring
+            - multilinestring
+            - tinytext
+            - longtext
+            - multipolygon
+            - multipoint
+            - polygon
+            - date
+            - datetime
+            - enum
+            - json
+          Any:
+            - blob
+            - longblob
+            - mediumblob
+      output: '${PATH_ROOT}/models/swift/#{UTableName}Model.swift'
+      imports:
+        - Foundation
+      class_name: '#{UTableName}Model'
+      extends:
+        - BaseModel
+      optional: 'never' #auto、all、never
+      property:
+        modifiers: 'public var'
+      templates:
+        class: '${PATH_ROOT}/scripts/model/template/swift/class'
+        property: '${PATH_ROOT}/scripts/model/template/swift/property'
+
+convert:
+  java:
+    wrapper:
+      mapping:
+        system:
+          Integer:
+            - int
+          Bool:
+            - bool
+          Float:
+            - float
+          Double:
+            - double
+          String:
+            - string
+      input:
+        - '${PATH_ROOT}apps/core/classier/wrapper/'
+      output: '${PATH_ROOT}convert/java/wrapper/#{diffPath}#{shortName}.java'
+      package: 'com.app.model#{diffPath}'
+      imports:
+        - java.io.Serializable
+        - lombok.Data
+      annotations:
+        class:
+          - Data
+      class_name: '#{shortName}'
+      implements:
+        - Serializable
+      optional: 'auto' #auto、all、never
+      templates:
+        class: |
+          #{package}
+
+          #{imports}
+
+          #{comment}
+          #{classAnnotation}
+          class #{className} #{extends} #{implements} {
+
+              #{properties}
+          }
+        const: |
+
+
+          /**
+           * #{name}
+           */
+          public static final #{CType} #{name} = #{value};
+        property: |
+
+
+          /**
+          * #{name}
+          */
+          private #{CType} #{name} = #{value};
+        property_static: |
+
+
+          /**
+          * #{name}
+          */
+          public static #{CType} #{name} = #{value};
+  swift:
+    wrapper:
+      mapping:
+        system:
+          Int:
+            - int
+            - bigint
+            - integer
+            - numeric
+            - year
+            - time
+          Int8:
+            - year
+            - tinyint
+          Int32:
+            - mediumint
+            - smallint
+          Bool:
+            - bit
+            - real
+            - bool
+          Float:
+            - float
+          Double:
+            - double
+          Money:
+            - decimal
+          String:
+            - binary
+            - varchar
+            - varbinary
+            - char
+            - text
+            - textarea
+            - mediumtext
+            - linestring
+            - multilinestring
+            - tinytext
+            - longtext
+            - multipolygon
+            - multipoint
+            - polygon
+            - date
+            - datetime
+            - enum
+            - json
+          Any:
+            - blob
+            - longblob
+            - mediumblob
+      input:
+        - '${PATH_ROOT}apps/core/classier/wrapper/'
+      output: '${PATH_ROOT}convert/swift/wrapper/#{diffPath}#{shortName}.swift'
+      imports:
+        - Foundation
+      class_name: '#{shortName}'
+      optional: 'auto' #auto、all、never
+      templates:
+        class: |
+          #{package}
+
+          #{imports}
+
+          #{comment}
+          #{classAnnotation}
+          class #{className}#{extends} {
+
+              #{properties}
+          }
+        const: |
+
+          ///
+          /// #{name}
+          ///
+          public static let #{name}: #{CType} = #{value}
+        property: |
+
+
+          ///
+          /// #{name}
+          ///
+          public static var #{name}: #{CType} = #{value}
+        property_static: |
+
+
+          ///
+          /// #{name}
+          ///
+          public static var #{name}: #{CType} = #{value}

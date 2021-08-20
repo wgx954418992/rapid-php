@@ -1,9 +1,9 @@
 
     /**
-     * 获取 ${comment}
-     * @return ${DRType}
+     * 获取 #{comment}
+     * @return #{DRType}
      */
-    public function get${UName}()${RType}
+    public function get#{UName}()#{RType}
     {
-        return $this->${name};
+        return $this->#{name};
     }

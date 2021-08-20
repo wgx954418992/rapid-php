@@ -1,9 +1,9 @@
 
     /**
-     * 设置 ${comment}
-     * @param ${CType} ${name}
+     * 设置 #{comment}
+     * @param #{CType} #{name}
      */
-    public void set${UName}(${CType} ${name})
+    public void set#{UName}(#{CType} #{name})
     {
-        this.${name} = ${name};
+        this.#{name} = #{name};
     }

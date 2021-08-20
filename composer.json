@@ -35,19 +35,25 @@
   },
   "scripts": {
     "generator-model-php": [
-      "php scripts/model/index.php php --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml'"
+      "php scripts/model/index.php php --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml' --key=model.php.app"
     ],
     "generator-model-java": [
-      "php scripts/model/index.php java --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml'"
+      "php scripts/model/index.php java --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml' --key=model.java.app"
     ],
     "generator-model-swift": [
-      "php scripts/model/index.php swift --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml'"
+      "php scripts/model/index.php swift --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml' --key=model.swift.app"
+    ],
+    "php-conver-wrapper-to-java": [
+      "php scripts/convert/index.php java --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml' --key=convert.java.wrapper"
     ],
     "php-conver-wrapper-to-swift": [
-      "php scripts/convert/index.php wrapper/swift"
+      "php scripts/convert/index.php swift --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml' --key=convert.swift.wrapper"
+    ],
+    "php-conver-bean-to-java": [
+      "php scripts/convert/index.php java --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml' --key=convert.java.wrapper"
     ],
     "php-conver-bean-to-swift": [
-      "php scripts/convert/index.php bean/swift"
+      "php scripts/convert/index.php swift --conf='${PATH_ROOT}apps/core/application.yaml ${PATH_ROOT}.script.yaml' --key=convert.swift.wrapper"
     ],
     "docker-run": [
       "./scripts/docker/rapid-php"
