@@ -1,7 +1,7 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '3.9.7',
-        'version' => '3.9.7.0',
+        'pretty_version' => '3.9.8',
+        'version' => '3.9.8.0',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -106,12 +106,12 @@
             'dev_requirement' => true,
         ),
         'phpspec/prophecy' => array(
-            'pretty_version' => '1.13.0',
-            'version' => '1.13.0.0',
+            'pretty_version' => '1.14.0',
+            'version' => '1.14.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpspec/prophecy',
             'aliases' => array(),
-            'reference' => 'be1996ed8adc35c3fd795488a653f4b518be70ea',
+            'reference' => 'd86dfc2e2a3cd366cee475e52c6bb3bbc371aa0e',
             'dev_requirement' => true,
         ),
         'phpunit/php-code-coverage' => array(
@@ -391,17 +391,17 @@
             'dev_requirement' => false,
         ),
         'wgx954418992/rapid-framework' => array(
-            'pretty_version' => '3.9.7',
-            'version' => '3.9.7.0',
+            'pretty_version' => '3.9.8',
+            'version' => '3.9.8.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../wgx954418992/rapid-framework',
             'aliases' => array(),
-            'reference' => '14bc2e730c75a3dde639ae348245bf4486646b3d',
+            'reference' => '6525f0331b26b3f4b308411d233ab1d55575a1f3',
             'dev_requirement' => false,
         ),
         'wgx954418992/rapid-php' => array(
-            'pretty_version' => '3.9.7',
-            'version' => '3.9.7.0',
+            'pretty_version' => '3.9.8',
+            'version' => '3.9.8.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

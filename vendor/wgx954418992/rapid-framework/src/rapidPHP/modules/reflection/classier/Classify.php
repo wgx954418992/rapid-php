@@ -91,7 +91,7 @@ class Classify
     /**
      * @template T
      * @param object|T|static|string $class
-     * @return DocComment|\rapidPHP\modules\router\classier\DocComment|T|null
+     * @return DocComment|\rapidPHP\modules\router\classier\reflection\DocComment|T|null
      */
     public function getDocComment($class = DocComment::class)
     {
@@ -242,18 +242,18 @@ class Classify
             $filterValue = $filter;
         }
 
-        $properties = $this->reflection->getProperties($filterValue);
+        $attributes = $this->reflection->getProperties($filterValue);
 
         $result = [];
 
-        foreach ($properties as $property) {
-            $method = new Property($this, $property);
+        foreach ($attributes as $attribute) {
+            $property = new Property($this, $attribute);
 
             if (is_callable($filterCall)) {
-                if (!call_user_func_array($filterCall, [$method])) continue;
+                if (!call_user_func_array($filterCall, [$property])) continue;
             }
 
-            $result[] = $method;
+            $result[] = $property;
         }
 
         if ($parentClassify = $this->getParentClassify()) {

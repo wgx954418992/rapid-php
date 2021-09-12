@@ -120,7 +120,7 @@ class JavaIHandler extends IHandler
         $result = '';
 
         foreach ($annotations as $annotation) {
-            $result .= "@{$annotation};\n";
+            $result .= "@{$annotation}\n";
         }
 
         return $result;
@@ -174,7 +174,7 @@ class JavaIHandler extends IHandler
 
             $CType = $this->getCType($config, $property->getClassName() . '.' . $property->getName(), $property->getType());
 
-            if ($property->getDefault()) {
+            if (!is_null($property->getDefault())) {
                 if ($CType == "String") {
                     $value = "\"{$property->getDefault()}\"";
                 } else if (strtolower($CType) === 'bool') {
@@ -194,8 +194,6 @@ class JavaIHandler extends IHandler
                         } else {
                             $value = "Optional.ofNullable({$value})";
                         }
-                    } else {
-                        if (is_null($value)) $value = "new {$CType}()";
                     }
                 })
                 ->then(Optional::All, function () use (&$CType, &$value, $property) {
@@ -207,10 +205,6 @@ class JavaIHandler extends IHandler
                         $value = "Optional.ofNullable({$value})";
                     }
                 })
-                ->then(Optional::Never, function () use (&$value, $CType) {
-
-                    if (is_null($value)) $value = "new {$CType}()";
-                })
                 ->fetch();
 
             $propertiesString .= CommonHelper::parseVariable($template, [
@@ -218,6 +212,7 @@ class JavaIHandler extends IHandler
                 'type' => $property->getType(),
                 'name' => $property->getName(),
                 'value' => $value,
+                'EValue' => is_null($value) ? '' : ' = ' . $value,
                 'CType' => $CType
             ]);
         }

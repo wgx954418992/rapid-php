@@ -82,9 +82,9 @@ abstract class Options
     {
         $result = $this->value & $member;
 
-        if ($result && is_callable($callable)) {
+        if (is_callable($callable)) {
             try {
-                call_user_func($callable, $result);
+                if ($result) call_user_func($callable, $result);
             } catch (Exception $e) {
                 if ($isThrow) throw $e;
             }

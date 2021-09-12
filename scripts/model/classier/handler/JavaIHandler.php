@@ -123,7 +123,7 @@ class JavaIHandler extends IHandler
         $result = '';
 
         foreach ($annotations as $annotation) {
-            $result .= "@{$annotation};\n";
+            $result .= "@{$annotation}\n";
         }
 
         return $result;

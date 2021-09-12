@@ -8,7 +8,7 @@
  * rapidPHP auto generate Model #{date}
  */
 #{classAnnotation}
-class #{className} #{extends} #{implements} {
+public class #{className} #{extends} #{implements} {
 
     /**
     * table name
