@@ -18,13 +18,11 @@
     }
   ],
   "require": {
-    "wgx954418992/rapid-framework": "^3.9.8",
     "ext-zip": "*",
     "ext-json": "*"
   },
   "require-dev": {
-    "eaglewu/swoole-ide-helper": "dev-master",
-    "phpunit/phpunit": "^7.0"
+    "eaglewu/swoole-ide-helper": "dev-master"
   },
   "autoload": {
     "files": [],
