@@ -18,8 +18,9 @@
     }
   ],
   "require": {
+    "ext-json": "*",
     "ext-zip": "*",
-    "ext-json": "*"
+    "wgx954418992/rapid-framework": "3.9.8"
   },
   "require-dev": {
     "eaglewu/swoole-ide-helper": "dev-master"

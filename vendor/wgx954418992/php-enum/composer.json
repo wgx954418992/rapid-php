@@ -1,0 +1,30 @@
+{
+  "name": "wgx954418992/php-enum",
+  "version": "1.1.1",
+  "description": "The simplest and fastest PHP enumeration, supports `then` matching callback",
+  "keywords": [
+    "enum",
+    "php-enum",
+    "rapid-php-enum"
+  ],
+  "type": "library",
+  "homepage": "https://www.rapid-framework.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Renew",
+      "email": "wgx954418992@qq.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "files": [],
+    "psr-4": {
+      "enum\\": "src/enum/"
+    }
+  },
+  "minimum-stability": "stable",
+  "config": {
+    "sort-packages": true
+  }
+}

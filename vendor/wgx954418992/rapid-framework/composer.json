@@ -1,0 +1,60 @@
+{
+  "name": "wgx954418992/rapid-framework",
+  "version": "3.9.8",
+  "description": "Fast, simple and practical php framework",
+  "keywords": [
+    "framework",
+    "rapidphp",
+    "restful",
+    "fastapi",
+    "api"
+  ],
+  "homepage": "https://www.rapid-framework.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Renew",
+      "email": "wgx954418992@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2.0",
+    "ext-bcmath": "*",
+    "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-fileinfo": "*",
+    "ext-gd": "*",
+    "ext-json": "*",
+    "ext-libxml": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "ext-pdo": "*",
+    "ext-redis": "*",
+    "ext-simplexml": "*",
+    "ext-sockets": "*",
+    "ext-xmlwriter": "*",
+    "ext-zip": "*",
+    "monolog/monolog": "^1.26",
+    "mustangostang/spyc": "0.6.3",
+    "voku/anti-xss": "4.1",
+    "wgx954418992/php-enum": "^1.1.1"
+  },
+  "require-dev": {
+    "eaglewu/swoole-ide-helper": "dev-master",
+    "phpunit/phpunit": "7.0"
+  },
+  "autoload": {
+    "files": [],
+    "psr-4": {
+      "rapidPHP\\": "src/rapidPHP/"
+    }
+  },
+  "scripts": {
+
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true
+  }
+}
