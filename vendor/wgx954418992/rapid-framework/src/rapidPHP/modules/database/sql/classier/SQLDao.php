@@ -80,7 +80,7 @@ abstract class SQLDao
 
             $tableField = $classify->getPropertiesNames();
 
-            if (empty($this->tableField)) return '*';
+            if (empty($tableField)) return '*';
 
             return $tableField;
         } catch (Exception $e) {

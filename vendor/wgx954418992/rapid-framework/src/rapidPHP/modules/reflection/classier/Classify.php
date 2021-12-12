@@ -242,7 +242,11 @@ class Classify
             $filterValue = $filter;
         }
 
-        $attributes = $this->reflection->getProperties($filterValue);
+        if (!is_null($filterValue)){
+            $attributes = $this->reflection->getProperties($filterValue);
+        }else{
+            $attributes = $this->reflection->getProperties();
+        }
 
         $result = [];
 

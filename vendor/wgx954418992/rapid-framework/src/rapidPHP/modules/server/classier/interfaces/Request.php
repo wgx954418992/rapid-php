@@ -245,7 +245,11 @@ abstract class Request implements Input
 
         if (is_null($name)) return $req;
 
-        return Build::getInstance()->getData($req, $name);
+        $value = Build::getInstance()->getData($req, $name);
+
+        XSS::getInstance()->filter($value);
+
+        return $value;
     }
 
     /**

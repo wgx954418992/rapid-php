@@ -1,7 +1,7 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '3.9.8',
-        'version' => '3.9.8.0',
+        'pretty_version' => '3.9.9.1',
+        'version' => '3.9.9.1',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -136,17 +136,17 @@
             'dev_requirement' => false,
         ),
         'wgx954418992/rapid-framework' => array(
-            'pretty_version' => '3.9.8',
-            'version' => '3.9.8.0',
+            'pretty_version' => '3.9.9.1',
+            'version' => '3.9.9.1',
             'type' => 'library',
             'install_path' => __DIR__ . '/../wgx954418992/rapid-framework',
             'aliases' => array(),
-            'reference' => '1a0a732692cfa928cf74ccfd3fc777ac9d96bdef',
+            'reference' => '320452758a50ed1fbf674fef544858894b9c4d0f',
             'dev_requirement' => false,
         ),
         'wgx954418992/rapid-php' => array(
-            'pretty_version' => '3.9.8',
-            'version' => '3.9.8.0',
+            'pretty_version' => '3.9.9.1',
+            'version' => '3.9.9.1',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
