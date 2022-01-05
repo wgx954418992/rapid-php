@@ -29,6 +29,12 @@ class ConnectConfig
     private $select = 0;
 
     /**
+     * 缓存前缀
+     * @var string|null
+     */
+    private $prefix = null;
+
+    /**
      * @return string|null
      */
     public function getHost(): ?string
@@ -91,4 +97,22 @@ class ConnectConfig
     {
         $this->select = $select;
     }
+
+
+    /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string|null $prefix
+     */
+    public function setPrefix(?string $prefix): void
+    {
+        $this->prefix = $prefix;
+    }
+
 }
