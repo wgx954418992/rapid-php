@@ -8,6 +8,7 @@ use PDO;
 use rapidPHP\modules\database\sql\classier\driver\Mysql;
 use rapidPHP\modules\database\sql\config\ConnectConfig;
 use rapidPHP\modules\reflection\classier\Classify;
+use PDOStatement;
 
 class SQLDB
 {
@@ -15,7 +16,6 @@ class SQLDB
      * 重新连接codes
      */
     const ERROR_RECONNECT_CODES = [
-        'HY000',
         2006,
         2013,
     ];
@@ -156,21 +156,21 @@ class SQLDB
 
     /**
      * 处理异常
-     * @param Exception $e
+     * @param PDOStatement $statement
      * @return bool
      * @throws Exception
      */
-    public function onErrorHandler(Exception $e): bool
+    public function onErrorHandler(PDOStatement $statement): bool
     {
-        $code = $e->getCode();
+        list(1 => $code) = $statement->errorInfo();
 
         if (in_array($code, self::ERROR_RECONNECT_CODES)) {
             $this->reconnect();
 
             return true;
         }
-
-        throw $e;
+        
+        return false;
     }
 
     /**

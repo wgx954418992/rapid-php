@@ -29,6 +29,11 @@ class Statement
     protected $sql;
 
     /**
+     * @var bool
+     */
+    protected $debugDumpParams;
+
+    /**
      * Statement constructor.
      * @param SQLDB $db
      * @param string $sql
@@ -41,6 +46,14 @@ class Statement
     }
 
     /**
+     * @param bool $debugDumpParams
+     */
+    public function setDebugDumpParams(bool $debugDumpParams): void
+    {
+        $this->debugDumpParams = $debugDumpParams;
+    }
+
+    /**
      * 获取statement
      * @param null $result
      * @return bool|PDOStatement
@@ -48,14 +61,30 @@ class Statement
      */
     public function getStatement(&$result = null)
     {
+        $statement = null;
+        
         try {
             $statement = @$this->db->getConnect()->prepare($this->sql);
 
-            $result = @$statement->execute($this->options);
+            if ($this->options) {
+                foreach ((array)$this->options as $name => $value) {
+                    if (is_bool($value)) {
+                        $statement->bindValue($name, $value, PDO::PARAM_BOOL);
+                    } else if (is_int($value)) {
+                        $statement->bindValue($name, $value, PDO::PARAM_INT);
+                    } else {
+                        $statement->bindValue($name, $value);
+                    }
+                }
+            }
+
+            $result = @$statement->execute();
+
+            if ($this->debugDumpParams) $statement->debugDumpParams();
 
             return $statement;
         } catch (Exception $e) {
-            if ($this->db->onErrorHandler($e)) {
+            if ($statement && $this->db->onErrorHandler($statement)){
                 return $this->getStatement($result);
             }
 
