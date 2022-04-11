@@ -3,55 +3,44 @@
 
 namespace apps\queue\classier\process\notify;
 
+use apps\core\classier\enum\CodeType;
 use apps\core\classier\helper\CommonHelper;
-use apps\core\classier\model\AppQueueModel;
-use apps\core\classier\service\BaseService;
-use apps\core\classier\service\SMSService;
-use apps\queue\classier\config\QueueConfig;
+use apps\core\classier\sender\sms\ISMSSender;
+use apps\queue\classier\event\SMSNotifyEvent;
+use apps\queue\classier\helper\ProcessHelper;
+use apps\queue\classier\process\PipeProcess;
 use Exception;
 use libphonenumber\PhoneNumber;
-use rapidPHP\modules\process\classier\swoole\PipeProcess;
-use function rapidPHP\B;
+use function rapidPHP\DI;
 
 class SMSProcess extends PipeProcess
 {
 
     /**
      * @param $data
-     * @return mixed|void
+     * @return void
      * @throws Exception
      */
     public function onHandler($data)
     {
-        /** @var AppQueueModel $queueModel */
-        $queueModel = unserialize($data);
+        /** @var SMSNotifyEvent $event */
+        $event = ProcessHelper::toQueueEvent($data, SMSNotifyEvent::class);
 
-        $param = B()->jsonDecode($queueModel->getParam());
+        if (empty($event->getT())) throw new Exception('telephone 错误');
 
-        try {
-            $telephone = B()->getData($param, QueueConfig::PARAM_KEY_SMS_TELEPHONE);
+        if (empty($event->getCT())) throw new Exception('templateId 错误');
 
-            if (empty($telephone)) throw new Exception('telephone 错误');
+        /** @var PhoneNumber $phoneNumber */
+        $telephone = CommonHelper::validTelephone($event->getT(), $phoneNumber);
 
-            $templateId = B()->getData($param, QueueConfig::PARAM_KEY_SMS_TEMPLATE_ID);
+        /** @var ISMSSender $sender */
+        $sender = DI(ISMSSender::class);
 
-            if (empty($templateId)) throw new Exception('templateId 错误');
+        $templateCode = $sender->getTemplateCode(CodeType::i($event->getCT()), $phoneNumber->getCountryCode());
 
-            $tParam = B()->getData($param, QueueConfig::PARAM_KEY_SMS_PARAM);
+        $sender->send($templateCode, $telephone, $event->getTP());
 
-            /** @var PhoneNumber $phoneNumber */
-            $telephone = CommonHelper::validTelephone($telephone, $phoneNumber);
-
-            $SMSService = SMSService::getInstance();
-
-            $templateCode = $SMSService->getTemplateCodeByType($templateId, $phoneNumber->getCountryCode());
-
-            SMSService::getInstance()->send($templateCode, $telephone, $tParam);
-        } catch (Exception $e) {
-            BaseService::getInstance()->addLog($e->getMessage(), $e);
-        }
-
-        $parentProcess = $this->getParentProcess();
+        $parentProcess = parent::getParentProcess();
 
         if ($parentProcess instanceof PipeProcess) $parentProcess->onHandler($data);
     }

@@ -223,7 +223,7 @@ class BaseUserModel
 
     /**
      * 获取自生成userId
-     * @return mixed
+     * @return int|string|null
      */
     public function getGenerationUserId()
     {
@@ -234,14 +234,14 @@ class BaseUserModel
      * 设置自生成bindId，设置用户根绝自己需要锁设立的，如果项目中用不到可以删除
      * @param $bindId
      */
-    public function setGenerationBindId(?int $bindId)
+    public function setGenerationBindId( $bindId)
     {
         $this->bindId = $bindId;
     }
 
     /**
      * 获取自生成bindId
-     * @return mixed
+     * @return int|string|null
      */
     public function getGenerationBindId()
     {

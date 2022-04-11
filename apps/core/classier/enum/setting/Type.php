@@ -15,12 +15,22 @@ class Type extends Enum
     const FILE = 'FILE';
 
     /**
-     * 设置type名称，app版本
+     * 设置OSS名称，oss
      */
-    const APP_VERSION = 'APP_VERSION';
+    const OSS = 'OSS';
 
     /**
-     * 设置type名称，app下载链接
+     * 设置MEDIA名称，media
      */
-    const APP_DOWNLOAD = 'APP_DOWNLOAD';
+    const MEDIA = 'MEDIA';
+
+    /**
+     * 设置REPORT名称，举报
+     */
+    const REPORT = 'REPORT';
+
+    /**
+     * 设置INTEGRAL名称，积分规则
+     */
+    const INTEGRAL_RULE = 'INTEGRAL_RULE';
 }

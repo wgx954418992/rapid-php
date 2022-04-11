@@ -1,93 +1,95 @@
 <?php
 
+
 namespace apps\core\classier\config;
 
-use function rapidPHP\Cal;
+use apps\core\classier\enum\CodeType;
 
 class EmailConfig
 {
 
     /**
-     * 发送邮件服务器
+     * Configure
      */
-    const SERVER = 'smtp.qq.com';
+    use Configure;
 
     /**
-     * 用户名
+     * service
+     * @var string
+     * @config email.service
      */
-    const USERNAME = 'xxx@qq.com';
+    protected $service = '';
 
     /**
-     * 密码
+     * limit
+     * @var int
+     * @config email.limit
      */
-    const PASSWORD = 'xxx';
+    protected $limit = 0;
 
     /**
-     * 服务器端口
+     * valida
+     * @var int
+     * @config email.valida
      */
-    const PORT = 587;
+    protected $valida = 0;
 
     /**
-     * 发送者
+     * templates
+     * @var array[]
+     * @config email.templates
      */
-    const FORM = 'xxx@qq.com';
+    protected $templates = [];
 
     /**
-     * 发送邮件时间限制
+     * @return string
      */
-    const LIMIT_TIME = 60;
-
-    /**
-     * 验证码有效时间
-     */
-    const VALIDA_TIME = 60 * 5;
-
-    /***
-     * title
-     */
-    const EMAIL_TITLE = 'title';
-
-    /**
-     * body
-     */
-    const EMAIL_BODY = 'body';
-
-    /**
-     * attachments
-     */
-    const EMAIL_ATTACHMENTS = 'attachments';
-
-    /**
-     * 发送右键模板类型,完善资料
-     */
-    const TEMPLATE_TYPE_PERFECT = 'perfect';
-
-    /**
-     * 模板类型 国内（暂时不区分）
-     * @return array
-     */
-    public function getTemplateTypeDomestic(): array
+    public function getService(): string
     {
-        return [
-            self::TEMPLATE_TYPE_PERFECT => [
-                self::EMAIL_TITLE => '完善资料邮箱验证通知',
-                self::EMAIL_BODY => '<h5>您正在完善资料，您的验证码为{code},' . Cal()->formatSecond(self::VALIDA_TIME) . '有效</h5>',
-            ]
-        ];
+        return $this->service;
     }
 
     /**
-     * 通过type获取参数
-     * @param $type
-     * @param string $language
-     * @return bool|string|mixed
+     * @return int
      */
-    public function getTemplateCodeByType($type, $language = 'zh')
+    public function getLimit(): int
     {
-        $types = $this->getTemplateTypeDomestic();
+        return $this->limit;
+    }
 
-        if (array_key_exists($type, $types)) return $types[$type];
+    /**
+     * @return int
+     */
+    public function getValida(): int
+    {
+        return $this->valida;
+    }
 
-        return false;
+    /**
+     * 获取模板
+     * @param CodeType $codeType
+     * @return array|null
+     */
+    public function getTemplate(CodeType $codeType): ?array
+    {
+        if (!array_key_exists($codeType->getRawValue(), $this->templates)) {
+            return null;
+        }
+
+        $template = $this->templates[$codeType->getRawValue()];
+
+        if (!$template) return null;
+
+        $template = array_merge([
+            'title' => '',
+            'body' => '',
+            'attachments' => '',
+        ], $template);
+
+        if (!empty($template['body']) && is_file($template['body'])) {
+            $template['body'] = file_get_contents($template['body']);
+        }
+
+        return $template;
     }
 }

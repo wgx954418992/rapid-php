@@ -96,7 +96,7 @@ abstract class OAuth2
 
     /**
      * 发送http请求
-     * @param $url
+     * @param string $url
      * @return AB
      * @throws Exception
      */

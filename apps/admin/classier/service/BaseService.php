@@ -2,12 +2,12 @@
 
 namespace apps\admin\classier\service;
 
-use apps\core\classier\dao\master\AdminDao;
+use apps\admin\classier\dao\master\AdminDao;
+use apps\admin\classier\options\AdminOptions;
 use apps\core\classier\dao\master\TokenDao;
 use apps\core\classier\enum\ErrorCode;
 use apps\core\classier\model\AppAdminModel;
 use apps\core\classier\service\BaseService as CoreBaseService;
-use apps\core\classier\wrapper\AdminWrapper;
 use Exception;
 
 
@@ -21,17 +21,17 @@ class BaseService extends CoreBaseService
      */
     public static function validaAdmin(?AppAdminModel $adminModel)
     {
-        if ($adminModel == null)
-            throw new Exception('请先登录!', ErrorCode::USER_LOGIN_NOT);
+        if ($adminModel == null) throw new Exception('请先登录!', ErrorCode::USER_LOGIN_NOT);
     }
 
     /**
      * 通过token获取admin信息
      * @param $token
+     * @param AdminOptions|null $options
      * @return AppAdminModel
      * @throws Exception
      */
-    public function getTokenAdmin($token)
+    public function getTokenAdmin($token, ?AdminOptions $options = null)
     {
         if (empty($token)) throw new Exception('请先登录!');
 
@@ -48,34 +48,8 @@ class BaseService extends CoreBaseService
 
         if ($adminModel == null) throw new Exception('帐号不存在!');
 
+        AdminService::getInstance()->setAdminOptions($adminModel, $options);
+
         return $adminModel;
-    }
-
-
-    /**
-     * 获取管理员
-     * @param $adminId
-     * @param bool $isCreator
-     * @return AdminWrapper
-     * @throws Exception
-     */
-    public function getAdmin($adminId, bool $isCreator = false)
-    {
-        if (empty($adminId)) throw new Exception('管理员id 错误!');
-
-        /** @var AdminDao $adminDao */
-        $adminDao = AdminDao::getInstance();
-
-        $adminWrapper = $adminDao->getAdmin($adminId);
-
-        if ($adminWrapper == null) throw new Exception('管理员不存在!');
-
-        if ($isCreator) {
-            $creator = $adminDao->getAdmin($adminWrapper->getParentId());
-
-            $adminWrapper->setCreator($creator);
-        }
-
-        return $adminWrapper;
     }
 }

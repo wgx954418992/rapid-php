@@ -3,12 +3,17 @@
 namespace apps\core\classier\dao\master;
 
 use apps\core\classier\dao\MasterDao;
+use apps\core\classier\enum\area\Level;
 use apps\core\classier\model\AppAreaModel;
-use apps\core\classier\service\RedisCacheService;
 use Exception;
 
 class AreaDao extends MasterDao
 {
+
+    /**
+     * cache prefix
+     */
+    public const CACHE_PREFIX = 'app_area';
 
     /**
      * AreaDao constructor.
@@ -20,63 +25,46 @@ class AreaDao extends MasterDao
     }
 
     /**
-     * 获取中国地区列表
-     * @param int|null $areaId
+     * 获取全部分类信息
      * @return AppAreaModel[]
      * @throws Exception
      */
-    public function getAreaList($areaId = null): array
+    public function getAreaList($areaId = null, ?array $level = null, ?int $size = null): array
     {
-        $select = parent::get()->order('level');
+        $cacheId = $this->getCacheId('list', $areaId, md5(json_encode($level)), $size);
 
-        if ($areaId != null) {
-            $select->where('pid', $areaId);
-        } else {
-            $select->where('level', 2);
-        }
+        return (array)parent::getCacheWithCallback($cacheId, function () use ($areaId, $level, $size) {
+            $select = $this->get();
 
-        return (array)$select->getStatement()
-            ->fetchAll($this->getModelOrClass());
+            if ($areaId != null) {
+                $select->where('pid', $areaId);
+            }
+
+            if (!empty($level)) $select->in('level', $level);
+
+            if (is_int($size) && $size > 0) $select->limit($size);
+
+            return $select
+                ->getStatement()
+                ->fetchAll($this->getModelOrClass());
+        });
     }
 
     /**
      * 获取地址信息
      * @param $areaId
-     * @param null $level
      * @return AppAreaModel|null
      * @throws Exception
      */
-    public function getArea($areaId, $level = null): ?AppAreaModel
+    public function getArea($areaId)
     {
-        $RId = parent::getRId($areaId);
+        $cacheId = $this->getCacheId('id', $areaId);
 
-        $cache = RedisCacheService::getInstance()->get($RId);
-
-        if (!empty($cache) && $cache instanceof AppAreaModel) return $cache;
-
-        $select = parent::get()->where('id', $areaId);
-
-        if ($level != null) $select->where('level', $level);
-
-        /** @var AppAreaModel $model */
-        $model = $select->getStatement()->fetch(AppAreaModel::class);
-
-        if ($model) RedisCacheService::getInstance()->add($RId, $model);
-
-        return $model;
-    }
-
-    /**
-     * 获取三级联动数据
-     * @return array
-     * @throws Exception
-     */
-    public function getAllAreaList(): array
-    {
-        return (array)parent::get('id,name,pid')
-            ->in('level', [1, 2, 3, 4])
-            ->order('level ASC,id ASC', '')
-            ->getStatement()
-            ->fetchAll();
+        return $this->getCacheWithCallback($cacheId, function () use ($areaId) {
+            return $this->get()
+                ->where('id', $areaId)
+                ->getStatement()
+                ->fetch($this->getModelOrClass());
+        });
     }
 }

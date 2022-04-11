@@ -4,7 +4,9 @@ namespace apps\app\classier\controller;
 
 use apps\core\classier\service\AreaService;
 use Exception;
+use rapidPHP\modules\common\classier\Http;
 use rapidPHP\modules\common\classier\RESTFulApi;
+use function rapidPHP\AB;
 
 /**
  * Class AreaController
@@ -19,13 +21,15 @@ class AreaController extends BaseController
      * @route /list
      * @method get
      * @typed api
-     * @param $areaId
+     * @param null $areaId
+     * @param array|null $level get json
+     * @param int|null $size
      * @return RESTFulApi
      * @throws Exception
      */
-    public function getAreaList($areaId)
+    public function getAreaList($areaId = null, ?array $level = null, ?int $size = null)
     {
-        $list = AreaService::getInstance()->getAreaList($areaId);
+        $list = AreaService::getInstance()->getAreaList($areaId, $level, $size);
 
         return RESTFulApi::success($list);
     }
@@ -47,15 +51,50 @@ class AreaController extends BaseController
     }
 
     /**
-     * 生成三级联动数据
-     * @route /three
+     * 获取经纬度
+     * @route /geocoding/address
      * @method get
-     * @typed raw
-     * @encode json
+     * @typed api
+     * @param string $address
+     * @return RESTFulApi
      * @throws Exception
      */
-    public function getThreeLevelAreaList()
+    public function getGeocoding(string $address)
     {
-        return AreaService::getInstance()->getThreeLevelAreaList();
+        $data = AreaService::getInstance()->getGeocodingByAddress($address);
+
+        return RESTFulApi::success($data);
+    }
+
+    /**
+     * 获取地理位置
+     * @route /geocoding/location
+     * @method get
+     * @typed api
+     * @param string $location
+     * @return RESTFulApi
+     * @throws Exception
+     */
+    public function getGeocodingByLocation(string $location)
+    {
+        $data = AreaService::getInstance()->getGeocodingByLocation($location);
+
+        return RESTFulApi::success($data);
+    }
+
+    /**
+     * 通过定位获取地理位置并转成area地区
+     * @route /geocoding/area
+     * @method get
+     * @typed api
+     * @param string $location
+     * @return RESTFulApi
+     * @throws Exception
+     */
+    public function getAreaByLocation(string $location)
+    {
+        $data = AreaService::getInstance()->getAreaByLocation($location);
+
+        return RESTFulApi::success($data);
     }
 }

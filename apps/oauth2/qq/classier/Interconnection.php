@@ -21,7 +21,7 @@ class Interconnection extends OAuth2
 
     /**
      * 获取网页授权access 信息，openId跟access_token
-     * @param $code
+     * @param string $code
      * @return AB
      * @throws Exception
      */

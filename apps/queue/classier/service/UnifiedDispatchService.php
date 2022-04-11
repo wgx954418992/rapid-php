@@ -3,7 +3,6 @@
 
 namespace apps\queue\classier\service;
 
-use apps\queue\classier\config\QueueConfig;
 use apps\queue\classier\process\UnifiedDispatchProcess;
 use Exception;
 use rapidPHP\modules\console\classier\Output;
@@ -77,7 +76,7 @@ class UnifiedDispatchService
      */
     private function create()
     {
-        $this->dispatchProcess = new UnifiedDispatchProcess(3, $this->output);
+        $this->dispatchProcess = new UnifiedDispatchProcess(1, $this->output);
 
         $this->setPId($this->dispatchProcess->pid);
 
@@ -95,7 +94,7 @@ class UnifiedDispatchService
     {
         if (isset($this->handlerSig[$signal])) return $this->handlerSig[$signal];
 
-        return isset($this->handlerSig[0]) ? $this->handlerSig[0] : null;
+        return $this->handlerSig[0] ?? null;
     }
 
     /**
@@ -134,9 +133,9 @@ class UnifiedDispatchService
      * @param null $pid
      * @param int $sig
      */
-    public function kill($pid = null, $sig = SIGTERM)
+    public function kill($pid = null, int $sig = SIGTERM)
     {
-        $pid = $pid ? $pid : $this->getPId();
+        $pid = $pid ?: $this->getPId();
 
         if ($pid) Process::kill($pid, $sig);
     }
@@ -168,7 +167,7 @@ class UnifiedDispatchService
 
             $PIDs = $this->dispatchProcess->getHandlerPIDs();
 
-            foreach ($PIDs as $pid => $type) $this->dispatchProcess->pkill($type);
+            foreach ($PIDs as $type) $this->dispatchProcess->pkill($type);
 
             $this->output->perror("{$date} 进程已经全部退出");
         } else {

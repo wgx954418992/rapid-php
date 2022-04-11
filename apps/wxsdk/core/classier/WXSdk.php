@@ -34,7 +34,7 @@ class WXSdk
      * @param string $appId
      * @param string $appSecret
      */
-    public function __construct(?CacheInterface $cacheService, $appId = '', $appSecret = '')
+    public function __construct(?CacheInterface $cacheService, string $appId = '', string $appSecret = '')
     {
         $this->cacheService = $cacheService;
 
@@ -99,7 +99,7 @@ class WXSdk
 
     /**
      * 获取缓存值
-     * @param $name
+     * @param string $name
      * @return array|int|mixed|string|null
      */
     public function getCacheValue(string $name)
@@ -117,9 +117,9 @@ class WXSdk
      * @param string $name
      * @param $value
      * @param int $time
-     * @return array|int|mixed|string|null
+     * @return bool
      */
-    public function addCacheValue(string $name, $value, $time = 0)
+    public function addCacheValue(string $name, $value, int $time = 0)
     {
         if ($this->cacheService instanceof CacheInterface) {
             return $this->cacheService->add($name, $value, $time);
@@ -136,7 +136,7 @@ class WXSdk
      * @return AB|string
      * @throws Exception
      */
-    protected function sendHttpResponse($url, $post = [], $options = [])
+    protected function sendHttpResponse($url, array $post = [], array $options = [])
     {
         $res = Http::getInstance()->getHttpResponse($url, !empty($post) ? json_encode($post) : null, 60, [], $options);
 

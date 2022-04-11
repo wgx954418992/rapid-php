@@ -48,15 +48,15 @@ class TokenDao extends MasterDao
      */
     public function delToken($bindId, $type = null): bool
     {
-        $update = parent::set([
+        $driver = parent::set([
             'is_delete' => true,
             'updated_id' => $bindId,
             'updated_time' => Cal()->getDate(),
         ])->where('bind_id', $bindId);
 
-        if (!empty($type)) $update->where('type', $type);
+        if (!empty($type)) $driver->where('type', $type);
 
-        return $update->where('is_delete', false)
+        return $driver->where('is_delete', false)
             ->execute();
     }
 

@@ -22,4 +22,5 @@ class Status extends Enum
      * 已注销
      */
     const Destroyed = 3;
+
 }

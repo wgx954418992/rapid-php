@@ -16,41 +16,9 @@ class Mini extends OAuth2
 {
 
     /**
-     * 获取unionId
-     * @param AB $openInfo
-     * @param AB $options
-     * @return array|int|mixed|object|string|null
-     * @throws Exception
-     */
-    private function getUnionId(AB $openInfo, AB $options)
-    {
-        $unionId = $openInfo->toValue('unionid');
-
-        if (!empty($unionId)) return $unionId;
-
-        $encryptedData = $options->toValue('encryptedData');
-
-        $iv = $options->toValue('iv');
-
-        $appId = $options->toValue('appId');
-
-        if (empty($unionId) && $encryptedData && $iv && $appId) {
-            $sessionKey = $openInfo->toString('session_key');
-
-            if (WXBizDataCrypt::decryptData($appId, $sessionKey, $encryptedData, $iv, $result) != WXBizDataCrypt::$OK)
-                throw new Exception('解密用户数据错误!');
-
-            return B()->getData($result, 'unionId');
-        }
-
-        return null;
-    }
-
-
-    /**
      * 获取用户信息 通过js opcode id
      * @param string $code
-     * @return WXUserModel
+     * @return string|null
      * @throws Exception
      */
     public function getOpenId(string $code): ?string
@@ -71,10 +39,16 @@ class Mini extends OAuth2
      * 获取用户信息 通过js code options 需要小程序上传获取到的用户基本资料
      * @param string $code
      * @param array|null $options
+     * @param AB|null $openInfo
+     * @param array|null $decryptedData
      * @return WXUserModel
      * @throws Exception
      */
-    public function getUserInfo(string $code, ?array $options = [])
+    public function getUserInfo(
+        string $code,
+        ?array $options = [],
+        ?AB    &$openInfo = null,
+        ?array &$decryptedData = null)
     {
         if (empty($code)) throw new Exception('code 错误!');
 
@@ -90,7 +64,27 @@ class Mini extends OAuth2
 
         $oauth2Info->setOpenId($openInfo->toString('openid'));
 
-        $oauth2Info->setUnionId($this->getUnionId($openInfo, $options));
+        if (!empty($openInfo->toValue('unionid'))) {
+            $oauth2Info->setUnionId($openInfo->toValue('unionid'));
+        } else {
+            $iv = $options->toValue('iv');
+
+            $appId = $options->toValue('appId');
+
+            $sessionKey = $openInfo->toString('session_key');
+
+            $encryptedData = $options->toValue('encryptedData');
+
+            if ($encryptedData && $iv && $appId && $sessionKey) {
+
+                if (WXBizDataCrypt::decryptData($appId, $sessionKey, $encryptedData, $iv, $decryptedData) != WXBizDataCrypt::$OK)
+                    throw new Exception('解密用户数据错误!');
+
+                $oauth2Info->setUnionId(B()->getData($decryptedData, 'unionId'));
+            } else {
+                throw new Exception('参数错误!');
+            }
+        }
 
         $oauth2Info->setNickname($options->toString('nickname'));
 
@@ -109,5 +103,51 @@ class Mini extends OAuth2
         $oauth2Info->setPrivilege($options->toArray('privilege'));
 
         return $oauth2Info;
+    }
+
+    /**
+     * 获取授权手机号码 通过JsCode+iv+encryptedData+appid
+     * @param string $code
+     * @param array|null $options
+     * @param AB|null $openInfo
+     * @param array|null $decryptedData
+     * @return string
+     * @throws Exception
+     */
+    public function getPhoneNumber(
+        string $code,
+        ?array $options = [],
+        ?AB    &$openInfo = null,
+        ?array &$decryptedData = null): string
+    {
+        if (empty($code)) throw new Exception('code 错误!');
+
+        $url = MiniConfig::JSCodeToSessionUrl($this->getAppId(), $this->getSecret(), $code);
+
+        $openInfo = $this->sendHttpRequest($url);
+
+        if ($openInfo->hasName('errcode')) throw new Exception($openInfo->toString('errmsg'));
+
+        $options = AB($options);
+
+        $iv = $options->toValue('iv');
+
+        $appId = $options->toValue('appId');
+
+        $sessionKey = $openInfo->toString('session_key');
+
+        $encryptedData = $options->toValue('encryptedData');
+
+        if ($encryptedData && $iv && $appId && $sessionKey) {
+
+            if (WXBizDataCrypt::decryptData($appId, $sessionKey, $encryptedData, $iv, $decryptedData) != WXBizDataCrypt::$OK)
+                throw new Exception('解密用户数据错误!');
+
+            return '+' .
+                B()->getData($decryptedData, 'countryCode') .
+                B()->getData($decryptedData, 'purePhoneNumber');
+        } else {
+            throw new Exception('参数错误!');
+        }
     }
 }

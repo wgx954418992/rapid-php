@@ -8,6 +8,7 @@ use apps\file\classier\service\file\LocalFileManagerService;
 use apps\file\classier\service\IFileManagerService;
 use Exception;
 use rapidPHP\modules\application\classier\context\WebContext as BaseWebContext;
+use rapidPHP\modules\router\classier\Router;
 use rapidPHP\modules\server\classier\interfaces\Request;
 use rapidPHP\modules\server\classier\interfaces\Response;
 use function rapidPHP\DI;
@@ -37,6 +38,35 @@ class WebContext extends BaseWebContext
         $this->injection();
 
         $this->addInterceptor(new AuthorityInterceptor($this));
+    }
+
+    /**
+     * @param Router $router
+     */
+    public function onMatchingBefore(Router $router)
+    {
+        $headers = [
+            'Content-type: text/html; charset=utf-8',
+            'Access-Control-Allow-Credentials: true',
+        ];
+
+        if ($this->request->header('Origin')) {
+            $headers[] = "Access-Control-Allow-Origin: {$this->request->header('Origin')}";
+        }
+
+        if ($this->request->header('Access-Control-Request-Method')) {
+            $headers[] = "Access-Control-Allow-Methods: {$this->request->header('Access-Control-Request-Method')}";
+        }
+
+        if ($this->request->header('Access-Control-Request-Headers')) {
+            $headers[] = "Access-Control-Allow-Headers: {$this->request->header('Access-Control-Request-Headers')}";
+        }
+
+        $this->response->setHeader($headers);
+
+        if ($this->request->getMethod() === 'OPTIONS') {
+            $this->response->end();
+        }
     }
 
     /**

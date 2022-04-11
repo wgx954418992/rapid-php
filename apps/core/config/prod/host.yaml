@@ -1,2 +1,4 @@
 host:
   app: https://www.xxx.com/
+  file: https://www.xxx.com/
+  admin: https://www.xxx.com/

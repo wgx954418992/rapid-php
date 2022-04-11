@@ -35,7 +35,7 @@ class Publicly extends WXSdk
 
         if (empty($jsApiTicket)) throw new Exception($data->toString('errmsg'));
 
-        parent::addCacheValue($this->jsApiTicketCacheName, $jsApiTicket, $data['expires_in']);
+        parent::addCacheValue($this->jsApiTicketCacheName, $jsApiTicket, $data->toInt('expires_in'));
 
         return $jsApiTicket;
     }
@@ -71,7 +71,7 @@ class Publicly extends WXSdk
     /**
      * 通过serverId获取文件
      * @param $serverId
-     * @return string|array|null
+     * @return AB|string
      * @throws Exception
      */
     public function getServerFile($serverId)
@@ -148,18 +148,17 @@ class Publicly extends WXSdk
      * @param $templateId
      * @param $openId
      * @param $data
-     * @param $miniAppId
+     * @param null $url
+     * @param null $miniAppId
      * @param null $miniPage
      * @return bool
      * @throws Exception
      */
-    public function sendSubTemplate($templateId, $openId, $data, $miniAppId = null, $miniPage = null): bool
+    public function sendSubTemplate($templateId, $openId, $data, $openUrl = null, $miniAppId = null, $miniPage = null): bool
     {
         if (empty($templateId)) throw new Exception('模板id错误');
 
         if (empty($openId)) throw new Exception('openId错误');
-
-        if (empty($miniAppId)) throw new Exception('page 错误');
 
         $accessToken = $this->getAccessToken();
 
@@ -167,7 +166,11 @@ class Publicly extends WXSdk
 
         $data = ['touser' => $openId, 'template_id' => $templateId, 'data' => $data];
 
-        if ($miniAppId && $miniPage) $data['miniprogram'] = ['appid' => $miniAppId, 'pagepath' => $miniPage];
+        if ($openUrl) $data['url'] = $openUrl;
+
+        if ($miniAppId && $miniPage) {
+            $data['miniprogram'] = ['appid' => $miniAppId, 'pagepath' => $miniPage];
+        }
 
         $data = parent::sendHttpResponse($url, $data, [CURLOPT_HTTPHEADER => ['Content-type' => 'application/json']]);
 
@@ -190,6 +193,39 @@ class Publicly extends WXSdk
         $url = PubliclyConfig::getUserListUrl($accessToken, $nextOpenId);
 
         $data = $this->sendHttpResponse($url);
+
+        if (!$data->hasValue('errcode', 0)) throw new Exception($data->toString('errmsg'));
+
+        return $data->toData();
+    }
+
+    /**
+     * 创建二维码ticket
+     * 每次创建二维码ticket需要提供一个开发者自行设定的参数（scene_id）
+     * 分别介绍临时二维码和永久二维码的创建二维码ticket过程
+     * @param int $expire 该二维码有效时间，以秒为单位。 最大不超过2592000（即30天），此字段如果不填，则默认有效期为60秒。
+     * @param string|null $actionName 二维码类型，QR_SCENE为临时的整型参数值，QR_STR_SCENE为临时的字符串参数值，QR_LIMIT_SCENE为永久的整型参数值，QR_LIMIT_STR_SCENE为永久的字符串参数值
+     * @param string|null $sceneId 场景值ID，临时二维码时为32位非0整型，永久二维码时最大值为100000（目前参数只支持1--100000）
+     * @param string|null $sceneStr 场景值ID（字符串形式的ID），字符串类型，长度限制为1到64
+     * @return array|null
+     * @throws Exception
+     */
+    public function createQrcode(int $expire = 3600 * 24 * 30, ?string $actionName = null, ?string $sceneId = null, ?string $sceneStr = null): ?array
+    {
+        $accessToken = $this->getAccessToken();
+
+        $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $accessToken;
+
+        $data = $this->sendHttpResponse($url, [
+            'expire_seconds' => $expire,
+            'action_name' => $actionName,
+            'action_info' => [
+                'scene' => [
+                    'scene_id' => $sceneId,
+                    'scene_str' => $sceneStr,
+                ]
+            ],
+        ]);
 
         if (!$data->hasValue('errcode', 0)) throw new Exception($data->toString('errmsg'));
 

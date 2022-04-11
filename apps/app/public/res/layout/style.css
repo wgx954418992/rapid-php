@@ -1,0 +1,422 @@
+@charset "utf-8";
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+::selection {
+    color: #fff;
+    background: #1f43a4;
+}
+
+body {
+    font-size: 14px;
+    line-height: 1.3;
+    position: relative;
+    font-family: "microsoft yahei", "STHeitiSC-Light", "Rotobo", "sans-serif";
+}
+
+button {
+    background: transparent;
+}
+
+@keyframes app-loading-animation {
+    50% {
+        opacity: 0.3;
+        transform: scale(0.4);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.form-control.show {
+    border-color: red;
+}
+
+.app-loading {
+    position: relative;
+}
+
+.app-loading > div:nth-child(1) {
+    top: 25px;
+    left: 0;
+    animation: app-loading-animation 1s 0s infinite linear;
+}
+
+.app-loading > div:nth-child(2) {
+    top: 17px;
+    left: 17px;
+    animation: app-loading-animation 1s .12s infinite linear;
+}
+
+.app-loading > div:nth-child(3) {
+    top: 0;
+    left: 25px;
+    animation: app-loading-animation 1s .24s infinite linear;
+}
+
+.app-loading > div:nth-child(4) {
+    top: -17px;
+    left: 17px;
+    animation: app-loading-animation 1s .36s infinite linear;
+}
+
+.app-loading > div:nth-child(5) {
+    top: -25px;
+    left: 0;
+    animation: app-loading-animation 1s .48s infinite linear;
+}
+
+.app-loading > div:nth-child(6) {
+    top: -17px;
+    left: -17px;
+    animation: app-loading-animation 1s .6s infinite linear;
+}
+
+.app-loading > div:nth-child(7) {
+    top: 0;
+    left: -25px;
+    animation: app-loading-animation 1s .72s infinite linear;
+}
+
+.app-loading > div:nth-child(8) {
+    top: 17px;
+    left: -17px;
+    animation: app-loading-animation 1s .84s infinite linear;
+}
+
+.app-loading > div {
+    width: 15px;
+    height: 15px;
+    margin: 2px;
+    border-radius: 100%;
+    position: absolute;
+    animation-fill-mode: both;
+    background-color: #453e3c;
+
+}
+
+.app-show {
+    display: block;
+}
+
+.app-hide {
+    display: none;
+}
+
+.app-color-white {
+    color: white;
+}
+
+.app-color-black {
+    color: black;
+}
+
+.app-color-black-grep {
+    color: #040404;
+}
+
+.app-color-primary {
+    color: #1f43a4;
+}
+
+.app-color-title {
+    color: #232323;
+}
+
+.app-color-desc {
+    color: #565656;
+}
+
+.app-color-waring {
+    color: #f75050;
+}
+
+.app-color-grep {
+    color: #d0d0d0;
+}
+
+.app-background-white {
+    background: white;
+}
+
+.app-background-grep {
+    background: #f1f1f1;
+}
+
+.app-cursor-pointer {
+    cursor: pointer;
+}
+
+.app-text-d-u {
+    text-decoration: underline;
+}
+
+.app-font-size {
+    font-size: 14px;
+}
+
+.app-font-size-12 {
+    font-size: 12px;
+}
+
+.app-font-size-16 {
+    font-size: 16px;
+}
+
+.app-font-size-18 {
+    font-size: 18px;
+}
+
+.app-font-size-20 {
+    font-size: 20px;
+}
+
+.app-font-size-22 {
+    font-size: 22px;
+}
+
+.app-font-size-25 {
+    font-size: 25px;
+}
+
+.app-font-size-30 {
+    font-size: 30px;
+}
+
+.app-font-bold {
+    font-weight: bold;
+}
+
+.app-mg-t-10 {
+    margin-top: 10px;
+}
+
+.app-mg-b-10 {
+    margin-bottom: 10px;
+}
+
+.app-container {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.app-container-h5 {
+    width: 94%;
+    margin: 0 auto;
+}
+
+.app-hover-opacity {
+    transition: all 0.3s;
+}
+
+.app-hover-opacity:hover {
+    opacity: .6;
+}
+
+.app-pager {
+    overflow: hidden;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.app-pager[data-count="0"] {
+    display: none;
+}
+
+.app-pager > .items {
+    display: inline-block;
+}
+
+.app-pager > .items > .p {
+    color: #9c9c9c;
+    font-size: 14px;
+    padding: 8px 15px;
+    transition: all 0.3s;
+    display: inline-block;
+    border: 1px solid #cccccc;
+}
+
+.app-pager > .items > .p.disable {
+    cursor: not-allowed;
+    background: #cccccc;
+}
+
+.app-pager > .items > .p:hover {
+    border-color: #009c4c;
+}
+
+.app-pager > .items > .p.disable:hover {
+    border-color: #cccccc;
+}
+
+.app-pager > .items > .p[data-before='1'] {
+    color: #ffffff;
+    border-color: #009c4c;
+    background: #009c4c;
+}
+
+.app-pager > .items > strong {
+    color: #999;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.app-pager > .jump {
+    color: #999;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.app-pager > .jump > .input {
+    width: 35px;
+    margin: 0 5px;
+    padding: 5px;
+    border-radius: 1px;
+    text-align: center;
+    transition: all 0.3s;
+    border: 1px solid #dddddd;
+}
+
+.app-pager > .jump > .input:focus {
+    border-color: #009c4c;
+}
+
+.app-pager > .jump > .submit {
+    padding: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 1px;
+    transition: all 0.3s;
+    border: 1px solid #dddddd;
+}
+
+.app-pager > .jump > .submit:hover {
+    border-color: #009c4c;
+}
+
+.app-tips {
+    overflow: hidden;
+}
+
+.app-tips > .icon {
+    width: 17px;
+    height: 17px;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+
+.app-tips > .icon img {
+    vertical-align: top;
+}
+
+.app-tips > .text {
+    width: calc(100% - 30px);
+    vertical-align: middle;
+}
+
+.app-form-group {
+    width: 100%;
+    overflow: hidden;
+}
+
+.app-form-input {
+    height: 55px;
+    line-height: 55px;
+    border-radius: 5px;
+    border: 2px solid #000000;
+}
+
+.app-form-select {
+    color: #000000;
+    background: #f8f8f8;
+}
+
+.app-form-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.app-form-btn {
+    border: none;
+    padding: 15px 0;
+    background: #000;
+}
+
+.app-form-btn:hover {
+    background: #525252;
+}
+
+.app-text-ellipsis {
+    word-break: keep-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.app-block {
+    overflow: hidden;
+    padding: 50px 0;
+}
+
+.app-block > .container {
+    overflow: hidden;
+}
+
+.app-block > .container {
+    margin: 0 auto;
+}
+
+.app-block > .container > .title {
+    overflow: hidden;
+}
+
+.app-block > .container > .title.border::after {
+    content: ' ';
+    width: 120px;
+    height: 2px;
+    display: block;
+    margin: 10px auto 0;
+    background: #1f43a4;
+}
+
+.app-link {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.app-link > .item {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #eeeeee;
+}
+
+.app-link > .item > img {
+    width: 180px;
+    height: 60px;
+    object-fit: contain;
+}
+
+
+.app-select-image {
+    width: 150px;
+    height: auto;
+    line-height: 1.5;
+    cursor: pointer;
+    min-height: 150px;
+    border: 1px dashed #000000;
+}
+
+.app-select-image.show {
+    border-color: red;
+    display: inline-flex !important;
+}

@@ -3,7 +3,7 @@
 
 RapidPHP本着免费开源、快速、高效、简单的面向对象的 轻量级PHP开发框架。
 
->**版本:** `3.9.9.3`
+>**版本:** `3.9.9.5`
 
 ## 命名规范
 
@@ -38,7 +38,7 @@ composer create-project wgx954418992/rapid-php
 *   导入数据库；
 
 ```
-express-mini.sql
+rapid-php.sql
 ```
 *   修改mysql连接配置跟redis连接配置；
 ```

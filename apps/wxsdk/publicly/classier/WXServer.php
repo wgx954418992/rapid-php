@@ -51,6 +51,11 @@ class WXServer
     const EVENT_TYPE_UNSUBSCRIBE = 'unsubscribe';
 
     /**
+     * event scan
+     */
+    const EVENT_TYPE_SCAN = 'SCAN';
+
+    /**
      * event click
      */
     const EVENT_TYPE_CLICK = 'CLICK';
@@ -111,10 +116,10 @@ class WXServer
     /**
      * 处理事件
      * @param NoticeInterface $server
-     * @param $input
-     * @param $msgSignature
+     * @param string|null $input
+     * @param string|null $msgSignature
      * @param $timestamp
-     * @param $nonce
+     * @param string|null $nonce
      * @return mixed|string|null
      * 如果有返回消息，则在controller里面直接输出返回值
      * @throws Exception
@@ -135,7 +140,7 @@ class WXServer
 
             $deErrCode = $bizMsgCrypt->decryptMsg($msgSignature, $timestamp, $nonce, $input, $msg);
 
-            if ($deErrCode != CryptErrorConfig::$OK) throw new Exception('decryptMsg Error!');
+            if ($deErrCode != CryptErrorConfig::$OK) throw new Exception('decryptMsg Error!' . $deErrCode);
         } else {
             $msg = X()->decode($input);
         }
@@ -162,6 +167,9 @@ class WXServer
                     break;
                 case self::EVENT_TYPE_CLICK:
                     $result = $server->onClick($instance);
+                    break;
+                case self::EVENT_TYPE_SCAN:
+                    $result = $server->onScan($instance);
                     break;
                 default:
                     $result = $server->onOther($msg);

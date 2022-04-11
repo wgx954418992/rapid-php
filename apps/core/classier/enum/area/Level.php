@@ -8,6 +8,12 @@ use enum\classier\Enum;
 
 class Level extends Enum
 {
+
+    /**
+     * 地区等级=》国家
+     */
+    const COUNTRY = 0;
+
     /**
      * 地区等级=》省
      */

@@ -3,13 +3,10 @@
 namespace apps\app\classier\controller\account;
 
 
-use apps\app\classier\context\WebContext;
-use apps\app\classier\service\account\AccountService;
-use apps\core\classier\context\PathContextInterface;
-use apps\core\classier\model\AppAddressModel;
-use apps\core\classier\model\UserCompanyModel;
+use apps\core\classier\service\UserService;
 use Exception;
 use rapidPHP\modules\common\classier\RESTFulApi;
+use ReflectionException;
 
 /**
  * Class AccountController
@@ -20,71 +17,54 @@ class AccountController extends ValidaAccountController
 {
 
     /**
-     * @var AccountService
-     */
-    private $accountService;
-
-    /**
-     * AccountController constructor.
-     * @param WebContext $context
-     * @throws Exception
-     */
-    public function __construct(WebContext $context)
-    {
-        parent::__construct($context);
-
-        $this->accountService = new AccountService(parent::getCurrentUser());
-    }
-
-    /**
-     * 获取当前用户信息
-     * @route /info
+     * 获取当前用户属性
+     * @route /profile/get
      * @method get
-     * @typed api
-     * @param PathContextInterface $pathContext
      * @return RESTFulApi
      * @throws Exception
      */
-    public function getCurrentUserInfo(PathContextInterface $pathContext)
+    public function getProfile()
     {
-        $userModel = parent::getCurrentUser();
+        $userModel = $this->getCurrentUser();
 
-        $data = $userModel->toData();
-
-        $data['company'] = $this->accountService->getCurrentCompany($pathContext);
-
-        return RESTFulApi::success($data);
+        return RESTFulApi::success($userModel);
     }
 
     /**
-     * 获取欧洲店铺地址
-     * @route /eurostore
-     * @method get
-     * @typed api
-     * @return RESTFulApi
-     * @throws Exception
-     */
-    public function getEuroStore()
-    {
-        return RESTFulApi::success($this->accountService->getEuroStore());
-    }
-
-    /**
-     * 完善用户信息
-     * @route /perfect
+     * 设置用户属性
+     * @route /profile/set
      * @method post
-     * @typed api
-     * @param $code
-     * @param $email
-     * @param UserCompanyModel $company
-     * @param AppAddressModel $euroStore
+     * @param array $profile post json
      * @return RESTFulApi
      * @throws Exception
      */
-    public function perfectInfo($code, $email, UserCompanyModel $company, AppAddressModel $euroStore)
+    public function setProfile(array $profile)
     {
-        $this->accountService->perfectInfo($code, $email, $company, $euroStore);
+        $profile['updated_id'] = $this->getUserId();
 
-        return RESTFulApi::success(null, '完善成功，等待审核资料哦');
+        UserService::getInstance()->setProfile($this->getCurrentUser(), $profile);
+
+        return RESTFulApi::success();
+    }
+
+    /**
+     * 绑定手机
+     * @route /profile/telephone/bind
+     * @method post
+     * @param $telephone
+     * @param $code
+     * @return RESTFulApi
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public function bindTelephone($telephone, $code)
+    {
+        if (!empty($this->getCurrentUser()->getTelephone())) {
+            throw new Exception('已经绑定手机号码，如需更换，请进行换绑操作');
+        }
+
+        UserService::getInstance()->bindTelephone($this->getCurrentUser(), $telephone, $code);
+
+        return RESTFulApi::success();
     }
 }

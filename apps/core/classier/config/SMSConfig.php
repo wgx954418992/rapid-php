@@ -1,95 +1,73 @@
 <?php
 
+
 namespace apps\core\classier\config;
 
-
-abstract class SMSConfig
+class SMSConfig
 {
 
     /**
-     * 签名
-     * @var string|array
+     * Configure
      */
-    protected $sign = '';
+    use Configure;
 
     /**
-     * 产品地域
+     * service
      * @var string
+     * @config sms.service
      */
-    protected $regionId = '';
+    protected $service;
 
     /**
-     * 发送短信时间限制
+     * limit
+     * @var int
+     * @config sms.limit
      */
-    const LIMIT_TIME = 60;
+    protected $limit;
 
     /**
-     * 短信有效时间
+     * valida
+     * @var int
+     * @config sms.valida
      */
-    const VALIDA_TIME = 60 * 5;
+    protected $valida;
 
     /**
-     * 发送短信模板类型,订单状态更改通知
+     * 万能码
+     * @var string|int|null
+     * @config sms.universal
      */
-    const TEMPLATE_TYPE_ORDER_STATUS_CHANGE = 'orderStatusChange';
+    protected $universal;
 
     /**
-     * 发送短信模板类型,订单到库等待取货
-     */
-    const TEMPLATE_TYPE_ORDER_WAITING_TAKE = 'orderWaitingTake';
-
-    /**
-     * 获取产品地域
      * @return string
      */
-    public function getRegionId(): string
+    public function getService(): string
     {
-        return $this->regionId;
+        return $this->service;
     }
 
     /**
-     * 获取签名
-     * @return string|array
+     * @return int
      */
-    public function getSign()
+    public function getLimit(): int
     {
-        return $this->sign;
+        return $this->limit;
     }
 
     /**
-     * 模板类型 国外
-     * @return array
+     * @return int
      */
-    public function getTemplateTypeAbroad(): array
+    public function getValida(): int
     {
-        return [];
+        return $this->valida;
     }
 
     /**
-     * 模板类型 国内
-     * @return array
+     * @return int|string|null
      */
-    public function getTemplateTypeDomestic(): array
+    public function getUniversal()
     {
-        return [];
-    }
-
-    /**
-     * 通过type获取smsId
-     * @param $type
-     * @param string $countryCode
-     * @return bool|string|mixed
-     */
-    public function getTemplateCodeByType($type, $countryCode = '86')
-    {
-        if ($countryCode == '86') {
-            $types = $this->getTemplateTypeDomestic();
-        } else {
-            $types = $this->getTemplateTypeAbroad();
-        }
-
-        if (array_key_exists($type, $types)) return $types[$type];
-
-        return false;
+        return $this->universal;
     }
 }

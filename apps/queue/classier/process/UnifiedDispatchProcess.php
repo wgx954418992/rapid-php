@@ -5,35 +5,37 @@ namespace apps\queue\classier\process;
 
 
 use apps\core\classier\model\AppQueueModel;
-use apps\core\classier\service\BaseService;
-use apps\queue\classier\process\notify\MiniProcess;
+use apps\queue\classier\enum\Status;
+use apps\queue\classier\event\FollowEvent;
+use apps\queue\classier\event\integral\ChangeEvent;
+use apps\queue\classier\event\SMSNotifyEvent;
+use apps\queue\classier\process\integral\ChangeProcess;
 use apps\queue\classier\process\notify\SMSProcess;
 use Exception;
-use apps\queue\classier\config\QueueConfig;
-use apps\queue\classier\process\order\StatusChangeProcess;
 use apps\queue\classier\service\QueueService;
 use rapidPHP\modules\console\classier\Output;
-use rapidPHP\modules\process\classier\swoole\PipeProcess;
 use rapidPHP\modules\reflection\classier\Classify;
 use ReflectionException;
 use Swoole\Process;
+use function rapidPHP\formatException;
 
 class UnifiedDispatchProcess extends PipeProcess
 {
 
     /**
-     * @var Output
+     * @var int
      */
-    private $output;
+    protected $sleep;
 
     /**
      * @var PipeProcess[]
      */
-    private $handlerProcess = [
-        QueueConfig::TYPE_ORDER_STATUS_CHANGE => StatusChangeProcess::class,
-        QueueConfig::TYPE_NOTIFY_SMS => SMSProcess::class,
-        QueueConfig::TYPE_NOTIFY_MINI => MiniProcess::class,
+    protected $handlerProcess = [
+        SMSNotifyEvent::NAME => SMSProcess::class,
+        FollowEvent::NAME => FollowProcess::class,
+        ChangeEvent::NAME => ChangeProcess::class,
     ];
+
 
     /**
      * UnifiedDispatchProcess constructor.
@@ -41,11 +43,11 @@ class UnifiedDispatchProcess extends PipeProcess
      * @param Output|null $output
      * @throws ReflectionException
      */
-    public function __construct($sleep = 3,Output $output = null)
+    public function __construct(int $sleep, Output $output = null)
     {
-        parent::__construct($sleep);
+        parent::__construct($output);
 
-        $this->output = $output;
+        $this->sleep = $sleep;
 
         foreach ($this->handlerProcess as $type => $processClass) {
             $this->handlerProcess[$type] = $process = $this->newProcess($processClass);
@@ -56,19 +58,22 @@ class UnifiedDispatchProcess extends PipeProcess
         $this->start();
     }
 
-
     /**
      * 创建进程
      * @param $processClass
      * @return PipeProcess
      * @throws ReflectionException
+     * @throws Exception
      */
     public function newProcess($processClass): PipeProcess
     {
-        if ($processClass instanceof PipeProcess) $processClass = get_class($processClass);
+        if ($processClass instanceof PipeProcess) {
+            $processClass = get_class($processClass);
+        }
 
         /** @var PipeProcess $process */
-        $process = Classify::getInstance($processClass)->newInstance($this->getSleep(), $this);
+        $process = Classify::getInstance($processClass)
+            ->newInstance(parent::getOutput(), $this);
 
         return $process;
     }
@@ -118,12 +123,9 @@ class UnifiedDispatchProcess extends PipeProcess
      * @param $type
      * @return object|PipeProcess|null
      */
-    private function getHandlerProcess($type)
+    public function getHandlerProcess($type)
     {
-        /** @var PipeProcess $class */
-        $class = isset($this->handlerProcess[$type]) ? $this->handlerProcess[$type] : null;
-
-        return $class;
+        return $this->handlerProcess[$type] ?? null;
     }
 
     /**
@@ -131,7 +133,7 @@ class UnifiedDispatchProcess extends PipeProcess
      * @param bool $isSelf
      * @return array
      */
-    public function getHandlerPIDs($isSelf = false): array
+    public function getHandlerPIDs(bool $isSelf = false): array
     {
         $p = [];
 
@@ -167,7 +169,9 @@ class UnifiedDispatchProcess extends PipeProcess
                     /** @var PipeProcess $childProcess */
                     $childProcess = $this->getHandlerProcess($model->getType());
 
-                    if (!$childProcess) continue;
+                    if (!$childProcess) {
+                        throw new Exception("{$model->getType()} 对应的进程不存在!");
+                    }
 
                     $data = serialize($model);
 
@@ -180,39 +184,60 @@ class UnifiedDispatchProcess extends PipeProcess
 
                         $this->onHandler($data);
 
-                        $this->output->perror($e->getMessage());
-
-                        BaseService::getInstance()->addLog($e->getMessage());
+                        parent::log($e);
                     }
                 }
             } catch (Exception $e) {
-                $this->output->perror($e->getMessage());
-
-                BaseService::getInstance()->addLog($e->getMessage());
+                parent::log($e);
             }
 
-            sleep($this->getSleep());
+            sleep($this->sleep);
         }
     }
 
+
     /**
-     * 调度任务完成或者出现异常，结束消息队列
+     * 调度任务完 结束消息队列
      * @param $data
-     * @return mixed|void
+     * @return void
      */
     public function onHandler($data)
     {
         $queueModel = unserialize($data);
 
-        if ($queueModel instanceof AppQueueModel) {
-            try {
-                QueueService::getInstance()->setQueueStatus($queueModel->getId(),
-                    QueueConfig::STATUS_COMPLETE);
-            } catch (Exception $e) {
-                BaseService::getInstance()->addLog($e->getMessage(), $e);
-            }
+        try {
+            if (!($queueModel instanceof AppQueueModel))
+                throw new Exception('数据错误');
+
+            QueueService::getInstance()->setQueueStatus($queueModel->getId(),
+                Status::COMPLETE);
+        } catch (Exception $e) {
+            parent::log($e);
         }
     }
 
+    /**
+     * 子进程异常
+     * @param Exception $e
+     * @param $data
+     */
+    public function onException(Exception $e, $data)
+    {
+        parent::log($e);
 
+        $queueModel = unserialize($data);
+
+        try {
+            if (!($queueModel instanceof AppQueueModel))
+                throw new Exception('数据错误');
+
+            QueueService::getInstance()->setQueueStatus(
+                $queueModel->getId(),
+                Status::EXCEPTION,
+                formatException($e)
+            );
+        } catch (Exception $e) {
+            parent::log($e);
+        }
+    }
 }

@@ -24,8 +24,16 @@ class RedisCacheService extends RedisCache
             ->getRedis()
             ->getMaster();
 
-        $redis = new Redis($config);
+        $this->prefix = $config->getPrefix();
 
-        parent::__construct($redis);
+        parent::__construct(new Redis($config));
+    }
+
+    /**
+     * @return Redis
+     */
+    public function getRedis(): Redis
+    {
+        return $this->redis;
     }
 }

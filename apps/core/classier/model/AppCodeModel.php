@@ -5,112 +5,30 @@ namespace apps\core\classier\model;
 use Exception;
 use rapidPHP\modules\core\classier\Model;
 
+
 /**
  * 验证码表
  * @table app_code
- * rapidPHP auto generate Model 2021-01-25 21:19:26
+ * rapidPHP auto generate Model 2022-04-11 11:39:18
  */
-class AppCodeModel extends Model
+
+class AppCodeModel extends Model 
 {
-    
+
     /**
      * table name
      */
     const NAME = 'app_code';
-        
+
     
     /**
      * code Id
+     * @var 
      * @length 
      * @typed bigint
      */
-    private $id;    
-    
-    /**
-     * 模板Id
-     * @length 21
-     * @typed varchar
-     */
-    private $template_id;    
-    
-    /**
-     * 手机号或者其他
-     * @length 50
-     * @typed varchar
-     */
-    private $bind_id;    
-    
-    /**
-     * 验证码
-     * @length 23
-     * @typed varchar
-     */
-    private $code;    
-    
-    /**
-     * 短信内容
-     * @length 256
-     * @typed varchar
-     */
-    private $content;    
-    
-    /**
-     * 发送时间
-     * @length 
-     * @typed int
-     */
-    private $send_time;    
-    
-    /**
-     * 效验时间
-     * @length 
-     * @typed int
-     */
-    private $check_time;    
-    
-    /**
-     * 是否删除
-     * @length 
-     * @typed bit
-     */
-    private $is_delete;    
-    
-    /**
-     * 创建人Id
-     * @length 
-     * @typed bigint
-     */
-    private $created_id;    
-    
-    /**
-     * 创建时间
-     * @length 
-     * @typed datetime
-     */
-    private $created_time;    
-    
-    /**
-     * 修改人Id
-     * @length 
-     * @typed bigint
-     */
-    private $updated_id;    
-    
-    /**
-     * 修改时间
-     * @length 
-     * @typed datetime
-     */
-    private $updated_time;    
-    /**
-     * 获取 code Id
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-    
+    protected $id;
+
     /**
      * 设置 code Id
      * @param $id
@@ -119,7 +37,16 @@ class AppCodeModel extends Model
     {
         $this->id = $id;
     }
-    
+
+    /**
+     * 获取 code Id
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * 效验 code Id
      * @param string $msg
@@ -127,74 +54,89 @@ class AppCodeModel extends Model
      */
     public function validId(string $msg = 'id Cannot be empty!')
     {
-        if(empty($this->id)) throw new Exception($msg);
+        if (empty($this->id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 模板Id
-     * @return string
+     * 模板Id
+     * @var string|null 
+     * @length 30
+     * @typed varchar
      */
-    public function getTemplateId(): ?string
-    {
-        return $this->template_id;
-    }
-    
+    protected $code_type;
+
     /**
      * 设置 模板Id
-     * @param string|null $template_id
+     * @param string|null $code_type
      */
-    public function setTemplateId(?string $template_id)
+    public function setCodeType(?string $code_type)
     {
-        $this->template_id = $template_id;
+        $this->code_type = $code_type;
     }
-    
+
+    /**
+     * 获取 模板Id
+     * @return string|null
+     */
+    public function getCodeType(): ?string
+    {
+        return $this->code_type;
+    }
+
     /**
      * 效验 模板Id
      * @param string $msg
      * @throws Exception
      */
-    public function validTemplateId(string $msg = 'template_id Cannot be empty!')
+    public function validCodeType(string $msg = 'code_type Cannot be empty!')
     {
-        if(empty($this->template_id)) throw new Exception($msg);
+        if (empty($this->code_type)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 手机号或者其他
-     * @return string
+     * 接收者 手机号码或者邮箱等
+     * @var string|null 
+     * @length 50
+     * @typed varchar
      */
-    public function getBindId(): ?string
-    {
-        return $this->bind_id;
-    }
-    
+    protected $receiver;
+
     /**
-     * 设置 手机号或者其他
-     * @param string|null $bind_id
+     * 设置 接收者 手机号码或者邮箱等
+     * @param string|null $receiver
      */
-    public function setBindId(?string $bind_id)
+    public function setReceiver(?string $receiver)
     {
-        $this->bind_id = $bind_id;
+        $this->receiver = $receiver;
     }
-    
+
     /**
-     * 效验 手机号或者其他
+     * 获取 接收者 手机号码或者邮箱等
+     * @return string|null
+     */
+    public function getReceiver(): ?string
+    {
+        return $this->receiver;
+    }
+
+    /**
+     * 效验 接收者 手机号码或者邮箱等
      * @param string $msg
      * @throws Exception
      */
-    public function validBindId(string $msg = 'bind_id Cannot be empty!')
+    public function validReceiver(string $msg = 'receiver Cannot be empty!')
     {
-        if(empty($this->bind_id)) throw new Exception($msg);
+        if (empty($this->receiver)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 验证码
-     * @return string
+     * 验证码
+     * @var string|null 
+     * @length 23
+     * @typed varchar
      */
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-    
+    protected $code;
+
     /**
      * 设置 验证码
      * @param string|null $code
@@ -203,7 +145,16 @@ class AppCodeModel extends Model
     {
         $this->code = $code;
     }
-    
+
+    /**
+     * 获取 验证码
+     * @return string|null
+     */
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
     /**
      * 效验 验证码
      * @param string $msg
@@ -211,18 +162,17 @@ class AppCodeModel extends Model
      */
     public function validCode(string $msg = 'code Cannot be empty!')
     {
-        if(empty($this->code)) throw new Exception($msg);
+        if (empty($this->code)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 短信内容
-     * @return string
+     * 短信内容
+     * @var string|null 
+     * @length 256
+     * @typed varchar
      */
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
-    
+    protected $content;
+
     /**
      * 设置 短信内容
      * @param string|null $content
@@ -231,7 +181,16 @@ class AppCodeModel extends Model
     {
         $this->content = $content;
     }
-    
+
+    /**
+     * 获取 短信内容
+     * @return string|null
+     */
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
     /**
      * 效验 短信内容
      * @param string $msg
@@ -239,18 +198,53 @@ class AppCodeModel extends Model
      */
     public function validContent(string $msg = 'content Cannot be empty!')
     {
-        if(empty($this->content)) throw new Exception($msg);
+        if (empty($this->content)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 发送时间
-     * @return int
+     * 发送类型 1 短信 2 邮件
+     * @var int|null 
+     * @length 
+     * @typed tinyint
      */
-    public function getSendTime(): ?int
+    protected $send_type;
+
+    /**
+     * 设置 发送类型 1 短信 2 邮件
+     * @param int|null $send_type
+     */
+    public function setSendType(?int $send_type)
     {
-        return $this->send_time;
+        $this->send_type = $send_type;
     }
-    
+
+    /**
+     * 获取 发送类型 1 短信 2 邮件
+     * @return int|null
+     */
+    public function getSendType(): ?int
+    {
+        return $this->send_type;
+    }
+
+    /**
+     * 效验 发送类型 1 短信 2 邮件
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validSendType(string $msg = 'send_type Cannot be empty!')
+    {
+        if (empty($this->send_type)) throw new Exception($msg);
+    }
+
+    /**
+     * 发送时间
+     * @var int|null 
+     * @length 
+     * @typed int
+     */
+    protected $send_time;
+
     /**
      * 设置 发送时间
      * @param int|null $send_time
@@ -259,7 +253,16 @@ class AppCodeModel extends Model
     {
         $this->send_time = $send_time;
     }
-    
+
+    /**
+     * 获取 发送时间
+     * @return int|null
+     */
+    public function getSendTime(): ?int
+    {
+        return $this->send_time;
+    }
+
     /**
      * 效验 发送时间
      * @param string $msg
@@ -267,18 +270,17 @@ class AppCodeModel extends Model
      */
     public function validSendTime(string $msg = 'send_time Cannot be empty!')
     {
-        if(empty($this->send_time)) throw new Exception($msg);
+        if (empty($this->send_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 效验时间
-     * @return int
+     * 效验时间
+     * @var int|null 
+     * @length 
+     * @typed int
      */
-    public function getCheckTime(): ?int
-    {
-        return $this->check_time;
-    }
-    
+    protected $check_time;
+
     /**
      * 设置 效验时间
      * @param int|null $check_time
@@ -287,7 +289,16 @@ class AppCodeModel extends Model
     {
         $this->check_time = $check_time;
     }
-    
+
+    /**
+     * 获取 效验时间
+     * @return int|null
+     */
+    public function getCheckTime(): ?int
+    {
+        return $this->check_time;
+    }
+
     /**
      * 效验 效验时间
      * @param string $msg
@@ -295,18 +306,17 @@ class AppCodeModel extends Model
      */
     public function validCheckTime(string $msg = 'check_time Cannot be empty!')
     {
-        if(empty($this->check_time)) throw new Exception($msg);
+        if (empty($this->check_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 是否删除
-     * @return bool
+     * 是否删除
+     * @var bool|null 
+     * @length 
+     * @typed bit
      */
-    public function getIsDelete(): ?bool
-    {
-        return $this->is_delete;
-    }
-    
+    protected $is_delete;
+
     /**
      * 设置 是否删除
      * @param bool|null $is_delete
@@ -315,7 +325,16 @@ class AppCodeModel extends Model
     {
         $this->is_delete = $is_delete;
     }
-    
+
+    /**
+     * 获取 是否删除
+     * @return bool|null
+     */
+    public function getIsDelete(): ?bool
+    {
+        return $this->is_delete;
+    }
+
     /**
      * 效验 是否删除
      * @param string $msg
@@ -323,18 +342,17 @@ class AppCodeModel extends Model
      */
     public function validIsDelete(string $msg = 'is_delete Cannot be empty!')
     {
-        if(empty($this->is_delete)) throw new Exception($msg);
+        if (empty($this->is_delete)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建人Id
-     * @return mixed
+     * 创建人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getCreatedId()
-    {
-        return $this->created_id;
-    }
-    
+    protected $created_id;
+
     /**
      * 设置 创建人Id
      * @param $created_id
@@ -343,7 +361,16 @@ class AppCodeModel extends Model
     {
         $this->created_id = $created_id;
     }
-    
+
+    /**
+     * 获取 创建人Id
+     * @return mixed
+     */
+    public function getCreatedId()
+    {
+        return $this->created_id;
+    }
+
     /**
      * 效验 创建人Id
      * @param string $msg
@@ -351,18 +378,17 @@ class AppCodeModel extends Model
      */
     public function validCreatedId(string $msg = 'created_id Cannot be empty!')
     {
-        if(empty($this->created_id)) throw new Exception($msg);
+        if (empty($this->created_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建时间
-     * @return string
+     * 创建时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getCreatedTime(): ?string
-    {
-        return $this->created_time;
-    }
-    
+    protected $created_time;
+
     /**
      * 设置 创建时间
      * @param string|null $created_time
@@ -371,7 +397,16 @@ class AppCodeModel extends Model
     {
         $this->created_time = $created_time;
     }
-    
+
+    /**
+     * 获取 创建时间
+     * @return string|null
+     */
+    public function getCreatedTime(): ?string
+    {
+        return $this->created_time;
+    }
+
     /**
      * 效验 创建时间
      * @param string $msg
@@ -379,18 +414,17 @@ class AppCodeModel extends Model
      */
     public function validCreatedTime(string $msg = 'created_time Cannot be empty!')
     {
-        if(empty($this->created_time)) throw new Exception($msg);
+        if (empty($this->created_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改人Id
-     * @return mixed
+     * 修改人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getUpdatedId()
-    {
-        return $this->updated_id;
-    }
-    
+    protected $updated_id;
+
     /**
      * 设置 修改人Id
      * @param $updated_id
@@ -399,7 +433,16 @@ class AppCodeModel extends Model
     {
         $this->updated_id = $updated_id;
     }
-    
+
+    /**
+     * 获取 修改人Id
+     * @return mixed
+     */
+    public function getUpdatedId()
+    {
+        return $this->updated_id;
+    }
+
     /**
      * 效验 修改人Id
      * @param string $msg
@@ -407,18 +450,17 @@ class AppCodeModel extends Model
      */
     public function validUpdatedId(string $msg = 'updated_id Cannot be empty!')
     {
-        if(empty($this->updated_id)) throw new Exception($msg);
+        if (empty($this->updated_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改时间
-     * @return string
+     * 修改时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getUpdatedTime(): ?string
-    {
-        return $this->updated_time;
-    }
-    
+    protected $updated_time;
+
     /**
      * 设置 修改时间
      * @param string|null $updated_time
@@ -427,7 +469,16 @@ class AppCodeModel extends Model
     {
         $this->updated_time = $updated_time;
     }
-    
+
+    /**
+     * 获取 修改时间
+     * @return string|null
+     */
+    public function getUpdatedTime(): ?string
+    {
+        return $this->updated_time;
+    }
+
     /**
      * 效验 修改时间
      * @param string $msg
@@ -435,6 +486,7 @@ class AppCodeModel extends Model
      */
     public function validUpdatedTime(string $msg = 'updated_time Cannot be empty!')
     {
-        if(empty($this->updated_time)) throw new Exception($msg);
+        if (empty($this->updated_time)) throw new Exception($msg);
     }
+
 }

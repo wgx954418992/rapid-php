@@ -66,6 +66,5 @@ class ErrorController extends BaseController
                     ];
             }
         }
-        return;
     }
 }

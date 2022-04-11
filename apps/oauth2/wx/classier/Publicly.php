@@ -15,7 +15,7 @@ class Publicly extends OAuth2
 
     /**
      * 获取网页授权access 信息，openId跟access_token
-     * @param $code
+     * @param string $code
      * @return AB
      * @throws Exception
      */
@@ -45,7 +45,7 @@ class Publicly extends OAuth2
     /**
      * 获取wx openid信息
      * @param string $code
-     * @return WXUserModel
+     * @return string|null
      * @throws Exception
      */
     public function getOpenId(string $code): ?string

@@ -5,105 +5,30 @@ namespace apps\core\classier\model;
 use Exception;
 use rapidPHP\modules\core\classier\Model;
 
+
 /**
  * 文件表
  * @table app_file
- * rapidPHP auto generate Model 2021-01-25 21:19:26
+ * rapidPHP auto generate Model 2022-04-11 11:39:18
  */
-class AppFileModel extends Model
+
+class AppFileModel extends Model 
 {
-    
+
     /**
      * table name
      */
     const NAME = 'app_file';
-        
+
     
     /**
      * 主键
+     * @var 
      * @length 
      * @typed bigint
      */
-    private $id;    
-    
-    /**
-     * 文件名
-     * @length 256
-     * @typed varchar
-     */
-    private $name;    
-    
-    /**
-     * 文件大小
-     * @length 
-     * @typed bigint
-     */
-    private $size;    
-    
-    /**
-     * 文件sha1效验值
-     * @length 32
-     * @typed varchar
-     */
-    private $md5;    
-    
-    /**
-     * 文件MIME
-     * @length 20
-     * @typed varchar
-     */
-    private $mime;    
-    
-    /**
-     * 文件路径
-     * @length 1024
-     * @typed varchar
-     */
-    private $path;    
-    
-    /**
-     * 是否删除
-     * @length 
-     * @typed bit
-     */
-    private $is_delete;    
-    
-    /**
-     * 创建人Id
-     * @length 
-     * @typed bigint
-     */
-    private $created_id;    
-    
-    /**
-     * 创建时间
-     * @length 
-     * @typed datetime
-     */
-    private $created_time;    
-    
-    /**
-     * 修改人Id
-     * @length 
-     * @typed bigint
-     */
-    private $updated_id;    
-    
-    /**
-     * 修改时间
-     * @length 
-     * @typed datetime
-     */
-    private $updated_time;    
-    /**
-     * 获取 主键
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-    
+    protected $id;
+
     /**
      * 设置 主键
      * @param $id
@@ -112,7 +37,16 @@ class AppFileModel extends Model
     {
         $this->id = $id;
     }
-    
+
+    /**
+     * 获取 主键
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * 效验 主键
      * @param string $msg
@@ -120,18 +54,17 @@ class AppFileModel extends Model
      */
     public function validId(string $msg = 'id Cannot be empty!')
     {
-        if(empty($this->id)) throw new Exception($msg);
+        if (empty($this->id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 文件名
-     * @return string
+     * 文件名
+     * @var string|null 
+     * @length 256
+     * @typed varchar
      */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-    
+    protected $name;
+
     /**
      * 设置 文件名
      * @param string|null $name
@@ -140,7 +73,16 @@ class AppFileModel extends Model
     {
         $this->name = $name;
     }
-    
+
+    /**
+     * 获取 文件名
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
     /**
      * 效验 文件名
      * @param string $msg
@@ -148,18 +90,17 @@ class AppFileModel extends Model
      */
     public function validName(string $msg = 'name Cannot be empty!')
     {
-        if(empty($this->name)) throw new Exception($msg);
+        if (empty($this->name)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 文件大小
-     * @return mixed
+     * 文件大小
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getSize()
-    {
-        return $this->size;
-    }
-    
+    protected $size;
+
     /**
      * 设置 文件大小
      * @param $size
@@ -168,7 +109,16 @@ class AppFileModel extends Model
     {
         $this->size = $size;
     }
-    
+
+    /**
+     * 获取 文件大小
+     * @return mixed
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
     /**
      * 效验 文件大小
      * @param string $msg
@@ -176,18 +126,17 @@ class AppFileModel extends Model
      */
     public function validSize(string $msg = 'size Cannot be empty!')
     {
-        if(empty($this->size)) throw new Exception($msg);
+        if (empty($this->size)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 文件sha1效验值
-     * @return string
+     * 文件sha1效验值
+     * @var string|null 
+     * @length 32
+     * @typed varchar
      */
-    public function getMd5(): ?string
-    {
-        return $this->md5;
-    }
-    
+    protected $md5;
+
     /**
      * 设置 文件sha1效验值
      * @param string|null $md5
@@ -196,7 +145,16 @@ class AppFileModel extends Model
     {
         $this->md5 = $md5;
     }
-    
+
+    /**
+     * 获取 文件sha1效验值
+     * @return string|null
+     */
+    public function getMd5(): ?string
+    {
+        return $this->md5;
+    }
+
     /**
      * 效验 文件sha1效验值
      * @param string $msg
@@ -204,18 +162,17 @@ class AppFileModel extends Model
      */
     public function validMd5(string $msg = 'md5 Cannot be empty!')
     {
-        if(empty($this->md5)) throw new Exception($msg);
+        if (empty($this->md5)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 文件MIME
-     * @return string
+     * 文件MIME
+     * @var string|null 
+     * @length 50
+     * @typed varchar
      */
-    public function getMime(): ?string
-    {
-        return $this->mime;
-    }
-    
+    protected $mime;
+
     /**
      * 设置 文件MIME
      * @param string|null $mime
@@ -224,7 +181,16 @@ class AppFileModel extends Model
     {
         $this->mime = $mime;
     }
-    
+
+    /**
+     * 获取 文件MIME
+     * @return string|null
+     */
+    public function getMime(): ?string
+    {
+        return $this->mime;
+    }
+
     /**
      * 效验 文件MIME
      * @param string $msg
@@ -232,18 +198,17 @@ class AppFileModel extends Model
      */
     public function validMime(string $msg = 'mime Cannot be empty!')
     {
-        if(empty($this->mime)) throw new Exception($msg);
+        if (empty($this->mime)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 文件路径
-     * @return string
+     * 文件路径
+     * @var string|null 
+     * @length 1024
+     * @typed varchar
      */
-    public function getPath(): ?string
-    {
-        return $this->path;
-    }
-    
+    protected $path;
+
     /**
      * 设置 文件路径
      * @param string|null $path
@@ -252,7 +217,16 @@ class AppFileModel extends Model
     {
         $this->path = $path;
     }
-    
+
+    /**
+     * 获取 文件路径
+     * @return string|null
+     */
+    public function getPath(): ?string
+    {
+        return $this->path;
+    }
+
     /**
      * 效验 文件路径
      * @param string $msg
@@ -260,18 +234,53 @@ class AppFileModel extends Model
      */
     public function validPath(string $msg = 'path Cannot be empty!')
     {
-        if(empty($this->path)) throw new Exception($msg);
+        if (empty($this->path)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 是否删除
-     * @return bool
+     * 文件可选信息
+     * @var 
+     * @length 
+     * @typed json
      */
-    public function getIsDelete(): ?bool
+    protected $options;
+
+    /**
+     * 设置 文件可选信息
+     * @param $options
+     */
+    public function setOptions($options)
     {
-        return $this->is_delete;
+        $this->options = $options;
     }
-    
+
+    /**
+     * 获取 文件可选信息
+     * @return mixed
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * 效验 文件可选信息
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validOptions(string $msg = 'options Cannot be empty!')
+    {
+        if (empty($this->options)) throw new Exception($msg);
+    }
+
+    /**
+     * 是否删除
+     * @var bool|null 
+     * @length 
+     * @typed bit
+     */
+    protected $is_delete;
+
     /**
      * 设置 是否删除
      * @param bool|null $is_delete
@@ -280,7 +289,16 @@ class AppFileModel extends Model
     {
         $this->is_delete = $is_delete;
     }
-    
+
+    /**
+     * 获取 是否删除
+     * @return bool|null
+     */
+    public function getIsDelete(): ?bool
+    {
+        return $this->is_delete;
+    }
+
     /**
      * 效验 是否删除
      * @param string $msg
@@ -288,18 +306,17 @@ class AppFileModel extends Model
      */
     public function validIsDelete(string $msg = 'is_delete Cannot be empty!')
     {
-        if(empty($this->is_delete)) throw new Exception($msg);
+        if (empty($this->is_delete)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建人Id
-     * @return mixed
+     * 创建人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getCreatedId()
-    {
-        return $this->created_id;
-    }
-    
+    protected $created_id;
+
     /**
      * 设置 创建人Id
      * @param $created_id
@@ -308,7 +325,16 @@ class AppFileModel extends Model
     {
         $this->created_id = $created_id;
     }
-    
+
+    /**
+     * 获取 创建人Id
+     * @return mixed
+     */
+    public function getCreatedId()
+    {
+        return $this->created_id;
+    }
+
     /**
      * 效验 创建人Id
      * @param string $msg
@@ -316,18 +342,17 @@ class AppFileModel extends Model
      */
     public function validCreatedId(string $msg = 'created_id Cannot be empty!')
     {
-        if(empty($this->created_id)) throw new Exception($msg);
+        if (empty($this->created_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建时间
-     * @return string
+     * 创建时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getCreatedTime(): ?string
-    {
-        return $this->created_time;
-    }
-    
+    protected $created_time;
+
     /**
      * 设置 创建时间
      * @param string|null $created_time
@@ -336,7 +361,16 @@ class AppFileModel extends Model
     {
         $this->created_time = $created_time;
     }
-    
+
+    /**
+     * 获取 创建时间
+     * @return string|null
+     */
+    public function getCreatedTime(): ?string
+    {
+        return $this->created_time;
+    }
+
     /**
      * 效验 创建时间
      * @param string $msg
@@ -344,18 +378,17 @@ class AppFileModel extends Model
      */
     public function validCreatedTime(string $msg = 'created_time Cannot be empty!')
     {
-        if(empty($this->created_time)) throw new Exception($msg);
+        if (empty($this->created_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改人Id
-     * @return mixed
+     * 修改人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getUpdatedId()
-    {
-        return $this->updated_id;
-    }
-    
+    protected $updated_id;
+
     /**
      * 设置 修改人Id
      * @param $updated_id
@@ -364,7 +397,16 @@ class AppFileModel extends Model
     {
         $this->updated_id = $updated_id;
     }
-    
+
+    /**
+     * 获取 修改人Id
+     * @return mixed
+     */
+    public function getUpdatedId()
+    {
+        return $this->updated_id;
+    }
+
     /**
      * 效验 修改人Id
      * @param string $msg
@@ -372,18 +414,17 @@ class AppFileModel extends Model
      */
     public function validUpdatedId(string $msg = 'updated_id Cannot be empty!')
     {
-        if(empty($this->updated_id)) throw new Exception($msg);
+        if (empty($this->updated_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改时间
-     * @return string
+     * 修改时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getUpdatedTime(): ?string
-    {
-        return $this->updated_time;
-    }
-    
+    protected $updated_time;
+
     /**
      * 设置 修改时间
      * @param string|null $updated_time
@@ -392,7 +433,16 @@ class AppFileModel extends Model
     {
         $this->updated_time = $updated_time;
     }
-    
+
+    /**
+     * 获取 修改时间
+     * @return string|null
+     */
+    public function getUpdatedTime(): ?string
+    {
+        return $this->updated_time;
+    }
+
     /**
      * 效验 修改时间
      * @param string $msg
@@ -400,6 +450,7 @@ class AppFileModel extends Model
      */
     public function validUpdatedTime(string $msg = 'updated_time Cannot be empty!')
     {
-        if(empty($this->updated_time)) throw new Exception($msg);
+        if (empty($this->updated_time)) throw new Exception($msg);
     }
+
 }

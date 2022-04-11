@@ -3,8 +3,7 @@
 namespace apps\core\classier\dao\master;
 
 
-use apps\core\classier\bean\PageListCondition;
-use apps\core\classier\config\BaseConfig;
+use apps\core\classier\bean\LogListCondition;
 use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\AppLogModel;
 use Exception;
@@ -24,37 +23,46 @@ class LogDao extends MasterDao
         parent::__construct(AppLogModel::class);
     }
 
-
     /**
      * 添加系统日志
-     * @param $id
-     * @param $msg
-     * @param string $content
+     * @param AppLogModel $logModel
      * @return bool
      * @throws Exception
      */
-    public function addLog(&$id, $msg, $content = ''): bool
+    public function addLog(AppLogModel $logModel): bool
     {
-        return parent::add([
-            'msg' => $msg,
-            'content' => $content,
+        $result = $this->add([
+            'type' => $logModel->getType(),
+            'bind_id' => $logModel->getBindId(),
+            'msg' => $logModel->getMsg(),
+            'content' => $logModel->getContent(),
             'add_time' => Cal()->getDate(),
         ], $id);
+
+        if ($result) {
+            $logModel->setId($id);
+        }
+
+        return $result;
     }
 
     /**
      * 获取系统日志列表查询对象
-     * @param PageListCondition $condition
+     * @param LogListCondition $condition
      * @return Driver|Mysql
      * @throws Exception
      */
-    private function getLogListSelect(PageListCondition $condition)
+    private function getLogListSelect(LogListCondition $condition)
     {
-        $select = parent::get();
+        $select = $this->get();
 
-        if($condition->getStartTime()) $select->where("add_time", $condition->getStartTime(), '>=:');
+        if ($condition->getType()) $select->in("type", $condition->getType());
 
-        if($condition->getEndTime()) $select->where("add_time", $condition->getEndTime(), '<:');
+        if ($condition->getBindId()) $select->in("type", $condition->getBindId());
+
+        if ($condition->getStartTime()) $select->where("add_time", $condition->getStartTime(), '>=:');
+
+        if ($condition->getEndTime()) $select->where("add_time", $condition->getEndTime(), '<:');
 
         if ($condition->getEndTime()) {
 
@@ -71,15 +79,15 @@ class LogDao extends MasterDao
 
     /**
      * 获取列表
-     * @param PageListCondition $condition
+     * @param LogListCondition $condition
      * @return AppLogModel[]
      * @throws Exception
      */
-    public function getLogList(PageListCondition $condition): array
+    public function getLogList(LogListCondition $condition): array
     {
         $select = $this->getLogListSelect($condition);
 
-        $select->limit($condition->getPage(), BaseConfig::PAGE_SIZE_DEFAULT);
+        $select->limit($condition->getPage(), $condition->getSize());
 
         return (array)$select->order('add_time', 'DESC')
             ->getStatement()
@@ -88,11 +96,11 @@ class LogDao extends MasterDao
 
     /**
      * 获取查询数量
-     * @param PageListCondition $condition
+     * @param LogListCondition $condition
      * @return int
      * @throws Exception
      */
-    public function getLogListCount(PageListCondition $condition): int
+    public function getLogListCount(LogListCondition $condition): int
     {
         $select = $this->getLogListSelect($condition);
 

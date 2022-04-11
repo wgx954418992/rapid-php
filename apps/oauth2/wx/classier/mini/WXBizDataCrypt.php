@@ -2,6 +2,7 @@
 
 namespace oauth2\wx\classier\mini;
 
+use Exception;
 use function rapidPHP\B;
 
 /**
@@ -52,20 +53,29 @@ class WXBizDataCrypt
      * @param $data string|array|null 解密后的原文
      *
      * @return int 成功0，失败返回对应的错误码
+     * @throws Exception
      */
     public static function decryptData(string $appId, string $sessionKey, string $encryptedData, string $iv, &$data): int
     {
         if (strlen($sessionKey) != 24) return self::$IllegalAesKey;
 
+        if (strlen($iv) != 24) return self::$IllegalIv;
+
         $aesKey = base64_decode($sessionKey);
 
-        if (strlen($iv) != 24) return self::$IllegalIv;
+        if (empty($aesKey)) throw new Exception('AesKey empty');
 
         $aesIV = base64_decode($iv);
 
+        if (empty($aesIV)) throw new Exception('AesIV empty');
+
         $aesCipher = base64_decode($encryptedData);
 
+        if (empty($aesCipher)) throw new Exception('AesCipher empty');
+
         $result = openssl_decrypt($aesCipher, "AES-128-CBC", $aesKey, 1, $aesIV);
+
+        if (empty($result)) throw new Exception('openssl_decrypt error');
 
         $dataArray = B()->jsonDecode($result);
 

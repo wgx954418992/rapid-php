@@ -26,10 +26,10 @@ class SettingDao extends MasterDao
      */
     public function getSettingList(): array
     {
-        return (array)parent::get()
+        return (array)$this->get()
             ->where('is_delete', false)
             ->getStatement()
-            ->fetchAll(AppSettingModel::class);
+            ->fetchAll($this->getModelOrClass());
     }
 
     /**
@@ -40,7 +40,7 @@ class SettingDao extends MasterDao
      */
     public function addSetting(AppSettingModel $settingModel): bool
     {
-        $result = parent::add([
+        $result = $this->add([
             'type' => $settingModel->getType(),
             'attribute' => $settingModel->getAttribute(),
             'content' => $settingModel->getContent(),
@@ -63,7 +63,7 @@ class SettingDao extends MasterDao
      */
     public function setSetting(AppSettingModel $settingModel): bool
     {
-        return parent::set([
+        return $this->set([
             'type' => $settingModel->getType(),
             'attribute' => $settingModel->getAttribute(),
             'content' => $settingModel->getContent(),
@@ -75,16 +75,16 @@ class SettingDao extends MasterDao
 
     /**
      * 删除设置
-     * @param $adminId
+     * @param $actionId
      * @param $id
      * @return bool
      * @throws Exception
      */
-    public function delSetting($adminId, $id): bool
+    public function delSetting($id, $actionId): bool
     {
-        return parent::set([
+        return $this->set([
             'is_delete' => true,
-            'updated_id' => $adminId,
+            'updated_id' => $actionId,
             'updated_time' => Cal()->getDate(),
         ])->where('id', $id)->execute();
     }

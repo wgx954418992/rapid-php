@@ -11,6 +11,10 @@ use function rapidPHP\Cal;
 class FileDao extends MasterDao
 {
 
+    /**
+     * file
+     */
+    public const CACHE_PREFIX = 'app_file';
 
     /**
      * FileDao constructor.
@@ -23,44 +27,80 @@ class FileDao extends MasterDao
 
     /**
      * 添加文件
-     * @param AppFileModel $fileInfo
+     * @param AppFileModel $fileModel
      * @return bool
      * @throws Exception
      */
-    public function addFile(AppFileModel $fileInfo): bool
+    public function addFile(AppFileModel $fileModel): bool
     {
         $result = parent::add([
-            'name' => $fileInfo->getName(),
-            'size' => $fileInfo->getSize(),
-            'md5' => $fileInfo->getMd5(),
-            'mime' => $fileInfo->getMime(),
-            'path' => $fileInfo->getPath(),
+            'name' => $fileModel->getName(),
+            'size' => $fileModel->getSize(),
+            'md5' => $fileModel->getMd5(),
+            'mime' => $fileModel->getMime(),
+            'path' => $fileModel->getPath(),
             'is_delete' => false,
-            'created_id' => $fileInfo->getCreatedId(),
+            'created_id' => $fileModel->getCreatedId(),
             'created_time' => Cal()->getDate(),
         ], $inserId);
 
-        if ($result) $fileInfo->setId($inserId);
+        if ($result) {
+            $fileModel->setId($inserId);
+
+            $this->delCache($this->getCacheId('id', $fileModel->getId()));
+
+            $this->delCache($this->getCacheId('md5', $fileModel->getMd5()));
+        }
 
         return $result;
     }
 
     /**
+     * 修改文件
+     * @param AppFileModel $fileModel
+     * @return bool
+     * @throws Exception
+     */
+    public function setFile(AppFileModel $fileModel): bool
+    {
+        $result = parent::set([
+            'name' => $fileModel->getName(),
+            'size' => $fileModel->getSize(),
+            'md5' => $fileModel->getMd5(),
+            'mime' => $fileModel->getMime(),
+            'path' => $fileModel->getPath(),
+            'updated_id' => $fileModel->getUpdatedId(),
+            'updated_time' => Cal()->getDate(),
+        ])->where('id', $fileModel->getId())
+            ->execute();
+
+        if ($result) {
+            $this->delCache($this->getCacheId('id', $fileModel->getId()));
+
+            $this->delCache($this->getCacheId('md5', $fileModel->getMd5()));
+        }
+
+        return $result;
+    }
+
+
+    /**
      * 获取file文件信息
-     * @param $fileId
+     * @param $id
      * @return AppFileModel|null
      * @throws Exception
      */
-    public function getFile($fileId): ?AppFileModel
+    public function getFile($id): ?AppFileModel
     {
-        /** @var AppFileModel $model */
-        $model = parent::get()
-            ->where('is_delete', false)
-            ->where('id', $fileId)
-            ->getStatement()
-            ->fetch($this->getModelOrClass());
+        $cacheId = $this->getCacheId('id', $id);
 
-        return $model;
+        return $this->getCacheWithCallback($cacheId, function () use ($id) {
+            return parent::get()
+                ->where('is_delete', false)
+                ->where('id', $id)
+                ->getStatement()
+                ->fetch($this->getModelOrClass());
+        });
     }
 
     /**
@@ -71,14 +111,15 @@ class FileDao extends MasterDao
      */
     public function getFileByMd5($md5): ?AppFileModel
     {
-        /** @var AppFileModel $model */
-        $model = parent::get()
-            ->where('is_delete', false)
-            ->where('md5', $md5)
-            ->getStatement()
-            ->fetch($this->getModelOrClass());
+        $cacheId = $this->getCacheId('md5', $md5);
 
-        return $model;
+        return $this->getCacheWithCallback($cacheId, function () use ($md5) {
+            return parent::get()
+                ->where('is_delete', false)
+                ->where('md5', $md5)
+                ->getStatement()
+                ->fetch($this->getModelOrClass());
+        });
     }
 
 }

@@ -4,6 +4,8 @@ namespace apps\app\classier\context;
 
 use apps\core\classier\config\BaseConfig;
 use apps\app\classier\service\BaseService;
+use apps\core\classier\enum\TokenKey;
+use apps\core\classier\options\UserOptions;
 use apps\core\classier\wrapper\UserWrapper;
 use Exception;
 
@@ -33,13 +35,18 @@ class UserContext
     {
         $this->context = $context;
 
-        $this->token = $this->context->getRequest()->get(BaseConfig::TOKEN_NAME_USER);
+        $this->token = $this->context->getRequest()->header(TokenKey::USER);
 
-        if (empty($this->token)) $this->token = $this->context->getRequest()->post(BaseConfig::TOKEN_NAME_USER);
+        if (empty($this->token)) $this->token = $this->context->getRequest()->get(TokenKey::USER);
+
+        if (empty($this->token)) $this->token = $this->context->getRequest()->post(TokenKey::USER);
 
         try {
-            $this->userModel = BaseService::getInstance()->getUserByToken($this->token,
-                $context->getPathContext());
+            $this->userModel = BaseService::getInstance()
+                ->getUserByToken(
+                    $this->token,
+                    UserOptions::i(UserOptions::SPECIFIC_MAJOR | UserOptions::MEMBER)
+                );
         } catch (Exception $e) {
             $this->token = null;
         }
@@ -48,7 +55,7 @@ class UserContext
 
     /**
      * 获取token
-     * @return mixed
+     * @return string|null
      */
     public function getToken(): ?string
     {

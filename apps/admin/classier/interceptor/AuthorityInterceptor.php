@@ -6,8 +6,10 @@ namespace apps\admin\classier\interceptor;
 
 use apps\admin\classier\context\WebContext;
 use apps\admin\classier\service\BaseService;
-use apps\admin\classier\service\RoleService;
 use Exception;
+use rapidPHP\modules\exception\classier\ActionException;
+use rapidPHP\modules\reflection\classier\annotation\Value;
+use rapidPHP\modules\reflection\classier\Classify;
 use rapidPHP\modules\router\classier\Action;
 use rapidPHP\modules\router\classier\Interceptor;
 use rapidPHP\modules\router\classier\Route;
@@ -21,7 +23,7 @@ class AuthorityInterceptor extends Interceptor
      * @var string[]
      */
     protected $roles = [
-        'admin/.*',
+        'account/.*',
     ];
 
     /**
@@ -56,14 +58,29 @@ class AuthorityInterceptor extends Interceptor
      */
     public function onHandler(Router $router, Action $action, Route $route, &$pathVariable, &$realPath, &$role)
     {
-        $adminContext = $this->webContext->getAdminContext();
+        try {
+            $adminContext = $this->webContext->getAdminContext();
 
-        BaseService::validaAdmin($adminContext->getCurrentAdmin());
+            $adminModel = $adminContext->getCurrentAdmin();
 
-        if (strlen($realPath) > 1) $realPath = ltrim($realPath, '/*');
+            BaseService::validaAdmin($adminModel);
 
-        $isCheck = RoleService::getInstance()->checkRoute($realPath, $adminContext->getMergeRoleToRouteList());
+            $classify = Classify::getInstance($route->getClassName());
 
-        if (!$isCheck) throw new Exception('您没有权限访问!');
+            /** @var Value $accessAnnotation */
+            $accessAnnotation = $classify->getMethod($route->getMethodName())
+                ->getDocComment()
+                ->getOneAnnotation('access');
+
+            if (!$accessAnnotation) return;
+
+            foreach ((array)$adminModel->getAccessList() as $access) {
+                if ($access->getCode() == $accessAnnotation->getValue()) return;
+            }
+
+            throw new Exception('您没有权限访问(C)!');
+        } catch (Exception $e) {
+            throw ActionException::getInstance($e, $action);
+        }
     }
 }

@@ -2,11 +2,10 @@
 
 namespace apps\core\classier\service;
 
-use apps\core\classier\context\PathContextInterface;
+use apps\core\classier\bean\LogListCondition;
 use apps\core\classier\dao\master\LogDao;
-use apps\core\classier\dao\master\UserDao;
-use apps\core\classier\model\AppUserModel;
-use apps\core\classier\wrapper\UserWrapper;
+use apps\core\classier\enum\log\Type as LogType;
+use apps\core\classier\model\AppLogModel;
 use Exception;
 use rapidPHP\modules\common\classier\Instances;
 use function rapidPHP\formatException;
@@ -28,65 +27,81 @@ class BaseService
         return new static();
     }
 
-    /**
-     * 通过userId获取用户信息
-     * @param $userId
-     * @param PathContextInterface|null $pathContext
-     * @return UserWrapper
-     * @throws Exception
-     */
-    public function getUser($userId, PathContextInterface $pathContext = null)
-    {
-        if (empty($userId)) throw new Exception('userId错误!');
-
-        $userDao = UserDao::getInstance();
-
-        $userWrapper = $userDao->getUser($userId);
-
-        if ($userWrapper == null) throw new Exception('帐号不存在!');
-
-        return $this->updateUser($userWrapper, $pathContext);
-    }
-
-
-    /**
-     * 更新用户信息
-     * @param UserWrapper|AppUserModel $userModel
-     * @param PathContextInterface|null $pathContext
-     * @return UserWrapper
-     */
-    public function updateUser($userModel, PathContextInterface $pathContext = null)
-    {
-        if ($userModel instanceof UserWrapper && $pathContext) {
-            $userModel->setHeadPic($pathContext->getFileUrl($userModel->getHeadFid()));
-        }
-
-        return $userModel;
-    }
 
     /**
      * 添加系统日志
      * @param $msg
      * @param null $content
+     * @param LogType|null $type
+     * @param null $bindId
      * @return int
      */
-    public function addLog($msg, $content = null)
+    public function addLog($msg, $content = null, ?LogType $type = null, $bindId = null)
     {
         try {
 
             $logDao = LogDao::getInstance();
 
+            $logModel = new AppLogModel();
+
             if ($content instanceof Exception) {
                 $content = formatException($content);
+
+                if ($type == null) {
+                    $logModel->setType(LogType::ERROR);
+                }
             } else {
+                if ($type == null) {
+                    $logModel->setType(LogType::RUN);
+                }
+
                 if (is_array($content) || is_object($content)) $content = json_encode($content);
             }
 
-            $logDao->addLog($logId, $msg, $content);
+            $logModel->setMsg($msg);
 
-            return $logId;
+            $logModel->setContent($content);
+
+            if ($type != null) {
+                $logModel->setType($type->getRawValue());
+            }
+
+            $logModel->setBindId($bindId);
+
+            $logDao->addLog($logModel);
+
+            return $logModel->getId();
         } catch (Exception $e) {
             return false;
         }
     }
+
+    /**
+     * 获取系统日志
+     * @param LogListCondition $condition
+     * @return array
+     * @throws Exception
+     */
+    public function getLogList(LogListCondition $condition): array
+    {
+        /** @var LogDao $logDao */
+        $logDao = LogDao::getInstance();
+
+        return $logDao->getLogList($condition);
+    }
+
+    /**
+     * 获取系统日志总数量
+     * @param LogListCondition $condition
+     * @return int
+     * @throws Exception
+     */
+    public function getLogCount(LogListCondition $condition): int
+    {
+        /** @var LogDao $logDao */
+        $logDao = LogDao::getInstance();
+
+        return $logDao->getLogListCount($condition);
+    }
+
 }

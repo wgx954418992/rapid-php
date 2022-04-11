@@ -5,126 +5,30 @@ namespace apps\core\classier\model;
 use Exception;
 use rapidPHP\modules\core\classier\Model;
 
+
 /**
  * 消息队列表
  * @table app_queue
- * rapidPHP auto generate Model 2021-01-25 21:19:26
+ * rapidPHP auto generate Model 2022-04-11 11:39:19
  */
-class AppQueueModel extends Model
+
+class AppQueueModel extends Model 
 {
-    
+
     /**
      * table name
      */
     const NAME = 'app_queue';
-        
+
     
     /**
      * 队列Id
+     * @var 
      * @length 
      * @typed bigint
      */
-    private $id;    
-    
-    /**
-     * 队列消息父Id
-     * @length 
-     * @typed bigint
-     */
-    private $parent_id;    
-    
-    /**
-     * 跟队列所关联的值，用于取消队列
-     * @length 50
-     * @typed varchar
-     */
-    private $bind_id;    
-    
-    /**
-     * 类型
-     * @length 32
-     * @typed varchar
-     */
-    private $type;    
-    
-    /**
-     * 参数
-     * @length 
-     * @typed json
-     */
-    private $param;    
-    
-    /**
-     * 触发时间
-     * @length 
-     * @typed bigint
-     */
-    private $trigger_time;    
-    
-    /**
-     * 状态 1 等待执行 2 正在执行任务 3 执行完毕
-     * @length 
-     * @typed tinyint
-     */
-    private $status;    
-    
-    /**
-     * 状态发生时间
-     * @length 
-     * @typed bigint
-     */
-    private $status_time;    
-    
-    /**
-     * 备注
-     * @length 50
-     * @typed varchar
-     */
-    private $remark;    
-    
-    /**
-     * 是否删除
-     * @length 
-     * @typed tinyint
-     */
-    private $is_delete;    
-    
-    /**
-     * 创建人Id
-     * @length 
-     * @typed bigint
-     */
-    private $created_id;    
-    
-    /**
-     * 创建时间
-     * @length 
-     * @typed datetime
-     */
-    private $created_time;    
-    
-    /**
-     * 修改人Id
-     * @length 
-     * @typed bigint
-     */
-    private $updated_id;    
-    
-    /**
-     * 修改时间
-     * @length 
-     * @typed datetime
-     */
-    private $updated_time;    
-    /**
-     * 获取 队列Id
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-    
+    protected $id;
+
     /**
      * 设置 队列Id
      * @param $id
@@ -133,7 +37,16 @@ class AppQueueModel extends Model
     {
         $this->id = $id;
     }
-    
+
+    /**
+     * 获取 队列Id
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * 效验 队列Id
      * @param string $msg
@@ -141,18 +54,17 @@ class AppQueueModel extends Model
      */
     public function validId(string $msg = 'id Cannot be empty!')
     {
-        if(empty($this->id)) throw new Exception($msg);
+        if (empty($this->id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 队列消息父Id
-     * @return mixed
+     * 队列消息父Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getParentId()
-    {
-        return $this->parent_id;
-    }
-    
+    protected $parent_id;
+
     /**
      * 设置 队列消息父Id
      * @param $parent_id
@@ -161,7 +73,16 @@ class AppQueueModel extends Model
     {
         $this->parent_id = $parent_id;
     }
-    
+
+    /**
+     * 获取 队列消息父Id
+     * @return mixed
+     */
+    public function getParentId()
+    {
+        return $this->parent_id;
+    }
+
     /**
      * 效验 队列消息父Id
      * @param string $msg
@@ -169,46 +90,53 @@ class AppQueueModel extends Model
      */
     public function validParentId(string $msg = 'parent_id Cannot be empty!')
     {
-        if(empty($this->parent_id)) throw new Exception($msg);
+        if (empty($this->parent_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 跟队列所关联的值，用于取消队列
-     * @return string
+     * 跟队列所关联的主键Id，用于取消队列
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getBindId(): ?string
-    {
-        return $this->bind_id;
-    }
-    
+    protected $bind_id;
+
     /**
-     * 设置 跟队列所关联的值，用于取消队列
-     * @param string|null $bind_id
+     * 设置 跟队列所关联的主键Id，用于取消队列
+     * @param $bind_id
      */
-    public function setBindId(?string $bind_id)
+    public function setBindId($bind_id)
     {
         $this->bind_id = $bind_id;
     }
-    
+
     /**
-     * 效验 跟队列所关联的值，用于取消队列
+     * 获取 跟队列所关联的主键Id，用于取消队列
+     * @return mixed
+     */
+    public function getBindId()
+    {
+        return $this->bind_id;
+    }
+
+    /**
+     * 效验 跟队列所关联的主键Id，用于取消队列
      * @param string $msg
      * @throws Exception
      */
     public function validBindId(string $msg = 'bind_id Cannot be empty!')
     {
-        if(empty($this->bind_id)) throw new Exception($msg);
+        if (empty($this->bind_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 类型
-     * @return string
+     * 类型
+     * @var string|null 
+     * @length 32
+     * @typed varchar
      */
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-    
+    protected $type;
+
     /**
      * 设置 类型
      * @param string|null $type
@@ -217,7 +145,16 @@ class AppQueueModel extends Model
     {
         $this->type = $type;
     }
-    
+
+    /**
+     * 获取 类型
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
     /**
      * 效验 类型
      * @param string $msg
@@ -225,18 +162,17 @@ class AppQueueModel extends Model
      */
     public function validType(string $msg = 'type Cannot be empty!')
     {
-        if(empty($this->type)) throw new Exception($msg);
+        if (empty($this->type)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 参数
-     * @return mixed
+     * 参数
+     * @var 
+     * @length 
+     * @typed json
      */
-    public function getParam()
-    {
-        return $this->param;
-    }
-    
+    protected $param;
+
     /**
      * 设置 参数
      * @param $param
@@ -245,7 +181,16 @@ class AppQueueModel extends Model
     {
         $this->param = $param;
     }
-    
+
+    /**
+     * 获取 参数
+     * @return mixed
+     */
+    public function getParam()
+    {
+        return $this->param;
+    }
+
     /**
      * 效验 参数
      * @param string $msg
@@ -253,18 +198,17 @@ class AppQueueModel extends Model
      */
     public function validParam(string $msg = 'param Cannot be empty!')
     {
-        if(empty($this->param)) throw new Exception($msg);
+        if (empty($this->param)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 触发时间
-     * @return mixed
+     * 触发时间
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getTriggerTime()
-    {
-        return $this->trigger_time;
-    }
-    
+    protected $trigger_time;
+
     /**
      * 设置 触发时间
      * @param $trigger_time
@@ -273,7 +217,16 @@ class AppQueueModel extends Model
     {
         $this->trigger_time = $trigger_time;
     }
-    
+
+    /**
+     * 获取 触发时间
+     * @return mixed
+     */
+    public function getTriggerTime()
+    {
+        return $this->trigger_time;
+    }
+
     /**
      * 效验 触发时间
      * @param string $msg
@@ -281,46 +234,53 @@ class AppQueueModel extends Model
      */
     public function validTriggerTime(string $msg = 'trigger_time Cannot be empty!')
     {
-        if(empty($this->trigger_time)) throw new Exception($msg);
+        if (empty($this->trigger_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 状态 1 等待执行 2 正在执行任务 3 执行完毕
-     * @return int
+     * 状态 1 等待执行 2 正在执行任务 3 执行完毕 4 执行异常
+     * @var int|null 
+     * @length 
+     * @typed tinyint
      */
-    public function getStatus(): ?int
-    {
-        return $this->status;
-    }
-    
+    protected $status;
+
     /**
-     * 设置 状态 1 等待执行 2 正在执行任务 3 执行完毕
+     * 设置 状态 1 等待执行 2 正在执行任务 3 执行完毕 4 执行异常
      * @param int|null $status
      */
     public function setStatus(?int $status)
     {
         $this->status = $status;
     }
-    
+
     /**
-     * 效验 状态 1 等待执行 2 正在执行任务 3 执行完毕
+     * 获取 状态 1 等待执行 2 正在执行任务 3 执行完毕 4 执行异常
+     * @return int|null
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    /**
+     * 效验 状态 1 等待执行 2 正在执行任务 3 执行完毕 4 执行异常
      * @param string $msg
      * @throws Exception
      */
     public function validStatus(string $msg = 'status Cannot be empty!')
     {
-        if(empty($this->status)) throw new Exception($msg);
+        if (empty($this->status)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 状态发生时间
-     * @return mixed
+     * 状态发生时间
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getStatusTime()
-    {
-        return $this->status_time;
-    }
-    
+    protected $status_time;
+
     /**
      * 设置 状态发生时间
      * @param $status_time
@@ -329,7 +289,16 @@ class AppQueueModel extends Model
     {
         $this->status_time = $status_time;
     }
-    
+
+    /**
+     * 获取 状态发生时间
+     * @return mixed
+     */
+    public function getStatusTime()
+    {
+        return $this->status_time;
+    }
+
     /**
      * 效验 状态发生时间
      * @param string $msg
@@ -337,18 +306,17 @@ class AppQueueModel extends Model
      */
     public function validStatusTime(string $msg = 'status_time Cannot be empty!')
     {
-        if(empty($this->status_time)) throw new Exception($msg);
+        if (empty($this->status_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 备注
-     * @return string
+     * 备注
+     * @var string|null 
+     * @length 50
+     * @typed varchar
      */
-    public function getRemark(): ?string
-    {
-        return $this->remark;
-    }
-    
+    protected $remark;
+
     /**
      * 设置 备注
      * @param string|null $remark
@@ -357,7 +325,16 @@ class AppQueueModel extends Model
     {
         $this->remark = $remark;
     }
-    
+
+    /**
+     * 获取 备注
+     * @return string|null
+     */
+    public function getRemark(): ?string
+    {
+        return $this->remark;
+    }
+
     /**
      * 效验 备注
      * @param string $msg
@@ -365,27 +342,35 @@ class AppQueueModel extends Model
      */
     public function validRemark(string $msg = 'remark Cannot be empty!')
     {
-        if(empty($this->remark)) throw new Exception($msg);
+        if (empty($this->remark)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 是否删除
-     * @return int
+     * 是否删除
+     * @var bool|null 
+     * @length 
+     * @typed bit
      */
-    public function getIsDelete(): ?int
-    {
-        return $this->is_delete;
-    }
-    
+    protected $is_delete;
+
     /**
      * 设置 是否删除
-     * @param int|null $is_delete
+     * @param bool|null $is_delete
      */
-    public function setIsDelete(?int $is_delete)
+    public function setIsDelete(?bool $is_delete)
     {
         $this->is_delete = $is_delete;
     }
-    
+
+    /**
+     * 获取 是否删除
+     * @return bool|null
+     */
+    public function getIsDelete(): ?bool
+    {
+        return $this->is_delete;
+    }
+
     /**
      * 效验 是否删除
      * @param string $msg
@@ -393,18 +378,17 @@ class AppQueueModel extends Model
      */
     public function validIsDelete(string $msg = 'is_delete Cannot be empty!')
     {
-        if(empty($this->is_delete)) throw new Exception($msg);
+        if (empty($this->is_delete)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建人Id
-     * @return mixed
+     * 创建人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getCreatedId()
-    {
-        return $this->created_id;
-    }
-    
+    protected $created_id;
+
     /**
      * 设置 创建人Id
      * @param $created_id
@@ -413,7 +397,16 @@ class AppQueueModel extends Model
     {
         $this->created_id = $created_id;
     }
-    
+
+    /**
+     * 获取 创建人Id
+     * @return mixed
+     */
+    public function getCreatedId()
+    {
+        return $this->created_id;
+    }
+
     /**
      * 效验 创建人Id
      * @param string $msg
@@ -421,18 +414,17 @@ class AppQueueModel extends Model
      */
     public function validCreatedId(string $msg = 'created_id Cannot be empty!')
     {
-        if(empty($this->created_id)) throw new Exception($msg);
+        if (empty($this->created_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建时间
-     * @return string
+     * 创建时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getCreatedTime(): ?string
-    {
-        return $this->created_time;
-    }
-    
+    protected $created_time;
+
     /**
      * 设置 创建时间
      * @param string|null $created_time
@@ -441,7 +433,16 @@ class AppQueueModel extends Model
     {
         $this->created_time = $created_time;
     }
-    
+
+    /**
+     * 获取 创建时间
+     * @return string|null
+     */
+    public function getCreatedTime(): ?string
+    {
+        return $this->created_time;
+    }
+
     /**
      * 效验 创建时间
      * @param string $msg
@@ -449,18 +450,17 @@ class AppQueueModel extends Model
      */
     public function validCreatedTime(string $msg = 'created_time Cannot be empty!')
     {
-        if(empty($this->created_time)) throw new Exception($msg);
+        if (empty($this->created_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改人Id
-     * @return mixed
+     * 修改人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getUpdatedId()
-    {
-        return $this->updated_id;
-    }
-    
+    protected $updated_id;
+
     /**
      * 设置 修改人Id
      * @param $updated_id
@@ -469,7 +469,16 @@ class AppQueueModel extends Model
     {
         $this->updated_id = $updated_id;
     }
-    
+
+    /**
+     * 获取 修改人Id
+     * @return mixed
+     */
+    public function getUpdatedId()
+    {
+        return $this->updated_id;
+    }
+
     /**
      * 效验 修改人Id
      * @param string $msg
@@ -477,18 +486,17 @@ class AppQueueModel extends Model
      */
     public function validUpdatedId(string $msg = 'updated_id Cannot be empty!')
     {
-        if(empty($this->updated_id)) throw new Exception($msg);
+        if (empty($this->updated_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改时间
-     * @return string
+     * 修改时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getUpdatedTime(): ?string
-    {
-        return $this->updated_time;
-    }
-    
+    protected $updated_time;
+
     /**
      * 设置 修改时间
      * @param string|null $updated_time
@@ -497,7 +505,16 @@ class AppQueueModel extends Model
     {
         $this->updated_time = $updated_time;
     }
-    
+
+    /**
+     * 获取 修改时间
+     * @return string|null
+     */
+    public function getUpdatedTime(): ?string
+    {
+        return $this->updated_time;
+    }
+
     /**
      * 效验 修改时间
      * @param string $msg
@@ -505,6 +522,7 @@ class AppQueueModel extends Model
      */
     public function validUpdatedTime(string $msg = 'updated_time Cannot be empty!')
     {
-        if(empty($this->updated_time)) throw new Exception($msg);
+        if (empty($this->updated_time)) throw new Exception($msg);
     }
+
 }

@@ -4,6 +4,7 @@ namespace apps\queue\classier\dao\master;
 
 use apps\core\classier\dao\MasterDao;
 use apps\core\classier\model\AppQueueModel;
+use apps\queue\classier\enum\Status;
 use Exception;
 use apps\queue\classier\config\QueueConfig;
 use rapidPHP\modules\reflection\classier\Utils;
@@ -21,6 +22,36 @@ class QueueDao extends MasterDao
     }
 
     /**
+     * 添加队列消息
+     * @param AppQueueModel $queueModel
+     * @return bool
+     * @throws Exception
+     */
+    public function addQueue(AppQueueModel $queueModel): bool
+    {
+        $data = [
+            'parent_id' => $queueModel->getParentId(),
+            'bind_id' => $queueModel->getBindId(),
+            'type' => $queueModel->getType(),
+            'param' => json_encode($queueModel->getParam()),
+            'trigger_time' => $queueModel->getTriggerTime(),
+            'status' => Status::WAITING,
+            'status_time' => microtime(true) * 1000,
+            'is_delete' => false,
+            'created_id' => $queueModel->getCreatedId(),
+            'created_time' => Cal()->getDate(),
+        ];
+
+        if (empty($queueModel->getParentId())) $data['parent_id'] = $queueModel->getParentId();
+
+        $result = parent::add($data, $insertId);
+
+        $queueModel->setId($insertId);
+
+        return $result;
+    }
+
+    /**
      * 获取没有执行的队列
      * @param $number
      * @param array $type
@@ -28,7 +59,7 @@ class QueueDao extends MasterDao
      * @return AppQueueModel[]|null
      * @throws Exception
      */
-    public function getNotExecQueue($number, $type = [], &$ids = null): ?array
+    public function getNotExecQueue($number, array $type = [], &$ids = null): ?array
     {
         $currentTime = (int)microtime(true) * 1000;
 
@@ -39,9 +70,9 @@ class QueueDao extends MasterDao
 
         $timeout = $currentTime - QueueConfig::EXECUTION_TIMEOUT;
 
-        $STATUS_WAITING = QueueConfig::STATUS_WAITING;
+        $STATUS_WAITING = Status::WAITING;
 
-        $IN_EXECUTION = QueueConfig::STATUS_IN_EXECUTION;
+        $IN_EXECUTION = Status::IN_EXECUTION;
 
         $select->where("(`status`={$STATUS_WAITING} or (`status`={$IN_EXECUTION} and status_time<={$timeout} ))");
 
@@ -61,7 +92,6 @@ class QueueDao extends MasterDao
         return $result;
     }
 
-
     /**
      * 设置队列状态
      * @param $queueId
@@ -80,7 +110,7 @@ class QueueDao extends MasterDao
 
         $data['updated_time'] = Cal()->getDate();
 
-        if (empty($remark)) $data['remark'] = $remark;
+        if (!empty($remark)) $data['remark'] = $remark;
 
         return parent::set($data)->in('id', $queueId)->execute();
     }
@@ -93,46 +123,38 @@ class QueueDao extends MasterDao
      */
     public function getQueue($queueId): ?AppQueueModel
     {
-        /** @var AppQueueModel $model */
-        $model = parent::get()
-            ->where('is_delete', 0)
+        return parent::get()
+            ->where('is_delete', false)
             ->where('id', $queueId)
             ->forUpdate()
             ->getStatement()
             ->fetch($this->getModelOrClass());
-
-        return $model;
     }
 
     /**
-     * 添加队列消息
-     * @param AppQueueModel $queueModel
-     * @return bool
+     * 获取队列消息信息
+     * @param $bindId
+     * @param null $type
+     * @param null $status
+     * @return AppQueueModel|null
      * @throws Exception
      */
-    public function addQueue(AppQueueModel $queueModel): bool
+    public function getQueueByBTS($bindId, $type = null, $status = null): ?AppQueueModel
     {
-        $data = [
-            'parent_id' => $queueModel->getParentId(),
-            'bind_id' => $queueModel->getBindId(),
-            'type' => $queueModel->getType(),
-            'param' => json_encode($queueModel->getParam()),
-            'trigger_time' => $queueModel->getTriggerTime(),
-            'status' => QueueConfig::STATUS_WAITING,
-            'status_time' => microtime(true) * 1000,
-            'is_delete' => 0,
-            'created_id' => $queueModel->getCreatedId(),
-            'created_time' => Cal()->getDate(),
-        ];
+        $select = parent::get()->where('is_delete', false);
 
-        if (empty($queueModel->getParentId())) $data['parent_id'] = $queueModel->getParentId();
+        if (!is_null($bindId)) $select->where('bind_id', $bindId);
 
-        $result = parent::add($data, $insertId);
+        if (!is_null($type)) $select->where('type', $type);
 
-        $queueModel->setId($insertId);
+        if (!is_null($status)) $select->in('status', $status);
 
-        return $result;
+        return $select
+            ->forUpdate()
+            ->getStatement()
+            ->fetch($this->getModelOrClass());
     }
+
 
     /**
      * 设置队列消息触发时间
@@ -161,7 +183,7 @@ class QueueDao extends MasterDao
     public function delQueue($userId, $queueId): bool
     {
         $data = [
-            'is_delete' => 1,
+            'is_delete' => true,
             'updated_id' => $userId,
             'updated_time' => Cal()->getDate(),
         ];
@@ -182,7 +204,7 @@ class QueueDao extends MasterDao
      */
     public function cancelQueueByBindId($userId, $bindId, $remark = null): bool
     {
-        $data['status'] = QueueConfig::STATUS_CANCEL;
+        $data['status'] = Status::CANCEL;
 
         $data['status_time'] = microtime(true) * 1000;
 
@@ -196,9 +218,9 @@ class QueueDao extends MasterDao
 
         $timeout = $currentTime - QueueConfig::EXECUTION_TIMEOUT;
 
-        $STATUS_WAITING = QueueConfig::STATUS_WAITING;
+        $STATUS_WAITING = Status::WAITING;
 
-        $IN_EXECUTION = QueueConfig::STATUS_IN_EXECUTION;
+        $IN_EXECUTION = Status::IN_EXECUTION;
 
         return parent::set($data)
             ->in('id', $bindId)

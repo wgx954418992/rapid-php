@@ -17,7 +17,7 @@ class InterconnectionConfig
      * @param string $state
      * @return string
      */
-    public static function getCode2Url($appId, $callUrl, $state = '', $scope = ''): string
+    public static function getCode2Url($appId, $callUrl, string $state = '', string $scope = ''): string
     {
         return "https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id={$appId}&redirect_uri=" .
             urlencode($callUrl) . "&state={$state}&scope={$scope}";
@@ -42,7 +42,7 @@ class InterconnectionConfig
      * @param string $isUnionId
      * @return string
      */
-    public static function getOpenIdUrl($accessToken, $isUnionId = '1'): string
+    public static function getOpenIdUrl($accessToken, string $isUnionId = '1'): string
     {
         return "https://graph.qq.com/oauth2.0/me?access_token={$accessToken}&unionid={$isUnionId}";
     }

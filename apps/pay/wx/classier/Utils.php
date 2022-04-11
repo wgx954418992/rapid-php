@@ -137,12 +137,12 @@ class Utils
 
         $response->loadData($this->parseResponseByXML($responseXml));
 
-        if (empty($response->getSign())) throw new Exception('签名错误');
+        if (empty($response->getSign())) throw new Exception('签名错误(E)');
 
         $responseSign = $this->getSign($config, $response->getRaw());
 
         if ($response->getSign() != $responseSign) {
-            throw new Exception('签名错误!');
+            throw new Exception('签名错误(Q)!');
         }
 
         return $response;

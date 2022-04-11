@@ -3,6 +3,7 @@
 namespace apps\core\classier\dao\master;
 
 use apps\core\classier\dao\MasterDao;
+use apps\core\classier\enum\CodeType;
 use apps\core\classier\model\AppCodeModel;
 use Exception;
 use function rapidPHP\Cal;
@@ -21,39 +22,37 @@ class CodeDao extends MasterDao
 
     /**
      * 发送验证码
-     * @param $templateId
-     * @param $bindId
-     * @param $code
-     * @param string $content
+     * @param AppCodeModel $codeModel
      * @return bool
      * @throws Exception
      */
-    public function addVerifyCode($templateId, $bindId, $code, $content = ''): bool
+    public function addCode(AppCodeModel $codeModel): bool
     {
-        return parent::add([
-            'template_id' => $templateId,
-            'bind_id' => $bindId,
-            'code' => $code,
-            'content' => $content,
+        return $this->add([
+            'code_type' => $codeModel->getCodeType(),
+            'receiver' => $codeModel->getReceiver(),
+            'code' => $codeModel->getCode(),
+            'content' => $codeModel->getContent(),
+            'send_type' => $codeModel->getSendType(),
             'send_time' => time(),
             'is_delete' => false,
-            'created_id' => $bindId,
+            'created_id' => $codeModel->getCreatedId(),
             'created_time' => Cal()->getDate(),
         ]);
     }
 
     /**
      * 获取最后验证码发送时间
-     * @param $templateId
-     * @param $tel
+     * @param CodeType $codeType
+     * @param $receiver
      * @return int
      * @throws Exception
      */
-    public function getVerifyCodeLastSendTime($templateId, $tel): int
+    public function getCodeLastSendTime(CodeType $codeType, $receiver): int
     {
-        return (int)parent::get(['send_time'])
-            ->where('template_id', $templateId)
-            ->where('bind_id', $tel)
+        return (int)$this->get(['send_time'])
+            ->where('code_type', $codeType->getRawValue())
+            ->where('receiver', $receiver)
             ->where('is_delete', false)
             ->order('send_time', 'DESC')
             ->getStatement()
@@ -62,39 +61,36 @@ class CodeDao extends MasterDao
 
     /**
      * 获取检查验证码信息
-     * @param $templateId
-     * @param $bindId
+     * @param CodeType $codeType
+     * @param $receiver
      * @param $code
      * @return AppCodeModel|null
      * @throws Exception
      */
-    public function getCheckVerifyCode($templateId, $bindId, $code): ?AppCodeModel
+    public function getCheckCode(CodeType $codeType, $receiver, $code): ?AppCodeModel
     {
-        /** @var AppCodeModel $model */
-        $model = parent::get()
-            ->where('template_id', $templateId)
-            ->where('bind_id', $bindId)
+        return $this->get()
+            ->where('code_type', $codeType->getRawValue())
+            ->where('receiver', $receiver)
             ->where('code', $code)
             ->where('is_delete', false)
             ->getStatement()
             ->fetch($this->getModelOrClass());
-
-        return $model;
     }
 
     /**
      * 使用验证码
-     * @param $codeId
+     * @param $id
      * @return bool
      * @throws Exception
      */
-    public function useVerifyCode($codeId): bool
+    public function checkedCode($id): bool
     {
-        return parent::set([
+        return $this->set([
             'is_delete' => true,
             'check_time' => time(),
             'updated_id' => session_id(),
             'updated_time' => Cal()->getDate(),
-        ])->where('id', $codeId)->execute();
+        ])->where('id', $id)->execute();
     }
 }

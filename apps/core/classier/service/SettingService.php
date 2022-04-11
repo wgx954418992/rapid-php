@@ -2,14 +2,20 @@
 
 namespace apps\core\classier\service;
 
-use apps\core\classier\config\SetConfig;
 use apps\core\classier\dao\master\SettingDao;
+use apps\core\classier\enum\setting\attribute\File;
+use apps\core\classier\enum\setting\attribute\Media;
+use apps\core\classier\enum\setting\attribute\OSS;
+use apps\core\classier\enum\setting\attribute\point\IntegralRule;
+use apps\core\classier\enum\setting\attribute\Report;
+use apps\core\classier\enum\setting\IAttribute;
+use apps\core\classier\enum\setting\Type;
+use apps\core\classier\helper\CommonHelper;
 use apps\core\classier\model\AppSettingModel;
 use Exception;
 use rapidPHP\modules\common\classier\Instances;
-use rapidPHP\modules\common\classier\Variable;
+use ReflectionException;
 use function rapidPHP\B;
-use function rapidPHP\Cal;
 
 class SettingService
 {
@@ -71,51 +77,48 @@ class SettingService
      */
     public function getList(): array
     {
-        return (array)$this->settingList;
+        return $this->settingList;
     }
 
     /**
      * 获取设置类型列表
-     * @param $type
-     * @return array|null
+     * @param Type $type
+     * @return AppSettingModel[]|null
      */
-    public function getTypeList($type): ?array
+    public function getTypeList(Type $type): ?array
     {
         $setting = $this->getList();
 
         if (empty($setting)) return null;
 
-        $typeList = B()->getData($setting, $type);
+        $typeList = B()->getData($setting, $type->getRawValue());
 
         return (array)$typeList;
     }
 
     /**
      * 获取设置类型attr 信息
-     * @param $type
-     * @param $attribute
+     * @param Type $type
+     * @param IAttribute $attribute
      * @return AppSettingModel|null
      */
-    public function getTypeAttrInfo($type, $attribute)
+    public function getTypeAttrInfo(Type $type, IAttribute $attribute)
     {
         $typeList = $this->getTypeList($type);
 
         if (empty($typeList)) return null;
 
-        /** @var AppSettingModel $attributeInfo */
-        $attributeInfo = B()->getData($typeList, $attribute);
-
-        return $attributeInfo;
+        return B()->getData($typeList, $attribute->getRawValue());
     }
 
 
     /**
      * 获取设置里面的值
-     * @param $type
-     * @param $attribute
+     * @param Type $type
+     * @param IAttribute $attribute
      * @return string
      */
-    public function getTypeAttrValue($type, $attribute): ?string
+    public function getTypeAttrValue(Type $type, IAttribute $attribute): ?string
     {
         $attributeInfo = $this->getTypeAttrInfo($type, $attribute);
 
@@ -125,12 +128,11 @@ class SettingService
     }
 
     /**
-     * 添加设置
+     * 添加编辑设置
      * @param AppSettingModel $model
-     * @return bool
      * @throws Exception
      */
-    public function added(AppSettingModel $model): bool
+    public function addedSetting(AppSettingModel $model)
     {
         $model->validType('类型错误!');
 
@@ -146,56 +148,88 @@ class SettingService
         } else {
             if (!$settingDao->addSetting($model)) throw new Exception('添加失败!');
         }
-
-        return true;
     }
 
     /**
      * 删除设置
      * @param $settingId
-     * @param $updatedId
-     * @return bool
+     * @param $actionId
      * @throws Exception
      */
-    public function del($settingId, $updatedId): bool
+    public function delSetting($settingId, $actionId)
     {
         if (empty($settingId)) throw new Exception('设置Id错误!');
 
         /** @var SettingDao $settingDao */
         $settingDao = SettingDao::getInstance();
 
-        if (!$settingDao->delSetting($updatedId, $settingId))
+        if (!$settingDao->delSetting($settingId, $actionId))
             throw new Exception('删除失败!');
-
-        return true;
     }
 
-    /***
+    /**
      * 获取文件存储path
-     * @param string $end
      * @return string
      * @throws Exception
      */
-    public static function getStoragePath($end = ''): string
+    public static function getStoragePath(): string
     {
         $path = self::getInstance()
-            ->getTypeAttrValue(SetConfig::TYPE_FILE_STORAGE,
-                SetConfig::ATTRIBUTE_FILE_STORAGE_PATH);
+            ->getTypeAttrValue(Type::i(Type::FILE), File::i(File::STORAGE_PATH));
 
-        Variable::parseVarByString($path);
+        CommonHelper::parseVariable($path, [], ...func_get_args());
 
-        $year = Cal()->getDate(time(), 'Y');
+        return $path;
+    }
 
-        $month = Cal()->getDate(time(), 'm');
+    /**
+     * 获取oss 文件存储path
+     * @return string
+     * @throws ReflectionException
+     */
+    public static function getOssStoragePath(): string
+    {
+        $path = self::getInstance()
+            ->getTypeAttrValue(Type::i(Type::OSS), OSS::i(OSS::STORAGE_PATH));
 
-        $day = Cal()->getDate(time(), 'd');
+        CommonHelper::parseVariable($path, [], ...func_get_args());
 
-        $path = str_replace(['{year}', '{month}', '{day}'], [$year, $month, $day], $path);
+        return $path;
+    }
 
-        if (!is_dir($path) && !mkdir($path, 0777, true)) throw new Exception('创建目录失败!');
 
-        $path = rtrim($path, '/*');
+    /***
+     * 获取视频限制时间
+     * @return int|null
+     * @throws ReflectionException
+     */
+    public static function getVideoLD(): ?int
+    {
+        return self::getInstance()
+            ->getTypeAttrValue(Type::i(Type::MEDIA), Media::i(Media::VIDEO_LD));
+    }
 
-        return empty($end) ? $path : $path . '/' . $end;
+    /***
+     * 获取积分点
+     * @param IntegralRule $integral
+     * @return float|null
+     * @throws ReflectionException
+     */
+    public static function getIntegralPoint(IntegralRule $integral): ?float
+    {
+        return (float)self::getInstance()
+            ->getTypeAttrValue(Type::i(Type::INTEGRAL_RULE), $integral);
+    }
+
+
+    /**
+     * 每个用户每天举报多少次
+     * @return int|null
+     * @throws ReflectionException
+     */
+    public static function getUserEveryDayReportCount(): ?int
+    {
+        return (int)SettingService::getInstance()
+            ->getTypeAttrValue(Type::i(Type::REPORT), Report::i(Report::TODAY_COUNT));
     }
 }

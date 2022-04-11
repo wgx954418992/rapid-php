@@ -3001,7 +3001,9 @@ video {
 }
 
 .wrapper {
-    padding: 0 20px
+    padding: 0 20px;
+
+    transition: all .1s;
 }
 
 .wrapper-content {

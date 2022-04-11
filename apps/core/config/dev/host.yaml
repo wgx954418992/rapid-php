@@ -1,2 +1,4 @@
 host:
-  app: http://localhost/rapid-php/apps/app/
+  app: http://127.0.0.1/rapid-php/apps/app/public/
+  file: http://127.0.0.1/rapid-php/apps/file/public/
+  admin: http://127.0.0.1/rapid-php/apps/admin/public/

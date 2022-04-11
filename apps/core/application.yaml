@@ -6,23 +6,6 @@ application:
     view:
       template_path: '${PATH_APP}classier/view/'
       cache_path: '${PATH_APP}runtime/build/view/'
-log:
-  error:
-    name: error
-    size: 1048576
-    path: ${PATH_APP_RUNTIME}log/error/{number}.log
-  warning:
-    name: warning
-    size: 1048576
-    path: ${PATH_APP_RUNTIME}log/warning/{number}.log
-  debug:
-    name: debug
-    size: 1048576
-    path: ${PATH_APP_RUNTIME}log/debug/{number}.log
-  access:
-    name: debug
-    size: 1048576
-    path: ${PATH_APP_RUNTIME}log/access/{number}.log
 server:
   cgi:
     session:
@@ -63,18 +46,73 @@ server:
         ssl_cert_file: null
         heartbeat_check_interval: 30
         heartbeat_idle_time: 30
-redis:
-  master:
-    host: 127.0.0.1
-    port: 6379
-    auth: null
-    select: 0
-  salve: null
+
 database:
   sql:
     master:
-      url: 'mysql://127.0.0.1:3306/?database=express-mini&characterCode=utf8mb4'
+      url: 'mysql://127.0.01:3306/?database=rapid-php&characterCode=utf8mb4'
       username: root
-      password: Wgx954418992
+      password: null
     salve: null
   nosql: null
+
+sms:
+  limit: 60
+  valida: 300
+  universal: 2047
+  service: 'aliyun' # aliyun 、tcloud
+  aliyun:
+    sign:
+      - '短信签名'
+    region: ''
+    access_key_id: ''
+    access_key_secret: ''
+    template:
+      domestic:
+        ${\apps\core\classier\enum\CodeType::LOGIN}: 'SMS_236325159'
+        ${\apps\core\classier\enum\CodeType::BIND_TELEPHONE}: 'SMS_236325159'
+        ${\apps\core\classier\enum\CodeType::CHANGE_VERIFY}: 'SMS_236325159'
+        ${\apps\core\classier\enum\CodeType::CHANGE_TELEPHONE}: 'SMS_236325159'
+
+wechat:
+  mini:
+    appid: ''
+    secret: ''
+
+pay:
+  wechat:
+    appid: ''
+    secret: ''
+    key: ''
+    mch_id: ''
+    sign_type: 'MD5'
+    notify_url: 'https://jjc.api.jngkbm.com/pay/notify/wechat'
+    ssl_cert_path: '${PATH_ROOT}apps/core/certificate/wechat/pay/apiclient_cert.pem'
+    ssl_key_path: '${PATH_ROOT}apps/core/certificate/wechat/pay/apiclient_key.pem'
+
+file:
+  service: 'local' # local 、oss
+
+ocr:
+  baidu:
+    appid: ''
+    app_key: ''
+    secret: ''
+
+speech:
+  aliyun:
+    access_key_id: ''
+    access_key_secret: ''
+    app_key: ''
+    wss: ''
+
+oss:
+  service: 'aliyun' # aliyun
+  aliyun:
+    accessKeyId: ''
+    secret: ''
+    endpoint: 'https://oss-cn-hangzhou.aliyuncs.com'
+    bucket: 'bucket-name'
+    callback:
+      callbackUrl: 'http://www.xxx.com/rapid-php/apps/file/public/oss/aliyun/callback'
+      callbackBody: 'bucket=#{bucket}&object=#{object}&etag=#{etag}&size=#{size}&mimeType=#{mimeType}&imageInfo.height=#{imageInfo.height}&imageInfo.width=#{imageInfo.width}&imageInfo.format=#{imageInfo.format}'

@@ -5,133 +5,30 @@ namespace apps\core\classier\model;
 use Exception;
 use rapidPHP\modules\core\classier\Model;
 
+
 /**
  * 用户表
  * @table app_user
- * rapidPHP auto generate Model 2021-01-25 21:19:27
+ * rapidPHP auto generate Model 2022-04-11 11:39:19
  */
-class AppUserModel extends Model
+
+class AppUserModel extends Model 
 {
-    
+
     /**
      * table name
      */
     const NAME = 'app_user';
-        
+
     
     /**
      * 主键
+     * @var 
      * @length 
      * @typed bigint
      */
-    private $id;    
-    
-    /**
-     * 区号+手机号
-     * @length 16
-     * @typed varchar
-     */
-    private $telephone;    
-    
-    /**
-     * 名称
-     * @length 100
-     * @typed varchar
-     */
-    private $nickname;    
-    
-    /**
-     * 密码
-     * @length 40
-     * @typed varchar
-     */
-    private $password;    
-    
-    /**
-     * 头像文件Id
-     * @length 
-     * @typed bigint
-     */
-    private $head_fid;    
-    
-    /**
-     * 性别 1男人 2 女人
-     * @length 
-     * @typed tinyint
-     */
-    private $gender;    
-    
-    /**
-     * 出生日期
-     * @length 
-     * @typed date
-     */
-    private $birthday;    
-    
-    /**
-     * 注册Ip
-     * @length 18
-     * @typed varchar
-     */
-    private $register_ip;    
-    
-    /**
-     * 邮箱
-     * @length 28
-     * @typed varchar
-     */
-    private $email;    
-    
-    /**
-     * 来源
-     * @length 20
-     * @typed varchar
-     */
-    private $source;    
-    
-    /**
-     * 是否删除
-     * @length 
-     * @typed bit
-     */
-    private $is_delete;    
-    
-    /**
-     * 创建人Id
-     * @length 
-     * @typed bigint
-     */
-    private $created_id;    
-    
-    /**
-     * 创建时间
-     * @length 
-     * @typed datetime
-     */
-    private $created_time;    
-    
-    /**
-     * 修改人Id
-     * @length 
-     * @typed bigint
-     */
-    private $updated_id;    
-    
-    /**
-     * 修改时间
-     * @length 
-     * @typed datetime
-     */
-    private $updated_time;    
-    /**
-     * 获取 主键
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-    
+    protected $id;
+
     /**
      * 设置 主键
      * @param $id
@@ -140,7 +37,16 @@ class AppUserModel extends Model
     {
         $this->id = $id;
     }
-    
+
+    /**
+     * 获取 主键
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * 效验 主键
      * @param string $msg
@@ -148,46 +54,53 @@ class AppUserModel extends Model
      */
     public function validId(string $msg = 'id Cannot be empty!')
     {
-        if(empty($this->id)) throw new Exception($msg);
+        if (empty($this->id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 区号+手机号
-     * @return string
+     * 用户名称（刚注册需要自动生成）
+     * @var string|null 
+     * @length 50
+     * @typed varchar
      */
-    public function getTelephone(): ?string
-    {
-        return $this->telephone;
-    }
-    
+    protected $username;
+
     /**
-     * 设置 区号+手机号
-     * @param string|null $telephone
+     * 设置 用户名称（刚注册需要自动生成）
+     * @param string|null $username
      */
-    public function setTelephone(?string $telephone)
+    public function setUsername(?string $username)
     {
-        $this->telephone = $telephone;
+        $this->username = $username;
     }
-    
+
     /**
-     * 效验 区号+手机号
+     * 获取 用户名称（刚注册需要自动生成）
+     * @return string|null
+     */
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    /**
+     * 效验 用户名称（刚注册需要自动生成）
      * @param string $msg
      * @throws Exception
      */
-    public function validTelephone(string $msg = 'telephone Cannot be empty!')
+    public function validUsername(string $msg = 'username Cannot be empty!')
     {
-        if(empty($this->telephone)) throw new Exception($msg);
+        if (empty($this->username)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 名称
-     * @return string
+     * 名称
+     * @var string|null 
+     * @length 100
+     * @typed varchar
      */
-    public function getNickname(): ?string
-    {
-        return $this->nickname;
-    }
-    
+    protected $nickname;
+
     /**
      * 设置 名称
      * @param string|null $nickname
@@ -196,7 +109,16 @@ class AppUserModel extends Model
     {
         $this->nickname = $nickname;
     }
-    
+
+    /**
+     * 获取 名称
+     * @return string|null
+     */
+    public function getNickname(): ?string
+    {
+        return $this->nickname;
+    }
+
     /**
      * 效验 名称
      * @param string $msg
@@ -204,18 +126,53 @@ class AppUserModel extends Model
      */
     public function validNickname(string $msg = 'nickname Cannot be empty!')
     {
-        if(empty($this->nickname)) throw new Exception($msg);
+        if (empty($this->nickname)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 密码
-     * @return string
+     * 区号+手机号
+     * @var string|null 
+     * @length 16
+     * @typed varchar
      */
-    public function getPassword(): ?string
+    protected $telephone;
+
+    /**
+     * 设置 区号+手机号
+     * @param string|null $telephone
+     */
+    public function setTelephone(?string $telephone)
     {
-        return $this->password;
+        $this->telephone = $telephone;
     }
-    
+
+    /**
+     * 获取 区号+手机号
+     * @return string|null
+     */
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    /**
+     * 效验 区号+手机号
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validTelephone(string $msg = 'telephone Cannot be empty!')
+    {
+        if (empty($this->telephone)) throw new Exception($msg);
+    }
+
+    /**
+     * 密码
+     * @var string|null 
+     * @length 40
+     * @typed varchar
+     */
+    protected $password;
+
     /**
      * 设置 密码
      * @param string|null $password
@@ -224,7 +181,16 @@ class AppUserModel extends Model
     {
         $this->password = $password;
     }
-    
+
+    /**
+     * 获取 密码
+     * @return string|null
+     */
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
     /**
      * 效验 密码
      * @param string $msg
@@ -232,18 +198,53 @@ class AppUserModel extends Model
      */
     public function validPassword(string $msg = 'password Cannot be empty!')
     {
-        if(empty($this->password)) throw new Exception($msg);
+        if (empty($this->password)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 头像文件Id
-     * @return mixed
+     * 签名
+     * @var string|null 
+     * @length 255
+     * @typed varchar
      */
-    public function getHeadFid()
+    protected $explain;
+
+    /**
+     * 设置 签名
+     * @param string|null $explain
+     */
+    public function setExplain(?string $explain)
     {
-        return $this->head_fid;
+        $this->explain = $explain;
     }
-    
+
+    /**
+     * 获取 签名
+     * @return string|null
+     */
+    public function getExplain(): ?string
+    {
+        return $this->explain;
+    }
+
+    /**
+     * 效验 签名
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validExplain(string $msg = 'explain Cannot be empty!')
+    {
+        if (empty($this->explain)) throw new Exception($msg);
+    }
+
+    /**
+     * 头像文件Id
+     * @var 
+     * @length 
+     * @typed bigint
+     */
+    protected $head_fid;
+
     /**
      * 设置 头像文件Id
      * @param $head_fid
@@ -252,7 +253,16 @@ class AppUserModel extends Model
     {
         $this->head_fid = $head_fid;
     }
-    
+
+    /**
+     * 获取 头像文件Id
+     * @return mixed
+     */
+    public function getHeadFid()
+    {
+        return $this->head_fid;
+    }
+
     /**
      * 效验 头像文件Id
      * @param string $msg
@@ -260,18 +270,17 @@ class AppUserModel extends Model
      */
     public function validHeadFid(string $msg = 'head_fid Cannot be empty!')
     {
-        if(empty($this->head_fid)) throw new Exception($msg);
+        if (empty($this->head_fid)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 性别 1男人 2 女人
-     * @return int
+     * 性别 1男人 2 女人
+     * @var int|null 
+     * @length 
+     * @typed tinyint
      */
-    public function getGender(): ?int
-    {
-        return $this->gender;
-    }
-    
+    protected $gender;
+
     /**
      * 设置 性别 1男人 2 女人
      * @param int|null $gender
@@ -280,7 +289,16 @@ class AppUserModel extends Model
     {
         $this->gender = $gender;
     }
-    
+
+    /**
+     * 获取 性别 1男人 2 女人
+     * @return int|null
+     */
+    public function getGender(): ?int
+    {
+        return $this->gender;
+    }
+
     /**
      * 效验 性别 1男人 2 女人
      * @param string $msg
@@ -288,18 +306,17 @@ class AppUserModel extends Model
      */
     public function validGender(string $msg = 'gender Cannot be empty!')
     {
-        if(empty($this->gender)) throw new Exception($msg);
+        if (empty($this->gender)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 出生日期
-     * @return string
+     * 出生日期
+     * @var string|null 
+     * @length 
+     * @typed date
      */
-    public function getBirthday(): ?string
-    {
-        return $this->birthday;
-    }
-    
+    protected $birthday;
+
     /**
      * 设置 出生日期
      * @param string|null $birthday
@@ -308,7 +325,16 @@ class AppUserModel extends Model
     {
         $this->birthday = $birthday;
     }
-    
+
+    /**
+     * 获取 出生日期
+     * @return string|null
+     */
+    public function getBirthday(): ?string
+    {
+        return $this->birthday;
+    }
+
     /**
      * 效验 出生日期
      * @param string $msg
@@ -316,18 +342,17 @@ class AppUserModel extends Model
      */
     public function validBirthday(string $msg = 'birthday Cannot be empty!')
     {
-        if(empty($this->birthday)) throw new Exception($msg);
+        if (empty($this->birthday)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 注册Ip
-     * @return string
+     * 注册Ip
+     * @var string|null 
+     * @length 18
+     * @typed varchar
      */
-    public function getRegisterIp(): ?string
-    {
-        return $this->register_ip;
-    }
-    
+    protected $register_ip;
+
     /**
      * 设置 注册Ip
      * @param string|null $register_ip
@@ -336,7 +361,16 @@ class AppUserModel extends Model
     {
         $this->register_ip = $register_ip;
     }
-    
+
+    /**
+     * 获取 注册Ip
+     * @return string|null
+     */
+    public function getRegisterIp(): ?string
+    {
+        return $this->register_ip;
+    }
+
     /**
      * 效验 注册Ip
      * @param string $msg
@@ -344,46 +378,17 @@ class AppUserModel extends Model
      */
     public function validRegisterIp(string $msg = 'register_ip Cannot be empty!')
     {
-        if(empty($this->register_ip)) throw new Exception($msg);
+        if (empty($this->register_ip)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 邮箱
-     * @return string
+     * 来源
+     * @var string|null 
+     * @length 20
+     * @typed varchar
      */
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-    
-    /**
-     * 设置 邮箱
-     * @param string|null $email
-     */
-    public function setEmail(?string $email)
-    {
-        $this->email = $email;
-    }
-    
-    /**
-     * 效验 邮箱
-     * @param string $msg
-     * @throws Exception
-     */
-    public function validEmail(string $msg = 'email Cannot be empty!')
-    {
-        if(empty($this->email)) throw new Exception($msg);
-    }
-    
-    /**
-     * 获取 来源
-     * @return string
-     */
-    public function getSource(): ?string
-    {
-        return $this->source;
-    }
-    
+    protected $source;
+
     /**
      * 设置 来源
      * @param string|null $source
@@ -392,7 +397,16 @@ class AppUserModel extends Model
     {
         $this->source = $source;
     }
-    
+
+    /**
+     * 获取 来源
+     * @return string|null
+     */
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
+
     /**
      * 效验 来源
      * @param string $msg
@@ -400,18 +414,233 @@ class AppUserModel extends Model
      */
     public function validSource(string $msg = 'source Cannot be empty!')
     {
-        if(empty($this->source)) throw new Exception($msg);
+        if (empty($this->source)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 是否删除
-     * @return bool
+     * 当前状态 1 正常 2 申请注销中 3 已注销
+     * @var int|null 
+     * @length 
+     * @typed tinyint
      */
-    public function getIsDelete(): ?bool
+    protected $status;
+
+    /**
+     * 设置 当前状态 1 正常 2 申请注销中 3 已注销
+     * @param int|null $status
+     */
+    public function setStatus(?int $status)
     {
-        return $this->is_delete;
+        $this->status = $status;
     }
-    
+
+    /**
+     * 获取 当前状态 1 正常 2 申请注销中 3 已注销
+     * @return int|null
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    /**
+     * 效验 当前状态 1 正常 2 申请注销中 3 已注销
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validStatus(string $msg = 'status Cannot be empty!')
+    {
+        if (empty($this->status)) throw new Exception($msg);
+    }
+
+    /**
+     * 粉丝数量
+     * @var int|null 
+     * @length 
+     * @typed int
+     */
+    protected $follower_count;
+
+    /**
+     * 设置 粉丝数量
+     * @param int|null $follower_count
+     */
+    public function setFollowerCount(?int $follower_count)
+    {
+        $this->follower_count = $follower_count;
+    }
+
+    /**
+     * 获取 粉丝数量
+     * @return int|null
+     */
+    public function getFollowerCount(): ?int
+    {
+        return $this->follower_count;
+    }
+
+    /**
+     * 效验 粉丝数量
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validFollowerCount(string $msg = 'follower_count Cannot be empty!')
+    {
+        if (empty($this->follower_count)) throw new Exception($msg);
+    }
+
+    /**
+     * 关注数量
+     * @var int|null 
+     * @length 
+     * @typed int
+     */
+    protected $following_count;
+
+    /**
+     * 设置 关注数量
+     * @param int|null $following_count
+     */
+    public function setFollowingCount(?int $following_count)
+    {
+        $this->following_count = $following_count;
+    }
+
+    /**
+     * 获取 关注数量
+     * @return int|null
+     */
+    public function getFollowingCount(): ?int
+    {
+        return $this->following_count;
+    }
+
+    /**
+     * 效验 关注数量
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validFollowingCount(string $msg = 'following_count Cannot be empty!')
+    {
+        if (empty($this->following_count)) throw new Exception($msg);
+    }
+
+    /**
+     * 推荐人id
+     * @var 
+     * @length 
+     * @typed bigint
+     */
+    protected $recommend_uid;
+
+    /**
+     * 设置 推荐人id
+     * @param $recommend_uid
+     */
+    public function setRecommendUid($recommend_uid)
+    {
+        $this->recommend_uid = $recommend_uid;
+    }
+
+    /**
+     * 获取 推荐人id
+     * @return mixed
+     */
+    public function getRecommendUid()
+    {
+        return $this->recommend_uid;
+    }
+
+    /**
+     * 效验 推荐人id
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validRecommendUid(string $msg = 'recommend_uid Cannot be empty!')
+    {
+        if (empty($this->recommend_uid)) throw new Exception($msg);
+    }
+
+    /**
+     * top 专业id
+     * @var 
+     * @length 
+     * @typed bigint
+     */
+    protected $top_mid;
+
+    /**
+     * 设置 top 专业id
+     * @param $top_mid
+     */
+    public function setTopMid($top_mid)
+    {
+        $this->top_mid = $top_mid;
+    }
+
+    /**
+     * 获取 top 专业id
+     * @return mixed
+     */
+    public function getTopMid()
+    {
+        return $this->top_mid;
+    }
+
+    /**
+     * 效验 top 专业id
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validTopMid(string $msg = 'top_mid Cannot be empty!')
+    {
+        if (empty($this->top_mid)) throw new Exception($msg);
+    }
+
+    /**
+     * 专业id
+     * @var 
+     * @length 
+     * @typed bigint
+     */
+    protected $major_id;
+
+    /**
+     * 设置 专业id
+     * @param $major_id
+     */
+    public function setMajorId($major_id)
+    {
+        $this->major_id = $major_id;
+    }
+
+    /**
+     * 获取 专业id
+     * @return mixed
+     */
+    public function getMajorId()
+    {
+        return $this->major_id;
+    }
+
+    /**
+     * 效验 专业id
+     * @param string $msg
+     * @throws Exception
+     */
+    public function validMajorId(string $msg = 'major_id Cannot be empty!')
+    {
+        if (empty($this->major_id)) throw new Exception($msg);
+    }
+
+    /**
+     * 是否删除
+     * @var bool|null 
+     * @length 
+     * @typed bit
+     */
+    protected $is_delete;
+
     /**
      * 设置 是否删除
      * @param bool|null $is_delete
@@ -420,7 +649,16 @@ class AppUserModel extends Model
     {
         $this->is_delete = $is_delete;
     }
-    
+
+    /**
+     * 获取 是否删除
+     * @return bool|null
+     */
+    public function getIsDelete(): ?bool
+    {
+        return $this->is_delete;
+    }
+
     /**
      * 效验 是否删除
      * @param string $msg
@@ -428,18 +666,17 @@ class AppUserModel extends Model
      */
     public function validIsDelete(string $msg = 'is_delete Cannot be empty!')
     {
-        if(empty($this->is_delete)) throw new Exception($msg);
+        if (empty($this->is_delete)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建人Id
-     * @return mixed
+     * 创建人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getCreatedId()
-    {
-        return $this->created_id;
-    }
-    
+    protected $created_id;
+
     /**
      * 设置 创建人Id
      * @param $created_id
@@ -448,7 +685,16 @@ class AppUserModel extends Model
     {
         $this->created_id = $created_id;
     }
-    
+
+    /**
+     * 获取 创建人Id
+     * @return mixed
+     */
+    public function getCreatedId()
+    {
+        return $this->created_id;
+    }
+
     /**
      * 效验 创建人Id
      * @param string $msg
@@ -456,18 +702,17 @@ class AppUserModel extends Model
      */
     public function validCreatedId(string $msg = 'created_id Cannot be empty!')
     {
-        if(empty($this->created_id)) throw new Exception($msg);
+        if (empty($this->created_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建时间
-     * @return string
+     * 创建时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getCreatedTime(): ?string
-    {
-        return $this->created_time;
-    }
-    
+    protected $created_time;
+
     /**
      * 设置 创建时间
      * @param string|null $created_time
@@ -476,7 +721,16 @@ class AppUserModel extends Model
     {
         $this->created_time = $created_time;
     }
-    
+
+    /**
+     * 获取 创建时间
+     * @return string|null
+     */
+    public function getCreatedTime(): ?string
+    {
+        return $this->created_time;
+    }
+
     /**
      * 效验 创建时间
      * @param string $msg
@@ -484,18 +738,17 @@ class AppUserModel extends Model
      */
     public function validCreatedTime(string $msg = 'created_time Cannot be empty!')
     {
-        if(empty($this->created_time)) throw new Exception($msg);
+        if (empty($this->created_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改人Id
-     * @return mixed
+     * 修改人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getUpdatedId()
-    {
-        return $this->updated_id;
-    }
-    
+    protected $updated_id;
+
     /**
      * 设置 修改人Id
      * @param $updated_id
@@ -504,7 +757,16 @@ class AppUserModel extends Model
     {
         $this->updated_id = $updated_id;
     }
-    
+
+    /**
+     * 获取 修改人Id
+     * @return mixed
+     */
+    public function getUpdatedId()
+    {
+        return $this->updated_id;
+    }
+
     /**
      * 效验 修改人Id
      * @param string $msg
@@ -512,18 +774,17 @@ class AppUserModel extends Model
      */
     public function validUpdatedId(string $msg = 'updated_id Cannot be empty!')
     {
-        if(empty($this->updated_id)) throw new Exception($msg);
+        if (empty($this->updated_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改时间
-     * @return string
+     * 修改时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getUpdatedTime(): ?string
-    {
-        return $this->updated_time;
-    }
-    
+    protected $updated_time;
+
     /**
      * 设置 修改时间
      * @param string|null $updated_time
@@ -532,7 +793,16 @@ class AppUserModel extends Model
     {
         $this->updated_time = $updated_time;
     }
-    
+
+    /**
+     * 获取 修改时间
+     * @return string|null
+     */
+    public function getUpdatedTime(): ?string
+    {
+        return $this->updated_time;
+    }
+
     /**
      * 效验 修改时间
      * @param string $msg
@@ -540,6 +810,7 @@ class AppUserModel extends Model
      */
     public function validUpdatedTime(string $msg = 'updated_time Cannot be empty!')
     {
-        if(empty($this->updated_time)) throw new Exception($msg);
+        if (empty($this->updated_time)) throw new Exception($msg);
     }
+
 }

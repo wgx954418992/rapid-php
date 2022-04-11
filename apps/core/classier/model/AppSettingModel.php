@@ -5,98 +5,30 @@ namespace apps\core\classier\model;
 use Exception;
 use rapidPHP\modules\core\classier\Model;
 
+
 /**
  * 系统设置表
  * @table app_setting
- * rapidPHP auto generate Model 2021-01-25 21:19:26
+ * rapidPHP auto generate Model 2022-04-11 11:39:19
  */
-class AppSettingModel extends Model
+
+class AppSettingModel extends Model 
 {
-    
+
     /**
      * table name
      */
     const NAME = 'app_setting';
-        
+
     
     /**
      * 主键
+     * @var 
      * @length 
      * @typed bigint
      */
-    private $id;    
-    
-    /**
-     * 类型
-     * @length 50
-     * @typed varchar
-     */
-    private $type;    
-    
-    /**
-     * 属性
-     * @length 15
-     * @typed varchar
-     */
-    private $attribute;    
-    
-    /**
-     * 内容
-     * @length 1024
-     * @typed varchar
-     */
-    private $content;    
-    
-    /**
-     * 备注
-     * @length 50
-     * @typed varchar
-     */
-    private $remarks;    
-    
-    /**
-     * 是否删除
-     * @length 
-     * @typed bit
-     */
-    private $is_delete;    
-    
-    /**
-     * 创建人Id
-     * @length 
-     * @typed bigint
-     */
-    private $created_id;    
-    
-    /**
-     * 创建时间
-     * @length 
-     * @typed datetime
-     */
-    private $created_time;    
-    
-    /**
-     * 修改人Id
-     * @length 
-     * @typed bigint
-     */
-    private $updated_id;    
-    
-    /**
-     * 修改时间
-     * @length 
-     * @typed datetime
-     */
-    private $updated_time;    
-    /**
-     * 获取 主键
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-    
+    protected $id;
+
     /**
      * 设置 主键
      * @param $id
@@ -105,7 +37,16 @@ class AppSettingModel extends Model
     {
         $this->id = $id;
     }
-    
+
+    /**
+     * 获取 主键
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * 效验 主键
      * @param string $msg
@@ -113,18 +54,17 @@ class AppSettingModel extends Model
      */
     public function validId(string $msg = 'id Cannot be empty!')
     {
-        if(empty($this->id)) throw new Exception($msg);
+        if (empty($this->id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 类型
-     * @return string
+     * 类型
+     * @var string|null 
+     * @length 50
+     * @typed varchar
      */
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-    
+    protected $type;
+
     /**
      * 设置 类型
      * @param string|null $type
@@ -133,7 +73,16 @@ class AppSettingModel extends Model
     {
         $this->type = $type;
     }
-    
+
+    /**
+     * 获取 类型
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
     /**
      * 效验 类型
      * @param string $msg
@@ -141,18 +90,17 @@ class AppSettingModel extends Model
      */
     public function validType(string $msg = 'type Cannot be empty!')
     {
-        if(empty($this->type)) throw new Exception($msg);
+        if (empty($this->type)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 属性
-     * @return string
+     * 属性
+     * @var string|null 
+     * @length 50
+     * @typed varchar
      */
-    public function getAttribute(): ?string
-    {
-        return $this->attribute;
-    }
-    
+    protected $attribute;
+
     /**
      * 设置 属性
      * @param string|null $attribute
@@ -161,7 +109,16 @@ class AppSettingModel extends Model
     {
         $this->attribute = $attribute;
     }
-    
+
+    /**
+     * 获取 属性
+     * @return string|null
+     */
+    public function getAttribute(): ?string
+    {
+        return $this->attribute;
+    }
+
     /**
      * 效验 属性
      * @param string $msg
@@ -169,18 +126,17 @@ class AppSettingModel extends Model
      */
     public function validAttribute(string $msg = 'attribute Cannot be empty!')
     {
-        if(empty($this->attribute)) throw new Exception($msg);
+        if (empty($this->attribute)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 内容
-     * @return string
+     * 内容
+     * @var string|null 
+     * @length 1024
+     * @typed varchar
      */
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
-    
+    protected $content;
+
     /**
      * 设置 内容
      * @param string|null $content
@@ -189,7 +145,16 @@ class AppSettingModel extends Model
     {
         $this->content = $content;
     }
-    
+
+    /**
+     * 获取 内容
+     * @return string|null
+     */
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
     /**
      * 效验 内容
      * @param string $msg
@@ -197,18 +162,17 @@ class AppSettingModel extends Model
      */
     public function validContent(string $msg = 'content Cannot be empty!')
     {
-        if(empty($this->content)) throw new Exception($msg);
+        if (empty($this->content)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 备注
-     * @return string
+     * 备注
+     * @var string|null 
+     * @length 50
+     * @typed varchar
      */
-    public function getRemarks(): ?string
-    {
-        return $this->remarks;
-    }
-    
+    protected $remarks;
+
     /**
      * 设置 备注
      * @param string|null $remarks
@@ -217,7 +181,16 @@ class AppSettingModel extends Model
     {
         $this->remarks = $remarks;
     }
-    
+
+    /**
+     * 获取 备注
+     * @return string|null
+     */
+    public function getRemarks(): ?string
+    {
+        return $this->remarks;
+    }
+
     /**
      * 效验 备注
      * @param string $msg
@@ -225,18 +198,17 @@ class AppSettingModel extends Model
      */
     public function validRemarks(string $msg = 'remarks Cannot be empty!')
     {
-        if(empty($this->remarks)) throw new Exception($msg);
+        if (empty($this->remarks)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 是否删除
-     * @return bool
+     * 是否删除
+     * @var bool|null 
+     * @length 
+     * @typed bit
      */
-    public function getIsDelete(): ?bool
-    {
-        return $this->is_delete;
-    }
-    
+    protected $is_delete;
+
     /**
      * 设置 是否删除
      * @param bool|null $is_delete
@@ -245,7 +217,16 @@ class AppSettingModel extends Model
     {
         $this->is_delete = $is_delete;
     }
-    
+
+    /**
+     * 获取 是否删除
+     * @return bool|null
+     */
+    public function getIsDelete(): ?bool
+    {
+        return $this->is_delete;
+    }
+
     /**
      * 效验 是否删除
      * @param string $msg
@@ -253,18 +234,17 @@ class AppSettingModel extends Model
      */
     public function validIsDelete(string $msg = 'is_delete Cannot be empty!')
     {
-        if(empty($this->is_delete)) throw new Exception($msg);
+        if (empty($this->is_delete)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建人Id
-     * @return mixed
+     * 创建人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getCreatedId()
-    {
-        return $this->created_id;
-    }
-    
+    protected $created_id;
+
     /**
      * 设置 创建人Id
      * @param $created_id
@@ -273,7 +253,16 @@ class AppSettingModel extends Model
     {
         $this->created_id = $created_id;
     }
-    
+
+    /**
+     * 获取 创建人Id
+     * @return mixed
+     */
+    public function getCreatedId()
+    {
+        return $this->created_id;
+    }
+
     /**
      * 效验 创建人Id
      * @param string $msg
@@ -281,18 +270,17 @@ class AppSettingModel extends Model
      */
     public function validCreatedId(string $msg = 'created_id Cannot be empty!')
     {
-        if(empty($this->created_id)) throw new Exception($msg);
+        if (empty($this->created_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 创建时间
-     * @return string
+     * 创建时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getCreatedTime(): ?string
-    {
-        return $this->created_time;
-    }
-    
+    protected $created_time;
+
     /**
      * 设置 创建时间
      * @param string|null $created_time
@@ -301,7 +289,16 @@ class AppSettingModel extends Model
     {
         $this->created_time = $created_time;
     }
-    
+
+    /**
+     * 获取 创建时间
+     * @return string|null
+     */
+    public function getCreatedTime(): ?string
+    {
+        return $this->created_time;
+    }
+
     /**
      * 效验 创建时间
      * @param string $msg
@@ -309,18 +306,17 @@ class AppSettingModel extends Model
      */
     public function validCreatedTime(string $msg = 'created_time Cannot be empty!')
     {
-        if(empty($this->created_time)) throw new Exception($msg);
+        if (empty($this->created_time)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改人Id
-     * @return mixed
+     * 修改人Id
+     * @var 
+     * @length 
+     * @typed bigint
      */
-    public function getUpdatedId()
-    {
-        return $this->updated_id;
-    }
-    
+    protected $updated_id;
+
     /**
      * 设置 修改人Id
      * @param $updated_id
@@ -329,7 +325,16 @@ class AppSettingModel extends Model
     {
         $this->updated_id = $updated_id;
     }
-    
+
+    /**
+     * 获取 修改人Id
+     * @return mixed
+     */
+    public function getUpdatedId()
+    {
+        return $this->updated_id;
+    }
+
     /**
      * 效验 修改人Id
      * @param string $msg
@@ -337,18 +342,17 @@ class AppSettingModel extends Model
      */
     public function validUpdatedId(string $msg = 'updated_id Cannot be empty!')
     {
-        if(empty($this->updated_id)) throw new Exception($msg);
+        if (empty($this->updated_id)) throw new Exception($msg);
     }
-    
+
     /**
-     * 获取 修改时间
-     * @return string
+     * 修改时间
+     * @var string|null 
+     * @length 
+     * @typed datetime
      */
-    public function getUpdatedTime(): ?string
-    {
-        return $this->updated_time;
-    }
-    
+    protected $updated_time;
+
     /**
      * 设置 修改时间
      * @param string|null $updated_time
@@ -357,7 +361,16 @@ class AppSettingModel extends Model
     {
         $this->updated_time = $updated_time;
     }
-    
+
+    /**
+     * 获取 修改时间
+     * @return string|null
+     */
+    public function getUpdatedTime(): ?string
+    {
+        return $this->updated_time;
+    }
+
     /**
      * 效验 修改时间
      * @param string $msg
@@ -365,6 +378,7 @@ class AppSettingModel extends Model
      */
     public function validUpdatedTime(string $msg = 'updated_time Cannot be empty!')
     {
-        if(empty($this->updated_time)) throw new Exception($msg);
+        if (empty($this->updated_time)) throw new Exception($msg);
     }
+
 }

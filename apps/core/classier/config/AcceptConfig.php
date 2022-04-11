@@ -8,21 +8,41 @@ class AcceptConfig
 {
 
     /**
+     * IMAGE mime webp
+     */
+    const IMAGE_MIME_WEBP = 'image/webp';
+
+    /**
+     * Video mime mov
+     */
+    const VIDEO_MIME_MOV = 'video/quicktime';
+
+    /**
      * 图片文件
      * @var int[]
      */
-    public static $IMAGE = [
+    const IMAGE = [
         'image/jpg' => '.jpg',
         'image/jpeg' => '.jpeg',
         'image/png' => '.png',
-        'image/bmp' => '.bmp',
+        self::IMAGE_MIME_WEBP => '.webp',
+    ];
+
+    /**
+     * 视频文件
+     * @var int[]
+     */
+    const VIDEO = [
+        'video/mpeg' => '.mp4',
+        'video/mp4' => '.mp4',
+        'video/quicktime' => '.mov',
     ];
 
     /**
      * pdf文件
      * @var int[]
      */
-    public static $PDF = [
+    const PDF = [
         'application/pdf' => '.pdf',
     ];
 
@@ -30,7 +50,7 @@ class AcceptConfig
      * WORD
      * @var int[]
      */
-    public static $WORD = [
+    const WORD = [
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => [
             '.docx'
         ],
@@ -49,7 +69,7 @@ class AcceptConfig
      * Excel
      * @var int[]
      */
-    public static $EXCEL = [
+    const EXCEL = [
         'application/vnd.ms-excel' => [
             '.xla',
             '.xlc',
@@ -66,7 +86,7 @@ class AcceptConfig
      * PPT
      * @var int[]
      */
-    public static $PPT = [
+    const PPT = [
         'application/vnd.ms-powerpoint' => [
             '.pot',
             '.pps',
@@ -88,7 +108,7 @@ class AcceptConfig
 
         $fileMime = strtolower($fileMime);
 
-        $rule = is_null($rule) ? array_merge(self::$IMAGE, self::$PDF, self::$WORD, self::$EXCEL, self::$PPT) : $rule;
+        $rule = is_null($rule) ? array_merge(self::IMAGE, self::VIDEO, self::PDF, self::WORD, self::EXCEL, self::PPT) : $rule;
 
         $rule = array_change_key_case($rule, CASE_LOWER);
 

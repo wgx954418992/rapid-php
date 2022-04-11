@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
-    <title>光影 - 后台管理系统</title>
+    <title>RapidPHP - 后台管理系统</title>
     <link href="../../public/res/layout/bootstrap.min.css" rel="stylesheet">
     <link href="../../public/res/layout/animate.min.css" rel="stylesheet">
     <link href="../../public/res/layout/admin.css" rel="stylesheet">
@@ -57,7 +57,7 @@
                 <img src='../../public/res/assets/app_logo.png' style="max-width: 110px;margin-bottom: 10px;border-radius: 100%">
             </h1>
         </div>
-        <h3 class="title">光影 - 后台管理系统</h3>
+        <h3 class="title">RapidPHP - 后台管理系统</h3>
 
         <form class="m-t" role="form" method="post">
             <div class="form-group">

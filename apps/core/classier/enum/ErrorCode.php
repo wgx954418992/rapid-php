@@ -15,9 +15,9 @@ class ErrorCode extends Enum
     const USER_LOGIN_NOT = 1001;
 
     /**
-     * 用户信息，未完善
+     * 用户信息，用户资质审核失败
      */
-    const USER_INFO_NOT_PERFECT = 1101;
+    const USER_CERTIFICATES_FAILED = 1101;
 
     /**
      * 文件不存在

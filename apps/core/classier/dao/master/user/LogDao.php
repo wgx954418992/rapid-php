@@ -28,10 +28,10 @@ class LogDao extends MasterDao
      */
     public function addLoginLog(UserLogModel $model): bool
     {
-        $result = parent::add([
+        $result = $this->add([
             'bind_id' => $model->getBindId(),
             'token' => $model->getToken(),
-            'mode' => $model->getMode(),
+            'type' => $model->getType(),
             'date' => Cal()->getDate(),
             'ip' => $model->getIp(),
             'device' => $model->getDevice(),
@@ -53,7 +53,7 @@ class LogDao extends MasterDao
      */
     public function getLoginCount($bindId): int
     {
-        return (int)parent::count('id')
+        return (int)$this->count('id')
             ->where('is_delete', false)
             ->where('bind_id', $bindId)
             ->getStatement()

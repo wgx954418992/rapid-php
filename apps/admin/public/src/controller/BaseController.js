@@ -8,8 +8,31 @@ const BaseController = (function (controller) {
         window.BC = this;
     }
 
+    /**
+     * formView
+     * @type {View}
+     */
+    BaseController.prototype.formView = null;
+
+    /**
+     * config
+     * @type {*}
+     */
+    BaseController.prototype.config = null;
+
+    /**
+     * on create
+     */
     BaseController.prototype.onCreate = function () {
         this.create();
+    };
+
+    /**
+     * on config init complete
+     * @param config
+     */
+    BaseController.prototype.onConfigInitComplete = function (config) {
+
     };
 
     /**
@@ -18,6 +41,12 @@ const BaseController = (function (controller) {
     BaseController.prototype.create = function () {
 
         this.tooltip();
+
+        this.initConfig();
+
+        this.initImageLazy();
+
+        this.initFormView();
 
         this.initSwiper();
 
@@ -33,6 +62,53 @@ const BaseController = (function (controller) {
      */
     BaseController.prototype.tooltip = function () {
         if (typeof $ === 'function') $("[data-toggle='tooltip']").tooltip({html: true});
+    };
+
+    /**
+     * init config
+     */
+    BaseController.prototype.initConfig = function () {
+        const key = rapid.getGlobalConfigPathDir() + '__config__';
+
+        console.log(key)
+
+        let config = rapid.getBuild().toJson(localStorage.getItem(key));
+
+        if (self === top) {
+            const rapidJs = rapid.getView('#rapidJs');
+
+            if (rapidJs.isFrame()) {
+                let currentConfig = rapid.getBuild().toJson(decodeURIComponent(rapidJs.data('app-config')));
+
+                if (currentConfig) config = currentConfig;
+            }
+        }
+
+        if (!config) return;
+
+        this.config = config;
+
+        localStorage.setItem(key, JSON.stringify(config));
+
+        this.onConfigInitComplete(config);
+    }
+
+    /**
+     * init image lazy
+     */
+    BaseController.prototype.initImageLazy = function () {
+        if (typeof $.fn.lazyload === 'function') {
+            $("img.lazy").lazyload({effect: "fadeIn"});
+        }
+    }
+
+    /**
+     * init formView
+     */
+    BaseController.prototype.initFormView = function () {
+        this.formView = rapid.getView().createdView("form")
+            .attr("method", "POST")
+            .attr("enctype", "multipart/form-data");
     };
 
     /**
@@ -169,8 +245,9 @@ const BaseController = (function (controller) {
      * @param id
      * @param fields
      * @param alias
+     * @param handle
      */
-    BaseController.prototype.initInputSearch = function (url, id, fields, alias) {
+    BaseController.prototype.initInputSearch = function (url, id, fields, alias, handle) {
         if (typeof $ !== 'function') return;
 
         $(id).bsSuggest({
@@ -190,9 +267,15 @@ const BaseController = (function (controller) {
             processData: function (json) {
                 const data = {value: []};
 
-                if (json.code !== 1) return data;
+                let list = [];
 
-                const list = json.data;
+                if (typeof handle === 'function') {
+                    list = handle(json);
+                } else {
+                    if (json.code !== 1) return data;
+
+                    list = json.data;
+                }
 
                 for (let v of list) {
                     const d = {};
@@ -243,6 +326,25 @@ const BaseController = (function (controller) {
     };
 
     /**
+     * 读取image到base64
+     * @param fileView
+     * @param call
+     */
+    BaseController.prototype.readImageToBase64 = function (fileView, call) {
+        if (!fileView.files) return false;
+
+        if (!fileView.files[0]) return rapid.getBuild().callback(call, '');
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            rapid.getBuild().callback(call, e.target.result);
+        };
+
+        reader.readAsDataURL(fileView.files[0]);
+    };
+
+    /**
      * sendHttpRequestToJson
      * @param url
      * @param data
@@ -263,22 +365,27 @@ const BaseController = (function (controller) {
     };
 
     /**
-     * 读取image到base64
-     * @param fileView
+     * 发送统一 api
+     * @param path
+     * @param data
      * @param call
+     * @param method
+     * @param pathFirst
      */
-    BaseController.prototype.readImageToBase64 = function (fileView, call) {
-        if (!fileView.files) return false;
+    BaseController.prototype.sendUnifiedApi = function (path, data, call, method, pathFirst) {
+        if (typeof pathFirst !== 'string' || !pathFirst) pathFirst = 'account/';
 
-        if (!fileView.files[0]) return rapid.getBuild().callback(call, '');
+        const url = this.config.host.admin + pathFirst + path;
 
-        const reader = new FileReader();
+        this.sendHttpRequestToJson(url, data, function (code, data, msg) {
 
-        reader.onload = function (e) {
-            rapid.getBuild().callback(call, e.target.result);
-        };
+            if (call) return rapid.getBuild().callback(call, code, data, msg);
 
-        reader.readAsDataURL(fileView.files[0]);
+            if (code === 1) return window.history.go(0);
+
+            alert(msg);
+
+        }.bind(this), method);
     };
 
     /**
@@ -342,31 +449,6 @@ const BaseController = (function (controller) {
     };
 
     /**
-     * 发送统一 api
-     * @param path
-     * @param data
-     * @param call
-     * @param method
-     * @param pathFirst
-     */
-    BaseController.prototype.sendUnifiedApi = function (path, data, call, method, pathFirst) {
-        if (typeof pathFirst !== 'string' || !pathFirst) pathFirst = 'admin/';
-
-        const url = rapid.getGlobalConfigPathDir() + pathFirst + path;
-
-        this.sendHttpRequestToJson(url, data, function (code, data, msg) {
-
-            if (call) return rapid.getBuild().callback(call, code, data, msg);
-
-            if (code === 1) return window.history.go(0);
-
-            alert(msg);
-
-        }.bind(this), method);
-    };
-
-
-    /**
      * 删除
      * @param type
      * @param id
@@ -378,33 +460,6 @@ const BaseController = (function (controller) {
     };
 
     /**
-     * 对页面重新排序
-     * @param data
-     * @param event
-     * @param view
-     */
-    BaseController.prototype.pageToSort = function (data, event, view) {
-
-        if (typeof data === 'string') data = JSON.parse(decodeURIComponent(data));
-
-        const orderName = view.data('order-name');
-
-        const orderType = view.getParent().data('order-type') === 'DESC' ? 'ASC' : 'DESC';
-
-        const page = view.getParent().data('page');
-
-        data = Object.assign(data, {
-            page: page,
-            order_name: orderName,
-            order_type: orderType
-        });
-
-        const urlParam = rapid.getBuild().toUrlQuery(data, true);
-
-        window.location.href = window.location.href.replace(/\?.*/gi, '') + '?' + urlParam;
-    };
-
-    /**
      * 上传文件
      * @param formView
      * @param call
@@ -412,7 +467,7 @@ const BaseController = (function (controller) {
     BaseController.prototype.uploadFile = function (formView, call) {
         const box = this.loadingToast("上传中");
 
-        const url = rapid.getGlobalConfigPathDir() + "admin/file/upload";
+        const url = this.config.host.file + "file/upload";
 
         if (!(formView instanceof FormData)) {
             formView = new FormData(formView);
@@ -446,6 +501,87 @@ const BaseController = (function (controller) {
             }.bind(this));
 
         }.bind(this));
+    };
+
+    /**
+     * 选择图片
+     * @param e
+     * @param view
+     */
+    BaseController.prototype.selectImgClick = function (e, view) {
+        this.formView.createdView("input")
+            .attr("name", "file")
+            .attr("type", "file")
+            .attr("accept", "image/*")
+            .on("change", function () {
+                BC.uploadFile(this.formView.getView(), function (data) {
+                    view.data('rapid-form-value', data.file_id)
+                        .getParent().data('fileId', data.file_id);
+
+                    view.empty().createdView('img', data.url)
+                        .addClass('rapid-width-full');
+                });
+            }.bind(this)).click();
+    };
+
+    /**
+     * 预览图片
+     * @param event
+     * @param img
+     */
+    BaseController.prototype.previewImage = function (event, img) {
+        const view = rapid.getView(this.view)
+            .createdView('div')
+            .css({
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                'justify-content': 'center',
+                'align-items': 'center',
+                background: 'rgba(0,0,0,0.23)',
+                position: 'fixed',
+                top: 0,
+                left: 0
+            })
+            .click(function () {
+                view.remove();
+            });
+
+        view.createdView('img')
+            .css({
+                maxWidth: '80%',
+                maxHeight: '80%',
+            })
+            .attr('src', img.attr('src'));
+    };
+
+    /**
+     * 对页面重新排序
+     * @param data
+     * @param event
+     * @param view
+     */
+    BaseController.prototype.pageToSort = function (data, event, view) {
+
+        this.loadingToast('加载中');
+
+        if (typeof data === 'string') data = JSON.parse(decodeURIComponent(data));
+
+        const orderName = view.data('order-name');
+
+        const orderType = view.getParent().data('order-type') === 'DESC' ? 'ASC' : 'DESC';
+
+        const page = view.getParent().data('page');
+
+        data = Object.assign(data, {
+            page: page,
+            order_name: orderName,
+            order_type: orderType
+        });
+
+        const urlParam = rapid.getBuild().toUrlQuery(data, true);
+
+        window.location.href = window.location.href.replace(/\?.*/gi, '') + '?' + urlParam;
     };
 
 

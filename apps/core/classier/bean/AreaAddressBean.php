@@ -2,89 +2,176 @@
 
 namespace apps\core\classier\bean;
 
-class AreaAddressBean
+use rapidPHP\modules\core\classier\Model;
+
+class AreaAddressBean extends Model
 {
+
+    /**
+     * 最后一级id
+     * @var int|null
+     */
+    protected $last_id;
+
+    /**
+     * 最后一级地区名称
+     * @var string|null
+     */
+    protected $last_name;
+
+    /**
+     * 地区id
+     * @var int|null
+     */
+    protected $area_id;
+
+    /**
+     * 地区名称
+     * @var string|null
+     */
+    protected $area_name;
+
+    /**
+     * 城市id
+     * @var int|null
+     */
+    protected $city_id;
+
+    /**
+     * 城市id
+     * @var string|null
+     */
+    protected $city_name;
 
     /**
      * 省id
      * @var int|null
      */
-    private $province_id;
+    protected $province_id;
 
     /**
      * 省名称
      * @var string|null
      */
-    private $province_name;
-
-    /**
-     * 省名称（英文）
-     * @var string|null
-     */
-    private $province_en;
-
-    /**
-     * 省code
-     * @var string|null
-     */
-    private $province_code;
-
-    /**
-     * 国家id
-     * @var int|null
-     */
-    private $country_id;
-
-    /**
-     * 国家名称
-     * @var string|null
-     */
-    private $country_name;
-
-    /**
-     * 国家名称（英文）
-     * @var string|null
-     */
-    private $country_en;
-
-    /**
-     * 国家code
-     * @var string|null
-     */
-    private $country_code;
-
-    /**
-     * 州id
-     * @var int|null
-     */
-    private $state_id;
-
-    /**
-     * 州名称
-     * @var string|null
-     */
-    private $state_name;
-
-    /**
-     * 州名称（英文）
-     * @var string|null
-     */
-    private $state_en;
-
-    /**
-     * 州code
-     * @var string|null
-     */
-    private $state_code;
+    protected $province_name;
 
     /**
      * 详细地址
      * @var string|null
      */
-    private $address;
+    protected $address;
 
     /**
      * @return int|null
+     */
+    public function getLastId(): ?int
+    {
+        return $this->last_id;
+    }
+
+    /**
+     * @param int|null $last_id
+     * @return AreaAddressBean
+     */
+    public function setLastId(?int $last_id)
+    {
+        $this->last_id = $last_id;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastName(): ?string
+    {
+        return $this->last_name;
+    }
+
+    /**
+     * @param string|null $last_name
+     * @return AreaAddressBean
+     */
+    public function setLastName(?string $last_name)
+    {
+        $this->last_name = $last_name;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAreaId(): ?int
+    {
+        return $this->area_id;
+    }
+
+    /**
+     * @param int|null $area_id
+     * @return self
+     */
+    public function setAreaId(?int $area_id): self
+    {
+        $this->area_id = $area_id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAreaName(): string
+    {
+        return $this->area_name;
+    }
+
+    /**
+     * @param string|null $area_name
+     * @return self
+     */
+    public function setAreaName(?string $area_name): self
+    {
+        $this->area_name = $area_name;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCityId(): ?int
+    {
+        return $this->city_id;
+    }
+
+    /**
+     * @param int|null $city_id
+     * @return self
+     */
+    public function setCityId(?int $city_id): self
+    {
+        $this->city_id = $city_id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCityName(): string
+    {
+        return $this->city_name;
+    }
+
+    /**
+     * @param string|null $city_name
+     * @return self
+     */
+    public function setCityName(?string $city_name): self
+    {
+        $this->city_name = $city_name;
+        return $this;
+    }
+
+    /**
+     * @return int
      */
     public function getProvinceId(): ?int
     {
@@ -93,7 +180,7 @@ class AreaAddressBean
 
     /**
      * @param int|null $province_id
-     * @return  self
+     * @return self
      */
     public function setProvinceId(?int $province_id): self
     {
@@ -102,16 +189,16 @@ class AreaAddressBean
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getProvinceName(): ?string
+    public function getProvinceName(): string
     {
         return $this->province_name;
     }
 
     /**
      * @param string|null $province_name
-     * @return  self
+     * @return self
      */
     public function setProvinceName(?string $province_name): self
     {
@@ -120,205 +207,29 @@ class AreaAddressBean
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getProvinceEn(): ?string
-    {
-        return $this->province_en;
-    }
-
-    /**
-     * @param string|null $province_en
-     * @return  self
-     */
-    public function setProvinceEn(?string $province_en): self
-    {
-        $this->province_en = $province_en;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getProvinceCode(): ?string
-    {
-        return $this->province_code;
-    }
-
-    /**
-     * @param string|null $province_code
-     * @return AreaAddressBean
-     */
-    public function setProvinceCode(?string $province_code): self
-    {
-        $this->province_code = $province_code;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCountryCode(): ?string
-    {
-        return $this->country_code;
-    }
-
-    /**
-     * @param string|null $country_code
-     * @return AreaAddressBean
-     */
-    public function setCountryCode(?string $country_code): self
-    {
-        $this->country_code = $country_code;
-
-        return $this;
-    }
-
-
-    /**
-     * @return int|null
-     */
-    public function getCountryId(): ?int
-    {
-        return $this->country_id;
-    }
-
-    /**
-     * @param int|null $country_id
-     * @return  self
-     */
-    public function setCountryId(?int $country_id): self
-    {
-        $this->country_id = $country_id;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCountryName(): ?string
-    {
-        return $this->country_name;
-    }
-
-    /**
-     * @param string|null $country_name
-     * @return  self
-     */
-    public function setCountryName(?string $country_name): self
-    {
-        $this->country_name = $country_name;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCountryEn(): ?string
-    {
-        return $this->country_en;
-    }
-
-    /**
-     * @param string|null $country_en
-     * @return  self
-     */
-    public function setCountryEn(?string $country_en): self
-    {
-        $this->country_en = $country_en;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getStateId(): ?int
-    {
-        return $this->state_id;
-    }
-
-    /**
-     * @param int|null $state_id
-     * @return  self
-     */
-    public function setStateId(?int $state_id): self
-    {
-        $this->state_id = $state_id;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStateName(): ?string
-    {
-        return $this->state_name;
-    }
-
-    /**
-     * @param string|null $state_name
-     * @return  self
-     */
-    public function setStateName(?string $state_name): self
-    {
-        $this->state_name = $state_name;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStateEn(): ?string
-    {
-        return $this->state_en;
-    }
-
-    /**
-     * @param string|null $state_en
-     * @return  self
-     */
-    public function setStateEn(?string $state_en): self
-    {
-        $this->state_en = $state_en;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStateCode(): ?string
-    {
-        return $this->state_code;
-    }
-
-    /**
-     * @param string|null $state_code
-     * @return AreaAddressBean
-     */
-    public function setStateCode(?string $state_code): self
-    {
-        $this->state_code = $state_code;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAddress(): ?string
+    public function getAddress(): string
     {
         return $this->address;
     }
 
     /**
      * @param string|null $address
-     * @return  self
+     * @return self
      */
     public function setAddress(?string $address): self
     {
         $this->address = $address;
+
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->address;
+    }
 }

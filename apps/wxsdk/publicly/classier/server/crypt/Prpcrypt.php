@@ -32,7 +32,7 @@ class Prpcrypt
      * @param $appId
      * @return array 加密后的密文
      */
-    public function encrypt($text, $appId)
+    public function encrypt(string $text, $appId)
     {
         try {
             //获得16位随机字符串，填充到明文之前
