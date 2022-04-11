@@ -199,7 +199,7 @@ class StrCharacter
             $replaces .= "$replace";
         }
 
-        return substr_replace($tel, $replaces, $startIndex, $endIndex);
+        return substr_replace($tel, $replaces, $startIndex, $endIndex - $startIndex);
     }
 
     /**

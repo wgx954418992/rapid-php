@@ -59,6 +59,22 @@ class RedisCache extends CacheInterface
     }
 
     /**
+     * keys
+     * @param $pattern
+     * @return array
+     */
+    public function keys($pattern): array
+    {
+        $list = $this->redis->keys($this->getName($pattern));
+
+        foreach ($list as $index => $value) {
+            $list[$index] = substr($value, strlen($this->prefix));
+        }
+
+        return $list;
+    }
+
+    /**
      * exists
      * @param string $name
      * @return bool|int

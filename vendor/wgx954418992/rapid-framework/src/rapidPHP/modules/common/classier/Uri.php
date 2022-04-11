@@ -184,9 +184,12 @@ class Uri
     {
         $arg = '';
 
-        foreach ($data as $key => $value)
-            if (!is_array($value) && ($isEmpty == true && !empty($value) || $isEmpty == false))
+        foreach ($data as $key => $value) {
+            if (!is_array($value) && ($isEmpty && $value !== '' && $value !== null || !$isEmpty)) {
+
                 $arg .= (empty($arg) ? "" : $connector) . "{$key}=" . ($isEncode ? urlencode($value) : $value);
+            }
+        }
 
         return $arg;
     }

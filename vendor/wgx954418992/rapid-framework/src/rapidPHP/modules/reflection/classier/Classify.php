@@ -131,11 +131,11 @@ class Classify
 
     /**
      * 通过k=>v数组来初始化一个实例
-     * @param array|null $args
+     * @param null $args
      * @return object
      * @throws Exception
      */
-    public function newInstanceKV(array $args = null)
+    public function newInstanceKV($args = null)
     {
         $constructor = $this->reflection->getConstructor();
 

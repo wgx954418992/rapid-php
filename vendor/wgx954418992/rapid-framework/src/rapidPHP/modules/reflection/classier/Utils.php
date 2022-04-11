@@ -3,12 +3,15 @@
 
 namespace rapidPHP\modules\reflection\classier;
 
+use enum\classier\Enum;
 use Exception;
 use rapidPHP\modules\common\classier\AB;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\File;
 use rapidPHP\modules\common\classier\Instances;
 use rapidPHP\modules\common\classier\Variable;
+use rapidPHP\modules\core\classier\Model;
+use rapidPHP\modules\options\classier\Options;
 
 
 class Utils
@@ -101,8 +104,12 @@ class Utils
 
         if (is_array($data) && array_key_exists($name, $data)) {
             $value = $data[$name];
-        } else if (is_object($data) && isset($data->$name)) {
-            $value = $data->$name;
+        } else if (is_object($data)) {
+            if ($data instanceof AB && $data->hasName($name)) {
+                $value = $data->toValue($name);
+            } else if (isset($data->$name)) {
+                $value = $data->$name;
+            }
         }
 
         return $value ?? $defaultValue;
@@ -127,25 +134,37 @@ class Utils
             $type = $parameter->getType();
 
             if (empty($type)) {
+                /** type 没有限制，直接传入 **/
                 $result[] = $value;
             } else if (Variable::isSetType($type)) {
-                if (!($value === null && $parameter->getParameter()->allowsNull())) {
-                    Variable::setType($value, $type);
-                }
-
-                $result[] = $value;
-            } else if (empty($value) && $parameter->getParameter()->allowsNull()) {
-                $result[] = null;
-            } else if (is_object($value)) {
-                if (get_class($value) === $type) {
-                    $result[] = $value;
-                } else if (is_subclass_of($value, $type)) {
-                    $result[] = $value;
+                /** type 限制为基本类型 **/
+                if ($value === null && $parameter->getParameter()->allowsNull()) {
+                    $result[] = null;
                 } else {
-                    $result[] = $this->toObject($type, $value);
+                    Variable::setType($value, $type);
+
+                    $result[] = $value;
                 }
             } else {
-                $result[] = $this->toObject($type, $value);
+                /** type 这时候type不是空也不是基本类型，那就是object类型 **/
+
+                if (empty($value)) {
+                    if ($parameter->getParameter()->allowsNull()) {
+                        $result[] = null;
+                    } else {
+                        $result[] = $this->toObject($type, $value);
+                    }
+                } else if (Variable::isSetType($value)) {
+                    $result[] = $this->toObject($type, $value);
+                } else {
+                    if (is_object($value) && get_class($value) === $type) {
+                        $result[] = $value;
+                    } else if (is_subclass_of($value, $type)) {
+                        $result[] = $value;
+                    } else {
+                        $result[] = $this->toObject($type, $value);
+                    }
+                }
             }
         }
 
@@ -160,17 +179,27 @@ class Utils
      * @return object|void|T|null
      * @throws Exception
      */
-    public function toObject($object, $data = [])
+    public function toObject($object, $data = null)
     {
         if (is_null($object)) return null;
 
+        if (!is_object($object) && !is_string($object)) return null;
+
+        if (is_subclass_of($object, Enum::class) ||
+            is_subclass_of($object, Options::class)) {
+
+            return call_user_func_array("{$object}::i", $data === null ? [] : (is_array($data) ? $data : [$data]));
+        }
+
+        if (empty($data)) {
+            $data = [];
+        } else if (!is_array($data) && !is_object($data)) {
+            $data = [$data];
+        }
+
         $classify = Classify::getInstance($object);
 
-        if (is_string($object)) {
-            if (!is_array($data)) $data = [$data];
-
-            $object = $classify->newInstanceKV($data);
-        }
+        if (is_string($object)) $object = $classify->newInstanceKV($data);
 
         $setterMethods = $classify->getSetterMethods();
 
@@ -242,7 +271,13 @@ class Utils
                     }
                 }
             } else if (is_object($value)) {
-                $value = $this->toArray($value);
+                if ($value instanceof Options) {
+                    $value = $value->getValue();
+                } else if ($value instanceof Enum) {
+                    $value = $value->getRawValue();
+                } else {
+                    $value = $this->toArray($value);
+                }
             }
 
             $result[$name] = $value;

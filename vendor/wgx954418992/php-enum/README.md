@@ -1,4 +1,4 @@
-﻿PHP Enum 1.1.1
+﻿PHP Enum 1.1.3
 ===============
 [简体中文](README-zh.md)
 >The simplest and fastest PHP enumeration, supports `then` matching callback and Specific `value`

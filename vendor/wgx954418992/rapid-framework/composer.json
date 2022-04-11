@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-framework",
-  "version": "3.9.9.3",
+  "version": "3.9.9.6",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -37,7 +37,7 @@
     "monolog/monolog": "^1.26",
     "mustangostang/spyc": "0.6.3",
     "voku/anti-xss": "4.1",
-    "wgx954418992/php-enum": "^1.1.1"
+    "wgx954418992/php-enum": "^1.1.3"
   },
   "require-dev": {
     "eaglewu/swoole-ide-helper": "dev-master",

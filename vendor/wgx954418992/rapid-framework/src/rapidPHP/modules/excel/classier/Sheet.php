@@ -5,6 +5,7 @@ namespace rapidPHP\modules\excel\classier;
 use Generator;
 use PhpOffice\PhpSpreadsheet\Exception as SpreadException;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\excel\config\Head;
 
@@ -67,7 +68,7 @@ class Sheet
                 $this->sheet->getColumnDimension($horizontalIndex)->setWidth($width);
             }
 
-            $this->sheet->getStyle($horizontalIndex)
+            $this->sheet->getStyle($horizontalIndex . $verticalIndex)
                 ->getAlignment()
                 ->setHorizontal(Head::getAlignHorizontal($head))
                 ->setVertical(Head::getAlignVertical($head))
@@ -114,7 +115,15 @@ class Sheet
                     $value = join("\n", $value);
                 }
 
-                $this->sheet->setCellValue($horizontalStartIndex . $verticalIndex, $value);
+                $this->sheet->getStyle($horizontalStartIndex . $verticalIndex)
+                    ->getAlignment()
+                    ->setHorizontal(Head::getAlignHorizontal($head))
+                    ->setVertical(Head::getAlignVertical($head))
+                    ->setWrapText(Head::getWrapText($head));
+
+                $this->sheet->setCellValueExplicit($horizontalStartIndex . $verticalIndex,
+                    $value,
+                    DataType::TYPE_STRING);
 
                 $horizontalStartIndex++;
             }

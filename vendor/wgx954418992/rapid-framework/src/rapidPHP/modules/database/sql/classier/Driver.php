@@ -817,7 +817,9 @@ abstract class Driver
         foreach ($options as $name => $value) {
             if (is_bool($value)) $value = (int)$value;
 
-            if (!is_numeric($value)) $value = "'{$value}'";
+            if (!is_int($value) || !is_bool($value)) {
+                $value = "'{$value}'";
+            }
 
             $name = ":{$name}";
 

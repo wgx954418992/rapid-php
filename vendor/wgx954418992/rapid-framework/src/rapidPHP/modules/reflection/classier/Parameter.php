@@ -104,7 +104,7 @@ class Parameter
 
         if (empty($type)) return null;
 
-        return explode("|", str_replace('?', '', (string)$type));
+        return explode("|", str_replace('?', '', $type->getName()));
     }
 
     /**

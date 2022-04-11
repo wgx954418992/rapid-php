@@ -21,13 +21,13 @@ use rapidPHP\modules\reflection\classier\Classify;
 if (version_compare(PHP_VERSION, '7.2.0', '<')) die('require PHP > 7.1.0 !');
 
 //运行模式
-define('RAPIDPHP_VERSION', '3.9.9.3');
+define('RAPIDPHP_VERSION', '3.9.9.6');
 
 //运行模式
 define('APP_RUNNING_SAPI_NAME', php_sapi_name());
 
 //运行模式是否命令运行
-define('APP_RUNNING_IS_SHELL', isset($_SERVER['SHELL']));
+define('APP_RUNNING_IS_SHELL', preg_match("/cli/i", php_sapi_name()) ? true : false);
 
 //项目根目录
 define('PATH_ROOT', str_replace('\\', '/', dirname(dirname(dirname(dirname(dirname(__DIR__)))))) . '/');

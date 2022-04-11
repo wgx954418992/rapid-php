@@ -129,7 +129,7 @@ class OrderStatusInt extends Enum
  */
 function testOrderStatus()
 {
-    $status = new OrderStatus(OrderStatus::WAIT_PAY);
+    $status = OrderStatus::i(OrderStatus::WAIT_PAY);
 
     echo "name: {$status->getName()}" . PHP_EOL;
 
