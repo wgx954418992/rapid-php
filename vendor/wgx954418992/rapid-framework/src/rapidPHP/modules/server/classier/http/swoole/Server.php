@@ -58,7 +58,7 @@ class Server extends SwooleServer
      * @param SwooleRequest $req
      * @param SwooleResponse $resp
      * @param SessionConfig|null $sessionConfig
-     * @param null $sessionId
+     * @param $sessionId
      */
     public function setSessionId(SwooleRequest $req, SwooleResponse $resp, ?SessionConfig $sessionConfig, &$sessionId = null)
     {

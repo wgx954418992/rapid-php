@@ -1,4 +1,4 @@
-﻿PHP Enum 1.1.3
+﻿PHP Enum 1.1.4
 ===============
 [English](README.md)
 >最简单、最快的PHP枚举，支持` then`匹配回调和特定`value`

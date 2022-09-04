@@ -21,7 +21,7 @@ class AB
 
     /**
      * AB constructor.
-     * @param null $data
+     * @param $data
      */
     public function __construct($data = null)
     {
@@ -40,7 +40,7 @@ class AB
 
     /**
      * 设置 data
-     * @param null $data
+     * @param $data
      */
     public function data($data = null)
     {

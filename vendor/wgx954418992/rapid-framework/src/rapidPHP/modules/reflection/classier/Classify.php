@@ -131,7 +131,7 @@ class Classify
 
     /**
      * 通过k=>v数组来初始化一个实例
-     * @param null $args
+     * @param $args
      * @return object
      * @throws Exception
      */
@@ -224,7 +224,7 @@ class Classify
 
     /**
      * 获取属性
-     * @param null $filter
+     * @param $filter
      * @return Property[]
      * @throws Exception
      */
@@ -301,7 +301,7 @@ class Classify
 
     /**
      * 获取方法列表
-     * @param null $filter
+     * @param $filter
      * @return Method[]
      */
     public function getMethods($filter = null): array
@@ -366,7 +366,7 @@ class Classify
 
     /**
      * 获取属性字段
-     * @param null $filter
+     * @param $filter
      * @return array|null
      */
     public function getPropertiesNames($filter = null): ?array

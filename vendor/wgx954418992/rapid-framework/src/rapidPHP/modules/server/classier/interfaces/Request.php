@@ -6,6 +6,7 @@ use Exception;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\common\classier\Uri;
 use rapidPHP\modules\common\classier\XSS;
+use rapidPHP\modules\core\classier\Model;
 use rapidPHP\modules\io\classier\Input;
 use rapidPHP\modules\server\config\SessionConfig;
 use rapidPHP\modules\server\config\HttpConfig;
@@ -255,7 +256,7 @@ abstract class Request implements Input
     /**
      * 获取请求变量
      * @param $name
-     * @param null $method ：方法(get|post|cookie|session|put)
+     * @param $method ：方法(get|post|cookie|session|put)
      * @return mixed|array|string|int|null
      * @throws Exception
      */
@@ -282,7 +283,7 @@ abstract class Request implements Input
 
     /**
      * 获取header
-     * @param null $name
+     * @param $name
      * @return mixed|array|string|int|null
      */
     public function header($name = null)
@@ -435,20 +436,40 @@ abstract class Request implements Input
 
     /**
      * 通过参数生成url
-     * @param null $path
+     * @param $path
      * @return string
      */
     public function toUrl($path = null): string
     {
-        $path = !is_string($path) ? $this->getUrl() : $this->getHostUrl() . $path;
-
         $args = func_get_args();
 
-        if (isset($args[0]) && $path === $args[0]) unset($args[0]);
+        if (!is_string($path)) {
+            $path = $this->getUrl();
+        } else {
+            if (isset($args[0]) && $path === $args[0]) unset($args[0]);
+
+            $path = $this->getHostUrl() . $path;
+        }
 
         $data = [];
 
-        foreach ($args as $value) $data = array_merge($data, (array)$value);
+        foreach ($args as $value) {
+            if ($value instanceof Model) {
+                try {
+                    $data = array_merge($data, $value->toData());
+                }catch (Exception $E){
+
+                }
+            } else {
+                $data = array_merge($data, (array)$value);
+            }
+        }
+
+        foreach ($data as $name => $value) {
+            if (is_array($value) || is_object($value)) {
+                $data[$name] = json_encode($value);
+            }
+        }
 
         $pathParam = Build::getInstance()->getRegularAll('/\{(\w+)\}/i', $path);
 

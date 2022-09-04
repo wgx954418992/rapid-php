@@ -92,7 +92,7 @@ class Annotation
      * 获取注解s
      * @param $doc
      * @param string|null $name
-     * @param null $pattern
+     * @param $pattern
      * @return array
      * @throws Exception
      */

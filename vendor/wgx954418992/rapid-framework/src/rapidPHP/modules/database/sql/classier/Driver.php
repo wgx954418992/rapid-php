@@ -44,7 +44,7 @@ abstract class Driver
     /**
      * Driver constructor.
      * @param SQLDB $db
-     * @param null $tableName
+     * @param $tableName
      * @throws Exception
      */
     public function __construct(SQLDB $db, $tableName)
@@ -74,7 +74,7 @@ abstract class Driver
 
     /**
      * 重置sql语句
-     * @param null $name
+     * @param $name
      * @return self|static|Mysql
      */
     public function resetSql($name = null)
@@ -91,7 +91,7 @@ abstract class Driver
      * 获取别的driver sql
      * @param $callOrDriver
      * @param bool $isMergeOptions
-     * @param null $tableName
+     * @param $tableName
      * @return self|static|Mysql|string|string[]
      */
     public function getDriverSql($callOrDriver, $isMergeOptions = true, &$tableName = null)
@@ -260,7 +260,7 @@ abstract class Driver
 
     /**
      * 删除
-     * @param null $callOrDriver
+     * @param $callOrDriver
      * @return self|static|Mysql
      */
     public function delete($callOrDriver = null)
@@ -279,9 +279,10 @@ abstract class Driver
 
     /**
      * 查询
-     * @param null $column
-     * @param null $callOrDriver
+     * @param $column
+     * @param $callOrDriver
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function select($column, $callOrDriver = null)
     {
@@ -331,7 +332,7 @@ abstract class Driver
      * JOIN
      * @param $tableName
      * @param $callOrDriver
-     * @param null $location
+     * @param $location
      * @return self|static|Mysql
      */
     public function join($tableName, $callOrDriver = null, $location = null)
@@ -419,7 +420,7 @@ abstract class Driver
      * IN
      * @param $name :字段名
      * @param $parameter :参数
-     * @param null $match :not
+     * @param $match :not
      * @return self|static|Mysql
      */
     public function in($name, $parameter, $match = null)
@@ -439,7 +440,7 @@ abstract class Driver
      * 生成in数据
      * @param $name
      * @param $parameter
-     * @param null $match
+     * @param $match
      * @return string
      */
     public function makeInData($name, $parameter, $match = null)
@@ -547,7 +548,7 @@ abstract class Driver
     /**
      * on
      * @param $name
-     * @param null $values
+     * @param $values
      * @param string $expression
      * @return self|static|Mysql
      */
@@ -637,7 +638,7 @@ abstract class Driver
     /**
      * 分页
      * @param $page
-     * @param null $total
+     * @param $total
      * @return self|static|Mysql
      */
     public function limit($page, $total = null)
@@ -859,7 +860,7 @@ abstract class Driver
     /**
      * 添加options
      * @param $value
-     * @param null $key
+     * @param $key
      * @return static|Mysql
      */
     public function addOptions($value, $key = null)

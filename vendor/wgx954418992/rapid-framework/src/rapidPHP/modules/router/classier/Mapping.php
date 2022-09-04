@@ -293,8 +293,8 @@ class Mapping
 
     /**
      * 读取
-     * @param null $routes
-     * @param null $actions
+     * @param $routes
+     * @param $actions
      */
     public function read(&$routes = null, &$actions = null)
     {

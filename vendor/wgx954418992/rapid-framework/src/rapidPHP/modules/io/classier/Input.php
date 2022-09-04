@@ -7,7 +7,7 @@ interface Input
 
     /**
      * 获取参数
-     * @param null $name
+     * @param $name
      * @return mixed
      */
     public function get($name = null);

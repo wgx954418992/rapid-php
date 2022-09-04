@@ -125,7 +125,7 @@ abstract class SQLDao
 
     /**
      * 查询
-     * @param null $column
+     * @param $column
      * @return Driver|Mysql
      * @throws Exception
      */

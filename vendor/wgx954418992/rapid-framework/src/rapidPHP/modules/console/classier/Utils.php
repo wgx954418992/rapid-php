@@ -183,8 +183,8 @@ class Utils
     /**
      * 获取带颜色的字体代码
      * @param $string
-     * @param null $foregroundColor
-     * @param null $backgroundColor
+     * @param $foregroundColor
+     * @param $backgroundColor
      * @return string
      */
     public function getColoredString($string, $foregroundColor = null, $backgroundColor = null): string

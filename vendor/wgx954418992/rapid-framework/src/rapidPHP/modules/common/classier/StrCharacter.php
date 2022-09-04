@@ -88,7 +88,7 @@ class StrCharacter
     /**
      * 首字母转小写
      * @param $string
-     * @param null $ext
+     * @param $ext
      * @param string $glue
      * @return string
      */

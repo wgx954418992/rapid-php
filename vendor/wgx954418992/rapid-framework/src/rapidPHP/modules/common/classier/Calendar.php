@@ -266,7 +266,7 @@ class Calendar
      * 效验是否同一时间
      * @param $from
      * @param $format
-     * @param null $to
+     * @param $to
      * @return bool
      */
     public function hsTime($from, $format, $to = null): bool

@@ -49,7 +49,7 @@ class Value
 
     /**
      * 获取分割后的values
-     * @param null $count
+     * @param $count
      * @return false|string[]
      */
     public function getValues($count = null)

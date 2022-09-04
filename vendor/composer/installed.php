@@ -1,157 +1,159 @@
-<?php return array(
-    'root' => array(
-        'pretty_version' => '3.9.9.6',
-        'version' => '3.9.9.6',
-        'type' => 'library',
-        'install_path' => __DIR__ . '/../../',
-        'aliases' => array(),
-        'reference' => NULL,
-        'name' => 'wgx954418992/rapid-php',
-        'dev' => true,
+<?php return array (
+  'root' => 
+  array (
+    'pretty_version' => '3.9.9.7',
+    'version' => '3.9.9.7',
+    'aliases' => 
+    array (
     ),
-    'versions' => array(
-        'eaglewu/swoole-ide-helper' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../eaglewu/swoole-ide-helper',
-            'aliases' => array(
-                0 => '9999999-dev',
-            ),
-            'reference' => '70147a030c2dd5c1171bedae3a31970f3bf9c280',
-            'dev_requirement' => true,
-        ),
-        'monolog/monolog' => array(
-            'pretty_version' => '1.27.0',
-            'version' => '1.27.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../monolog/monolog',
-            'aliases' => array(),
-            'reference' => '52ebd235c1f7e0d5e1b16464b695a28335f8e44a',
-            'dev_requirement' => false,
-        ),
-        'mustangostang/spyc' => array(
-            'pretty_version' => '0.6.3',
-            'version' => '0.6.3.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../mustangostang/spyc',
-            'aliases' => array(),
-            'reference' => '4627c838b16550b666d15aeae1e5289dd5b77da0',
-            'dev_requirement' => false,
-        ),
-        'psr/log' => array(
-            'pretty_version' => '1.1.4',
-            'version' => '1.1.4.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../psr/log',
-            'aliases' => array(),
-            'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
-            'dev_requirement' => false,
-        ),
-        'psr/log-implementation' => array(
-            'dev_requirement' => false,
-            'provided' => array(
-                0 => '1.0.0',
-            ),
-        ),
-        'symfony/polyfill-iconv' => array(
-            'pretty_version' => 'v1.25.0',
-            'version' => '1.25.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/polyfill-iconv',
-            'aliases' => array(),
-            'reference' => 'f1aed619e28cb077fc83fac8c4c0383578356e40',
-            'dev_requirement' => false,
-        ),
-        'symfony/polyfill-intl-grapheme' => array(
-            'pretty_version' => 'v1.25.0',
-            'version' => '1.25.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/polyfill-intl-grapheme',
-            'aliases' => array(),
-            'reference' => '81b86b50cf841a64252b439e738e97f4a34e2783',
-            'dev_requirement' => false,
-        ),
-        'symfony/polyfill-intl-normalizer' => array(
-            'pretty_version' => 'v1.25.0',
-            'version' => '1.25.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/polyfill-intl-normalizer',
-            'aliases' => array(),
-            'reference' => '8590a5f561694770bdcd3f9b5c69dde6945028e8',
-            'dev_requirement' => false,
-        ),
-        'symfony/polyfill-mbstring' => array(
-            'pretty_version' => 'v1.25.0',
-            'version' => '1.25.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/polyfill-mbstring',
-            'aliases' => array(),
-            'reference' => '0abb51d2f102e00a4eefcf46ba7fec406d245825',
-            'dev_requirement' => false,
-        ),
-        'symfony/polyfill-php72' => array(
-            'pretty_version' => 'v1.25.0',
-            'version' => '1.25.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/polyfill-php72',
-            'aliases' => array(),
-            'reference' => '9a142215a36a3888e30d0a9eeea9766764e96976',
-            'dev_requirement' => false,
-        ),
-        'voku/anti-xss' => array(
-            'pretty_version' => '4.1.0',
-            'version' => '4.1.0.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../voku/anti-xss',
-            'aliases' => array(),
-            'reference' => '7debeae28e6337256835f60196bb7ae248641a8d',
-            'dev_requirement' => false,
-        ),
-        'voku/portable-ascii' => array(
-            'pretty_version' => '1.5.6',
-            'version' => '1.5.6.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../voku/portable-ascii',
-            'aliases' => array(),
-            'reference' => '80953678b19901e5165c56752d087fc11526017c',
-            'dev_requirement' => false,
-        ),
-        'voku/portable-utf8' => array(
-            'pretty_version' => '5.4.51',
-            'version' => '5.4.51.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../voku/portable-utf8',
-            'aliases' => array(),
-            'reference' => '578f5266725dc9880483d24ad0cfb39f8ce170f7',
-            'dev_requirement' => false,
-        ),
-        'wgx954418992/php-enum' => array(
-            'pretty_version' => '1.1.3',
-            'version' => '1.1.3.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../wgx954418992/php-enum',
-            'aliases' => array(),
-            'reference' => 'af57a7fa7bbc22292bbf746c0eb469abb20f2b6e',
-            'dev_requirement' => false,
-        ),
-        'wgx954418992/rapid-framework' => array(
-            'pretty_version' => '3.9.9.6',
-            'version' => '3.9.9.6',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../wgx954418992/rapid-framework',
-            'aliases' => array(),
-            'reference' => '919e0e3fe270e8e20e3a96ea096ba713fe602330',
-            'dev_requirement' => false,
-        ),
-        'wgx954418992/rapid-php' => array(
-            'pretty_version' => '3.9.9.6',
-            'version' => '3.9.9.6',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../../',
-            'aliases' => array(),
-            'reference' => NULL,
-            'dev_requirement' => false,
-        ),
+    'reference' => NULL,
+    'name' => 'wgx954418992/rapid-php',
+  ),
+  'versions' => 
+  array (
+    'eaglewu/swoole-ide-helper' => 
+    array (
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
+      'aliases' => 
+      array (
+        0 => '9999999-dev',
+      ),
+      'reference' => '70147a030c2dd5c1171bedae3a31970f3bf9c280',
     ),
+    'monolog/monolog' => 
+    array (
+      'pretty_version' => '1.27.1',
+      'version' => '1.27.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '904713c5929655dc9b97288b69cfeedad610c9a1',
+    ),
+    'mustangostang/spyc' => 
+    array (
+      'pretty_version' => '0.6.3',
+      'version' => '0.6.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '4627c838b16550b666d15aeae1e5289dd5b77da0',
+    ),
+    'psr/log' => 
+    array (
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
+    ),
+    'psr/log-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '1.0.0',
+      ),
+    ),
+    'symfony/polyfill-iconv' => 
+    array (
+      'pretty_version' => 'v1.26.0',
+      'version' => '1.26.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '143f1881e655bebca1312722af8068de235ae5dc',
+    ),
+    'symfony/polyfill-intl-grapheme' => 
+    array (
+      'pretty_version' => 'v1.26.0',
+      'version' => '1.26.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '433d05519ce6990bf3530fba6957499d327395c2',
+    ),
+    'symfony/polyfill-intl-normalizer' => 
+    array (
+      'pretty_version' => 'v1.26.0',
+      'version' => '1.26.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '219aa369ceff116e673852dce47c3a41794c14bd',
+    ),
+    'symfony/polyfill-mbstring' => 
+    array (
+      'pretty_version' => 'v1.26.0',
+      'version' => '1.26.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9344f9cb97f3b19424af1a21a3b0e75b0a7d8d7e',
+    ),
+    'symfony/polyfill-php72' => 
+    array (
+      'pretty_version' => 'v1.26.0',
+      'version' => '1.26.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'bf44a9fd41feaac72b074de600314a93e2ae78e2',
+    ),
+    'voku/anti-xss' => 
+    array (
+      'pretty_version' => '4.1.0',
+      'version' => '4.1.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '7debeae28e6337256835f60196bb7ae248641a8d',
+    ),
+    'voku/portable-ascii' => 
+    array (
+      'pretty_version' => '1.5.6',
+      'version' => '1.5.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '80953678b19901e5165c56752d087fc11526017c',
+    ),
+    'voku/portable-utf8' => 
+    array (
+      'pretty_version' => '5.4.51',
+      'version' => '5.4.51.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '578f5266725dc9880483d24ad0cfb39f8ce170f7',
+    ),
+    'wgx954418992/php-enum' => 
+    array (
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'e6724a0a79c4919b43be742f488199eac725addd',
+    ),
+    'wgx954418992/rapid-framework' => 
+    array (
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
+      'aliases' => 
+      array (
+        0 => '9999999-dev',
+      ),
+      'reference' => '83d08ebfebc1bd4080197ac7f1fb9d7de6cb4e02',
+    ),
+    'wgx954418992/rapid-php' => 
+    array (
+      'pretty_version' => '3.9.9.7',
+      'version' => '3.9.9.7',
+      'aliases' => 
+      array (
+      ),
+      'reference' => NULL,
+    ),
+  ),
 );

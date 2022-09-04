@@ -60,7 +60,7 @@ abstract class Enum
 
     /**
      * instance
-     * @param null $constValue
+     * @param $constValue
      * @return void|static
      * @throws ReflectionException
      * @throws Exception
@@ -116,7 +116,7 @@ abstract class Enum
 
     /**
      * Enum constructor.
-     * @param null $constValue
+     * @param $constValue
      * @throws ReflectionException
      * @throws Exception
      */

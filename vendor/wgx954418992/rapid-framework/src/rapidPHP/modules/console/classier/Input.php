@@ -24,7 +24,7 @@ class Input implements IOInput
 
     /**
      * get
-     * @param null $name
+     * @param $name
      * @return Args|array|string|NULL
      */
     public function get($name = null)

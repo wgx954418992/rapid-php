@@ -159,7 +159,7 @@ class AR
      *  1,2,3
      * )
      * @param $value => 3
-     * @param null $key
+     * @param $key
      * @return bool => true
      */
     public function isAppointValue(array $array, $value, $key = null): bool
@@ -186,7 +186,7 @@ class AR
      *      'e','e','e'
      * )
      * @param $value => e
-     * @param null $key
+     * @param $key
      * @return bool => true
      */
     public function isAllAppointValue(array $array, $value, $key = null): bool
@@ -305,7 +305,7 @@ class AR
      *      array('key'=>'value1'),
      * )
      * @param $key =>'key'
-     * @param null $of
+     * @param $of
      * @param bool $isOne
      * @return array
      * array(

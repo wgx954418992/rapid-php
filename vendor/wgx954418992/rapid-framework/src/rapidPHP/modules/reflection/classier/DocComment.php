@@ -85,7 +85,7 @@ class DocComment
     /**
      * 获取注解s
      * @param string|null $name
-     * @param null $pattern
+     * @param $pattern
      * @return array
      * @throws Exception
      */

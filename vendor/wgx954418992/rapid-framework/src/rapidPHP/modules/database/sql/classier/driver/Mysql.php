@@ -32,7 +32,7 @@ class Mysql extends Driver
     /**
      * 分页
      * @param $page
-     * @param null $total
+     * @param $total
      * @return self|static|Driver
      */
     public function limit($page, $total = null)

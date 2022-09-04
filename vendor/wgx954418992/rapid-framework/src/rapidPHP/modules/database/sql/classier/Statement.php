@@ -55,7 +55,7 @@ class Statement
 
     /**
      * 获取statement
-     * @param null $result
+     * @param $result
      * @return bool|PDOStatement
      * @throws Exception
      */

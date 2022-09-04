@@ -266,7 +266,7 @@ class ViewTemplate
     }
 
     /**
-     * @param null $name
+     * @param $name
      * @return array|null|AB|string
      */
     public function get($name = null)

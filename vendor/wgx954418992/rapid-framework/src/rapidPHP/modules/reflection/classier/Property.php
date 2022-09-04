@@ -69,7 +69,7 @@ class Property
 
     /**
      * 获取属性值
-     * @param null $object
+     * @param $object
      * @return mixed
      */
     public function getValue($object = null)
@@ -85,7 +85,7 @@ class Property
     /**
      * 设置属性值
      * @param $value
-     * @param null $object
+     * @param $object
      */
     public function setValue($value, $object = null)
     {

@@ -160,7 +160,7 @@ class File
     /**
      * 读取文件内容
      * @param $filePath
-     * @param null $context
+     * @param $context
      * @return bool|string
      */
     public function getContentOrHttp($filePath, $context = null)
@@ -177,7 +177,7 @@ class File
     /**
      * 读取文件内容
      * @param $filePath
-     * @param null $context
+     * @param $context
      * @return bool|string
      */
     public function getContent($filePath, $context = null)

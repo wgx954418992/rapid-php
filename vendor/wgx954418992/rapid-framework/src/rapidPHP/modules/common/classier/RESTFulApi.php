@@ -101,7 +101,7 @@ class RESTFulApi
     /**
      * 预设返回值
      * @param string $msg
-     * @param null $data
+     * @param $data
      * @param int|string $code
      * @return $this
      * @throws Exception
@@ -229,7 +229,7 @@ class RESTFulApi
      * 错误
      * @param $msg
      * @param int|string $code
-     * @param null $data
+     * @param $data
      * @return RESTFulApi
      * @throws Exception
      */
@@ -240,7 +240,7 @@ class RESTFulApi
 
     /**
      * 成功
-     * @param null $data
+     * @param $data
      * @param string|array $msg
      * @param int|string $code
      * @return RESTFulApi

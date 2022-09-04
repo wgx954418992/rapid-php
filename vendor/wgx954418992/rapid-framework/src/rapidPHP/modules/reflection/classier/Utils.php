@@ -234,7 +234,7 @@ class Utils
     /**
      * 对象转数组
      * @param $object
-     * @param null $filter
+     * @param $filter
      * @return array|null
      * @throws Exception
      */

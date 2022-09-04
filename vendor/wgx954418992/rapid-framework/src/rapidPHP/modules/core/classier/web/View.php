@@ -21,7 +21,7 @@ class View
 
     /**
      * @param $name
-     * @param null $value
+     * @param $value
      * @param array $attr
      * @param Element|null $parent
      * @return Element

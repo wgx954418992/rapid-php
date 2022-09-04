@@ -82,7 +82,7 @@ class Element
 
     /**
      * @param $name
-     * @param null $value
+     * @param $value
      * @param bool $isStack
      */
     public function setAttr($name, $value = null, bool $isStack = false)
@@ -153,7 +153,7 @@ class Element
 
     /**
      * @param $name
-     * @param null $value
+     * @param $value
      * @param bool $isAdd
      * @return Element
      */
@@ -177,7 +177,7 @@ class Element
 
     /**
      * @param $name
-     * @param null $value
+     * @param $value
      */
     public function setData($name, $value = null)
     {

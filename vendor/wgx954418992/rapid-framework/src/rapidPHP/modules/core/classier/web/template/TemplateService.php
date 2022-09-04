@@ -159,7 +159,7 @@ class TemplateService
      * 添加缓存
      * @param $filename
      * @param $content
-     * @param null $outputType
+     * @param $outputType
      * @return bool|string
      * @throws Exception
      */

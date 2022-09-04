@@ -36,7 +36,7 @@ class Build
     /**
      * Json解析
      * @param string|null $json
-     * @param null $key
+     * @param $key
      * @return mixed|null
      */
     public function jsonDecode(?string $json, $key = null)
