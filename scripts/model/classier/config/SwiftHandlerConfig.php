@@ -69,6 +69,12 @@ class SwiftHandlerConfig implements IHandlerConfig
     protected $propertyModifiers;
 
     /**
+     * @var array|null
+     * @config name_rules
+     */
+    protected $nameRules;
+
+    /**
      * @var string
      * @config templates.class
      */
@@ -155,6 +161,14 @@ class SwiftHandlerConfig implements IHandlerConfig
     public function getPropertyModifiers(): ?string
     {
         return $this->propertyModifiers;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getNameRules(): ?array
+    {
+        return $this->nameRules;
     }
 
     /**

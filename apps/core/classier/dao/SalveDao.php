@@ -37,7 +37,7 @@ abstract class SalveDao extends SQLDao
      */
     public function __construct($modelOrClass)
     {
-        parent::__construct(self::getSQLDB(), $modelOrClass);
+        parent::__construct([$this, 'getSQLDB'], $modelOrClass);
     }
 
     /**

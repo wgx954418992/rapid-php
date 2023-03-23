@@ -62,6 +62,10 @@ class QueueService
 
         $queueModel->setParam($param);
 
+        $queueModel->setRemark('');
+
+        if (is_null($triggerTime)) $triggerTime = microtime(true) * 1000;
+
         if (strlen($triggerTime) === 10) {
             $triggerTime = $triggerTime * 1000;
         }
@@ -93,7 +97,7 @@ class QueueService
             $list = $this->queueDao->getNotExecQueue($number, $type, $ids);
 
             if (!empty($ids)) {
-                $this->setQueueStatus($ids, Status::IN_EXECUTION);
+                $this->queueDao->setQueueStatus($ids, Status::IN_EXECUTION);
             }
 
             if (!MasterDao::getSQLDB()->commit()) throw new Exception('提交队列事务失败!');
@@ -118,8 +122,26 @@ class QueueService
     {
         if (empty($queueId)) return true;
 
-        if (!$this->queueDao->setQueueStatus($queueId, $status, $remark))
-            throw new Exception('修改队列状态失败!');
+        $isThing = MasterDao::getSQLDB()->isInThing();
+
+        if (!$isThing) MasterDao::getSQLDB()->beginTransaction();
+
+        try {
+
+            $queueModel = $this->queueDao->getQueue($queueId);
+
+            if ($queueModel == null) return true;
+
+            if (!$this->queueDao->setQueueStatus($queueId, $status, $remark))
+                throw new Exception('修改队列状态失败!');
+
+            if (!$isThing && !MasterDao::getSQLDB()->commit()) throw new Exception('提交队列事务失败!');
+
+        } catch (Exception $e) {
+            if (!$isThing) MasterDao::getSQLDB()->rollBack();
+
+            throw $e;
+        }
 
         return true;
     }

@@ -66,7 +66,7 @@ class OrderStatus extends Enum
  *
  * @warning `Constant values cannot be repeated`
  */
-class OrderStatusInt extends Enum
+class OrderStatusInt extends \enum\classier\IntEnum
 {
 
     /**
@@ -139,9 +139,10 @@ function testOrderStatus()
 
     echo PHP_EOL;
 
-    $status->then(OrderStatus::WAIT_PAY, OrderStatus::PAYED, function () {
-        echo 'Hit WAIT_PAY,PAYED' . PHP_EOL;
-    })
+    $status
+        ->then(OrderStatus::WAIT_PAY, OrderStatus::PAYED, function () {
+            echo 'Hit WAIT_PAY,PAYED' . PHP_EOL;
+        })
         ->then(OrderStatus::DELIVERING, function () {
             echo 'Hit DELIVERING' . PHP_EOL;
         })
@@ -150,6 +151,9 @@ function testOrderStatus()
         })
         ->then(OrderStatus::COMMENTED, function () {
             echo 'Hit COMMENTED' . PHP_EOL;
+        })
+        ->default(function () {
+            echo 'default' . PHP_EOL;
         })
         ->fetch();
 }
@@ -160,7 +164,7 @@ function testOrderStatus()
  */
 function testOrderStatusInt()
 {
-    $status = OrderStatusInt::i(OrderStatusInt::WAIT_PAY);
+    $status = OrderStatusInt::i('0');
 
     echo "name: {$status->getName()}" . PHP_EOL;
 
@@ -170,9 +174,10 @@ function testOrderStatusInt()
 
     echo PHP_EOL;
 
-    $status->then(OrderStatusInt::WAIT_PAY, OrderStatusInt::PAYED, function () {
-        echo 'Hit WAIT_PAY,PAYED' . PHP_EOL;
-    })
+    $status
+        ->then(OrderStatusInt::WAIT_PAY, OrderStatusInt::PAYED, function () {
+            echo 'Hit WAIT_PAY,PAYED' . PHP_EOL;
+        })
         ->then(OrderStatusInt::DELIVERING, function () {
             echo 'Hit DELIVERING' . PHP_EOL;
         })
@@ -181,6 +186,9 @@ function testOrderStatusInt()
         })
         ->then(OrderStatusInt::COMMENTED, function () {
             echo 'Hit COMMENTED' . PHP_EOL;
+        })
+        ->default(function () {
+            echo 'default' . PHP_EOL;
         })
         ->fetch();
 }

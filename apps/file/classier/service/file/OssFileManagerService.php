@@ -5,7 +5,7 @@ namespace apps\file\classier\service\file;
 
 
 use apps\core\classier\model\AppFileModel;
-use apps\core\classier\service\RedisCacheService;
+use apps\core\classier\service\CacheFactoryService;
 use apps\core\classier\service\SettingService;
 use apps\file\classier\service\IFileManagerService;
 use apps\oss\classier\service\IOssService;
@@ -18,6 +18,7 @@ use rapidPHP\modules\common\classier\RESTFulApi;
 use rapidPHP\modules\common\classier\Uri;
 use rapidPHP\modules\reflection\classier\Utils;
 use function rapidPHP\AB;
+use function rapidPHP\B;
 use function rapidPHP\DI;
 
 class OssFileManagerService extends IFileManagerService
@@ -65,12 +66,19 @@ class OssFileManagerService extends IFileManagerService
      * 上传接口
      * @param AppFileModel $fileModel
      * @return AppFileModel
-     * @throws OssException
      * @throws Exception
      */
     public function upload(AppFileModel $fileModel): AppFileModel
     {
         if (!is_file($fileModel->getPath())) throw new Exception('文件不存在!');
+
+        if (is_null($fileModel->getSize())) {
+            $fileModel->setSize(filesize($fileModel->getPath()));
+        }
+
+        if (is_null($fileModel->getName())) {
+            $fileModel->setName(basename($fileModel->getPath()));
+        }
 
         if (empty($fileModel->getMime())) {
             $fi = new finfo();
@@ -94,6 +102,8 @@ class OssFileManagerService extends IFileManagerService
 
         $uploadModel->setMime($fileModel->getMime());
 
+        $uploadModel->setSize($fileModel->getSize());
+
         $uploadModel->setUseCallback(true);
 
         /** @var IOssService $ossService */
@@ -103,17 +113,36 @@ class OssFileManagerService extends IFileManagerService
 
         if (!$body) throw new Exception('上传图片失败!');
 
-        $data = AB(json_decode($body, true));
+        if (is_string($body) && B()->isJson($body)) {
+            $data = AB(json_decode($body, true));
 
-        if ($data->toInt('code') != RESTFulApi::CODE_SUCCESS) throw new Exception('body 错误!' . $data->toString('msg'));
+            if ($data->toInt('code') != RESTFulApi::CODE_SUCCESS) throw new Exception('body 错误!' . $data->toString('msg'));
 
-        /** @var AppFileModel $fileModel */
-        $fileModel = Utils::getInstance()
-            ->toObject(AppFileModel::class, $data->toAB('data')->toArray('file'));
+            /** @var AppFileModel $fileModel */
+            $fileModel = Utils::getInstance()
+                ->toObject(AppFileModel::class, $data->toAB('data')->toArray('file'));
 
-        if ($fileModel == null) throw new Exception('解析body 失败！');
+            if ($fileModel == null) throw new Exception('解析body 失败！');
 
-        return $fileModel;
+            return $fileModel;
+        } else {
+            $newFileModel = new AppFileModel();
+
+            $newFileModel->setMime($uploadModel->getMime());
+
+            $newFileModel->setPath($uploadModel->getObject());
+
+            $newFileModel->setMd5($fileModel->getMd5());
+
+            $newFileModel->setName($fileModel->getName());
+
+            $newFileModel->setSize($uploadModel->getSize());
+
+            /** @var OssFileManagerService $fileManagerService */
+            $fileManagerService = OssFileManagerService::getInstance();
+
+            return $fileManagerService->addFile($newFileModel);
+        }
     }
 
     /**
@@ -126,21 +155,21 @@ class OssFileManagerService extends IFileManagerService
     public function getFileUrl(AppFileModel $fileModel, int $expires = 3600 * 24 * 365, ?array $options = []): string
     {
         try {
-            $cacheId = "oss_{$fileModel->getPath()}_{$expires}_" . Uri::getInstance()->toQuery($options, true, true, '_');
-
-            /** @var RedisCacheService $redisService */
-            $redisService = RedisCacheService::getInstance();
-
-            if ($redisService->exists($cacheId)) {
-                return $redisService->get($cacheId);
-            }
 
             /** @var IOssService $ossService */
             $ossService = DI(IOssService::class);
 
+            $cacheId = str_replace('\\', '_', get_class($ossService)) . "oss_{$fileModel->getPath()}_{$expires}_" . Uri::getInstance()->toQuery($options, true, true, '_');
+
+            $cacheService = CacheFactoryService::getICache();
+
+            if (!empty($cacheService->get($cacheId))) {
+                return $cacheService->get($cacheId);
+            }
+
             $url = $ossService->getObjectSignUrl($fileModel->getPath(), $expires, $options);
 
-            $redisService->add($cacheId, $url, $expires);
+            $cacheService->add($cacheId, $url, $expires);
 
             return $url;
         } catch (Exception $e) {

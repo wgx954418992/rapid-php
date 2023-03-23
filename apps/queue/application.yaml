@@ -1,2 +1,22 @@
 console:
   context: apps\queue\classier\context\ConsoleContext
+
+queue:
+  execution_timeout: 600000
+  handlers:
+    ${apps\queue\classier\event\notify\EmailNotifyEvent::NAME}:
+      pool: apps\queue\classier\pool\ProcessPool
+      worker: apps\queue\classier\process\notify\EmailProcess
+      worker_count: 3
+    ${apps\queue\classier\event\notify\MiniNotifyEvent::NAME}:
+      pool: apps\queue\classier\pool\ProcessPool
+      worker: apps\queue\classier\process\notify\MiniProcess
+      worker_count: 3
+    ${apps\queue\classier\event\notify\SMSNotifyEvent::NAME}:
+      pool: apps\queue\classier\pool\ProcessPool
+      worker: apps\queue\classier\process\notify\SMSProcess
+      worker_count: 3
+    ${apps\queue\classier\event\expressorder\StatusChangedEvent::NAME}:
+      pool: apps\queue\classier\pool\ProcessPool
+      worker: apps\queue\classier\process\expressorder\StatusChangedProcess
+      worker_count: 3

@@ -71,15 +71,15 @@ abstract class IFileManagerService
         /** @var FileDao $fileDao */
         $fileDao = FileDao::getInstance();
 
-        $md5FileModel = $fileDao->getFileByMd5($fileModel->getMd5());
-
-        if (!$md5FileModel == null) return $md5FileModel;
-
         $isThing = MasterDao::getSQLDB()->isInThing();
 
         if (!$isThing) MasterDao::getSQLDB()->beginTransaction();
 
         try {
+            $md5FileModel = $fileDao->getFileByMd5($fileModel->getMd5());
+
+            if (!$md5FileModel == null) return $md5FileModel;
+
             $fileDao->addFile($fileModel);
 
             if (!$isThing && !MasterDao::getSQLDB()->commit()) throw new Exception('添加失败!');

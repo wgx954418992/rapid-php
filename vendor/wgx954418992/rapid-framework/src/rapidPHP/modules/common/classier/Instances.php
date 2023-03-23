@@ -31,6 +31,16 @@ trait Instances
     }
 
     /**
+     * @return void
+     */
+    public static function clearInstance()
+    {
+        if (isset(self::$instances[static::class])) {
+            unset(self::$instances[static::class]);
+        }
+    }
+
+    /**
      * 实例不存在
      * @return static
      */

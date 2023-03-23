@@ -11,6 +11,7 @@ use script\model\classier\config\PHPHandlerConfig;
 use script\model\classier\helper\CommonHelper;
 use script\model\classier\model\ColumnModel;
 use script\model\classier\model\TableModel;
+use function rapidPHP\AR;
 use function rapidPHP\B;
 use function rapidPHP\Cal;
 
@@ -185,7 +186,7 @@ class PHPIHandler extends IHandler
 
         $classAnnotation = $this->getClassAnnotation($config);
 
-        $UTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
+        $UTableName = $this->getUTableName($config, $table);
 
         $templateClass = $config->getTemplateClass();
 

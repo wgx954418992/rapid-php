@@ -93,6 +93,8 @@ class LocalFileManagerService extends IFileManagerService
 
         $fileModel->setPath($savePath);
 
+        $fileModel->setSize(filesize($savePath));
+
         return $this->addFile($fileModel);
     }
 

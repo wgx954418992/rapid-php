@@ -216,6 +216,8 @@ class WebRouter extends Router
      */
     public function onResult(Controller $controller, Route $route, Action $action, $result)
     {
+        $this->getContext()->onInvokeActionAfter($this, $action, $route, $result);
+
         if (!empty($action->getHeader())) {
             $this->response->setHeader($action->getHeader());
         }

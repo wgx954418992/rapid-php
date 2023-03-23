@@ -7,6 +7,7 @@ namespace rapidPHP\modules\database\sql\classier;
 use Exception;
 use PDO;
 use PDOStatement;
+use rapidPHP\modules\application\classier\Application;
 use rapidPHP\modules\common\classier\Build;
 use rapidPHP\modules\reflection\classier\Utils as ReflectionUtils;
 
@@ -61,8 +62,6 @@ class Statement
      */
     public function getStatement(&$result = null)
     {
-        $statement = null;
-        
         try {
             $statement = @$this->db->getConnect()->prepare($this->sql);
 
@@ -84,13 +83,16 @@ class Statement
 
             return $statement;
         } catch (Exception $e) {
-            if ($statement && $this->db->onErrorHandler($statement)){
+            Application::getInstance()
+                ->logger(Application::LOGGER_ERROR)
+                ->error("exec sql fail:{$this->sql},".$e->getMessage(),$this->options);
+
+            if ($this->db->onErrorHandler()) {
                 return $this->getStatement($result);
             }
 
             throw $e;
         }
-
     }
 
     /**

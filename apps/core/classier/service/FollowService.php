@@ -161,8 +161,6 @@ class FollowService
                 BaseService::getInstance()->addLog($e);
             }
 
-            EventService::getInstance()->addFollowEvent($followModel->getId());
-
             if (!MasterDao::getSQLDB()->commit()) throw new Exception('关注失败!');
 
             return $followModel;

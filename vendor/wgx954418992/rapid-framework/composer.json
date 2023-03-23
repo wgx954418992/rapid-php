@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/rapid-framework",
-  "version": "3.9.9.7",
+  "version": "4.0.1",
   "description": "Fast, simple and practical php framework",
   "keywords": [
     "framework",
@@ -19,25 +19,10 @@
   ],
   "require": {
     "php": ">=7.2.0",
-    "ext-bcmath": "*",
-    "ext-curl": "*",
-    "ext-dom": "*",
-    "ext-fileinfo": "*",
-    "ext-gd": "*",
-    "ext-json": "*",
-    "ext-libxml": "*",
-    "ext-mbstring": "*",
-    "ext-openssl": "*",
-    "ext-pdo": "*",
-    "ext-redis": "*",
-    "ext-simplexml": "*",
-    "ext-sockets": "*",
-    "ext-xmlwriter": "*",
-    "ext-zip": "*",
     "monolog/monolog": "^1.26",
     "mustangostang/spyc": "0.6.3",
     "voku/anti-xss": "4.1",
-    "wgx954418992/php-enum": "^1.1.4"
+    "wgx954418992/php-enum": "^1.20"
   },
   "require-dev": {
     "eaglewu/swoole-ide-helper": "dev-master",
@@ -52,7 +37,6 @@
   "scripts": {
 
   },
-  "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
     "sort-packages": true

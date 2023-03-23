@@ -48,11 +48,11 @@ class Http
      * @return string|null
      */
     public function getHttpResponse(string $url,
-                                    $post = [],
-                                    int $timeout = 5000,
+                                           $post = [],
+                                    int    $timeout = 5000,
                                     ?array $cookie = [],
                                     ?array $setOpt = [],
-                                    bool $isBuild = true): ?string
+                                    bool   $isBuild = true): ?string
     {
         $curl = curl_init();
 

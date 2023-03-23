@@ -24,4 +24,9 @@ interface IHandlerConfig
      * @return string
      */
     public function getClassName(): string;
+
+    /**
+     * @return array|null
+     */
+    public function getNameRules(): ?array;
 }

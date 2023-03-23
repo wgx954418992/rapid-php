@@ -86,7 +86,7 @@ pay:
     key: ''
     mch_id: ''
     sign_type: 'MD5'
-    notify_url: 'https://jjc.api.jngkbm.com/pay/notify/wechat'
+    notify_url: 'https://localhost/pay/notify/wechat'
     ssl_cert_path: '${PATH_ROOT}apps/core/certificate/wechat/pay/apiclient_cert.pem'
     ssl_key_path: '${PATH_ROOT}apps/core/certificate/wechat/pay/apiclient_key.pem'
 
@@ -107,12 +107,20 @@ speech:
     wss: ''
 
 oss:
-  service: 'aliyun' # aliyun
+  service: 'aliyun' # aliyun、baidu
   aliyun:
     accessKeyId: ''
     secret: ''
     endpoint: 'https://oss-cn-hangzhou.aliyuncs.com'
     bucket: 'bucket-name'
     callback:
-      callbackUrl: 'http://www.xxx.com/rapid-php/apps/file/public/oss/aliyun/callback'
+      callbackUrl: 'http://localhost/rapid-php/apps/file/public/oss/aliyun/callback'
       callbackBody: 'bucket=#{bucket}&object=#{object}&etag=#{etag}&size=#{size}&mimeType=#{mimeType}&imageInfo.height=#{imageInfo.height}&imageInfo.width=#{imageInfo.width}&imageInfo.format=#{imageInfo.format}'
+  baidu:
+    accessKey: ''
+    secretKey: ''
+    endpoint: ''
+    bucket: ''
+    callback:
+      callbackUrl: ''
+      callbackBody: ''

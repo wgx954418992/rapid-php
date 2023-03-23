@@ -3,6 +3,7 @@
 namespace script\model\classier\config;
 
 
+use ReflectionException;
 use script\model\classier\enum\Optional;
 
 class PHPHandlerConfig implements IHandlerConfig
@@ -96,6 +97,12 @@ class PHPHandlerConfig implements IHandlerConfig
      * @config is_valida
      */
     protected $isValida;
+
+    /**
+     * @var array|null
+     * @config name_rules
+     */
+    protected $nameRules;
 
     /**
      * @var string
@@ -244,6 +251,13 @@ class PHPHandlerConfig implements IHandlerConfig
         return $this->isValida;
     }
 
+    /**
+     * @return array|null
+     */
+    public function getNameRules(): ?array
+    {
+        return $this->nameRules;
+    }
 
     /**
      * @return string

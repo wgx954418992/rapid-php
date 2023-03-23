@@ -1,4 +1,4 @@
-﻿PHP Enum 1.1.4
+﻿PHP Enum 1.20.0
 ===============
 [English](README.md)
 >最简单、最快的PHP枚举，支持` then`匹配回调和特定`value`
@@ -91,9 +91,10 @@ try {
 
     echo PHP_EOL;
 
-    $status->then(OrderStatus::WAIT_PAY, OrderStatus::PAYED, function () {
-        echo '命中 WAIT_PAY,PAYED' . PHP_EOL;
-    })
+    $status
+        ->then(OrderStatus::WAIT_PAY, OrderStatus::PAYED, function () {
+            echo '命中 WAIT_PAY,PAYED' . PHP_EOL;
+        })
         ->then(OrderStatus::DELIVERING, function () {
             echo '命中 DELIVERING' . PHP_EOL;
         })
@@ -103,7 +104,11 @@ try {
         ->then(OrderStatus::COMMENTED, function () {
             echo '命中 COMMENTED' . PHP_EOL;
         })
+        ->default(function (){
+            echo '默认' . PHP_EOL;
+        })
         ->fetch();
+        
 } catch (Exception $e) {
     exit($e->getMessage());
 }

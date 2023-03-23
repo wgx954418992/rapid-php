@@ -1,4 +1,4 @@
-﻿PHP Enum 1.1.4
+﻿PHP Enum 1.20.0
 ===============
 [简体中文](README-zh.md)
 >The simplest and fastest PHP enumeration, supports `then` matching callback and Specific `value`
@@ -91,9 +91,10 @@ try {
 
     echo PHP_EOL;
 
-    $status->then(OrderStatus::WAIT_PAY, OrderStatus::PAYED, function () {
-        echo 'Hit WAIT_PAY,PAYED' . PHP_EOL;
-    })
+    $status
+        ->then(OrderStatus::WAIT_PAY, OrderStatus::PAYED, function () {
+            echo 'Hit WAIT_PAY,PAYED' . PHP_EOL;
+        })
         ->then(OrderStatus::DELIVERING, function () {
             echo 'Hit DELIVERING' . PHP_EOL;
         })
@@ -102,6 +103,9 @@ try {
         })
         ->then(OrderStatus::COMMENTED, function () {
             echo 'Hit COMMENTED' . PHP_EOL;
+        })
+        ->default(function (){
+            echo 'default' . PHP_EOL;
         })
         ->fetch();
 

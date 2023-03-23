@@ -113,7 +113,7 @@ class SQLDB
         try {
             return @$this->getConnect()->beginTransaction();
         } catch (Exception $e) {
-            if ($this->onErrorHandler($e)) {
+            if ($this->onErrorHandler()) {
                 return $this->beginTransaction();
             }
             throw $e;
@@ -130,7 +130,7 @@ class SQLDB
         try {
             return @$this->getConnect()->commit();
         } catch (Exception $e) {
-            if ($this->onErrorHandler($e)) {
+            if ($this->onErrorHandler()) {
                 return $this->commit();
             }
             throw $e;
@@ -147,7 +147,7 @@ class SQLDB
         try {
             return @$this->getConnect()->rollBack();
         } catch (Exception $e) {
-            if ($this->onErrorHandler($e)) {
+            if ($this->onErrorHandler()) {
                 return $this->rollBack();
             }
             throw $e;
@@ -156,13 +156,12 @@ class SQLDB
 
     /**
      * 处理异常
-     * @param PDOStatement $statement
      * @return bool
      * @throws Exception
      */
-    public function onErrorHandler(PDOStatement $statement): bool
+    public function onErrorHandler(): bool
     {
-        list(1 => $code) = $statement->errorInfo();
+        list(1 => $code) = $this->getConnect()->errorInfo();
 
         if (in_array($code, self::ERROR_RECONNECT_CODES)) {
             $this->reconnect();

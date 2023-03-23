@@ -153,7 +153,7 @@ class JavaIHandler extends IHandler
 
         $classAnnotation = $this->getClassAnnotation($config);
 
-        $UTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
+        $UTableName = $this->getUTableName($config, $table);
 
         $templateClass = $config->getTemplateClass();
 

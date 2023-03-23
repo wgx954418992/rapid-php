@@ -1,6 +1,6 @@
 {
   "name": "wgx954418992/php-enum",
-  "version": "1.1.4",
+  "version": "1.20.0",
   "description": "The simplest and fastest PHP enumeration, supports `then` matching callback",
   "keywords": [
     "enum",
@@ -16,7 +16,9 @@
       "email": "wgx954418992@qq.com"
     }
   ],
-  "require": {},
+  "require": {
+    "ext-json": "*"
+  },
   "autoload": {
     "files": [],
     "psr-4": {

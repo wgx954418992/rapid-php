@@ -7,6 +7,7 @@ namespace apps\queue\classier\helper;
 use apps\core\classier\model\AppQueueModel;
 use apps\queue\classier\event\QueueEvent;
 use Exception;
+use rapidPHP\modules\core\classier\Model;
 use rapidPHP\modules\reflection\classier\Utils;
 use function rapidPHP\B;
 
@@ -24,7 +25,7 @@ class ProcessHelper
         /** @var AppQueueModel $queueModel */
         $queueModel = unserialize($data);
 
-        $data = $queueModel->toData(['param'], AppQueueModel::MODEL_DEL);
+        $data = $queueModel->toData(['param'], Model::MODEL_DEL);
 
         $param = B()->jsonDecode($queueModel->getParam());
 

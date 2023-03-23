@@ -3,6 +3,7 @@
 namespace apps\core\classier\dao;
 
 use apps\core\classier\exception\CacheException;
+use apps\core\classier\service\CacheFactoryService;
 use apps\core\classier\service\RedisCacheService;
 use Exception;
 use rapidPHP\modules\cache\classier\CacheInterface;
@@ -51,7 +52,7 @@ abstract class MasterDao extends SQLDao
      */
     public function __construct($modelOrClass)
     {
-        parent::__construct(self::getSQLDB(), $modelOrClass);
+        parent::__construct([$this, 'getSQLDB'], $modelOrClass);
     }
 
     /**
@@ -65,11 +66,15 @@ abstract class MasterDao extends SQLDao
 
     /**
      * cache
-     * @return RedisCacheService
+     * @return RedisCacheService|null
      */
-    public static function getICache(): CacheInterface
+    public static function getICache(): ?CacheInterface
     {
-        return RedisCacheService::getInstance();
+        $cacheService = CacheFactoryService::getICache();
+
+        if ($cacheService instanceof RedisCacheService) return $cacheService;
+
+        return null;
     }
 
     /**
@@ -94,12 +99,15 @@ abstract class MasterDao extends SQLDao
      * @param $cacheId
      * @return array|int|mixed|string|null
      * @throws CacheException
+     * @throws Exception
      */
     public function getCache($cacheId)
     {
-        if (static::getICache()->exists($cacheId)) {
-            return static::getICache()->get($cacheId);
-        }
+        $cacheService = static::getICache();
+
+        if (is_null($cacheService)) throw new CacheException('未启用缓存或者缓存服务不是redis!');
+
+        if ($cacheService->exists($cacheId)) return $cacheService->get($cacheId);
 
         throw new CacheException('缓存不存在', 0, $cacheId);
     }
@@ -138,8 +146,12 @@ abstract class MasterDao extends SQLDao
      */
     public function getCacheIdList(?string $pattern = null): array
     {
+        $cacheService = static::getICache();
+
+        if (is_null($cacheService)) return [];
+
         try {
-            $members = static::getICache()->sMembers($this->getCacheId(static::CACHE_RECORD_KEY));
+            $members = $cacheService->sMembers($this->getCacheId(static::CACHE_RECORD_KEY));
 
             if (!empty($pattern)) {
                 foreach ($members as $index => $member) {
@@ -168,10 +180,14 @@ abstract class MasterDao extends SQLDao
      */
     public function addCache($cacheId, $data): bool
     {
-        $result = static::getICache()->add($cacheId, $data);
+        $cacheService = static::getICache();
+
+        if (is_null($cacheService)) return false;
+
+        $result = $cacheService->add($cacheId, $data);
 
         if ($result) {
-            static::getICache()->sAdd($this->getCacheId(static::CACHE_RECORD_KEY), $cacheId);
+            $cacheService->sAdd($this->getCacheId(static::CACHE_RECORD_KEY), $cacheId);
         }
 
         return $result;
@@ -184,15 +200,19 @@ abstract class MasterDao extends SQLDao
      */
     public function delCache($cacheId): int
     {
+        $cacheService = static::getICache();
+
+        if (is_null($cacheService)) return 0;
+
         if (!is_array($cacheId)) $cacheId = [$cacheId];
 
         $successCount = 0;
 
         foreach ($cacheId as $item) {
-            $result = static::getICache()->remove($item);
+            $result = $cacheService->remove($item);
 
             if ($result) {
-                static::getICache()->sRemoveMember($this->getCacheId(static::CACHE_RECORD_KEY), $item);
+                $cacheService->sRemoveMember($this->getCacheId(static::CACHE_RECORD_KEY), $item);
 
                 $successCount++;
             }

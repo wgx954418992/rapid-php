@@ -5,7 +5,6 @@ namespace apps\oss\classier\service;
 
 
 use oss\classier\model\UploadModel;
-use OSS\Core\OssException;
 
 abstract class IOssService
 {
@@ -33,10 +32,9 @@ abstract class IOssService
     /**
      * 上传文件
      * @param UploadModel $uploadModel
-     * @return null|string
-     * @throws OssException
+     * @return null|bool|string
      */
-    abstract public function uploadFile(UploadModel $uploadModel): ?string;
+    abstract public function uploadFile(UploadModel $uploadModel);
 
     /**
      * object是否存在

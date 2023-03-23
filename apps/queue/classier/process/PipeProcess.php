@@ -6,6 +6,7 @@ use apps\core\classier\service\BaseService;
 use Exception;
 use rapidPHP\modules\console\classier\Output;
 use rapidPHP\modules\process\classier\swoole\PipeProcess as BasePipeProcess;
+use function rapidPHP\Cal;
 use function rapidPHP\formatException;
 
 abstract class PipeProcess extends BasePipeProcess
@@ -48,16 +49,20 @@ abstract class PipeProcess extends BasePipeProcess
      * 日志
      * @param Exception|string|array|null $e
      */
-    public function log($e = null)
+    public function log($msg, $e = null)
     {
+        $msg = Cal()->getDate() . ' - ' . $msg;
+
+        $content = $e instanceof Exception ? formatException($e) : $e;
+
         if ($e instanceof Exception) {
-            $this->output->perror(formatException($e));
+            $this->output->perror($msg . ' - ' . $content);
 
-            BaseService::getInstance()->addLog($e->getMessage(), $e);
+            BaseService::getInstance()->addLog($msg . ' - ' . $e->getMessage(), $e);
         } else {
-            $this->output->perror($e);
+            $this->output->perror($msg . ' - ' . $content);
 
-            BaseService::getInstance()->addLog($e);
+            BaseService::getInstance()->addLog($msg . ' - ' . $e->getMessage(), $e);
         }
     }
 }

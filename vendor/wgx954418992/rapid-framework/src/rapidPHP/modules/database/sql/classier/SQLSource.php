@@ -80,16 +80,20 @@ class SQLSource
         $hash = $config->getHash();
 
         if (isset($this->dbs[$hash]) && $this->dbs[$hash] instanceof SQLDB) {
-            return $this->dbs[$hash];
+            $db = $this->dbs[$hash];
+
+            if ($db->getConnect() != null) return $db;
+
+            $db->connect($config);
         } else {
             $db = new SQLDB();
 
             $db->connect($config);
 
             $this->dbs[$hash] = $db;
-
-            return $db;
         }
+
+        return $db;
     }
 
     /**

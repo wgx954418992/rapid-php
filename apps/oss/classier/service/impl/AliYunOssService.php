@@ -37,10 +37,15 @@ class AliYunOssService extends IOssService
     protected $config;
 
     /**
-     * @throws OssException
+     * @param IAliYunConfig $config
+     * @throws Exception
      */
     public function __construct(IAliYunConfig $config)
     {
+        if (!class_exists(\OSS\OssClient::class)) {
+            throw new Exception('Aliyun OSS Client Not Found，run `composer require aliyuncs/oss-sdk-php`');
+        }
+
         $this->config = $config;
 
         $this->client = new OssClient($config->getAccessKeyId(), $config->getSecret(), $config->getEndpoint());
@@ -49,11 +54,11 @@ class AliYunOssService extends IOssService
     /**
      * 上传文件
      * @param UploadModel $uploadModel
-     * @return null|string
+     * @return null|bool|string
      * @throws OssException
      * @throws Exception
      */
-    public function uploadFile(UploadModel $uploadModel): ?string
+    public function uploadFile(UploadModel $uploadModel)
     {
         $options = [
             OssClient::OSS_CONTENT_TYPE => $uploadModel->getMime(),

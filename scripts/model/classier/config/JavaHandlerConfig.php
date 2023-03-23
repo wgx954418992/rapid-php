@@ -93,6 +93,13 @@ class JavaHandlerConfig implements IHandlerConfig
      */
     protected $isSetter;
 
+
+    /**
+     * @var array|null
+     * @config name_rules
+     */
+    protected $nameRules;
+
     /**
      * @var string
      * @config templates.class
@@ -224,6 +231,14 @@ class JavaHandlerConfig implements IHandlerConfig
     public function isSetter(): bool
     {
         return $this->isSetter;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getNameRules(): ?array
+    {
+        return $this->nameRules;
     }
 
     /**

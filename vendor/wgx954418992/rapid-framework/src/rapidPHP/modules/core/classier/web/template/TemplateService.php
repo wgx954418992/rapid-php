@@ -44,9 +44,9 @@ class TemplateService
     public function __construct(?array $ext, ?string $template_path, ?string $cache_path)
     {
         $this->ext = $ext;
-        
+
         $this->template_path = $template_path;
-        
+
         $this->cache_path = $cache_path;
     }
 
@@ -128,6 +128,8 @@ class TemplateService
      */
     public function findTemplateFile($filename): string
     {
+        if (is_file($filename)) return $filename;
+
         $path = $this->findFilepath($filename, $this->getTemplatePath());
 
         $name = pathinfo($filename, PATHINFO_FILENAME);

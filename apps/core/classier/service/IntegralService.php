@@ -13,7 +13,6 @@ use apps\core\classier\model\AppPointModel;
 use apps\core\classier\model\AppRechargeModel;
 use apps\core\classier\model\CashierBindModel;
 use apps\core\classier\model\PointDetailModel;
-use apps\queue\classier\service\EventService;
 use Exception;
 use ReflectionException;
 use function rapidPHP\B;
@@ -39,8 +38,7 @@ class IntegralService extends PointService
      */
     public function onChange(AppPointModel $pointModel, PointDetailModel $detailModel)
     {
-        EventService::getInstance()
-            ->addIntegralChangeEvent($pointModel->getBindId(), $detailModel->getId());
+
     }
 
     /**

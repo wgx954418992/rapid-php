@@ -3,8 +3,12 @@
 namespace apps\queue\classier\controller;
 
 
+use apps\queue\classier\config\QueueConfig;
+use apps\queue\classier\model\HandlerModel;
 use apps\queue\classier\service\UnifiedDispatchService;
+use Exception;
 use rapidPHP\modules\application\classier\context\ConsoleContext;
+use rapidPHP\modules\reflection\classier\Utils;
 
 class QueueController extends BaseController
 {
@@ -17,12 +21,17 @@ class QueueController extends BaseController
     /**
      * QueueController constructor.
      * @param ConsoleContext $context
+     * @throws Exception
      */
     public function __construct(ConsoleContext $context)
     {
         parent::__construct($context);
 
-        $this->dispatchService = new UnifiedDispatchService($this->getOutput());
+        $handlers = QueueConfig::getInstance()->getHandlers();
+
+        Utils::getInstance()->toObjects(HandlerModel::class, $handlers);
+
+        $this->dispatchService = new UnifiedDispatchService($this->getOutput(), $handlers);
     }
 
     /**
@@ -31,7 +40,7 @@ class QueueController extends BaseController
      */
     public function start()
     {
-        $this->dispatchService->start(function (){
+        $this->dispatchService->start(function () {
             $pids = $this->dispatchService->getAllPIDs();
 
             foreach ($pids as $pid => $type) {

@@ -1,0 +1,3 @@
+console:
+  context: >
+    script\crontab\classier\context\ConsoleContext

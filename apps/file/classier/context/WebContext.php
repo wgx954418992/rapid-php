@@ -4,6 +4,7 @@ namespace apps\file\classier\context;
 
 use apps\file\classier\config\FileConfig;
 use apps\file\classier\config\oss\AliYunConfig;
+use apps\file\classier\config\oss\BaiduConfig;
 use apps\file\classier\config\OSSConfig;
 use apps\file\classier\interceptor\AdminUploadInterceptor;
 use apps\file\classier\interceptor\AppUploadInterceptor;
@@ -13,7 +14,9 @@ use apps\file\classier\service\file\OssFileManagerService;
 use apps\oss\classier\service\IOssService;
 use Exception;
 use oss\classier\config\IAliYunConfig;
+use oss\classier\config\IBaiduConfig;
 use oss\classier\service\impl\AliYunOssService;
+use oss\classier\service\impl\BaiduBOSService;
 use rapidPHP\modules\application\classier\context\WebContext as BaseWebContext;
 use rapidPHP\modules\router\classier\Router;
 use rapidPHP\modules\server\classier\interfaces\Request;
@@ -84,12 +87,18 @@ class WebContext extends BaseWebContext
                 return AliYunConfig::getInstance();
             },
 
+            IBaiduConfig::class => function () {
+                return BaiduConfig::getInstance();
+            },
+
             IOssService::class => function () {
                 $service = OSSConfig::getInstance()->getService();
 
                 switch ($service) {
                     case 'aliyun':
-                        return  new AliYunOssService(DI(IAliYunConfig::class));
+                        return new AliYunOssService(DI(IAliYunConfig::class));
+                    case 'baidu':
+                        return new BaiduBOSService(DI(IBaiduConfig::class));
                     default:
                         throw new Exception('oss service error!');
                 }

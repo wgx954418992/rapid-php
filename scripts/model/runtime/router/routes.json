@@ -1,1 +1,32 @@
-[{"route":"error\/404","pattern":"\/^error\\\/404(|\\.html|\\.php)$\/i","className":"script\\model\\classier\\controller\\ErrorController","methodName":"errorNotFound"},{"route":"error","pattern":"\/^error(|\\.html|\\.php)$\/i","className":"script\\model\\classier\\controller\\ErrorController","methodName":"error"},{"route":"php","pattern":"\/^php(|\\.html|\\.php)$\/i","className":"script\\model\\classier\\controller\\ModelController","methodName":"php"},{"route":"java","pattern":"\/^java(|\\.html|\\.php)$\/i","className":"script\\model\\classier\\controller\\ModelController","methodName":"java"},{"route":"swift","pattern":"\/^swift(|\\.html|\\.php)$\/i","className":"script\\model\\classier\\controller\\ModelController","methodName":"swift"}]
+[
+  {
+    "route": "error\/404",
+    "pattern": "\/^error\\\/404(|\\.html|\\.php)$\/i",
+    "className": "script\\model\\classier\\controller\\ErrorController",
+    "methodName": "errorNotFound"
+  },
+  {
+    "route": "error",
+    "pattern": "\/^error(|\\.html|\\.php)$\/i",
+    "className": "script\\model\\classier\\controller\\ErrorController",
+    "methodName": "error"
+  },
+  {
+    "route": "php",
+    "pattern": "\/^php(|\\.html|\\.php)$\/i",
+    "className": "script\\model\\classier\\controller\\ModelController",
+    "methodName": "php"
+  },
+  {
+    "route": "java",
+    "pattern": "\/^java(|\\.html|\\.php)$\/i",
+    "className": "script\\model\\classier\\controller\\ModelController",
+    "methodName": "java"
+  },
+  {
+    "route": "swift",
+    "pattern": "\/^swift(|\\.html|\\.php)$\/i",
+    "className": "script\\model\\classier\\controller\\ModelController",
+    "methodName": "swift"
+  }
+]

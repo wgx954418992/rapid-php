@@ -67,9 +67,13 @@ class UploadController extends WebController
                 throw new Exception('视频不能超过' . Math::getTextBySize(self::VIDEO_LIMIT_SIZE));
             }
 
-            $duration = MediaService::getInstance()->getDuration($file->getTmpName());
+            $videoLD = SettingService::getVideoLD();
 
-            if ($duration > SettingService::getVideoLD()) throw new Exception('视频时长超出限制!');
+            if (!is_null($videoLD) && $videoLD > 0) {
+                $duration = MediaService::getInstance()->getDuration($file->getTmpName());
+
+                if ($duration > SettingService::getVideoLD()) throw new Exception('视频时长超出限制!');
+            }
         } else {
             throw new Exception('文件格式错误！' . $file->getFileMime());
         }

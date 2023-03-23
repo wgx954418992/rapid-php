@@ -17,6 +17,16 @@ abstract class Enum
     protected static $instances;
 
     /**
+     * 解析数据
+     * @param $value
+     * @return mixed
+     */
+    public static function parseValue($value)
+    {
+        return $value;
+    }
+
+    /**
      * i constants
      * @return static[]
      * @throws ReflectionException
@@ -60,16 +70,20 @@ abstract class Enum
 
     /**
      * instance
-     * @param $constValue
+     * @param null $constValue
      * @return void|static
      * @throws ReflectionException
      * @throws Exception
      */
     public static function i($constValue = null)
     {
-        $constants = self::getIConstants();
+        $constants = static::getIConstants();
 
-        if ($constValue instanceof Enum) $constValue = $constValue->constValue;
+        if ($constValue instanceof Enum) {
+            $constValue = $constValue->constValue;
+        } else {
+            $constValue = static::parseValue($constValue);
+        }
 
         foreach ($constants as $instance) {
             if ($instance->constValue === $constValue) {
@@ -77,7 +91,7 @@ abstract class Enum
             }
         }
 
-        self::onConstValueNotInEnumError($constValue);
+        static::onConstValueNotInEnumError($constValue);
     }
 
     /**
@@ -86,7 +100,7 @@ abstract class Enum
      */
     public static function onConstValueNotInEnumError($constValue)
     {
-        throw new Exception("Const Value: {$constValue} is not in enum " . __CLASS__);
+        throw new Exception("Const Value: {$constValue} is not in enum " . static::class);
     }
 
 
@@ -117,16 +131,20 @@ abstract class Enum
     /**
      * Enum constructor.
      * @param $constValue
-     * @throws ReflectionException
      * @throws Exception
+     * @throws ReflectionException
      */
     private function __construct($constValue = null)
     {
         if ($constValue === null) return;
 
-        $constants = self::getIConstants($this);
+        $constants = static::getIConstants($this);
 
-        if ($constValue instanceof Enum) $constValue = $constValue->constValue;
+        if ($constValue instanceof Enum) {
+            $constValue = $constValue->constValue;
+        } else {
+            $constValue = static::parseValue($constValue);
+        }
 
         foreach ($constants as $instance) {
 
@@ -149,7 +167,7 @@ abstract class Enum
      */
     public function getConstants(): array
     {
-        return self::getIConstants();
+        return static::getIConstants();
     }
 
     /**
@@ -159,7 +177,7 @@ abstract class Enum
      */
     public static function getConstantsWithStatic(): array
     {
-        return self::getIConstants();
+        return static::getIConstants();
     }
 
     /**
@@ -192,7 +210,23 @@ abstract class Enum
 
         $result = call_user_func_array($callback, [$this]);
 
-        $this->thenState = !($result === false);
+        if ($result === false) $this->thenState = false;
+
+        return $this;
+    }
+
+    /**
+     * default
+     * @param callable|null $callback
+     * @return $this
+     */
+    public function default(?callable $callback)
+    {
+        if (!$this->thenState) return $this;
+
+        call_user_func_array($callback, [$this]);
+
+        $this->thenState = false;
 
         return $this;
     }
@@ -243,6 +277,14 @@ abstract class Enum
     public function getValue()
     {
         return $this->realValue ?? $this->constValue;
+    }
+
+    /**
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->thenState = true;
     }
 
     /**

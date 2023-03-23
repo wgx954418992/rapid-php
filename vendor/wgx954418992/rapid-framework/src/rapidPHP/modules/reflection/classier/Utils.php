@@ -148,7 +148,7 @@ class Utils
             } else {
                 /** type 这时候type不是空也不是基本类型，那就是object类型 **/
 
-                if (empty($value)) {
+                if ($value === null) {
                     if ($parameter->getParameter()->allowsNull()) {
                         $result[] = null;
                     } else {

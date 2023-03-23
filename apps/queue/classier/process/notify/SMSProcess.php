@@ -3,25 +3,29 @@
 
 namespace apps\queue\classier\process\notify;
 
+use apps\core\classier\dao\MasterDao;
 use apps\core\classier\enum\CodeType;
 use apps\core\classier\helper\CommonHelper;
 use apps\core\classier\sender\sms\ISMSSender;
-use apps\queue\classier\event\SMSNotifyEvent;
+use apps\queue\classier\event\notify\SMSNotifyEvent;
 use apps\queue\classier\helper\ProcessHelper;
 use apps\queue\classier\process\PipeProcess;
 use Exception;
 use libphonenumber\PhoneNumber;
+use ReflectionException;
 use function rapidPHP\DI;
 
 class SMSProcess extends PipeProcess
 {
 
     /**
+     * @param $pid
      * @param $data
      * @return void
+     * @throws ReflectionException
      * @throws Exception
      */
-    public function onHandler($data)
+    public function onHandler($pid, $data)
     {
         /** @var SMSNotifyEvent $event */
         $event = ProcessHelper::toQueueEvent($data, SMSNotifyEvent::class);
@@ -40,8 +44,39 @@ class SMSProcess extends PipeProcess
 
         $sender->send($templateCode, $telephone, $event->getTP());
 
-        $parentProcess = parent::getParentProcess();
+        $this->onComplete($pid, $data);
+    }
 
-        if ($parentProcess instanceof PipeProcess) $parentProcess->onHandler($data);
+    /**
+     * @param $pid
+     * @param $data
+     * @return void
+     */
+    public function onComplete($pid, $data)
+    {
+        parent::onComplete($pid, $data);
+
+        try {
+            MasterDao::getSQLDB()->close();
+        } catch (Exception $e) {
+
+        }
+    }
+
+    /**
+     * @param $pid
+     * @param Exception $e
+     * @param $data
+     * @return void
+     */
+    public function onException($pid, Exception $e, $data)
+    {
+        parent::onException($pid, $e, $data);
+
+        try {
+            MasterDao::getSQLDB()->close();
+        } catch (Exception $e) {
+
+        }
     }
 }

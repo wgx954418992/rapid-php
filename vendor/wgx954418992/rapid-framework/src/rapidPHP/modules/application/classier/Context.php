@@ -110,9 +110,10 @@ abstract class Context
     /**
      * 调用action 方法前
      * @param Router $router
-     * @param Route $route
      * @param Action $action
+     * @param Route $route
      * @param $pathVariable
+     * @param $realPath
      */
     public function onInvokeActionBefore(Router $router, Action $action, Route $route, $pathVariable, $realPath)
     {
@@ -123,6 +124,19 @@ abstract class Context
                 $interceptor->onHandler($router, $action, $route, $pathVariable, $realPath, $role);
             }
         }
+    }
+
+
+    /**
+     * 调用action 方法之后
+     * @param Router $router
+     * @param Action $action
+     * @param Route $route
+     * @param $result
+     */
+    public function onInvokeActionAfter(Router $router, Action $action, Route $route, &$result)
+    {
+
     }
 
     /**

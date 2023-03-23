@@ -13,11 +13,6 @@ class Mysql extends Driver
 {
 
     /**
-     * @var string
-     */
-    protected $joinString = '`';
-
-    /**
      * Mysql constructor.
      * @param SQLDB $db
      * @param $tableName
@@ -28,6 +23,15 @@ class Mysql extends Driver
         parent::__construct($db, $tableName);
     }
 
+    /**
+     * join string
+     * `id`
+     * @return string
+     */
+    public function getJS(): string
+    {
+        return '`';
+    }
 
     /**
      * 分页
@@ -44,51 +48,27 @@ class Mysql extends Driver
         return $this;
     }
 
-
-    /**
-     * getTablesTypeSql
-     * @param int $type
-     * @param string $database
-     * @return array|null|string
-     */
-    private function getTablesTypeSql(int $type, string $database)
-    {
-        $data = array(
-            1 => "SELECT TABLE_NAME AS name,TABLE_COMMENT AS comment FROM information_schema.TABLES WHERE TABLE_SCHEMA='{$database}' AND TABLE_TYPE='BASE TABLE' ORDER BY name",
-            2 => "SELECT TABLE_NAME AS name,TABLE_COMMENT AS comment FROM information_schema.TABLES WHERE TABLE_SCHEMA='{$database}' AND TABLE_TYPE='VIEW' ORDER BY name",
-            3 => "SELECT name,comment FROM mysql.proc WHERE db='{$database}' ORDER BY name",
-        );
-        return Build::getInstance()->getData($data, $type);
-    }
-
     /**
      * 获取全部表
      * @param int $type
      * @param string $database
      * @return self|static|Driver
+     * @throws Exception
      */
     public function getTables(int $type, string $database)
     {
-        $this->sql['query'] = $this->getTablesTypeSql($type, $database);
+        $typeSqls = [
+            1 => "SELECT TABLE_NAME AS name,TABLE_COMMENT AS comment FROM information_schema.TABLES WHERE TABLE_SCHEMA='{$database}' AND TABLE_TYPE='BASE TABLE' ORDER BY name",
+            2 => "SELECT TABLE_NAME AS name,TABLE_COMMENT AS comment FROM information_schema.TABLES WHERE TABLE_SCHEMA='{$database}' AND TABLE_TYPE='VIEW' ORDER BY name",
+            3 => "SELECT name,comment FROM mysql.proc WHERE db='{$database}' ORDER BY name",
+        ];
+
+        if (!isset($typeSqls[$type])) throw new Exception('type error!');
+
+        $this->query($typeSqls[$type]);
+
         return $this;
     }
-
-    /**
-     * getTableStructureSql
-     * @param $type
-     * @param string $database
-     * @param string $tableName
-     * @return array|null|string
-     */
-    public function getTableStructureSql($type, string $database, string $tableName)
-    {
-        $data = [
-            1 => "SELECT COLUMN_NAME AS name,DATA_TYPE AS type,CHARACTER_MAXIMUM_LENGTH AS length,COLUMN_COMMENT AS `comment` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='{$database}' AND TABLE_NAME='{$tableName}'",
-            2 => "SELECT COLUMN_NAME AS name,DATA_TYPE AS type,CHARACTER_MAXIMUM_LENGTH AS length,COLUMN_COMMENT AS `comment` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA='{$database}' AND TABLE_NAME='{$tableName}'",
-        ];
-        return Build::getInstance()->getData($data, $type);
-    }
-
 
     /**
      * getTableStructure
@@ -96,29 +76,16 @@ class Mysql extends Driver
      * @param string $database
      * @param string $table
      * @return self|static|Driver
+     * @throws Exception
      */
     public function getTableStructure($type, string $database, string $table)
     {
-        $this->sql['query'] = $this->getTableStructureSql($type, $database, $table);
+        $this->query('SELECT COLUMN_NAME AS name,DATA_TYPE AS type,CHARACTER_MAXIMUM_LENGTH AS length,COLUMN_COMMENT AS `comment` FROM information_schema.COLUMNS')
+            ->where('TABLE_SCHEMA', $database)
+            ->where('TABLE_NAME', $table)
+            ->order('ORDINAL_POSITION', 'ASC');
 
         return $this;
-    }
-
-    /**
-     * getTableStructureSql
-     * @param $type
-     * @param string $database
-     * @param string $tableName
-     * @return array|null|string
-     */
-    public function getTableCreateSqlString($type, string $database, string $tableName)
-    {
-        $data = [
-            1 => "show create table `{$database}`.`{$tableName}`",
-            2 => "show create view `{$database}`.`{$tableName}`",
-        ];
-
-        return Build::getInstance()->getData($data, $type);
     }
 
     /**
@@ -127,10 +94,15 @@ class Mysql extends Driver
      * @param string $database
      * @param string $tableName
      * @return self|static|Driver
+     * @throws Exception
      */
     public function getTableCreateSql($type, string $database, string $tableName)
     {
-        $this->sql['query'] = $this->getTableCreateSqlString($type, $database, $tableName);
+        $types = [1 => 'TABLE', 2 => 'VIEW'];
+
+        if (!isset($types[$type])) throw new Exception('type error!');
+
+        $this->query("SHOW CREATE {$types[$type]} " . $this->format($database) . '.' . $this->format($tableName));
 
         return $this;
     }

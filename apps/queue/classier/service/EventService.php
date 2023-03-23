@@ -5,10 +5,9 @@ namespace apps\queue\classier\service;
 
 
 use apps\core\classier\model\AppQueueModel;
-use apps\queue\classier\event\FollowEvent;
-use apps\queue\classier\event\integral\ChangeEvent;
+use apps\queue\classier\event\notify\EmailNotifyEvent;
+use apps\queue\classier\event\notify\SMSNotifyEvent;
 use apps\queue\classier\event\QueueEvent;
-use apps\queue\classier\event\SMSNotifyEvent;
 use Exception;
 use rapidPHP\modules\common\classier\Instances;
 
@@ -74,44 +73,27 @@ class EventService
         }
     }
 
-
     /**
-     * 添加关注事件
-     * @param $followId
+     * 添加邮件通知
+     * @param $emails
+     * @param EmailNotifyEvent $event
      * @throws Exception
      */
-    public function addFollowEvent($followId)
+    public function addEmailNotifyEvent($emails, EmailNotifyEvent $event)
     {
-        $event = new FollowEvent();
+        if (empty($emails)) throw new Exception('邮箱错误!');
 
-        $event->setFID($followId);
+        if (!is_array($emails)) $emails = [$emails];
 
-        $event->setBindId($followId);
+        foreach ($emails as $email) {
 
-        $event->setTriggerTime(time());
+            $event->setREV($email);
 
-        $this->addQueueEvent($event);
+            if (empty($event->getBindId())) {
+                $event->setBindId($event->getT());
+            }
+
+            $this->addQueueEvent($event);
+        }
     }
-
-    /**
-     * 积分更改事件
-     * @param $integralId
-     * @param $detailId
-     * @throws Exception
-     */
-    public function addIntegralChangeEvent($integralId, $detailId)
-    {
-        $event = new ChangeEvent();
-
-        $event->setIID($integralId);
-
-        $event->setDID($detailId);
-
-        $event->setBindId($detailId);
-
-        $event->setTriggerTime(time());
-
-        $this->addQueueEvent($event);
-    }
-
 }

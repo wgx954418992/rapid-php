@@ -8,4 +8,4 @@ log/
 
 *.sql
 
-!express-mini.sql
+!rapid-php.sql

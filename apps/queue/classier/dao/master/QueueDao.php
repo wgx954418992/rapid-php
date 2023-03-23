@@ -42,6 +42,8 @@ class QueueDao extends MasterDao
             'created_time' => Cal()->getDate(),
         ];
 
+        if (empty($queueModel->getRemark())) $data['remark'] = $queueModel->getRemark();
+
         if (empty($queueModel->getParentId())) $data['parent_id'] = $queueModel->getParentId();
 
         $result = parent::add($data, $insertId);
@@ -68,7 +70,7 @@ class QueueDao extends MasterDao
 
         if ($number > 0) $select->limit($number);
 
-        $timeout = $currentTime - QueueConfig::EXECUTION_TIMEOUT;
+        $timeout = $currentTime - QueueConfig::getInstance()->getExecutionTimeout();
 
         $STATUS_WAITING = Status::WAITING;
 
@@ -112,7 +114,11 @@ class QueueDao extends MasterDao
 
         if (!empty($remark)) $data['remark'] = $remark;
 
-        return parent::set($data)->in('id', $queueId)->execute();
+        if (is_array($queueId)){
+            return $this->set($data)->in('id', $queueId)->execute();
+        }else{
+            return $this->set($data)->where('id', $queueId)->execute();
+        }
     }
 
     /**
@@ -188,7 +194,7 @@ class QueueDao extends MasterDao
             'updated_time' => Cal()->getDate(),
         ];
 
-        return parent::set($data)
+        return $this->set($data)
             ->where('id', $queueId)
             ->where('parent_id', $queueId)
             ->execute();
@@ -216,13 +222,13 @@ class QueueDao extends MasterDao
 
         $currentTime = (int)microtime(true) * 1000;
 
-        $timeout = $currentTime - QueueConfig::EXECUTION_TIMEOUT;
+        $timeout = $currentTime - QueueConfig::getInstance()->getExecutionTimeout();
 
         $STATUS_WAITING = Status::WAITING;
 
         $IN_EXECUTION = Status::IN_EXECUTION;
 
-        return parent::set($data)
+        return $this->set($data)
             ->in('id', $bindId)
             ->where("(`status`={$STATUS_WAITING} or (`status`={$IN_EXECUTION} and status_time<={$timeout} ))")
             ->execute();

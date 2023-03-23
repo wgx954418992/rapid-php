@@ -154,6 +154,8 @@ class ConsoleRouter extends Router
      */
     public function onResult(Controller $controller, Route $route, Action $action, $result)
     {
+        $this->getContext()->onInvokeActionAfter($this, $action, $route, $result);
+
         $service = Handler::getInstance()->getService($result, $action->getTyped());
 
         $result = Handler::getInstance()->handler($controller, $service, $result);

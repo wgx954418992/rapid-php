@@ -111,11 +111,11 @@ class ViewTemplate
     /**
      * 设置变量
      * @param $key :key或者数据
-     * @param string $value 值
+     * @param mixed $value :值
      * @return $this
      * @throws Exception
      */
-    public function assign($key, string $value = '')
+    public function assign($key, $value = '')
     {
         if (is_array($key)) {
             $this->data->data($key);
@@ -132,10 +132,38 @@ class ViewTemplate
 
     /**
      * 引入模板
+     * @code <?= VT($this)->includes(dirname(__DIR__).'/includes/header.php') ?>
+     *       `不支持，会导致从缓存目录引入'/includes/header.php'`
+     * @code <?= VT($this)->includes('../includes/header.php') ?>
+     *       `支持`
+     * @desc 该方法模版直接变量不会隔离，采用的是正则解析 VT($this)->includes 出来引入的文件路径，
+     *       然后统一编译，统一缓存 并且不能同时使用use，并且传入的路径不能包含php方法
+     * @since 8.1
      * @param $file
      */
     public function includes($file)
     {
+
+    }
+
+    /**
+     * 引入模板
+     * @code <?= VT($this)->includeView(dirname(__DIR__).'/includes/header.php') ?>
+     *       `支持`
+     * @code <?= VT($this)->includeView('../includes/header.php') ?>
+     *       `支持`
+     * @desc 该方法会实现模版跟模版之间变量隔离，使用use也不会影响，不过这种方式会同时编译主文件跟includeView的文件
+     * @param $file
+     */
+    public function includeView($file)
+    {
+        $view = clone $this;
+
+        $templateFile = str_replace($this->getTemplateService()->getCachePath(),'',$file);
+
+        $view->setFilename($templateFile);
+
+        return $view->view();
     }
 
     /**
@@ -143,7 +171,7 @@ class ViewTemplate
      * @param $strings
      * @return mixed
      */
-    private function preIncludes($strings)
+    private function preIncludes($strings, $filepath)
     {
         preg_match_all("/<\?.*?->includes\(['|\"](.*)['|\"]\).*?\?>/i", $strings, $data);
 
@@ -158,11 +186,13 @@ class ViewTemplate
             $rule = [];
 
             foreach ($includes as $index => $include) {
-                $filepath = $this->getTemplateService()->findTemplateFile($include);
+                $pathDir = $this->getCompileLinkPathDir(dirname($filepath), $include);
 
-                $content = File::getInstance()->getContent($filepath);
+                $templateFilepath = $this->getTemplateService()->findTemplateFile($pathDir);
 
-                $content = $this->compile($content, $filepath);
+                $content = File::getInstance()->getContent($templateFilepath);
+
+                $content = $this->compile($content, $templateFilepath);
 
                 $pattern = Build::getInstance()->getData($patterns, $index);
 
@@ -171,7 +201,7 @@ class ViewTemplate
 
             $strings = preg_replace(array_keys($rule), $rule, $strings);
 
-            return $this->preIncludes($strings);
+            return $this->preIncludes($strings, $filepath);
         }
     }
 
@@ -305,7 +335,6 @@ class ViewTemplate
             case TemplateService::OUTPUT_TYPE_CONTENT:
                 return $cacheFile;
         }
-        return;
     }
 
 
@@ -326,7 +355,7 @@ class ViewTemplate
             return $this->getOutputContent($cacheFile, $outputType);
         }
 
-        $string = $this->preIncludes(File::getInstance()->getContent($filepath));
+        $string = $this->preIncludes(File::getInstance()->getContent($filepath), $filepath);
 
         $string = $this->compile($string, $filepath);
 

@@ -38,11 +38,7 @@ class Path
      */
     public function dirName($path, int $count = 1): string
     {
-        while ($count > 0) {
-            $count--;
-
-            $path = dirname($path);
-        }
+        $path = dirname($path, $count);
 
         return $path == '' || $path == DIRECTORY_SEPARATOR ? '/' : "{$path}/";
     }

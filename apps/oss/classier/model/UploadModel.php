@@ -25,6 +25,11 @@ class UploadModel
     protected $object = '';
 
     /**
+     * @var int
+     */
+    protected $size = 0;
+
+    /**
      * options
      * @var array
      */
@@ -88,6 +93,22 @@ class UploadModel
     public function setObject(string $object): void
     {
         $this->object = $object;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize(): int
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param int $size
+     */
+    public function setSize(int $size): void
+    {
+        $this->size = $size;
     }
 
     /**

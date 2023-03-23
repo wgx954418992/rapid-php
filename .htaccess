@@ -2,9 +2,15 @@
     Options +FollowSymlinks
     RewriteEngine On
 
-    RewriteRule ^(.*(runtime\/|vendor\/|scripts\/).*)$ - [F,L]
-    RewriteRule ^(.*\.(conf|yaml|gitignore|sql|git))$ - [F,L]
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
 
+
+    RewriteRule ^(.*(runtime\/|vendor\/|scripts\/).*)$ - [F,L]
+    RewriteRule ^(.*\.(htaccess|conf|yaml|gitignore|sql|git))$ - [F,L]
+
+    RewriteRule nginx.conf - [F,L]
+    RewriteRule phpunit.xml - [F,L]
     RewriteRule composer.json - [F,L]
     RewriteRule composer.lock - [F,L]
 </IfModule>

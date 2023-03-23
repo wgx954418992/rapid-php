@@ -56,6 +56,12 @@ model:
       is_valida: true
       property:
         modifiers: 'protected'
+      name_rules:
+        table:
+          division: '_'
+          replaces:
+          before:
+          after:
       templates:
         class: '${PATH_ROOT}/scripts/model/template/php/class'
         property: '${PATH_ROOT}/scripts/model/template/php/property'
@@ -127,6 +133,12 @@ model:
       is_setter: false
       property:
         modifiers: 'private'
+      name_rules:
+        table:
+          division: '_'
+          replaces:
+          before:
+          after:
       templates:
         class: '${PATH_ROOT}/scripts/model/template/java/class'
         property: '${PATH_ROOT}/scripts/model/template/java/property'
@@ -190,6 +202,12 @@ model:
       optional: 'never' #auto、all、never
       property:
         modifiers: 'public var'
+      name_rules:
+        table:
+          division: '_'
+          replaces:
+          before:
+          after:
       templates:
         class: '${PATH_ROOT}/scripts/model/template/swift/class'
         property: '${PATH_ROOT}/scripts/model/template/swift/property'

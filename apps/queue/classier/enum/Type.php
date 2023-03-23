@@ -15,17 +15,12 @@ class Type extends Enum
     const NOTIFY_SMS = 'NOTIFY_SMS';
 
     /**
-     * 队列类型 关注
+     * 队列类型 邮件通知
      */
-    const FOLLOW = 'FOLLOW';
+    const NOTIFY_EMAIL = 'NOTIFY_EMAIL';
 
     /**
-     * 队列类型 积分更改
+     * 队列类型 小程序通知
      */
-    const INTEGRAL_CHANGE = 'INTEGRAL_CHANGE';
-
-    /**
-     * 队列类型 积分每天扣除
-     */
-    const INTEGRAL_EVERY_DEDUCT = 'INTEGRAL_EVERY_DEDUCT';
+    const NOTIFY_MINI = 'NOTIFY_MINI';
 }

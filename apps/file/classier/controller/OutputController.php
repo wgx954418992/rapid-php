@@ -4,11 +4,10 @@
 namespace apps\file\classier\controller;
 
 use apps\core\classier\enum\ErrorCode;
-use apps\file\classier\service\file\OssFileManagerService;
+use apps\file\classier\config\FileConfig;
 use apps\file\classier\service\IFileManagerService;
 use apps\oss\classier\service\IOssService;
 use Exception;
-use rapidPHP\modules\application\classier\Application;
 use rapidPHP\modules\core\classier\web\WebController;
 use function rapidPHP\DI;
 
@@ -25,10 +24,6 @@ class OutputController extends WebController
     public function getFileStream($fileId)
     {
         try {
-            Application::getInstance()
-                ->logger(Application::LOGGER_ACCESS)
-                ->info("-{$this->getRequest()->getIp()} -{$this->getRequest()->getMethod()} -{$this->getRequest()->getUrl(true)}");
-
             /** @var IFileManagerService $fileManagerService */
             $fileManagerService = DI(IFileManagerService::class);
 
@@ -38,14 +33,16 @@ class OutputController extends WebController
                 $this->getResponse()->header('Content-Type: ' . $fileModel->getMime());
 
                 $this->getResponse()->sendFile($fileModel->getPath());
-            } else {
+            } else if (FileConfig::getInstance()->getService() === 'oss') {
                 $options = [];
 
                 $process = $this->getRequest()->get(IOssService::OSS_PROCESS);
 
                 if (!empty($process)) $options[IOssService::OSS_PROCESS] = $process;
 
-                $this->getResponse()->redirect($fileManagerService->getFileUrl($fileModel, 3600 * 24 * 365, $options));
+                $this->getResponse()->redirect($fileManagerService->getFileUrl($fileModel, 3600 * 24, $options));
+            } else {
+                throw new Exception('文件不存在', ErrorCode::FILE_NOT);
             }
         } catch (Exception $e) {
 

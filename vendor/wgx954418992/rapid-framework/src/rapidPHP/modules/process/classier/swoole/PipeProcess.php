@@ -70,36 +70,54 @@ abstract class PipeProcess extends Process
     public function run(Process $process)
     {
         Event::add($process->pipe, function () use ($process) {
-
             $data = $process->read($this->bufferLen);
-
+            
             try {
-                $this->onHandler($data);
-
+                $this->onHandler($process->pid, $data);
             } catch (Exception $e) {
-                $this->onException($e, $data);
+                $this->onException($process->pid, $e, $data);
             }
         });
     }
 
     /**
-     * 捕捉当前进程的异常，然后抛给父进程，子类可以重写
-     * @param Exception $e
+     * @param $pid
      * @param $data
+     * @return void
      */
-    public function onException(Exception $e, $data)
+    abstract public function onHandler($pid, $data);
+
+    /**
+     * 完成处理
+     * @param $pid
+     * @param $data
+     * @return void
+     */
+    public function onComplete($pid, $data)
     {
-        $parentProcess = $this->getParentProcess();
+        try {
+            $parentProcess = $this->getParentProcess();
 
-        if ($parentProcess instanceof PipeProcess) {
-
-            $parentProcess->onException($e, $data);
+            if ($parentProcess instanceof PipeProcess) {
+                $parentProcess->onComplete($pid, $data);
+            }
+        } catch (Exception $e) {
+            $this->onException($pid, $e, $data);
         }
     }
 
     /**
+     * 捕捉当前进程的异常，然后抛给父进程，子类可以重写
+     * @param $pid
+     * @param Exception $e
      * @param $data
-     * @return mixed
      */
-    abstract public function onHandler($data);
+    public function onException($pid, Exception $e, $data)
+    {
+        $parentProcess = $this->getParentProcess();
+
+        if ($parentProcess instanceof PipeProcess) {
+            $parentProcess->onException($pid, $e, $data);
+        }
+    }
 }

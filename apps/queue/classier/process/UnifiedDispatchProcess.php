@@ -6,15 +6,12 @@ namespace apps\queue\classier\process;
 
 use apps\core\classier\model\AppQueueModel;
 use apps\queue\classier\enum\Status;
-use apps\queue\classier\event\FollowEvent;
-use apps\queue\classier\event\integral\ChangeEvent;
-use apps\queue\classier\event\SMSNotifyEvent;
-use apps\queue\classier\process\integral\ChangeProcess;
-use apps\queue\classier\process\notify\SMSProcess;
-use Exception;
+use apps\queue\classier\event\expressorder\PayedEvent;
+use apps\queue\classier\model\HandlerModel;
+use apps\queue\classier\pool\ProcessPool;
 use apps\queue\classier\service\QueueService;
+use Exception;
 use rapidPHP\modules\console\classier\Output;
-use rapidPHP\modules\reflection\classier\Classify;
 use ReflectionException;
 use Swoole\Process;
 use function rapidPHP\formatException;
@@ -28,77 +25,72 @@ class UnifiedDispatchProcess extends PipeProcess
     protected $sleep;
 
     /**
-     * @var PipeProcess[]
+     * handler
+     * @var HandlerModel[]
      */
-    protected $handlerProcess = [
-        SMSNotifyEvent::NAME => SMSProcess::class,
-        FollowEvent::NAME => FollowProcess::class,
-        ChangeEvent::NAME => ChangeProcess::class,
-    ];
+    protected $handlers = [];
 
+    /**
+     * workers
+     * @var PipeProcess[]|null
+     */
+    protected $workers = [];
 
     /**
      * UnifiedDispatchProcess constructor.
      * @param int $sleep
      * @param Output|null $output
+     * @param HandlerModel[] $handlers
      * @throws ReflectionException
      */
-    public function __construct(int $sleep, Output $output = null)
+    public function __construct(int $sleep, Output $output = null, array $handlers = [])
     {
         parent::__construct($output);
 
         $this->sleep = $sleep;
 
-        foreach ($this->handlerProcess as $type => $processClass) {
-            $this->handlerProcess[$type] = $process = $this->newProcess($processClass);
+        $this->handlers = $handlers;
 
-            $process->start();
+        foreach ($this->handlers as $type => $pool) {
+            $this->workers[$type] = $pool = $pool->create($this->getOutput(), $this);
+
+            $pool->start();
         }
 
         $this->start();
     }
 
     /**
-     * 创建进程
-     * @param $processClass
-     * @return PipeProcess
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public function newProcess($processClass): PipeProcess
-    {
-        if ($processClass instanceof PipeProcess) {
-            $processClass = get_class($processClass);
-        }
-
-        /** @var PipeProcess $process */
-        $process = Classify::getInstance($processClass)
-            ->newInstance(parent::getOutput(), $this);
-
-        return $process;
-    }
-
-    /**
      * 杀死进程
      * @param $type
-     * @return object|PipeProcess|string
+     * @return HandlerModel
      * @throws Exception
      */
     public function pkill($type)
     {
         if (empty($type)) throw new Exception('type 错误');
 
-        $process = $this->getHandlerProcess($type);
+        $handler = $this->handlers[$type] ?? null;
 
-        if (empty($process)) throw new Exception('进程错误');
+        if (empty($handler)) throw new Exception('type handler 不存在');
 
-        if ($process instanceof PipeProcess) {
-            Process::kill($process->pid);
+        $worker = $this->workers[$type] ?? null;
 
-            return $this->handlerProcess[$type] = get_class($process);
+        if (empty($worker)) throw new Exception('type worker 不存在');
+
+        if ($worker instanceof PipeProcess) {
+            if ($worker instanceof ProcessPool) {
+                foreach ($worker->getWorkers() as $v) {
+                    Process::kill($v->pid);
+                }
+            }
+
+            Process::kill($worker->pid);
+
+            unset($this->workers[$type]);
         }
 
-        return $process;
+        return $handler;
     }
 
     /**
@@ -109,13 +101,13 @@ class UnifiedDispatchProcess extends PipeProcess
      */
     public function restart($type)
     {
-        $process = $this->pkill($type);
+        $handler = $this->pkill($type);
 
-        if (empty($process)) throw new Exception('进程错误');
+        if (empty($handler)) throw new Exception('进程错误');
 
-        $this->handlerProcess[$type] = $process = $this->newProcess($process);
+        $this->workers[$type] = $handler = $handler->create($this->getOutput(), $this);
 
-        $process->start();
+        $handler->start();
     }
 
     /**
@@ -123,9 +115,9 @@ class UnifiedDispatchProcess extends PipeProcess
      * @param $type
      * @return object|PipeProcess|null
      */
-    public function getHandlerProcess($type)
+    public function getWorker($type)
     {
-        return $this->handlerProcess[$type] ?? null;
+        return $this->workers[$type] ?? null;
     }
 
     /**
@@ -133,7 +125,7 @@ class UnifiedDispatchProcess extends PipeProcess
      * @param bool $isSelf
      * @return array
      */
-    public function getHandlerPIDs(bool $isSelf = false): array
+    public function getWorkerPIDs(bool $isSelf = false): array
     {
         $p = [];
 
@@ -143,7 +135,7 @@ class UnifiedDispatchProcess extends PipeProcess
          * @var string $type
          * @var PipeProcess $process
          */
-        foreach ($this->handlerProcess as $type => $process) {
+        foreach ($this->workers as $type => $process) {
             if ($process instanceof PipeProcess) {
                 $p[$process->pid] = $type;
             }
@@ -159,77 +151,102 @@ class UnifiedDispatchProcess extends PipeProcess
     {
         parent::run($process);
 
+        $types = [];
+
         while (true) {
             try {
-                $list = QueueService::getInstance()->getNotExecQueue(10);
+                if (empty($types)) $types = array_keys($this->workers);
+
+                $type = array_shift($types);
+
+                $list = QueueService::getInstance()
+                    ->getNotExecQueue(10, $type);
 
                 if (empty($list)) continue;
 
                 foreach ($list as $model) {
-                    /** @var PipeProcess $childProcess */
-                    $childProcess = $this->getHandlerProcess($model->getType());
-
-                    if (!$childProcess) {
-                        throw new Exception("{$model->getType()} 对应的进程不存在!");
-                    }
-
                     $data = serialize($model);
 
                     try {
-                        if (strlen($data) > $childProcess->getBufferLen())
-                            throw new Exception("参数长度超过 {$childProcess->getBufferLen()} 最大限制");
+                        if (strlen($data) > $this->getBufferLen()) {
+                            throw new Exception("参数长度超过 {$this->getBufferLen()} 最大限制");
+                        }
 
-                        $childProcess->write($data);
+                        $queueModel = unserialize($data);
+
+                        if (!($queueModel instanceof AppQueueModel)) {
+                            throw new Exception('数据错误');
+                        }
+
+                        /** @var PipeProcess $worker */
+                        $worker = $this->getWorker($queueModel->getType());
+
+                        if (!$worker) throw new Exception("{$queueModel->getType()} 对应的进程不存在!");
+
+                        if (strlen($data) > $worker->getBufferLen()) {
+                            throw new Exception("参数长度超过 {$worker->getBufferLen()} 最大限制");
+                        }
+
+                        $worker->write($data);
                     } catch (Exception $e) {
-
-                        $this->onHandler($data);
-
-                        parent::log($e);
+                        $this->onException($this->pid, $e, $data);
                     }
                 }
             } catch (Exception $e) {
-                parent::log($e);
+                $this->log('UnifiedDispatchProcess run error ', $e);
             }
 
             sleep($this->sleep);
         }
     }
 
-
     /**
-     * 调度任务完 结束消息队列
+     * on handler
+     * @param $pid
      * @param $data
      * @return void
+     * @throws Exception
      */
-    public function onHandler($data)
+    public function onHandler($pid, $data)
+    {
+        throw new Exception('统一调度进程不接收消息处理!');
+    }
+
+    /**
+     * complete
+     * @param $pid
+     * @param $data
+     * @return void
+     * @throws Exception
+     */
+    public function onComplete($pid, $data)
     {
         $queueModel = unserialize($data);
 
-        try {
-            if (!($queueModel instanceof AppQueueModel))
-                throw new Exception('数据错误');
-
-            QueueService::getInstance()->setQueueStatus($queueModel->getId(),
-                Status::COMPLETE);
-        } catch (Exception $e) {
-            parent::log($e);
+        if (!($queueModel instanceof AppQueueModel)) {
+            throw new Exception('数据错误');
         }
+
+        QueueService::getInstance()
+            ->setQueueStatus($queueModel->getId(), Status::COMPLETE);
     }
 
     /**
      * 子进程异常
+     * @param $pid
      * @param Exception $e
      * @param $data
      */
-    public function onException(Exception $e, $data)
+    public function onException($pid, Exception $e, $data)
     {
-        parent::log($e);
+        $this->log('pid:' . $pid . ' - error ', $e);
 
         $queueModel = unserialize($data);
 
         try {
-            if (!($queueModel instanceof AppQueueModel))
+            if (!($queueModel instanceof AppQueueModel)) {
                 throw new Exception('数据错误');
+            }
 
             QueueService::getInstance()->setQueueStatus(
                 $queueModel->getId(),
@@ -237,7 +254,7 @@ class UnifiedDispatchProcess extends PipeProcess
                 formatException($e)
             );
         } catch (Exception $e) {
-            parent::log($e);
+            $this->log('onException pid:' . $pid . ' - error ', $e);
         }
     }
 }

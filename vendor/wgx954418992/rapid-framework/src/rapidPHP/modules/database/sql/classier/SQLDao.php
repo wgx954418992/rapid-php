@@ -12,7 +12,7 @@ abstract class SQLDao
 
     /**
      * SQL DB 子类可以继承这个，如果要实现读写分类，主从分离，就继承不同的SQLDao
-     * @var SQLDB
+     * @var callable|SQLDB
      */
     protected $db;
 
@@ -34,10 +34,10 @@ abstract class SQLDao
 
     /**
      * SQLDao constructor.
-     * @param SQLDB $db
+     * @param $db
      * @param $modelOrClass
      */
-    public function __construct(SQLDB $db, $modelOrClass)
+    public function __construct($db, $modelOrClass)
     {
         $this->db = $db;
 
@@ -57,6 +57,8 @@ abstract class SQLDao
      */
     public function getDb()
     {
+        if (is_callable($this->db)) return call_user_func_array($this->db, []);
+
         return $this->db;
     }
 
@@ -111,7 +113,7 @@ abstract class SQLDao
      */
     public function getDriver()
     {
-        return $this->db->table($this->getTableName());
+        return $this->getDb()->table($this->getTableName());
     }
 
     /**

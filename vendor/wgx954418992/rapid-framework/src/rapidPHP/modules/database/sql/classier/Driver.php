@@ -36,10 +36,11 @@ abstract class Driver
     protected $sql;
 
     /**
+     * join string
      * `id`
-     * @var string
+     * @return string
      */
-    protected $joinString = '';
+    abstract public function getJS(): string;
 
     /**
      * Driver constructor.
@@ -51,9 +52,21 @@ abstract class Driver
     {
         $this->db = $db;
 
-        $this->sql = SqlConfig::SQL_LIST;
+        $this->tableName = $tableName;
 
-        $this->tableName = Utils::getInstance()->formatColumn($tableName, $this->joinString);
+        $this->sql = SqlConfig::SQL_LIST;
+    }
+
+
+    /**
+     * 格式化name
+     * `name`
+     * @param $name
+     * @return string|null
+     */
+    public function format($name): ?string
+    {
+        return Utils::getInstance()->formatColumn($name, $this->getJS());
     }
 
     /**
@@ -65,11 +78,11 @@ abstract class Driver
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getJoinString(): string
+    public function getFTableName(): ?string
     {
-        return $this->joinString;
+        return $this->format($this->tableName);
     }
 
     /**
@@ -93,8 +106,9 @@ abstract class Driver
      * @param bool $isMergeOptions
      * @param $tableName
      * @return self|static|Mysql|string|string[]
+     * @throws Exception
      */
-    public function getDriverSql($callOrDriver, $isMergeOptions = true, &$tableName = null)
+    public function getDriverSql($callOrDriver, bool $isMergeOptions = true, &$tableName = null)
     {
         if (is_callable($callOrDriver)) {
             if (is_string($callOrDriver)) throw new Exception('Only anonymous functions are supported');
@@ -106,7 +120,7 @@ abstract class Driver
 
         if (!($driver instanceof Driver)) return null;
 
-        $tableName = $driver->getTableName();
+        $tableName = $driver->getFTableName();
 
         $sql = $driver->getSql();
 
@@ -131,12 +145,13 @@ abstract class Driver
 
     /**
      * 创建数据库
-     * @param $dataBaseName
+     * @param $database
      * @return self|static|Mysql
+     * @throws Exception
      */
-    public function createDataBase($dataBaseName)
+    public function createDatabase($database)
     {
-        $this->sql['query'] = "CREATE DATABASE " . Utils::getInstance()->formatColumn($dataBaseName, $this->joinString) . ' ';
+        $this->query("CREATE DATABASE " . $this->format($database));
 
         return $this;
     }
@@ -145,24 +160,41 @@ abstract class Driver
      * 创建表单
      * @param array $column
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function createTable(array $column = [])
     {
         $values = '';
 
         foreach ($column as $name => $value) {
-            $name = Utils::getInstance()->formatColumn($name, $this->joinString);
+            $name = $this->format($name);
 
             $values .= "{$name} {$value} ,";
         }
 
         $values = StrCharacter::getInstance()->deleteStringLast($values);
 
-        $this->sql['query'] = "CREATE TABLE {$this->tableName} ({$values}) ";
+        $this->query("CREATE TABLE {$this->getFTableName()} ({$values})");
 
         return $this;
     }
 
+    /**
+     * query
+     * @param $sql
+     * @return self|static|Mysql
+     * @throws Exception
+     */
+    public function query($sql)
+    {
+        if (is_string($sql)) {
+            $this->sql['query'] .= " {$sql} ";
+        } else {
+            $this->sql['query'] .= " ({$this->getDriverSql($sql)}) ";
+        }
+
+        return $this;
+    }
 
     /**
      * 写到数据
@@ -173,7 +205,7 @@ abstract class Driver
     {
         $data = $this->makeInsertData($data);
 
-        $this->sql['insert'] = "INSERT INTO {$this->tableName} ({$data['keys']}) VALUES ({$data['values']}) ";
+        $this->sql['insert'] = "INSERT INTO {$this->getFTableName()} ({$data['keys']}) VALUES ({$data['values']}) ";
 
         return $this;
     }
@@ -184,14 +216,14 @@ abstract class Driver
      * @param $data
      * @return array
      */
-    public function makeInsertData($data)
+    public function makeInsertData($data): array
     {
         $array = ['keys' => '', 'values' => ''];
 
         foreach ($data as $item => $value) {
             if (is_null($value)) continue;
 
-            $array['keys'] .= Utils::getInstance()->formatColumn($item, $this->joinString) . ",";
+            $array['keys'] .= $this->format($item) . ",";
 
             if (substr($value, 0, 2) !== ':$') {
                 $optionsKey = $this->getOptionsKey($item);
@@ -216,10 +248,11 @@ abstract class Driver
      * 修改
      * @param array $data
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function update(array $data)
     {
-        $this->sql['update'] = "UPDATE {$this->tableName} SET " . $this->makeUpdateData($data);
+        $this->sql['update'] = "UPDATE {$this->getFTableName()} SET " . $this->makeUpdateData($data);
 
         return $this;
     }
@@ -228,20 +261,21 @@ abstract class Driver
      * 生成update数据
      * @param array $data
      * @return string
+     * @throws Exception
      */
-    public function makeUpdateData(array $data)
+    public function makeUpdateData(array $data): string
     {
         $setting = '';
 
         foreach ($data as $name => $value) {
             if ((is_callable($value) && !is_string($value)) || $value instanceof Driver) {
-                $name = Utils::getInstance()->formatColumn($name, $this->joinString);
+                $name = $this->format($name);
 
                 $setting .= "{$name}=({$this->getDriverSql($value)}),";
             } else {
                 $optionsKey = $this->getOptionsKey($name);
 
-                $name = Utils::getInstance()->formatColumn($name, $this->joinString);
+                $name = $this->format($name);
 
                 if (substr($value, 0, 2) !== ':$') {
 
@@ -262,6 +296,7 @@ abstract class Driver
      * 删除
      * @param $callOrDriver
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function delete($callOrDriver = null)
     {
@@ -270,7 +305,7 @@ abstract class Driver
         if ($callOrDriver) {
             $this->sql['delete'] .= " ({$this->getDriverSql($callOrDriver)}) ";
         } else {
-            $this->sql['delete'] .= " {$this->tableName} ";
+            $this->sql['delete'] .= " {$this->getFTableName()} ";
         }
 
         return $this;
@@ -287,7 +322,7 @@ abstract class Driver
     public function select($column, $callOrDriver = null)
     {
         if ($column && is_array($column)) {
-            $column = Utils::getInstance()->formatColumn(join(',', $column), $this->joinString);
+            $column = $this->format(join(',', $column));
         }
 
         $this->sql['select'] .= "SELECT {$column} FROM";
@@ -295,7 +330,7 @@ abstract class Driver
         if ($callOrDriver) {
             $this->sql['select'] .= " ({$this->getDriverSql($callOrDriver)}) ";
         } else {
-            $this->sql['select'] .= " {$this->tableName} ";
+            $this->sql['select'] .= " {$this->getFTableName()} ";
         }
 
         return $this;
@@ -309,7 +344,7 @@ abstract class Driver
      */
     public function setCarrier($carrier)
     {
-        $this->sql['select'] .= ' ' . Utils::getInstance()->formatColumn($carrier) . ' ';
+        $this->sql['select'] .= ' ' . $this->format($carrier) . ' ';
 
         return $this;
     }
@@ -322,7 +357,7 @@ abstract class Driver
      */
     public function alias($carrier)
     {
-        $this->sql['select'] .= " AS " . Utils::getInstance()->formatColumn($carrier) . ' ';
+        $this->sql['select'] .= " AS " . $this->format($carrier) . ' ';
 
         return $this;
     }
@@ -334,30 +369,31 @@ abstract class Driver
      * @param $callOrDriver
      * @param $location
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function join($tableName, $callOrDriver = null, $location = null)
     {
-        $drivetSql = '';
+        $driverSql = '';
 
         if ($tableName instanceof Driver) {
             $callOrDriver = $tableName;
 
-            $drivetSql = $this->getDriverSql($callOrDriver);
+            $driverSql = $this->getDriverSql($callOrDriver);
 
-            $tableName = $callOrDriver->getTableName();
+            $tableName = $callOrDriver->getFTableName();
         } else if (is_callable($tableName) && !is_string($tableName)) {
             $callOrDriver = $tableName;
 
-            $drivetSql = $this->getDriverSql($callOrDriver, true, $tableName);
+            $driverSql = $this->getDriverSql($callOrDriver, true, $tableName);
         } else {
-            $tableName = Utils::getInstance()->formatColumn($tableName, $this->joinString);
+            $tableName = $this->format($tableName);
         }
 
         $currentSql = $this->getSql();
 
         $this->resetSql();
 
-        $this->sql['join'] = "{$currentSql} {$location} JOIN {$tableName}{$drivetSql}";
+        $this->sql['join'] = "{$currentSql} {$location} JOIN {$tableName}{$driverSql}";
 
         return $this;
     }
@@ -368,6 +404,7 @@ abstract class Driver
      * @param $tableName
      * @param $callOrDriver
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function leftJoin($tableName, $callOrDriver = null)
     {
@@ -381,6 +418,7 @@ abstract class Driver
      * @param $tableName
      * @param $callOrDriver
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function rightJoin($tableName, $callOrDriver = null)
     {
@@ -394,6 +432,7 @@ abstract class Driver
      * @param $tableName
      * @param $callOrDriver
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function innerJoin($tableName, $callOrDriver = null)
     {
@@ -407,6 +446,7 @@ abstract class Driver
      * @param $tableName :表
      * @param $callOrDriver
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function fullJoin($tableName, $callOrDriver = null)
     {
@@ -429,7 +469,7 @@ abstract class Driver
 
         $parameterStr = $this->makeInData($name, $parameter, $match);
 
-        $name = Utils::getInstance()->formatColumn($name);
+        $name = $this->format($name);
 
         $this->where("{$name} {$parameterStr}");
 
@@ -480,10 +520,11 @@ abstract class Driver
     /**
      * union
      * @param $callOrDriver
-     * @param string $param
+     * @param string|null $param
      * @return self|static|Mysql
+     * @throws Exception
      */
-    public function union($callOrDriver, $param = '')
+    public function union($callOrDriver, ?string $param = null)
     {
         $currentSql = $this->getSql();
 
@@ -504,12 +545,13 @@ abstract class Driver
      * @param $fieldName
      * @param $fieldType
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function alterAdd($fieldName, $fieldType)
     {
-        $fieldName = Utils::getInstance()->formatColumn($fieldName, $this->joinString);
+        $fieldName = $this->format($fieldName);
 
-        $this->sql['query'] = "ALTER TABLE  ADD {$this->tableName} {$fieldName} $fieldType ";
+        $this->query("ALTER TABLE ADD {$this->getFTableName()} {$fieldName} {$fieldType}");
 
         return $this;
     }
@@ -519,12 +561,13 @@ abstract class Driver
      * 删除表字段
      * @param $fieldName
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function alterDropColumn($fieldName)
     {
-        $fieldName = Utils::getInstance()->formatColumn($fieldName, $this->joinString);
+        $fieldName = $this->format($fieldName);
 
-        $this->sql['query'] = "ALTER TABLE ADD {$this->tableName} DROP COLUMN {$fieldName} ";
+        $this->query("ALTER TABLE ADD {$this->getFTableName()} DROP COLUMN {$fieldName}");
 
         return $this;
     }
@@ -535,12 +578,13 @@ abstract class Driver
      * @param $fieldName
      * @param $fieldType
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function alterModify($fieldName, $fieldType)
     {
-        $fieldName = Utils::getInstance()->formatColumn($fieldName, $this->joinString);
+        $fieldName = $this->format($fieldName);
 
-        $this->sql['query'] = "ALTER TABLE {$this->tableName} ALTER COLUMN {$fieldName} $fieldType ";
+        $this->query("ALTER TABLE {$this->getFTableName()} ALTER COLUMN {$fieldName} {$fieldType}");
 
         return $this;
     }
@@ -549,10 +593,10 @@ abstract class Driver
      * on
      * @param $name
      * @param $values
-     * @param string $expression
+     * @param string|null $expression
      * @return self|static|Mysql
      */
-    public function on($name, $values = null, $expression = '=:')
+    public function on($name, $values = null, ?string $expression = '=:')
     {
         if (!is_null($name)) {
             if (func_num_args() === 1) {
@@ -564,7 +608,7 @@ abstract class Driver
             } else {
                 $optionsKey = $this->getOptionsKey($name);
 
-                $name = Utils::getInstance()->formatColumn($name, $this->joinString);
+                $name = $this->format($name);
 
                 if (!$this->sql['on']) {
                     $this->sql['on'] = "ON {$name}{$expression}{$optionsKey} ";
@@ -582,10 +626,10 @@ abstract class Driver
      * 条件
      * @param $name
      * @param $values
-     * @param string $expression
+     * @param string|null $expression
      * @return self|static|Mysql
      */
-    public function where($name, $values = null, $expression = '=:')
+    public function where($name, $values = null, ?string $expression = '=:')
     {
         if (!is_null($name)) {
             if (func_num_args() === 1) {
@@ -597,7 +641,7 @@ abstract class Driver
             } else {
                 $optionsKey = $this->getOptionsKey($name);
 
-                $name = Utils::getInstance()->formatColumn($name, $this->joinString);
+                $name = $this->format($name);
 
                 if (!$this->sql['where']) {
                     $this->sql['where'] = "WHERE {$name}{$expression}{$optionsKey} ";
@@ -614,10 +658,10 @@ abstract class Driver
     /**
      * 排序
      * @param $column
-     * @param string $mode
+     * @param string|null $mode
      * @return self|static|Mysql
      */
-    public function order($column, $mode = 'ASC')
+    public function order($column, ?string $mode = 'ASC')
     {
         $this->sql['order'] = "ORDER BY {$column} {$mode} ";
         return $this;
@@ -652,12 +696,11 @@ abstract class Driver
      * @param string $name
      * @param string $type
      * @return self|static|Mysql
+     * @throws Exception
      */
-    public function drop($name = '', $type = 'TABLE')
+    public function drop(string $name = '', string $type = 'TABLE')
     {
-        $name = $name ? $name : $this->tableName;
-
-        $this->sql['query'] = "DROP {$type} {$name}";
+        $this->query("DROP {$type} " . $this->format($name));
 
         return $this;
     }
@@ -666,10 +709,11 @@ abstract class Driver
     /**
      * dropTable
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function dropTable()
     {
-        $this->drop($this->tableName, 'TABLE');
+        $this->drop($this->getTableName(), 'TABLE');
 
         return $this;
     }
@@ -678,11 +722,10 @@ abstract class Driver
      * dropDatabase
      * @param $database
      * @return self|static|Mysql
+     * @throws Exception
      */
     public function dropDatabase($database)
     {
-        $database = Utils::getInstance()->formatColumn($database, $this->joinString);
-
         $this->drop($database, 'DATABASE');
 
         return $this;
@@ -695,7 +738,7 @@ abstract class Driver
      */
     public function isNotNull($name)
     {
-        $name = Utils::getInstance()->formatColumn($name, $this->joinString);
+        $name = $this->format($name);
 
         $this->where("{$name} IS NOT NULL ");
 
@@ -709,7 +752,7 @@ abstract class Driver
      */
     public function isNull($name)
     {
-        $name = Utils::getInstance()->formatColumn($name, $this->joinString);
+        $name = $this->format($name);
 
         $this->where("{$name} IS NULL ");
 
@@ -721,10 +764,10 @@ abstract class Driver
      * 模糊查询
      * @param $name
      * @param $value
-     * @param int $expression
+     * @param int|null $expression
      * @return self|static|Mysql
      */
-    public function like($name, $value, $expression = 3)
+    public function like($name, $value, ?int $expression = 3)
     {
         switch ($expression) {
             case 1:
@@ -760,7 +803,7 @@ abstract class Driver
 
     /**
      * for update
-     * @return $this
+     * @return self|static|Mysql
      */
     public function forUpdate()
     {
@@ -770,8 +813,8 @@ abstract class Driver
 
     /**
      * getTables
-     * @param $type
-     * @param $database
+     * @param int $type
+     * @param string $database
      * @return static|Mysql
      */
     abstract public function getTables(int $type, string $database);
@@ -818,7 +861,7 @@ abstract class Driver
         foreach ($options as $name => $value) {
             if (is_bool($value)) $value = (int)$value;
 
-            if (!is_int($value) || !is_bool($value)) {
+            if (!is_numeric($value)) {
                 $value = "'{$value}'";
             }
 
@@ -884,7 +927,7 @@ abstract class Driver
 
     /**
      * 除过select都用这个执行
-     * @param int $insetId
+     * @param mixed $insetId
      * @return bool
      * @throws Exception
      */

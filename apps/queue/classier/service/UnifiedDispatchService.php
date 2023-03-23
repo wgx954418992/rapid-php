@@ -3,6 +3,7 @@
 
 namespace apps\queue\classier\service;
 
+use apps\queue\classier\model\HandlerModel;
 use apps\queue\classier\process\UnifiedDispatchProcess;
 use Exception;
 use rapidPHP\modules\console\classier\Output;
@@ -25,30 +26,38 @@ class UnifiedDispatchService
     /**
      * @var UnifiedDispatchProcess
      */
-    private $dispatchProcess;
+    protected $dispatchProcess;
 
     /**
      * @var Output
      */
-    private $output;
+    protected $output;
 
     /**
      * 处理信号
      * @var string[][]
      */
-    private $handlerSig = [
+    protected $handlerSig = [
         'self::onHandlerSignal',
         SIGHUP => 'self::onSIGHUP',
         SIGTERM => 'self::onSIGTERM',
     ];
 
     /**
+     * @var HandlerModel[]
+     */
+    protected $handlers;
+
+    /**
      * UnifiedDispatchService constructor.
      * @param Output $output
+     * @param HandlerModel[] $handlers
      */
-    public function __construct(Output $output)
+    public function __construct(Output $output, array $handlers = [])
     {
         $this->output = $output;
+
+        $this->handlers = $handlers;
     }
 
     /**
@@ -76,7 +85,7 @@ class UnifiedDispatchService
      */
     private function create()
     {
-        $this->dispatchProcess = new UnifiedDispatchProcess(1, $this->output);
+        $this->dispatchProcess = new UnifiedDispatchProcess(1, $this->output, $this->handlers);
 
         $this->setPId($this->dispatchProcess->pid);
 
@@ -125,7 +134,7 @@ class UnifiedDispatchService
      */
     public function getAllPIDs(): array
     {
-        return $this->dispatchProcess->getHandlerPIDs(true);
+        return $this->dispatchProcess->getWorkerPIDs(true);
     }
 
     /**
@@ -139,7 +148,6 @@ class UnifiedDispatchService
 
         if ($pid) Process::kill($pid, $sig);
     }
-
 
     /**
      * 其他信号
@@ -165,13 +173,13 @@ class UnifiedDispatchService
         if ($pid == $this->dispatchProcess->pid) {
             $this->output->perror("{$date} 主进程已经退出，即将退出全部子进程");
 
-            $PIDs = $this->dispatchProcess->getHandlerPIDs();
+            $PIDs = $this->dispatchProcess->getWorkerPIDs();
 
             foreach ($PIDs as $type) $this->dispatchProcess->pkill($type);
 
             $this->output->perror("{$date} 进程已经全部退出");
         } else {
-            $PIDs = $this->dispatchProcess->getHandlerPIDs();
+            $PIDs = $this->dispatchProcess->getWorkerPIDs();
 
             if (!isset($PIDs[$pid])) return;
 
@@ -188,7 +196,7 @@ class UnifiedDispatchService
     {
         $date = Cal()->getDate();
 
-        $PIDs = $this->dispatchProcess->getHandlerPIDs();
+        $PIDs = $this->dispatchProcess->getWorkerPIDs();
 
         if ($pid == $this->dispatchProcess->pid) {
             $this->output->perror("{$date} 重启主进程，即将退出全部子进程");

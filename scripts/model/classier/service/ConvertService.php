@@ -129,9 +129,9 @@ class ConvertService
 
                     $content = $resolver->getModelContent($config, $table, $columns);
 
-                    $UTableName = StrCharacter::getInstance()->toFirstUppercase($table->getName(), '_');
-
-                    $outputFilepath = CommonHelper::parseVariable($savePath, ['UTableName' => $UTableName]);
+                    $outputFilepath = CommonHelper::parseVariable($savePath, [
+                        'UTableName' => $handler->getUTableName($config, $table)
+                    ]);
 
                     CommonHelper::writeFile($outputFilepath, $content);
                 }
